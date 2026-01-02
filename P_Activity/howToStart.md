@@ -1,6 +1,9 @@
 ## Win
 0. cd P_Activity
-1. uvicorn activity_api:app --reload
+1.py -3.12 -m venv venv
+2..\venv\Scripts\Activate.ps1
+3.pip install -r requirements.txt
+4.uvicorn activity_api:app --reload
 
 👉 http://127.0.0.1:8000/
 
@@ -18,5 +21,7 @@
 
 
 ## Mobile
-
-0. 
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn activity_api:app
