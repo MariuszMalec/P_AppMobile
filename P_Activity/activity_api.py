@@ -111,6 +111,50 @@ def activities_page(request: Request):
         }
     )
 
+
+@app.get("/edit/{activity_id}", response_class=HTMLResponse)
+def edit_activity_page(request: Request, activity_id: int):
+    db = get_db()
+    cursor = db.cursor()
+
+    activity = cursor.execute("""
+        SELECT
+            ad.Id,
+            ad.StartTime,
+            ad.EndTime,
+            ad.Description,
+            ad.DayOfWeek,
+            ad.ModelPersonFamilyId,
+            ad.ModelPictureActivityId
+        FROM ActiviesDays ad
+        WHERE ad.Id = ?
+    """, (activity_id,)).fetchone()
+
+    persons = cursor.execute("""
+        SELECT Id, PersonName FROM PersonFamilies
+    """).fetchall()
+
+    pictures = cursor.execute("""
+        SELECT Id, Picture FROM PictureActivities
+    """).fetchall()
+
+    db.close()
+
+    if not activity:
+        return HTMLResponse("Nie znaleziono aktywności", status_code=404)
+
+    return templates.TemplateResponse(
+        "edit_activity.html",
+        {
+            "request": request,
+            "activity": activity,
+            "persons": persons,
+            "pictures": pictures,
+        }
+    )
+
+
+
 # ---------- API ----------
 @app.get("/api/activities")
 def api_activities():

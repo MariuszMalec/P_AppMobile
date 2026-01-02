@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj aktywność</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 16px;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: linear-gradient(135deg, #eef2ff, #f8fafc);
+        }
+
+        .container {
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        form {
+            display: grid;
+            gap: 16px;
+        }
+
+        label {
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, select {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            font-size: 1em;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+        }
+
+        .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 14px;
+            border: none;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .save {
+            background: #6366f1;
+            color: white;
+        }
+
+        .cancel {
+            background: #e5e7eb;
+            color: #111827;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:hover, .cancel:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+        }
+
+        @media (max-width: 480px) {
+            .row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>✏️ Edytuj aktywność</h1>
+
+    <div class="card">
+        <form method="post">
+
+            <div class="row">
+                <div class="field">
+                    <label>Start</label>
+                    <input type="time" name="start" value="{{ activity.start }}">
+                </div>
+
+                <div class="field">
+                    <label>Koniec</label>
+                    <input type="time" name="end" value="{{ activity.end }}">
+                </div>
+            </div>
+
+            <div class="field">
+                <label>Opis</label>
+                <input type="text" name="description" value="{{ activity.description }}">
+            </div>
+
+            <div class="field">
+                <label>Osoba</label>
+                <select name="person_id">
+                    {% for p in persons %}
+                        <option value="{{ p.id }}"
+                            {% if p.id == activity.person_id %}selected{% endif %}>
+                            {{ p.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label>Obrazek (URL)</label>
+                <input type="text" name="picture" value="{{ activity.picture }}">
+            </div>
+
+            <div class="actions">
+                <button class="save" type="submit">💾 Zapisz</button>
+                <a class="cancel" href="/">↩ Anuluj</a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

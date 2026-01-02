@@ -27,9 +27,47 @@
             margin-bottom: 24px;
         }
 
+        /* --- TOP BUTTONS --- */
+        .top-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .top-buttons a {
+            flex: 1;
+            text-decoration: none;
+        }
+
+        .top-buttons button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-live {
+            background: #22c55e;
+            color: #022c22;
+        }
+
+        .btn-week {
+            background: #38bdf8;
+            color: #020617;
+        }
+
+        .btn-add {
+            background: #6366f1;
+            color: white;
+        }
+
+        /* --- ACTIVITY CARD --- */
         .activity {
             background: white;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 12px;
             margin-top: 12px;
             display: flex;
@@ -41,14 +79,7 @@
             width: 90px;
             height: 90px;
             object-fit: cover;
-            border-radius: 6px;
-        }
-
-        .activity img.person-pic {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            object-fit: cover;
+            border-radius: 8px;
         }
 
         .content {
@@ -72,6 +103,35 @@
             color: #555;
         }
 
+        .person-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* --- ACTIONS --- */
+        .actions {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .edit-btn {
+            text-decoration: none;
+            font-size: 1.1em;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: #eef2ff;
+            color: #3730a3;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .edit-btn:hover {
+            background: #c7d2fe;
+            transform: scale(1.05);
+        }
+
+        /* --- MOBILE --- */
         @media (max-width: 600px) {
             .activity {
                 flex-direction: column;
@@ -81,6 +141,10 @@
                 width: 100%;
                 height: 160px;
             }
+
+            .actions {
+                align-items: flex-end;
+            }
         }
     </style>
 </head>
@@ -89,45 +153,18 @@
 
 <h1>📅 Plan tygodnia</h1>
 
-
-<div style="
-    display:flex;
-    gap:12px;
-    margin-bottom:16px;
-">
-
-    <a href="/status" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-size:1em;
-            font-weight:bold;
-            background:#22c55e;
-            color:#022c22;
-            cursor:pointer;
-        ">
-            ⏱ LIVE
-        </button>
+<div class="top-buttons">
+    <a href="/status">
+        <button class="btn-live">⏱ LIVE</button>
     </a>
 
-    <a href="/week" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-size:1em;
-            font-weight:bold;
-            background:#38bdf8;
-            color:#020617;
-            cursor:pointer;
-        ">
-            📅 WEEK
-        </button>
+    <a href="/week">
+        <button class="btn-week">📅 WEEK</button>
     </a>
 
+    <a href="/activities/add">
+        <button class="btn-add">➕ DODAJ</button>
+    </a>
 </div>
 
 {% for day, data in days.items() %}
@@ -157,11 +194,17 @@
             {% if a.person %}
             <div class="person">
                 {% if a.personPicture %}
-                    <img class="person-pic" src="{{ a.personPicture }}" alt="{{ a.person }}">
+                    <img class="person-pic" src="{{ a.personPicture }}">
                 {% endif %}
                 <span>{{ a.person }}</span>
             </div>
             {% endif %}
+        </div>
+
+        <div class="actions">
+            <a class="edit-btn" href="/edit/{{ a.id }}" title="Edytuj">
+                ✏️
+            </a>
         </div>
 
     </div>
