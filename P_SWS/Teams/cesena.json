@@ -1,0 +1,172 @@
+[
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1996,
+  "TopScorer": "Massimo Agostini",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_1996.png",
+  "FinalResult": "",
+  "TrophyWin":"promoted",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_1997.png",
+  "FinalResult": "",
+  "TrophyWin":"2rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Jozef Stefanik",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_1998.png",
+  "FinalResult": "Cesena:Werder 3:1",
+  "TrophyWin":"UefaCup",
+  "TeamModelId": "",
+  "TrophyModelId": 2
+
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Jozef Stefanik",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_1998.png",
+  "FinalResult": "",
+  "TrophyWin":"4rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1999,
+  "TopScorer": "Jozef Stefanik",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+  "FinalResult": "Cesena:Inter 4:1",	
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1999,
+  "TopScorer": "Jozef Stefanik",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+  "FinalResult": "Cesena:Lacio 4:0",
+  "TrophyWin":"UefaCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 2
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1999,
+  "TopScorer": "Jozef Stefanik",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+  "FinalResult": "",
+  "TrophyWin":"2rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2000,
+  "TopScorer": "Bartosz Karwan",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_2000.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2000,
+  "TopScorer": "Bartosz Karwan",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_2000.png",
+  "FinalResult": "Cesena:ACMilan 5:0",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2001,
+  "TopScorer": "Bartosz Karwan",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_2001.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2001,
+  "TopScorer": "Bartosz Karwan",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_2001.png",
+  "FinalResult": "Cesena:ACMilan 5:2",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2002,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+  "FinalResult": "Cesena:Borusia 5:2",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2002,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+  "FinalResult": "Cesena:Juventus 2:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Cesena",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2002,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+}
+]

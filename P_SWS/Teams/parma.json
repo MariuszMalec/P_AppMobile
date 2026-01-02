@@ -1,0 +1,62 @@
+[
+{
+  "Name": "Parma",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2001,
+  "TopScorer": "Wojciech Kowalczyk",
+  "Picture": "http://127.0.0.1:8001/static/images/Parma_2001.png",
+  "FinalResult": "Parma:Ajax 2:0",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Parma",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2001,
+  "TopScorer": "Wojciech Kowalczyk",
+  "Picture": "http://127.0.0.1:8001/static/images/Parma_2001.png",
+  "FinalResult": "Parma:Juventus 3:0",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Parma",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2001,
+  "TopScorer": "Wojciech Kowalczyk",
+  "Picture": "http://127.0.0.1:8001/static/images/Parma_2001.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Parma",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2002,
+  "TopScorer": "",
+  "Picture": "http://127.0.0.1:8001/static/images/Parma_2002.png",
+  "FinalResult": "Parma:Juventus 4:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Parma",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2002,
+  "TopScorer": "Wojciech Kowalczyk",
+  "Picture": "http://127.0.0.1:8001/static/images/Parma_2002.png",
+  "FinalResult": "Parma:Paris 1:2",
+  "TrophyWin":"2rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 10
+}
+]

@@ -1,0 +1,97 @@
+[
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Pier (36)",
+    "TopScorerId": 25,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1996.png",
+    "FinalResult": "Udinese:ACMilan 1:3",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 25,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 1,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Pier (36)",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1996.png",
+    "FinalResult": "Udinese:Maccabi 5:1",
+    "TrophyId": 5,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 14,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0  ,        
+    "GoalsScoredCWCCup": 13,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (44)",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 35,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (44)",
+    "TopScorerId": 33,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "Udinese:Newcastle 3:2",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 33,
+    "GoalsScoredChampionLeague": 7,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 18,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 9,
+    "TopScorerName":"Gustavo Lopez (44)",
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "Udinese:Fiorentina 4:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 16,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+]

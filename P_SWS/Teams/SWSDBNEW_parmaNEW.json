@@ -1,0 +1,38 @@
+[
+  {
+    "Name": "Parma",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Parma_2002.png",
+    "FinalResult": "Parma:Juventus 4:1",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 14,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 14,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Parma",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Parma_2002.png",
+    "FinalResult": "2rd",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 1,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 27,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }      
+  }
+]

@@ -1,0 +1,254 @@
+[
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1996.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "topScorerId": 12,
+    "trophyId": 10,
+    "topScorer": {
+    "Id": 12,
+    "GoalsScoredChampionLeague": 42,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1997.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "topScorerId": 8,
+    "trophyId": 10,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 38,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1998.png",
+    "FinalResult": "Cesena:Werder 3:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "topScorerId": 7,
+    "trophyId": 2,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 18,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 13
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1998.png",
+    "FinalResult": "4rd",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "topScorerId": 9,
+    "trophyId": 10,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 24,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 1
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+    "FinalResult": "Cesena:Inter 4:1",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "topScorerId": 3,
+    "trophyId": 3,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 9,    
+    "GoalsScoredLeagueCup": 9,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 3
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+    "FinalResult": "Cesena:Lacio 4:0",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "topScorerId": 7,
+    "trophyId": 2,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 9
+    } 
+  },
+   {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+    "FinalResult": "2rd",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "topScorerId": 8,
+    "trophyId": 10,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 21,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 1
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2000.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "topScorerId": 3,
+    "trophyId": 4,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2000.png",
+    "FinalResult": "Cesena:ACMilan 5:0",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "topScorerId": 9,
+    "trophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 9,    
+    "GoalsScoredLeagueCup": 11,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2001.png",
+    "FinalResult": "Cesena:ACMilan 5:2",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "topScorerId": 7,
+    "trophyId": 1,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 13,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2001.png",
+    "FinalResult": "Cesena:Parma 1:2",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "topScorerId": 3,
+    "trophyId": 4,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },  
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+    "FinalResult": "Cesena:Juventus 2:1",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "topScorerId": 7,
+    "trophyId": 3,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 14,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },  
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+    "FinalResult": "Cesena:Borusia 5:2",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "topScorerId": 3,
+    "trophyId": 1,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 10,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },  
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "topScorerId": 8,
+    "trophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  }
+]

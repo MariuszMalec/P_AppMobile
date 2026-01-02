@@ -1,0 +1,147 @@
+[
+
+  {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1996.png",
+    "FinalResult": "Promoted",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 4,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 4,
+    "GoalsScoredChampionLeague": 30,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+    {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1996.png",
+    "FinalResult": "Cremonese:ACMilan 4:1",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 19,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 19,
+    "GoalsScoredChampionLeague": 10,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 18,
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 18,
+    "GoalsScoredChampionLeague": 24,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 1,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+    {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+    "FinalResult": "Cremonese:ACMilan 3:1",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 5,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 5,
+    "GoalsScoredChampionLeague": 11,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 8,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+    {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+    "FinalResult": "Cremonese:SportingLisbona 3:1",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 5,
+    "TrophyId": 5,
+    "topScorer": {
+    "Id": 5,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+    "FinalResult": "Cremonese:Parma 3:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 18,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 18,
+    "GoalsScoredChampionLeague": 23,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 8,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+    {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+    "FinalResult": "Cremonese:AstonVilla 5:2",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 18,
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 18,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+    "FinalResult": "2rd",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 18,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 18,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }      
+  }
+]

@@ -1,0 +1,268 @@
+[
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Mariano Bombarda",
+    "TopScorerId": 11,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1996.png",
+    "FinalResult": "Gornik:Widzew 3:2",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 48,    
+    "GoalsScoredLeagueCup": 16,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Mariano Bombarda",    
+    "TopScorerId": 11,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 19,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1997.png",
+    "FinalResult": "Gornik:Juventus 7:3",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 19,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 12,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 39,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Hernan Crespo",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1998.png",
+    "FinalResult": "Gornik:GKS 4:3",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 3,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "TopScorerName":"Hernan Crespo",    
+    "Season": 1998,
+    "TopScorerId": 19,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Mariano Bombarda",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1999.png",
+    "FinalResult": "Gornik:Arsenal 4:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 21,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 11,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 34,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Pier",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "Gornik:Amica 4:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 7,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 16,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Pier",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "Gornik:Juventus 5:3 A.E.T",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Pier",    
+    "TopScorerId": 11,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "Gornik:LKS 3:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 6,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "Gornik:Rangers 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 25,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+]

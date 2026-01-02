@@ -1,0 +1,2444 @@
+[
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1996.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "topScorerId": 12,
+    "trophyId": 10,
+    "topScorer": {
+    "Id": 12,
+    "GoalsScoredChampionLeague": 42,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1997.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "topScorerId": 8,
+    "trophyId": 10,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 38,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1998.png",
+    "FinalResult": "Cesena:Werder 3:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "topScorerId": 7,
+    "trophyId": 2,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 18,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 13
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1998.png",
+    "FinalResult": "4rd",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "topScorerId": 9,
+    "trophyId": 10,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 24,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 1
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+    "FinalResult": "Cesena:Inter 4:1",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "topScorerId": 3,
+    "trophyId": 3,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 9,    
+    "GoalsScoredLeagueCup": 9,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 3
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+    "FinalResult": "Cesena:Lacio 4:0",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "topScorerId": 7,
+    "trophyId": 2,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 9
+    } 
+  },
+   {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+    "FinalResult": "2rd",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "topScorerId": 8,
+    "trophyId": 10,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 21,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 1
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2000.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "topScorerId": 3,
+    "trophyId": 4,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2000.png",
+    "FinalResult": "Cesena:ACMilan 5:0",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "topScorerId": 9,
+    "trophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 9,    
+    "GoalsScoredLeagueCup": 11,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2001.png",
+    "FinalResult": "Cesena:ACMilan 5:2",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "topScorerId": 7,
+    "trophyId": 1,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 13,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2001.png",
+    "FinalResult": "Cesena:Parma 1:2",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "topScorerId": 3,
+    "trophyId": 4,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },  
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+    "FinalResult": "Cesena:Juventus 2:1",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "topScorerId": 7,
+    "trophyId": 3,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 14,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },  
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+    "FinalResult": "Cesena:Borusia 5:2",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "topScorerId": 3,
+    "trophyId": 1,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 10,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },  
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "topScorerId": 8,
+    "trophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+
+  {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1996.png",
+    "FinalResult": "Promoted",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 4,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 4,
+    "GoalsScoredChampionLeague": 30,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+    {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1996.png",
+    "FinalResult": "Cremonese:ACMilan 4:1",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 19,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 19,
+    "GoalsScoredChampionLeague": 10,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 18,
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 18,
+    "GoalsScoredChampionLeague": 24,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 1,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+    {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+    "FinalResult": "Cremonese:ACMilan 3:1",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 5,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 5,
+    "GoalsScoredChampionLeague": 11,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 8,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+    {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+    "FinalResult": "Cremonese:SportingLisbona 3:1",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 5,
+    "TrophyId": 5,
+    "topScorer": {
+    "Id": 5,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+    "FinalResult": "Cremonese:Parma 3:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 18,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 18,
+    "GoalsScoredChampionLeague": 23,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 8,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+    {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+    "FinalResult": "Cremonese:AstonVilla 5:2",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 18,
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 18,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Cremonese",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+    "FinalResult": "2rd",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 18,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 18,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }      
+  }
+,
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Mariano Bombarda",
+    "TopScorerId": 11,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1996.png",
+    "FinalResult": "Gornik:Widzew 3:2",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 48,    
+    "GoalsScoredLeagueCup": 16,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Mariano Bombarda",    
+    "TopScorerId": 11,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 19,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1997.png",
+    "FinalResult": "Gornik:Juventus 7:3",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 19,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 12,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 39,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Hernan Crespo",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1998.png",
+    "FinalResult": "Gornik:GKS 4:3",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 3,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "TopScorerName":"Hernan Crespo",    
+    "Season": 1998,
+    "TopScorerId": 19,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Mariano Bombarda",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1999.png",
+    "FinalResult": "Gornik:Arsenal 4:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 21,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 11,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 34,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Pier",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "Gornik:Amica 4:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 7,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 16,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Pier",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "Gornik:Juventus 5:3 A.E.T",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Pier",    
+    "TopScorerId": 11,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "Gornik:LKS 3:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 6,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "Gornik:Rangers 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 25,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+  ,
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Christian Vieri (41)",
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1996.png",
+    "FinalResult": "Juventus:ACMilan 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 5,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Christian Vieri (41)",    
+    "TopScorerId": 23,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1996.png",
+    "FinalResult": "2rd",
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 23,
+    "GoalsScoredChampionLeague": 33,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (39)",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "Juventus:NewCastle 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 23,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (39)",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "Juventus:Parma 4:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (39)",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Robert Lewandowski (38)",    
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "Juventus:Ajax 1:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 10,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Robert Lewandowski (38)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "Juventus:Parma 4:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 25,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Robert Lewandowski (38)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Robert Lewandowski (43)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "Juventus:Manchester 4:2 A.E.T",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 12,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Robert Lewandowski (43)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "Juventus:ACMilan 1:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 3,    
+    "GoalsScoredLeagueCup": 13,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Robert Lewandowski (43)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Robert Lewandowski (41)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "Juventus:RealMadryt 2:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Robert Lewandowski (41)",    
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "Juventus:Parma 5:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Robert Lewandowski (41)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Goran Vlaovic (34)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "Juventus:RealMadryt 4:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 7,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 13,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Goran Vlaovic (34)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "Juventus:Parma 4:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Goran Vlaovic (34)",    
+    "TopScorerId": 25,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 25,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Christian Vieri (42)",    
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "Juventus:Arsenal 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Christian Vieri (42)",    
+    "TopScorerId": 25,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "Juventus:Lacio 4:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 25,
+    "GoalsScoredChampionLeague": 4,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Christian Vieri (42)",    
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+,
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Marco Simone (38)",    
+    "TopScorerId": 10,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1996.png",
+    "FinalResult": "ACMilan:ManchesterUTD 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 10,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 8,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Marco Simone (38)",    
+    "TopScorerId": 13,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 13,
+    "GoalsScoredChampionLeague": 31,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+ {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Pingo (33)",    
+    "TopScorerId": 30,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "ACMilan:ManchesterUTD 3:2 A.E.T",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 30,
+    "GoalsScoredChampionLeague": 12,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 17,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Pingo (33)",    
+    "TopScorerId": 13,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "ACMilan:Parma 2:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 13,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Pingo (33)",    
+    "TopScorerId": 10,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 10,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Marco Simone (37)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "ACMilan:Ajax 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Marco Simone (37)",    
+    "TopScorerId": 30,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "ACMilan:Napoli 1:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 30,
+    "GoalsScoredChampionLeague": 5,    
+    "GoalsScoredLeagueCup": 14,
+    "GoalsScoredChampionsCup": 6,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Marco Simone (37)",    
+    "TopScorerId": 13,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 13,
+    "GoalsScoredChampionLeague": 24,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Marco Simone (42)",    
+    "TopScorerId": 13,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "ACMilan:RealMadrid 1:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 13,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Marco Simone (42)",    
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "ACMilan:Juventus 5:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Marco Simone (42)",    
+    "TopScorerId": 13,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "2rd",
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 13,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Pier (36)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "ACMilan:RealMadrid 4:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Pier (36)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "ACMilan:Lacio 3:2 A.E.T",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Pier (36)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 24,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Wojciech Kowalczyk (43)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "ACMilan:FCPorto 5:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 5,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 13,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Wojciech Kowalczyk (43)",    
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "ACMilan:Parma 2:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Wojciech Kowalczyk (43)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 31,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+,
+  {
+    "Name": "Parma",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Parma_2002.png",
+    "FinalResult": "Parma:Juventus 4:1",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 14,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 14,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Parma",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Parma_2002.png",
+    "FinalResult": "2rd",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 1,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 27,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }      
+  }
+,
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1996.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 14,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 14,
+    "GoalsScoredChampionLeague": 16,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }  
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "Perugia:Lacio 3:1",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 11,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 2,
+    "GoalsScoredUefaCup": 0
+    }      
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "Perugia:Blackburn 2:0",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 8,
+    "TrophyId": 5,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 8,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 10,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 11,
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "Perugia:Juventus 3:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 9,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 12,    
+    "GoalsScoredLeagueCup": 9,
+    "GoalsScoredChampionsCup": 6,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "Perugia:Newcastle 2:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 9,
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 8,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "Perugia:ACMilan 3:0",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 31,    
+    "GoalsScoredLeagueCup": 12,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "Perugia:Ajax 4:2 A.E.T",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 31,    
+    "GoalsScoredLeagueCup": 12,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  }
+,
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg1.png",
+    "FinalResult": "Reggiana:Parma 3:4",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 15,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 15,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg2.png",
+    "FinalResult": "Reggiana:Fiorent 2:0",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 15,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 15,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 3
+    }
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg2.png",
+    "FinalResult": "Reggiana:Fiorent 3:4",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 9,  
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 6
+    }
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+    "FinalResult": "Reggiana:Benfika 2:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 15, 
+    "TrophyId": 1,    
+    "topScorer": {
+    "Id": 15,
+    "GoalsScoredChampionLeague": 14,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+    "FinalResult": "3rd",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 3, 
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }   
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+    "FinalResult": "Reggiana:Fiorent 2:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 3,   
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }    
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg4.png",
+    "FinalResult": "Reggiana:ACMilan 0:1",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 6,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 6,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 12,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }        
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+    "FinalResult": "Reggiana:Lacio 2:0",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 6,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 6,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 9,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+    "FinalResult": "Reggiana:Blackburn 3:1",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 9,
+    "TrophyId": 2,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 8,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }      
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 9,
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }      
+  }
+,
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Jozef Stefanik",
+    "TopScorerId": 7,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1996.png",
+    "FinalResult": "Siarka:Pogon 4:2",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 31,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Jozef Stefanik",
+    "TopScorerId": 7,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Andrzej Bialek",
+    "TopScorerId": 7,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1997.png",
+    "FinalResult": "Siarka:Gornik 4:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 4,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 14,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Andrzej Bialek",
+    "TopScorerId": 6,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 6,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 1,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+   {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Andrzej Bialek",
+    "TopScorerId": 7,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1997.png",
+    "FinalResult": "Siarka:Benfika 0:3",
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+    "FinalResult": "Siarka:Legia 3:1",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+    
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+    "FinalResult": "Siarka:ACMilan 2:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 12,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Andrzej Bialek",
+    "TopScorerId": 7,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+    "FinalResult": "Siarka:Widzew 4:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 2,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 16,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Andrzej Bialek",
+    "TopScorerId": 6,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 6 ,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Andrzej Bialek",
+    "TopScorerId": 7,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+    "FinalResult": "Siarka:ACMilan 2:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 7,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+,
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 21,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1996.png",
+    "FinalResult": "Stal:ZaglebieL 5:1",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 21,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 11,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 20,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 20,
+    "GoalsScoredChampionLeague": 39,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 21,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "Stal:Widzew 4:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 21,
+    "GoalsScoredChampionLeague": 18,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 20,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 20,
+    "GoalsScoredChampionLeague": 30,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+   {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "Stal:Juventus 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 19,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Milan Rapajic",
+    "TopScorerId": 14,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "Stal:Hutnik 3:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 14,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 6,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Milan Rapajic",
+    "TopScorerId": 21,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 21,
+    "GoalsScoredChampionLeague": 24,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Milan Rapajic",
+    "TopScorerId": 22,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "Stal:AstonVilla 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 22,
+    "GoalsScoredChampionLeague": 9,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1999.png",
+    "FinalResult": "Stal:Lech 2:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 7,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1999.png",
+    "FinalResult": "3rd",
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+
+
+
+ {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Danilo Di Vincenzo",
+    "TopScorerId": 23,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 23,
+    "GoalsScoredChampionLeague": 25,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 3,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+{
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Danilo Di Vincenzo",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "Stal:Legia 3:2 A.E.T",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 6,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 3,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Danilo Di Vincenzo",
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "Stal:ManchesterUTD 2:0",
+    "TrophyId": 5,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0  ,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+{
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "Stal:AmicaWronki 3:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 10,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 14,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "Stal:ACMilan 5:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0  ,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerName":"Igor Kolyvanov (42)",
+    "TopScorerId": 32,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "Betis:ACMilan 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 32,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerName":"Igor Kolyvanov (42)",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "Betis:RealMadryt 4:0",
+    "TrophyId": 7,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerName":"Igor Kolyvanov (42)",
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+    {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Pier (36)",
+    "TopScorerId": 25,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1996.png",
+    "FinalResult": "Udinese:ACMilan 1:3",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 25,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 1,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Pier (36)",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1996.png",
+    "FinalResult": "Udinese:Maccabi 5:1",
+    "TrophyId": 5,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 14,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0  ,        
+    "GoalsScoredCWCCup": 13,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (44)",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 35,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (44)",
+    "TopScorerId": 33,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "Udinese:Newcastle 3:2",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 33,
+    "GoalsScoredChampionLeague": 7,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 18,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 9,
+    "TopScorerName":"Gustavo Lopez (44)",
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "Udinese:Fiorentina 4:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 16,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+
+]

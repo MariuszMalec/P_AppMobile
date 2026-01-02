@@ -1,0 +1,59 @@
+[
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerName":"Igor Kolyvanov (42)",
+    "TopScorerId": 32,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "Betis:ACMilan 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 32,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerName":"Igor Kolyvanov (42)",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "Betis:RealMadryt 4:0",
+    "TrophyId": 7,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerName":"Igor Kolyvanov (42)",
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+]

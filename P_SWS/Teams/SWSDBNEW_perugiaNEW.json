@@ -1,0 +1,183 @@
+[
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1996.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 14,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 14,
+    "GoalsScoredChampionLeague": 16,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }  
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "Perugia:Lacio 3:1",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 11,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 10,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 2,
+    "GoalsScoredUefaCup": 0
+    }      
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "Perugia:Blackburn 2:0",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 8,
+    "TrophyId": 5,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 8,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 10,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 11,
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 11,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "Perugia:Juventus 3:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 9,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 12,    
+    "GoalsScoredLeagueCup": 9,
+    "GoalsScoredChampionsCup": 6,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "Perugia:Newcastle 2:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 9,
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 8,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "Perugia:ACMilam 3:0",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 31,    
+    "GoalsScoredLeagueCup": 12,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "Perugia:Ajax 4:2 A.E.T",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 31,    
+    "GoalsScoredLeagueCup": 12,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    } 
+  }
+]

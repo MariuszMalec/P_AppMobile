@@ -1,0 +1,99 @@
+[
+{
+  "Name": "Cremonese",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1996,
+  "TopScorer": "Maciej Zurawski",
+  "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1996.png",
+  "FinalResult": "",
+  "TrophyWin":"promoted",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Cremonese",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1996,
+  "TopScorer": "Maciej Zurawski",
+  "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1996.png",
+  "FinalResult": "Cremonese:ACMilan 4:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Cremonese",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Marek Szemonski",
+  "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Cremonese",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Marek Szemonski",
+  "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+  "FinalResult": "Cremonese:Sporting 3:1",
+  "TrophyWin":"CwcCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 5
+},
+{
+  "Name": "Cremonese",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Marek Szemonski",
+  "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1997.png",
+  "FinalResult": "Cremonese:ACMilan 3:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": "",
+  "TrophyModelId": 3
+}
+,
+{
+  "Name": "Cremonese",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Robert Dymkowski",
+  "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+  "FinalResult": "2rd",
+  "TrophyWin":"2rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 10
+},
+{
+  "Name": "Cremonese",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Robert Dymkowski",
+  "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+  "FinalResult": "Cremonese:AstonVilla 5:2",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Cremonese",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Robert Dymkowski",
+  "Picture": "http://127.0.0.1:8001/static/images/Cremonese_1998.png",
+  "FinalResult": "Cremonese:Parma 3:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": "",
+  "TrophyModelId": 3
+}
+]

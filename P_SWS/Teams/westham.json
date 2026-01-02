@@ -1,0 +1,38 @@
+[
+{
+  "Name": "WestHam",
+  "Description": "Example Football Club",
+  "NationalityName": "England",
+  "Season": 1999,
+  "TopScorer": "Florin Raduciou",
+  "Picture": "http://127.0.0.1:8001/static/images/WestHam_1999.png",
+  "FinalResult": "WestHam:Borusia 2:0",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "WestHam",
+  "Description": "Example Football Club",
+  "NationalityName": "England",
+  "Season": 1999,
+  "TopScorer": "Florin Raduciou",
+  "Picture": "http://127.0.0.1:8001/static/images/WestHam_1999.png",
+  "FinalResult": "WestHam:Aresenal 5:1",
+  "TrophyWin":"EnglandCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 9
+},
+{
+  "Name": "WestHam",
+  "Description": "Example Football Club",
+  "NationalityName": "England",
+  "Season": 1999,
+  "TopScorer": "Florin Raduciou",
+  "Picture": "http://127.0.0.1:8001/static/images/WestHam_1999.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+}
+]

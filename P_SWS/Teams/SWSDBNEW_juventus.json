@@ -1,0 +1,202 @@
+[
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1996.png",
+    "FinalResult": "Juventus:ACMilan 3:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1996.png",
+    "FinalResult": "",
+    "TrophyId": 0
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "Juventus:NewCastle 3:1",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "Juventus:Parma 4:1",
+    "TrophyId": 3
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "Juventus:Ajax 1:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "Juventus:Parma 4:1",
+    "TrophyId": 3
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "Juventus:Manchester 4:2 A.E.T",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "Juventus:ACMilan 1:0",
+    "TrophyId": 3
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "Juventus:RealMadryt 2:1",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "Juventus:Parma 5:1",
+    "TrophyId": 3
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "Juventus:RealMadryt 4:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "Juventus:Parma 4:0",
+    "TrophyId": 3
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerId": 5,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "Juventus:Arsenal 3:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 5,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "Juventus:Lacio 4:0",
+    "TrophyId": 3
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  }
+]

@@ -1,0 +1,17 @@
+NSERT INTO PictureActivities (ActivityName, Picture) VALUES
+(1,  'https://images.unsplash.com/photo-1584622650111-993a426fbf0a?q=80&w=2070&auto=format&fit=crop'),
+(11, 'https://images.unsplash.com/photo-1525278070609-779c7adb7b71?auto=format&fit=crop&w=1147'),
+(19, 'https://images.unsplash.com/photo-1456086272160-b28b0645b729?auto=format&fit=crop&w=1632'),
+(16, 'https://images.unsplash.com/photo-1522069213448-443a614da9b6?auto=format&fit=crop&w=1173'),
+(20, 'https://images.unsplash.com/photo-1591291621164-2c6367723315?auto=format&fit=crop&w=871'),
+(15, 'https://images.unsplash.com/photo-1496185106368-308ed96f204b?auto=format&fit=crop&w=921'),
+(21, 'https://images.unsplash.com/photo-1623249288685-835abe0123b4?auto=format&fit=crop&w=871'),
+(22, 'https://images.unsplash.com/photo-1437943085269-6da5dd4295bf?auto=format&fit=crop&w=1170'),
+(23, 'https://images.unsplash.com/photo-1504609813442-a8924e83f76e?auto=format&fit=crop&w=1170'),
+(5,  'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1122'),
+(12, 'https://images.unsplash.com/photo-1615937722923-67f6deaf2cc9?auto=format&fit=crop&w=870'),
+(17, 'https://images.unsplash.com/photo-1608835291093-394b0c943a75?auto=format&fit=crop&w=872'),
+(18, 'https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&w=1170'),
+(9,  'https://images.unsplash.com/photo-1563301141-3fb8b3b2df9e?auto=format&fit=crop&w=870'),
+(10, 'https://images.unsplash.com/photo-1459180129673-eefb56f79b45?auto=format&fit=crop&w=873'),
+(7,  'https://images.unsplash.com/photo-1498940757830-82f7813bf178?auto=format&fit=crop&w=774');

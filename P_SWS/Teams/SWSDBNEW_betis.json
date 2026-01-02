@@ -1,0 +1,32 @@
+[
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "Betis:ACMilan 3:1",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "Betis:RealMadryt 4:0",
+    "TrophyId": 7
+  },
+  {
+    "Name": "Betis",
+    "Description": "Example Football Club",
+    "NationalityName": "Spain",
+    "Season": 1997,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  }
+]

@@ -1,0 +1,125 @@
+[
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1996,
+  "TopScorer": "Cleison",
+  "Picture": "http://127.0.0.1:8001/static/images/regg1.png",
+  "FinalResult": "Reggiana:Parma 3:4",
+  "TrophyWin":"3rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Pier",
+  "Picture": "http://127.0.0.1:8001/static/images/regg2.png",
+  "FinalResult": "Reggiana:Fiorent 2:0",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Pier",
+  "Picture": "http://127.0.0.1:8001/static/images/regg2.png",
+  "FinalResult": "Reggiana:Fiorent 3:4",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Bartosz Karwan",
+  "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+  "FinalResult": "Reggiana:Benfika 2:1",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Bartosz Karwan",
+  "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+  "FinalResult": "",
+  "TrophyWin":"2rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Bartosz Karwan",
+  "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+  "FinalResult": "Reggiana:Fiorent 2:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1999,
+  "TopScorer": "Bartosz Karwan",
+  "Picture": "http://127.0.0.1:8001/static/images/regg4.png",
+  "FinalResult": "Reggiana:ACMilan 0:1",
+  "TrophyWin":"2rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2000,
+  "TopScorer": "Pier",
+  "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+  "FinalResult": "Reggiana:Lacio 2:0",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2000,
+  "TopScorer": "Pier",
+  "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+  "FinalResult": "Reggiana:Blackburn 3:1",
+  "TrophyWin":"UefaCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 2
+},
+{
+  "Name": "Reggiana",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2000,
+  "TopScorer": "Pier",
+  "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+}
+
+]

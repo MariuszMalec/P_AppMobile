@@ -1,0 +1,127 @@
+[
+{
+  "firstName": "Wojciech",
+  "lastName": "Kowalczyk",
+  "teamName": "",
+  "nationalityName": "Poland",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 4,
+  "picture": "https://example.com/player.jpg"
+},
+{
+  "firstName": "Robert",
+  "lastName": "Lewandowski",
+  "teamName": "",
+  "nationalityName": "Poland",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+},
+{
+  "firstName": "Bartosz",
+  "lastName": "Karwan",
+  "teamName": "",
+  "nationalityName": "Poland",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+},
+{
+  "firstName": "Maciej",
+  "lastName": "Zurawski",
+  "teamName": "",
+  "nationalityName": "Poland",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+},
+{
+  "firstName": "Marek",
+  "lastName": "Szemonski",
+  "teamName": "",
+  "nationalityName": "Poland",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+},
+{
+  "firstName": "Andrzej",
+  "lastName": "Bialek",
+  "teamName": "",
+  "nationalityName": "Poland",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+}
+,
+{
+  "firstName": "Gustavo",
+  "lastName": "Lopez",
+  "teamName": "",
+  "nationalityName": "Spain",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+},
+{
+  "firstName": "",
+  "lastName": "Pier",
+  "teamName": "",
+  "nationalityName": "Spain",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+},
+
+{
+  "firstName": "Roberto",
+  "lastName": "Baggio",
+  "teamName": "",
+  "nationalityName": "Italy",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+},
+
+{
+  "firstName": "Mariano",
+  "lastName": "Bombarda",
+  "teamName": "",
+  "nationalityName": "Italy",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+},
+{
+  "firstName": "Marco",
+  "lastName": "Simone",
+  "teamName": "",
+  "nationalityName": "Italy",
+  "goalsScoredCWCCup": 0,
+  "goalsScoredChampionsCup": 0,
+  "goalsScoredChampionLeague": 0,
+  "goalsScoredUefaCup": 0,
+  "picture": "https://example.com/player.jpg"
+}
+
+]

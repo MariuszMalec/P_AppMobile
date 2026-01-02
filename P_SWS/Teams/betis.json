@@ -1,0 +1,38 @@
+[
+{
+  "Name": "Betis",
+  "Description": "Example Football Club",
+  "NationalityName": "Spain",
+  "Season": 1997,
+  "TopScorer": "Igor Kolyvanow",
+  "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+  "FinalResult": "Betis:ACMilan 3:1",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Betis",
+  "Description": "Example Football Club",
+  "NationalityName": "Spain",
+  "Season": 1997,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+  "FinalResult": "Betis:RealMadryt 4:0",
+  "TrophyWin":"SpanishCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 7
+},
+{
+  "Name": "Betis",
+  "Description": "Example Football Club",
+  "NationalityName": "Spain",
+  "Season": 1997,
+  "TopScorer": "Igor Kolyvanow",
+  "Picture": "http://127.0.0.1:8001/static/images/Betis_1997.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+}
+]

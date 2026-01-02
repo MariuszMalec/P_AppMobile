@@ -1,0 +1,182 @@
+[
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg1.png",
+    "FinalResult": "Reggiana:Parma 3:4",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 15,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 15,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg2.png",
+    "FinalResult": "Reggiana:Fiorent 2:0",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 15,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 15,
+    "GoalsScoredChampionLeague": 17,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 3
+    }
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg2.png",
+    "FinalResult": "Reggiana:Fiorent 3:4",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 9,  
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 6
+    }
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+    "FinalResult": "Reggiana:Benfika 2:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 15, 
+    "TrophyId": 1,    
+    "topScorer": {
+    "Id": 15,
+    "GoalsScoredChampionLeague": 14,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+    "FinalResult": "3rd",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 3, 
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }   
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg3.png",
+    "FinalResult": "Reggiana:Fiorent 2:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 3,   
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 3,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }    
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg4.png",
+    "FinalResult": "Reggiana:ACMilan 0:1",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 6,
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 6,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 12,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }        
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+    "FinalResult": "Reggiana:Lacio 2:0",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 6,
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 6,
+    "GoalsScoredChampionLeague": 15,    
+    "GoalsScoredLeagueCup": 9,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }     
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+    "FinalResult": "Reggiana:Blackburn 3:1",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 9,
+    "TrophyId": 2,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 20,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 8,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }      
+  },
+  {
+    "Name": "Reggiana",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/regg5.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 9,
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }      
+  }
+]

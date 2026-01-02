@@ -1,0 +1,38 @@
+[
+{
+  "Name": "Wolfsburg",
+  "Description": "Example Football Club",
+  "NationalityName": "Germany",
+  "Season": 2003,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Vfl_2003.png",
+  "FinalResult": "Wolfsburg:PSG 4:0",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Wolfsburg",
+  "Description": "Example Football Club",
+  "NationalityName": "Germany",
+  "Season": 2003,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Vfl_2003.png",
+  "FinalResult": "Wolfsburg:Kaiserslautern 3:0",
+  "TrophyWin":"GermanCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 8
+},
+{
+  "Name": "Wolfsburg",
+  "Description": "Example Football Club",
+  "NationalityName": "Germany",
+  "Season": 2003,
+  "TopScorer": "Filipo Inzagi",
+  "Picture": "http://127.0.0.1:8001/static/images/Vfl_2003.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+}
+]

@@ -1,0 +1,124 @@
+[
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1996,
+  "TopScorer": "Milan Rapajic",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1996.png",
+  "FinalResult": "",
+  "TrophyWin":"9rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Mariano Bombarda",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+  "FinalResult": "Perugia:Lacio 3:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Mariano Bombarda",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+  "FinalResult": "Perugia:Blackburn 2:0",
+  "TrophyWin":"CwcCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 5
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1997,
+  "TopScorer": "Mariano Bombarda",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+  "FinalResult": "Perugia:Juventus 3:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": "",
+  "TrophyModelId": 3
+
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+  "FinalResult": "Perugia:Newcastle 2:1",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1998,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+  "FinalResult": "",	
+  "TrophyWin":"2rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 0
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1999,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+  "FinalResult": "Perugia:ACMilam 3:0",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1999,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+  "FinalResult": "Perugia:Ajax 4:2 A.E.T",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Perugia",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 1999,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+}
+]

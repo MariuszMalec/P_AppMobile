@@ -1,0 +1,52 @@
+[
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1996.png",
+    "FinalResult": "Udinese:Maccabi 5:1",
+    "TrophyId": 5
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "Udinese:Newcastle 3:2",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Udinese",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Udinese_1997.png",
+    "FinalResult": "Udinese:Fiorentina 4:0",
+    "TrophyId": 3
+  }
+]

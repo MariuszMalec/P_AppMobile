@@ -1,0 +1,162 @@
+[
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1996.png",
+    "FinalResult": "Stal:Zaglebie 5:1",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "Stal:Widzew 4:0",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "Stal:Juventus 3:1",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "Stal:Hutnik 3:0",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "Stal:Aston.W 3:1",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1999.png",
+    "FinalResult": "",
+    "TrophyId": 10
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1999.png",
+    "FinalResult": "Stal:Lech 2:0",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "Stal:Legia 3:2 A.E.T",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "Stal:Manchester 2:0",
+    "TrophyId": 5
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "Stal:Amica 3:0",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "Stal:ACMilan 5:0",
+    "TrophyId": 1
+  }
+]

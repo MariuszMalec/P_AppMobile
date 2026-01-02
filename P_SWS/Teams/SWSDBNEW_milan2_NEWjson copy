@@ -1,0 +1,526 @@
+[
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Marco Simone (34)",    
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1996.png",
+    "FinalResult": "ACMilan2:Juventus 2:3",
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Marco Simone (34)",    
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Marco Simone (34)",    
+    "TopScorerId": 26,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1996.png",
+    "FinalResult": "ACMilan2:Juventus 4:2",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 26,
+    "GoalsScoredChampionLeague": 18,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Marco Simone (42)",    
+    "TopScorerId": 26,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "ACMilan2:Juventus 4:3",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 26,
+    "GoalsScoredChampionLeague": 8,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Marco Simone (42)",    
+    "TopScorerId": 13,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "ACMilan2:Roma 5:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 13,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Marco Simone (42)",    
+    "TopScorerId": 13,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 13,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Domingos (29)",    
+    "TopScorerId": 27,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "ACMilan2:ManchesterUTD 2:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 27,
+    "GoalsScoredChampionLeague": 8,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Domingos (29)",    
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "ACMilan2:Parma 3:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Domingos (29)",    
+    "TopScorerId": 28,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 28,
+    "GoalsScoredChampionLeague": 27,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Pingo (34)",    
+    "TopScorerId": 27,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "ACMilan2:Ajax 2:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 27,
+    "GoalsScoredChampionLeague": 6,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Pingo (34)",    
+    "TopScorerId": 29,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "ACMilan2:Lacio 4:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 29,
+    "GoalsScoredChampionLeague": 4,    
+    "GoalsScoredLeagueCup": 12,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Pingo (34)",    
+    "TopScorerId": 30,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 30,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Wojciech Kowalczyk (38)",    
+    "TopScorerId": 30,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "ACMilan2:PSG 7:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 30,
+    "GoalsScoredChampionLeague": 4,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 12,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Wojciech Kowalczyk (38)",    
+    "TopScorerId": 30,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "ACMilan2:Juventus 6:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 30,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Wojciech Kowalczyk (38)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 35,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Pingo (40)",    
+    "TopScorerId": 30,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "ACMilan2:ManchesterUTD 1:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 30,
+    "GoalsScoredChampionLeague": 21,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 12,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Pingo (40)",    
+    "TopScorerId": 30,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "ACMilan2:InterMilan 2:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 30,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Pingo (40)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+
+
+
+
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Wojciech Kowalczyk (48)",    
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2002.png",
+    "FinalResult": "ACMilan2:Ajax 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Wojciech Kowalczyk (48)",    
+    "TopScorerId": 30,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2002.png",
+    "FinalResult": "ACMilan2:Juventus 1:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 30,
+    "GoalsScoredChampionLeague": 3,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Wojciech Kowalczyk (48)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2002.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 42,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+  
+  ,
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2003,
+    "TopScorerName":"Wojciech Kowalczyk (40)",    
+    "TopScorerId": 28,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2003.png",
+    "FinalResult": "ACMilan2:ManchesterUTD 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 28,
+    "GoalsScoredChampionLeague": 14,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 16,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2003,
+    "TopScorerName":"Wojciech Kowalczyk (40)",    
+    "TopScorerId": 28,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2003.png",
+    "FinalResult": "ACMilan2:Roma 4:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 28,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2003,
+    "TopScorerName":"Wojciech Kowalczyk (40)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2003.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 34,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+
+  ,
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2004,
+    "TopScorerName":"Wojciech Kowalczyk (40)",    
+    "TopScorerId": 31,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2004.png",
+    "FinalResult": "ACMilan2:ManchesterUTD 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 31,
+    "GoalsScoredChampionLeague": 13,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 8,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2004,
+    "TopScorerName":"Wojciech Kowalczyk (40)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2004.png",
+    "FinalResult": "ACMilan2:Juventus 3:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 9,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "ACMilan2",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2004,
+    "TopScorerName":"Wojciech Kowalczyk (40)",    
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2004.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 1,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+
+]

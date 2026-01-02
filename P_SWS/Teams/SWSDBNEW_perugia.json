@@ -1,0 +1,102 @@
+[
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1996.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 6,
+    "TrophyId": 10
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "Perugia:Lacio 3:1",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 11,
+    "TrophyId": 3
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "Perugia:Blackburn 2:0",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 11,
+    "TrophyId": 5
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1997.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 11,
+    "TrophyId": 4
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "Perugia:Juventus 3:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 8,
+    "TrophyId": 3
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "Perugia:Newcastle 2:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 8,
+    "TrophyId": 1
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1998.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 8,
+    "TrophyId": 10
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "Perugia:ACMilam 3:0",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 3
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "Perugia:Ajax 4:2 A.E.T",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 1
+  },
+  {
+    "Name": "Perugia",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/Perugia_1999.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 8,
+    "TrophyId": 4
+  }
+]

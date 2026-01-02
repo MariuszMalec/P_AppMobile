@@ -1,0 +1,12 @@
+CREATE TABLE Teams (
+    Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    Name TEXT NOT NULL,
+    Description TEXT,
+    NationalityName TEXT NOT NULL,
+    Season INTEGER NOT NULL,
+    TopScorer TEXT NOT NULL,
+    Picture TEXT NOT NULL,
+    FinalResult TEXT NOT NULL,
+    TrophyWin TEXT,
+    TrophyModelId INTEGER
+);

@@ -1,0 +1,202 @@
+[
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1996.png",
+    "FinalResult": "ACMilan:Manchester 3:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "ACMilan:Manchester 3:2 A.E.T.",
+    "TrophyId": 1
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "ACMilan:Parma 2:1",
+    "TrophyId": 3
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "ACMilan:Ajax 3:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "ACMilan:Napoli 1:0",
+    "TrophyId": 3
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "ACMilan:RealMadrid 1:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "ACMilan:Juventus 5:0",
+    "TrophyId": 3
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_1999.png",
+    "FinalResult": "",
+    "TrophyId": 10
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "ACMilan:RealMadrid 4:1",
+    "TrophyId": 1
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "ACMilan:Lacio 3:2 A.E.T",
+    "TrophyId": 3
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "ACMilan:FCPorto 5:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "ACMilan:Parma 2:1",
+    "TrophyId": 3
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2002.png",
+    "FinalResult": "ACMilan:Juventus 4:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2002.png",
+    "FinalResult": "ACMilan:PSG 4:0",
+    "TrophyId": 3
+  },
+  {
+    "Name": "ACMilan",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Milan_2002.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  }
+]

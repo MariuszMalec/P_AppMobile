@@ -1,0 +1,102 @@
+[
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1996.png",
+    "FinalResult": "Siarka:Pogon 4:2",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1997.png",
+    "FinalResult": "Siarka:Gornik 4:0",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+    "FinalResult": "Siarka:Legia 3:1",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+    "FinalResult": "Siarka:ACMilan 2:1",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+    "FinalResult": "Siarka:Widzew 4:0",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Siarka",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+    "FinalResult": "Siarka:ACMilan 2:0",
+    "TrophyId": 1
+  }
+]

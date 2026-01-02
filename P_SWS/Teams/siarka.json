@@ -1,0 +1,122 @@
+[
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1996,
+  "TopScorer": "Jozef Stefanik",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1996.png",
+  "FinalResult": "Siarka:Pogon 4:2",
+  "TrophyWin":"PolishCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 6
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1996,
+  "TopScorer": "Jozef Stefanik",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1996.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1997,
+  "TopScorer": "Andrzej Bialek",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1997.png",
+  "FinalResult": "Siarka:Gornik 4:0",
+  "TrophyWin":"PolishCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 6
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1997,
+  "TopScorer": "Andrzej Bialek",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1997.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1998,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+  "FinalResult": "Siarka:Legia 3:1",
+  "TrophyWin":"PolishCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 6
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1998,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1998,
+  "TopScorer": "Gustavo Lopez",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1998.png",
+  "FinalResult": "Siarka:ACMilan 2:1",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1999,
+  "TopScorer": "Andrzej Bialek",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+  "FinalResult": "Siarka:Widzew 4:0",
+  "TrophyWin":"PolishCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 6
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1999,
+  "TopScorer": "Andrzej Bialek",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+  "FinalResult": "",
+  "TrophyWin":"ChampionLeague",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+},
+{
+  "Name": "Siarka",
+  "Description": "Example Football Club",
+  "NationalityName": "Polish",
+  "Season": 1999,
+  "TopScorer": "Andrzej Bialek",
+  "Picture": "http://127.0.0.1:8001/static/images/siarka_1999.png",
+  "FinalResult": "Siarka:ACMilan 2:0",
+  "TrophyWin":"ChampionsCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 1
+}
+]

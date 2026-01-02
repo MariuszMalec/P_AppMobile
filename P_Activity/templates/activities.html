@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan aktywności</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 16px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 32px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .day {
+            margin-bottom: 24px;
+        }
+
+        .activity {
+            background: white;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .activity img.activity-pic {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .activity img.person-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .time {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .description {
+            margin: 6px 0;
+        }
+
+        .person {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        @media (max-width: 600px) {
+            .activity {
+                flex-direction: column;
+            }
+
+            .activity img.activity-pic {
+                width: 100%;
+                height: 160px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>📅 Plan tygodnia</h1>
+
+
+<div style="
+    display:flex;
+    gap:12px;
+    margin-bottom:16px;
+">
+
+    <a href="/status" style="flex:1">
+        <button style="
+            width:100%;
+            padding:12px;
+            border-radius:14px;
+            border:none;
+            font-size:1em;
+            font-weight:bold;
+            background:#22c55e;
+            color:#022c22;
+            cursor:pointer;
+        ">
+            ⏱ LIVE
+        </button>
+    </a>
+
+    <a href="/week" style="flex:1">
+        <button style="
+            width:100%;
+            padding:12px;
+            border-radius:14px;
+            border:none;
+            font-size:1em;
+            font-weight:bold;
+            background:#38bdf8;
+            color:#020617;
+            cursor:pointer;
+        ">
+            📅 WEEK
+        </button>
+    </a>
+
+</div>
+
+{% for day, data in days.items() %}
+<div class="day">
+    <h2>{{ data.dayName }}</h2>
+
+    {% if data["items"]|length == 0 %}
+        <p>Brak aktywności</p>
+    {% endif %}
+
+    {% for a in data["items"] %}
+    <div class="activity">
+
+        {% if a.picture %}
+            <img class="activity-pic" src="{{ a.picture }}" alt="Aktywność">
+        {% endif %}
+
+        <div class="content">
+            <div class="time">
+                ⏰ {{ a.start }} – {{ a.end }}
+            </div>
+
+            <div class="description">
+                {{ a.description }}
+            </div>
+
+            {% if a.person %}
+            <div class="person">
+                {% if a.personPicture %}
+                    <img class="person-pic" src="{{ a.personPicture }}" alt="{{ a.person }}">
+                {% endif %}
+                <span>{{ a.person }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+</body>
+</html>

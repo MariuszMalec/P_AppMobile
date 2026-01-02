@@ -1,0 +1,382 @@
+[
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Christian Vieri (41)",
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1996.png",
+    "FinalResult": "Juventus:ACMilan 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 5,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 11,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "TopScorerName":"Christian Vieri (41)",    
+    "TopScorerId": 23,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1996.png",
+    "FinalResult": "2rd",
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 23,
+    "GoalsScoredChampionLeague": 33,    
+    "GoalsScoredLeagueCup": 4,
+    "GoalsScoredChampionsCup": 4,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (39)",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "Juventus:NewCastle 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 23,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (39)",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "Juventus:Parma 4:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "TopScorerName":"Gustavo Lopez (39)",    
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Robert Lewandowski (38)",    
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "Juventus:Ajax 1:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 10,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Robert Lewandowski (38)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "Juventus:Parma 4:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 25,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "TopScorerName":"Robert Lewandowski (38)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Robert Lewandowski (43)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "Juventus:Manchester 4:2 A.E.T",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 12,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Robert Lewandowski (43)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "Juventus:ACMilan 1:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 3,    
+    "GoalsScoredLeagueCup": 13,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "TopScorerName":"Robert Lewandowski (43)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Robert Lewandowski (41)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "Juventus:RealMadryt 2:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 29,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Robert Lewandowski (41)",    
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "Juventus:Parma 5:1",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "TopScorerName":"Robert Lewandowski (41)",    
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 2,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Goran Vlaovic (34)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "Juventus:RealMadryt 4:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 7,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 13,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Goran Vlaovic (34)",    
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "Juventus:Parma 4:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "TopScorerName":"Goran Vlaovic (34)",    
+    "TopScorerId": 25,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 25,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 7,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Christian Vieri (42)",    
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "Juventus:Arsenal 3:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 26,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 10,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Christian Vieri (42)",    
+    "TopScorerId": 25,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "Juventus:Lacio 4:0",
+    "TrophyId": 3,
+    "topScorer": {
+    "Id": 25,
+    "GoalsScoredChampionLeague": 4,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 2,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Juventus",
+    "Description": "Example Football Club",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "TopScorerName":"Christian Vieri (42)",    
+    "TopScorerId": 24,
+    "Picture": "http://127.0.0.1:8001/static/images/Juventus_2002.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 24,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+]

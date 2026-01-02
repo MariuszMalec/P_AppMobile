@@ -1,0 +1,142 @@
+[
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1996.png",
+    "FinalResult": "Gornik:Widzew 3:2",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1997.png",
+    "FinalResult": "Gornik:Juventus 7:3",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1998.png",
+    "FinalResult": "Gornik:GKS 4:3",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerId": 3,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1999.png",
+    "FinalResult": "Gornik:Arsenal 4:0",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerId": 1,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_1999.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "Gornik:Amica 4:0",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "Gornik:Juventus 5:3 A.E.T",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerId": 4,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "Gornik:LKS 3:0",
+    "TrophyId": 6
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "Gornik:Rangers 3:1",
+    "TrophyId": 1
+  },
+  {
+    "Name": "Gornik",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerId": 2,
+    "Picture": "http://127.0.0.1:8001/static/images/Gornik_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4
+  }
+]

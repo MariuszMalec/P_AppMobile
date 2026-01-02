@@ -1,0 +1,312 @@
+[
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 21,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1996.png",
+    "FinalResult": "Stal:ZaglebieL 5:1",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 21,
+    "GoalsScoredChampionLeague": 28,    
+    "GoalsScoredLeagueCup": 11,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1996,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 20,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1996.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 20,
+    "GoalsScoredChampionLeague": 39,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 21,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "Stal:Widzew 4:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 21,
+    "GoalsScoredChampionLeague": 18,    
+    "GoalsScoredLeagueCup": 8,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 20,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 20,
+    "GoalsScoredChampionLeague": 30,    
+    "GoalsScoredLeagueCup": 1,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+   {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1997,
+    "TopScorerName":"Martin Mandra",
+    "TopScorerId": 8,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1997.png",
+    "FinalResult": "Stal:Juventus 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 8,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 19,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Milan Rapajic",
+    "TopScorerId": 14,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "Stal:Hutnik 3:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 14,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 5,
+    "GoalsScoredChampionsCup": 6,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Milan Rapajic",
+    "TopScorerId": 21,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 21,
+    "GoalsScoredChampionLeague": 24,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1998,
+    "TopScorerName":"Milan Rapajic",
+    "TopScorerId": 22,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1998.png",
+    "FinalResult": "Stal:AstonVilla 3:1",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 22,
+    "GoalsScoredChampionLeague": 9,    
+    "GoalsScoredLeagueCup": 3,
+    "GoalsScoredChampionsCup": 9,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1999.png",
+    "FinalResult": "Stal:Lech 2:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 7,    
+    "GoalsScoredLeagueCup": 7,
+    "GoalsScoredChampionsCup": 3,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 1999,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_1999.png",
+    "FinalResult": "3rd",
+    "TrophyId": 10,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 22,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 5,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+
+
+
+ {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Danilo Di Vincenzo",
+    "TopScorerId": 23,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 23,
+    "GoalsScoredChampionLeague": 25,    
+    "GoalsScoredLeagueCup": 2,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 3,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+{
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Danilo Di Vincenzo",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "Stal:Legia 3:2 A.E.T",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 6,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 3,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2000,
+    "TopScorerName":"Danilo Di Vincenzo",
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2000.png",
+    "FinalResult": "Stal:ManchesterUTD 2:0",
+    "TrophyId": 5,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0  ,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 99,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "",
+    "TrophyId": 4,
+    "topScorer": {
+    "Id": 99,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+{
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "Stal:AmicaWronki 3:0",
+    "TrophyId": 6,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 10,    
+    "GoalsScoredLeagueCup": 6,
+    "GoalsScoredChampionsCup": 14,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  },
+  {
+    "Name": "Stal",
+    "Description": "Example Football Club",
+    "NationalityName": "Polish",
+    "Season": 2001,
+    "TopScorerName":"Gustavo Lopez",
+    "TopScorerId": 9,
+    "Picture": "http://127.0.0.1:8001/static/images/Stal_2001.png",
+    "FinalResult": "Stal:ACMilan 5:0",
+    "TrophyId": 1,
+    "topScorer": {
+    "Id": 9,
+    "GoalsScoredChampionLeague": 0,    
+    "GoalsScoredLeagueCup": 0,
+    "GoalsScoredChampionsCup": 0  ,        
+    "GoalsScoredCWCCup": 0,
+    "GoalsScoredUefaCup": 0
+    }
+  }
+
+
+]

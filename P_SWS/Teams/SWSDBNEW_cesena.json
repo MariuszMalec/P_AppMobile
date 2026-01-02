@@ -1,0 +1,92 @@
+[
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1996.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1996,
+    "topScorerId": 12,
+    "trophyId": 10
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1997.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 1997,
+    "topScorerId": 11,
+    "trophyId": 10
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1998.png",
+    "FinalResult": "Cesena:Werder 3:1",
+    "NationalityName": "Italy",
+    "Season": 1998,
+    "topScorerId": 7,
+    "trophyId": 2
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+    "FinalResult": "Cesena:Inter 4:1",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "topScorerId": 7,
+    "trophyId": 3
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_1999.png",
+    "FinalResult": "Cesena:Lacio 4:0",
+    "NationalityName": "Italy",
+    "Season": 1999,
+    "topScorerId": 7,
+    "trophyId": 2
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2000.png",
+    "FinalResult": "",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "topScorerId": 3,
+    "trophyId": 4
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2000.png",
+    "FinalResult": "Cesena:ACMilan 5:0",
+    "NationalityName": "Italy",
+    "Season": 2000,
+    "topScorerId": 3,
+    "trophyId": 3
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2001.png",
+    "FinalResult": "Cesena:ACMilan 5:2",
+    "NationalityName": "Italy",
+    "Season": 2001,
+    "topScorerId": 3,
+    "trophyId": 1
+  },
+  {
+    "Name": "Cesena",
+    "Description": "Example Football Club",
+    "Picture": "http://127.0.0.1:8001/static/images/cesena_2002.png",
+    "FinalResult": "Cesena:Juventus 2:1",
+    "NationalityName": "Italy",
+    "Season": 2002,
+    "topScorerId": 8,
+    "trophyId": 3
+  }
+]
