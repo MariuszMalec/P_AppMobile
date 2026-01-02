@@ -171,29 +171,50 @@ def edit_activity_page(request: Request, activity_id: int):
 
     activity = cursor.execute("""
         SELECT
-            ad.Id,
-            ad.StartTime,
-            ad.EndTime,
-            ad.Description,
-            ad.DayOfWeek,
-            ad.ModelPersonFamilyId,
-            ad.ModelPictureActivityId
-        FROM ActiviesDays ad
-        WHERE ad.Id = ?
+            Id,
+            StartTime,
+            EndTime,
+            Description,
+            ModelPersonFamilyId,
+            ModelPictureActivityId
+        FROM ActiviesDays
+        WHERE Id = ?
     """, (activity_id,)).fetchone()
 
-    persons = cursor.execute("""
-        SELECT Id, PersonName FROM PersonFamilies
+    if not activity:
+        db.close()
+        return HTMLResponse("Nie znaleziono aktywności", status_code=404)
+
+    # --- OSOBY ---
+    persons_raw = cursor.execute("""
+        SELECT Id, PersonName
+        FROM PersonFamilies
     """).fetchall()
 
-    pictures = cursor.execute("""
-        SELECT Id, Picture FROM PictureActivities
+    persons = []
+    for p in persons_raw:
+        enum_val = PERSON_ENUM_MAP.get(p["PersonName"])
+        persons.append({
+            "id": p["Id"],
+            "label": enum_val.value if enum_val else "Nieznana"
+        })
+
+    # --- AKTYWNOŚCI ---
+    pictures_raw = cursor.execute("""
+        SELECT Id, ActivityName, Picture
+        FROM PictureActivities
     """).fetchall()
+
+    pictures = []
+    for pic in pictures_raw:
+        enum_val = ACTIVITY_ENUM_MAP.get(pic["ActivityName"])
+        pictures.append({
+            "id": pic["Id"],
+            "label": enum_val.value if enum_val else "Nieznana",
+            "picture": pic["Picture"]
+        })
 
     db.close()
-
-    if not activity:
-        return HTMLResponse("Nie znaleziono aktywności", status_code=404)
 
     return templates.TemplateResponse(
         "edit_activity.html",
@@ -204,6 +225,7 @@ def edit_activity_page(request: Request, activity_id: int):
             "pictures": pictures,
         }
     )
+
 
 
 
