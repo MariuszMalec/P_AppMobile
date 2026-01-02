@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj aktywność</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 16px;
+            background: #f4f6f8;
+        }
+        form {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            max-width: 420px;
+            margin: auto;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 12px;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            font-size: 1em;
+            font-weight: bold;
+            background: #22c55e;
+            cursor: pointer;
+        }
+        img {
+            margin-top: 12px;
+            max-width: 100%;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2 style="text-align:center">✏️ Edytuj aktywność</h2>
+
+<form method="post">
+
+    <label>Aktywność</label>
+    <select name="activityName">
+        {% for key, enum in activities.items() %}
+            <option value="{{ key }}"
+                {% if key == item.activityName %}selected{% endif %}>
+                {{ enum.value }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label>URL obrazka</label>
+    <input type="text" name="picture" value="{{ item.picture or '' }}">
+
+    {% if item.picture %}
+        <img src="{{ item.picture }}" alt="Podgląd">
+    {% endif %}
+
+    <button type="submit">💾 Zapisz</button>
+
+</form>
+
+</body>
+</html>

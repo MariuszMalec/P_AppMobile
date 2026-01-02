@@ -1,9 +1,10 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 import sqlite3
 from pathlib import Path
 import enum
+from fastapi.responses import RedirectResponse
 
 
 app = FastAPI()
@@ -458,3 +459,59 @@ def picture_activities_page(request: Request):
             "items": items
         }
     )
+
+
+
+# ---------- EDIT PICTURE ACTIVITY ----------
+@app.get("/pictureactivities/edit/{item_id}", response_class=HTMLResponse)
+def edit_picture_activity_form(item_id: int, request: Request):
+    db = get_db()
+    cursor = db.cursor()
+
+    row = cursor.execute("""
+        SELECT Id, ActivityName, Picture
+        FROM PictureActivities
+        WHERE Id = ?
+    """, (item_id,)).fetchone()
+
+    db.close()
+
+    if not row:
+        return HTMLResponse("Nie znaleziono rekordu", status_code=404)
+
+    return templates.TemplateResponse(
+        "pictureactivity_edit.html",
+        {
+            "request": request,
+            "item": {
+                "id": row["Id"],
+                "activityName": row["ActivityName"],
+                "picture": row["Picture"]
+            },
+            "activities": ACTIVITY_ENUM_MAP
+        }
+    )
+
+
+@app.post("/pictureactivities/edit/{item_id}")
+def edit_picture_activity_save(
+    item_id: int,
+    activityName: int = Form(...),
+    picture: str = Form("")
+):
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("""
+        UPDATE PictureActivities
+        SET ActivityName = ?, Picture = ?
+        WHERE Id = ?
+    """, (activityName, picture, item_id))
+
+    db.commit()
+    db.close()
+
+    return RedirectResponse(
+        url="/pictureactivities",
+        status_code=303
+    )    
