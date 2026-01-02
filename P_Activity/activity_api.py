@@ -5,6 +5,7 @@ import sqlite3
 from pathlib import Path
 import enum
 from fastapi.responses import RedirectResponse
+from starlette.status import HTTP_303_SEE_OTHER
 
 
 app = FastAPI()
@@ -227,7 +228,51 @@ def edit_activity_page(request: Request, activity_id: int):
     )
 
 
+@app.post("/edit/{activity_id}")
+def edit_activity_post(
+    activity_id: int,
+    start: str = Form(...),
+    end: str = Form(...),
+    description: str = Form(""),
+    person_id: int = Form(...),
+    picture_id: int = Form(...)
+):
+    db = get_db()
+    cursor = db.cursor()
 
+    # sprawdzamy czy rekord istnieje
+    existing = cursor.execute(
+        "SELECT Id FROM ActiviesDays WHERE Id = ?",
+        (activity_id,)
+    ).fetchone()
+
+    if not existing:
+        db.close()
+        return HTMLResponse("Nie znaleziono aktywności", status_code=404)
+
+    # update
+    cursor.execute("""
+        UPDATE ActiviesDays
+        SET
+            StartTime = ?,
+            EndTime = ?,
+            Description = ?,
+            ModelPersonFamilyId = ?,
+            ModelPictureActivityId = ?
+        WHERE Id = ?
+    """, (
+        start,
+        end,
+        description,
+        person_id,
+        picture_id,
+        activity_id
+    ))
+
+    db.commit()
+    db.close()
+
+    return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
 
 # ---------- API ----------
 @app.get("/api/activities")
