@@ -173,13 +173,25 @@ def add_activity_form(request: Request):
             "request": request,
             "persons": PERSON_ENUM_MAP,
             "activities": ACTIVITY_ENUM_MAP,
+            "days": {
+                "MONDAY": "Poniedziałek",
+                "TUESDAY": "Wtorek",
+                "WEDNESDAY": "Środa",
+                "THURSDAY": "Czwartek",
+                "FRIDAY": "Piątek",
+                "SATURDAY": "Sobota",
+                "SUNDAY": "Niedziela",
+            }
         }
     )
+
+
 
 @app.post("/activities/add")
 def add_activity_post(
     start: str = Form(...),
     end: str = Form(...),
+    day_of_week: str = Form(...),     # ✅ DODANE
     description: str = Form(""),
     person_id: int = Form(...),
     picture_id: int = Form(...)
@@ -189,14 +201,16 @@ def add_activity_post(
 
     cursor.execute("""
         INSERT INTO ActiviesDays (
+            DayOfWeek,
             StartTime,
             EndTime,
             Description,
             ModelPersonFamilyId,
             ModelPictureActivityId
         )
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?)
     """, (
+        day_of_week,
         start,
         end,
         description,
@@ -208,7 +222,6 @@ def add_activity_post(
     db.close()
 
     return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
-
 
 
 @app.get("/edit/{activity_id}", response_class=HTMLResponse)
