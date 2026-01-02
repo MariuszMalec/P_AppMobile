@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Dodaj aktywność</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="card">
+    <h2>➕ Dodaj aktywność</h2>
+
+    <form method="post">
+
+        <label>Godzina rozpoczęcia</label>
+        <input type="time" name="start" required>
+
+        <label>Godzina zakończenia</label>
+        <input type="time" name="end" required>
+
+        <label>Opis</label>
+        <textarea name="description" placeholder="Opcjonalnie..."></textarea>
+
+        <label>Osoba</label>
+        <select name="person_id" required>
+            {% for id, person in persons.items() %}
+                <option value="{{ id }}">{{ person.value }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Aktywność</label>
+        <select name="picture_id" required>
+            {% for id, activity in activities.items() %}
+                <option value="{{ id }}">{{ activity.value }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit" class="btn-success">
+            💾 Zapisz
+        </button>
+
+        <a href="/" class="btn-cancel">↩ Anuluj</a>
+    </form>
+</div>
+
+</body>
+</html>

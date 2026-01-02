@@ -165,6 +165,52 @@ def activities_page(request: Request):
     )
 
 
+@app.get("/activities/add", response_class=HTMLResponse)
+def add_activity_form(request: Request):
+    return templates.TemplateResponse(
+        "activity_add.html",
+        {
+            "request": request,
+            "persons": PERSON_ENUM_MAP,
+            "activities": ACTIVITY_ENUM_MAP,
+        }
+    )
+
+@app.post("/activities/add")
+def add_activity_post(
+    start: str = Form(...),
+    end: str = Form(...),
+    description: str = Form(""),
+    person_id: int = Form(...),
+    picture_id: int = Form(...)
+):
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("""
+        INSERT INTO ActiviesDays (
+            StartTime,
+            EndTime,
+            Description,
+            ModelPersonFamilyId,
+            ModelPictureActivityId
+        )
+        VALUES (?, ?, ?, ?, ?)
+    """, (
+        start,
+        end,
+        description,
+        person_id,
+        picture_id
+    ))
+
+    db.commit()
+    db.close()
+
+    return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+
+
+
 @app.get("/edit/{activity_id}", response_class=HTMLResponse)
 def edit_activity_page(request: Request, activity_id: int):
     db = get_db()
