@@ -746,3 +746,18 @@ def edit_picture_activity_save(
         url="/pictureactivities",
         status_code=303
     )    
+
+@app.post("/activities/delete/{activity_id}")
+def delete_activity(activity_id: int):
+    conn = get_db()
+    cur = conn.cursor()
+
+    cur.execute(
+        "DELETE FROM ActiviesDays WHERE Id = ?",
+        (activity_id,)
+    )
+
+    conn.commit()
+    conn.close()
+
+    return RedirectResponse("/", status_code=303)

@@ -131,6 +131,22 @@
             transform: scale(1.05);
         }
 
+        .delete-btn {
+            border: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+            transform: scale(1.05);
+        }
+
         /* --- MOBILE --- */
         @media (max-width: 600px) {
             .activity {
@@ -218,10 +234,23 @@
         </div>
 
         <div class="actions">
+
             <a class="edit-btn" href="/edit/{{ a.id }}" title="Edytuj">
                 ✏️
             </a>
+
+            <form method="post"
+                action="/activities/delete/{{ a.id }}"
+                onsubmit="return confirm('Czy na pewno usunąć tę aktywność?');"
+                style="margin-left:8px">
+
+                <button type="submit" class="delete-btn" title="Usuń">
+                    🗑️
+                </button>
+            </form>
+
         </div>
+
 
     </div>
     {% endfor %}
