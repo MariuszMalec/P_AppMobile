@@ -21,6 +21,18 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 # --------- Walidacje pomocnicze ----------
 TIME_RE = re.compile(r"^\d{2}:\d{2}$")
 
+def time_to_minutes(value: str) -> int:
+    value = value.strip()
+
+    for fmt in ("%H:%M", "%I:%M %p"):
+        try:
+            t = datetime.strptime(value, fmt)
+            return t.hour * 60 + t.minute
+        except ValueError:
+            pass
+
+    raise ValueError(f"Nieprawidłowy format czasu: {value}")
+
 def validate_activity_form(
     start: str,
     end: str,
@@ -38,8 +50,20 @@ def validate_activity_form(
         errors.append("EndTime musi być w formacie HH:MM")
 
     if TIME_RE.match(start) and TIME_RE.match(end):
-        if start >= end:
+
+        try:
+            start_min = time_to_minutes(start)
+            end_min = time_to_minutes(end)
+        except ValueError as e:
+            errors.append(str(e))
+
+        print(start_min)
+        print(end_min)
+
+        # ✅ TU JEST WŁAŚCIWA WALIDACJA
+        if not errors and start_min <= end_min:
             errors.append("Godzina startu musi być wcześniejsza niż zakończenia")
+
 
     # --- dzień ---
     if day_of_week not in DAY_NAMES or day_of_week == 0:

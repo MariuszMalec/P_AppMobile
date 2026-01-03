@@ -137,22 +137,18 @@
     {# ---------- GODZINY ---------- #}
     <div class="field">
         <label>Start</label>
-        <input type="time" name="start"
-               value="{{ form.start if form else '' }}"
-               required>
+        <input type="time" name="start" required step="60" lang="pl">
     </div>
 
     <div class="field">
         <label>Koniec</label>
-        <input type="time" name="end"
-               value="{{ form.end if form else '' }}"
-               required>
+        <input type="time" name="end" required step="60" lang="pl">
     </div>
 
     {# ---------- OPIS ---------- #}
     <div class="field">
         <label>Opis</label>
-        <textarea name="description">{{ form.description if form else '' }}</textarea>
+        <textarea name="description">{{ form.description if form else 'test' }}</textarea>
     </div>
 
     <button type="submit">💾 Zapisz</button>
