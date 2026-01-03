@@ -804,8 +804,6 @@ def get_picture_activities():
 
 
 # ---------- PICTURE ACTIVITIES UI ----------
-
-# ---------- PICTURE ACTIVITIES UI ----------
 @app.get("/pictureactivities", response_class=HTMLResponse)
 def picture_activities_page(request: Request):
     db = get_db()
@@ -849,15 +847,16 @@ def edit_picture_activity_form(item_id: int, request: Request):
     cursor = db.cursor()
 
     row = cursor.execute("""
-        SELECT Id, ActivityName, Picture
+        SELECT Id, Name, Picture
         FROM PictureActivities
         WHERE Id = ?
     """, (item_id,)).fetchone()
 
-    db.close()
-
     if not row:
+        db.close()
         return HTMLResponse("Nie znaleziono rekordu", status_code=404)
+
+    db.close()
 
     return templates.TemplateResponse(
         "pictureactivity_edit.html",
@@ -865,18 +864,19 @@ def edit_picture_activity_form(item_id: int, request: Request):
             "request": request,
             "item": {
                 "id": row["Id"],
-                "activityName": row["ActivityName"],
+                "name": row["Name"],          # ✅ STRING
                 "picture": row["Picture"]
             },
-            "activities": ACTIVITY_ENUM_MAP
+            "activities": ACTIVITY_ENUM_MAP  # tylko do listy opcji
         }
     )
+
 
 
 @app.post("/pictureactivities/edit/{item_id}")
 def edit_picture_activity_save(
     item_id: int,
-    activityName: int = Form(...),
+    name: str = Form(...),      # ✅ STRING
     picture: str = Form("")
 ):
     db = get_db()
@@ -884,9 +884,9 @@ def edit_picture_activity_save(
 
     cursor.execute("""
         UPDATE PictureActivities
-        SET ActivityName = ?, Picture = ?
+        SET Name = ?, Picture = ?
         WHERE Id = ?
-    """, (activityName, picture, item_id))
+    """, (name, picture, item_id))
 
     db.commit()
     db.close()
@@ -894,7 +894,7 @@ def edit_picture_activity_save(
     return RedirectResponse(
         url="/pictureactivities",
         status_code=303
-    )    
+    )
 
 @app.post("/activities/delete/{activity_id}")
 def delete_activity(activity_id: int):

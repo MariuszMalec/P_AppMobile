@@ -46,6 +46,10 @@
             max-width: 100%;
             border-radius: 8px;
         }
+        .cancel {
+            margin-top: 8px;
+            background: #e5e7eb;
+        }
     </style>
 </head>
 
@@ -56,14 +60,15 @@
 <form method="post">
 
     <label>Aktywność</label>
-    <select name="activityName">
-        {% for key, enum in activities.items() %}
-            <option value="{{ key }}"
-                {% if key == item.activityName %}selected{% endif %}>
-                {{ enum.value }}
+    <select name="name">
+        {% for k, v in activities.items() %}
+            <option value="{{ v.value }}"
+                {% if v.value == item.name %}selected{% endif %}>
+                {{ v.value }}
             </option>
         {% endfor %}
     </select>
+
 
     <label>URL obrazka</label>
     <input type="text" name="picture" value="{{ item.picture or '' }}">
@@ -73,6 +78,10 @@
     {% endif %}
 
     <button type="submit">💾 Zapisz</button>
+
+    <button type="button" class="cancel" onclick="history.back()">
+        ↩ Powrót bez zmian
+    </button>
 
 </form>
 
