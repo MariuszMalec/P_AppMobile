@@ -388,18 +388,17 @@ def edit_activity_page(request: Request, activity_id: int):
             "label": enum_val.value if enum_val else "Nieznana"
         })
 
-    # --- AKTYWNOŚCI ---
+    # --- AKTYWNOŚCI (POPRAWKA) ---
     pictures_raw = cursor.execute("""
-        SELECT Id, ActivityName, Picture
+        SELECT Id, Name, Picture
         FROM PictureActivities
     """).fetchall()
 
     pictures = []
     for pic in pictures_raw:
-        enum_val = ACTIVITY_ENUM_MAP.get(pic["ActivityName"])
         pictures.append({
             "id": pic["Id"],
-            "label": enum_val.value if enum_val else "Nieznana",
+            "label": pic["Name"],       # ✅ BEZ ENUM
             "picture": pic["Picture"]
         })
 
@@ -414,6 +413,7 @@ def edit_activity_page(request: Request, activity_id: int):
             "pictures": pictures,
         }
     )
+
 
 
 @app.post("/edit/{activity_id}")
