@@ -109,15 +109,13 @@
     {# ---------- AKTYWNOŚĆ ---------- #}
     <div class="field">
         <label>Aktywność</label>
-        <select name="picture_id" required>
-            {% for id, name in activities.items() %}
-                <option value="{{ id }}"
-                    {% if form and form.picture_id == id %}selected{% endif %}
-                >
-                    {{ name.value if name.value is defined else name }}
-                </option>
+        
+        <select name="activity_name" required>
+            {% for a in activities %}
+                <option value="{{ a.Name }}">{{ a.Name }}</option>
             {% endfor %}
         </select>
+
     </div>
 
     {# ---------- DZIEŃ ---------- #}

@@ -33,7 +33,7 @@ def validate_activity_form(
     end: str,
     day_of_week: int,
     person_id: int,
-    picture_id: int
+    picture_name: str
 ) -> list[str]:
     errors = []
 
@@ -69,7 +69,7 @@ def validate_activity_form(
     if person_id not in PERSON_ENUM_MAP:
         errors.append("Nieprawidłowa osoba")
 
-    if picture_id not in ACTIVITY_ENUM_MAP:
+    if picture_name is None:
         errors.append("Nieprawidłowa aktywność")
 
     return errors
@@ -235,17 +235,24 @@ def activities_page(request: Request):
 
 @app.get("/activities/add", response_class=HTMLResponse)
 def add_activity_form(request: Request):
+    db = get_db()
+    cursor = db.cursor()
+
+    cursor.execute("""
+        SELECT Id, ActivityName, Name, Picture
+        FROM PictureActivities
+        ORDER BY Name
+    """)
+    activities = cursor.fetchall()
+    db.close()
+
     return templates.TemplateResponse(
         "activity_add.html",
         {
             "request": request,
             "persons": PERSON_ENUM_MAP,
-            "activities": ACTIVITY_ENUM_MAP,
-
-            # 👇 dni BEZ ALL (0 nie powinno trafić do planu)
-            "days": {
-                k: v for k, v in DAY_NAMES.items() if k != 0
-            }
+            "activities": activities,
+            "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
         }
     )
 
@@ -258,14 +265,22 @@ def add_activity_post(
     day_of_week: int = Form(...),
     description: str = Form(""),
     person_id: int = Form(...),
-    picture_id: int = Form(...)
+    activity_name: str = Form(...)
 ):
     errors = validate_activity_form(
-        start, end, day_of_week, person_id, picture_id
+        start, end, day_of_week, person_id, activity_name
     )
+
+    db = get_db()
+    cursor = db.cursor()
+
+    # 🔁 ZAWSZE pobieramy aktywności (potrzebne przy błędzie)
+    cursor.execute("SELECT Id, Name FROM PictureActivities ORDER BY Name")
+    activities = cursor.fetchall()
 
     # ❌ BŁĘDY → wracamy do formularza
     if errors:
+        db.close()
         return templates.TemplateResponse(
             "activity_add.html",
             {
@@ -277,19 +292,39 @@ def add_activity_post(
                     "day_of_week": day_of_week,
                     "description": description,
                     "person_id": person_id,
-                    "picture_id": picture_id,
+                    "activity_name": activity_name,
                 },
                 "persons": PERSON_ENUM_MAP,
-                "activities": ACTIVITY_ENUM_MAP,
+                "activities": activities,   # 🔴 TO BYŁ BRAK
                 "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
             },
             status_code=400
         )
 
-    # ✅ OK → zapis
-    db = get_db()
-    cursor = db.cursor()
+    # ✅ Szukamy obrazka po Name
+    cursor.execute(
+        "SELECT Id FROM PictureActivities WHERE Name = ?",
+        (activity_name,)
+    )
+    row = cursor.fetchone()
 
+    if not row:
+        db.close()
+        return templates.TemplateResponse(
+            "activity_add.html",
+            {
+                "request": request,
+                "errors": ["Nieprawidłowa aktywność"],
+                "persons": PERSON_ENUM_MAP,
+                "activities": activities,
+                "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+            },
+            status_code=400
+        )
+
+    picture_id = row["Id"]
+
+    # ✅ INSERT
     cursor.execute("""
         INSERT INTO ActiviesDays (
             DayOfWeek,
@@ -312,7 +347,9 @@ def add_activity_post(
     db.commit()
     db.close()
 
-    return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+    return RedirectResponse("/", status_code=303)
+
+
 
 
 

@@ -33,6 +33,7 @@ def init_db():
         CREATE TABLE PictureActivities (
             Id INTEGER PRIMARY KEY,
             ActivityName INTEGER NOT NULL,
+            Name TEXT NOT NULL,
             Picture TEXT
         )
     """)
