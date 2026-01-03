@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 import sqlite3
 from pathlib import Path
-import enum
+import enum, re
 from fastapi.responses import RedirectResponse
 from starlette.status import HTTP_303_SEE_OTHER
 
@@ -16,6 +16,46 @@ DB_PATH = BASE_DIR / "activity.db"
 
 templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
+
+
+# --------- Walidacje pomocnicze ----------
+TIME_RE = re.compile(r"^\d{2}:\d{2}$")
+
+def validate_activity_form(
+    start: str,
+    end: str,
+    day_of_week: int,
+    person_id: int,
+    picture_id: int
+) -> list[str]:
+    errors = []
+
+    # --- czas ---
+    if not TIME_RE.match(start):
+        errors.append("StartTime musi być w formacie HH:MM")
+
+    if not TIME_RE.match(end):
+        errors.append("EndTime musi być w formacie HH:MM")
+
+    if TIME_RE.match(start) and TIME_RE.match(end):
+        if start >= end:
+            errors.append("Godzina startu musi być wcześniejsza niż zakończenia")
+
+    # --- dzień ---
+    if day_of_week not in DAY_NAMES or day_of_week == 0:
+        errors.append("Nieprawidłowy dzień tygodnia")
+
+    # --- enumy ---
+    if person_id not in PERSON_ENUM_MAP:
+        errors.append("Nieprawidłowa osoba")
+
+    if picture_id not in ACTIVITY_ENUM_MAP:
+        errors.append("Nieprawidłowa aktywność")
+
+    return errors
+
+
+
 # ---------- DAY NAMES ----------
 DAY_NAMES = {
     0: "ALL",
@@ -27,6 +67,12 @@ DAY_NAMES = {
     6: "Piatek",
     7: "Sobota",
 }
+
+def system_day_to_db_day(iso_day: int) -> int:
+    # iso: 1=Mon ... 7=Sun
+    # db : 1=Sun ... 7=Sat
+    return 1 if iso_day == 7 else iso_day + 1
+
 
 class PersonFamilyEnum(str, enum.Enum):
     ALL = "ALL"
@@ -175,28 +221,52 @@ def add_activity_form(request: Request):
             "request": request,
             "persons": PERSON_ENUM_MAP,
             "activities": ACTIVITY_ENUM_MAP,
+
+            # 👇 dni BEZ ALL (0 nie powinno trafić do planu)
             "days": {
-                "MONDAY": "Poniedziałek",
-                "TUESDAY": "Wtorek",
-                "WEDNESDAY": "Środa",
-                "THURSDAY": "Czwartek",
-                "FRIDAY": "Piątek",
-                "SATURDAY": "Sobota",
-                "SUNDAY": "Niedziela",
+                k: v for k, v in DAY_NAMES.items() if k != 0
             }
         }
     )
 
 
-@app.post("/activities/add")
+@app.post("/activities/add", response_class=HTMLResponse)
 def add_activity_post(
+    request: Request,
     start: str = Form(...),
     end: str = Form(...),
-    day_of_week: str = Form(...),     # ✅ DODANE
+    day_of_week: int = Form(...),
     description: str = Form(""),
     person_id: int = Form(...),
     picture_id: int = Form(...)
 ):
+    errors = validate_activity_form(
+        start, end, day_of_week, person_id, picture_id
+    )
+
+    # ❌ BŁĘDY → wracamy do formularza
+    if errors:
+        return templates.TemplateResponse(
+            "activity_add.html",
+            {
+                "request": request,
+                "errors": errors,
+                "form": {
+                    "start": start,
+                    "end": end,
+                    "day_of_week": day_of_week,
+                    "description": description,
+                    "person_id": person_id,
+                    "picture_id": picture_id,
+                },
+                "persons": PERSON_ENUM_MAP,
+                "activities": ACTIVITY_ENUM_MAP,
+                "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+            },
+            status_code=400
+        )
+
+    # ✅ OK → zapis
     db = get_db()
     cursor = db.cursor()
 
@@ -214,7 +284,7 @@ def add_activity_post(
         day_of_week,
         start,
         end,
-        description,
+        description.strip() or None,
         person_id,
         picture_id
     ))
@@ -223,6 +293,7 @@ def add_activity_post(
     db.close()
 
     return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+
 
 
 @app.get("/edit/{activity_id}", response_class=HTMLResponse)
@@ -297,6 +368,8 @@ def edit_activity_post(
     person_id: int = Form(...),
     picture_id: int = Form(...)
 ):
+    # dodac walidacje gdy start mniejszy od end np!! patrz add
+
     db = get_db()
     cursor = db.cursor()
 
@@ -378,7 +451,9 @@ def get_current_activity_day():
     cursor = db.cursor()
 
     now = datetime.now()
-    current_day = now.isoweekday()          # 1-7
+    iso_day = now.isoweekday()          # 1-7
+    current_day = system_day_to_db_day(iso_day)
+
     current_time = now.strftime("%H:%M:%S") # 'HH:MM:SS'
 
     query = """
@@ -432,12 +507,10 @@ def status_page(request: Request):
     cursor = db.cursor()
 
     now = datetime.now()
-    current_day = now.isoweekday()          # 1–7
+    iso_day = now.isoweekday()          # 1-7
+    current_day = system_day_to_db_day(iso_day)
     current_day_name = now.strftime("%A")
     current_time = now.strftime("%H:%M:%S")  # HH:MM:SS
-
-    #current_day mam 6 a u mnie to piatek z enum musze tu podmienic bo baze mam zrobiona wg moich dni
-    current_day = current_day + 1
 
     rows = cursor.execute("""
         SELECT
