@@ -113,13 +113,18 @@
         Następnie
     </div>
 
-    {% if current.person %}
+    {% if next.picture %}
+        <img src="{{ next.picture }}"
+             style="width:50%; max-height:90px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
+    {% endif %}
+
+    {% if next.person %}
     <div style="display:flex; align-items:center; gap:12px;">
-        {% if current.personPicture %}
-            <img src="{{ current.personPicture }}"
+        {% if next.personPicture %}
+            <img src="{{ next.personPicture }}"
                  style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
         {% endif %}
-        <div>{{ current.person }}</div>
+        <div>{{ next.person }}</div>
     </div>
     {% endif %}
 
