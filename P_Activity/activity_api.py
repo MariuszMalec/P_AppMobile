@@ -340,7 +340,7 @@ def add_activity_post(
         start,
         end,
         description.strip() or None,
-        person_id,
+        5 if person_id == 0 else person_id,  # ✅ JEDYNA ZMIANA
         picture_id
     ))
 
