@@ -111,6 +111,20 @@
     <div class="card">
         <form method="post">
 
+            {# ---------- DZIEŃ ---------- #}
+            <div class="field">
+                <label>Dzień</label>
+                <select name="day_of_week" required> 
+                    {% for k, v in days.items() %}
+                        <option value="{{ k }}"
+                            {% if k == activity.DayOfWeek %}selected{% endif %}>
+                            {{ v }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+
             <div class="row">
                 <div class="field">
                     <label>Godzina rozpoczęcia</label>

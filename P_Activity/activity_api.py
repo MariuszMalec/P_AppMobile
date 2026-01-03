@@ -361,6 +361,7 @@ def edit_activity_page(request: Request, activity_id: int):
     activity = cursor.execute("""
         SELECT
             Id,
+            DayOfWeek,
             StartTime,
             EndTime,
             Description,
@@ -411,6 +412,7 @@ def edit_activity_page(request: Request, activity_id: int):
             "activity": activity,
             "persons": persons,
             "pictures": pictures,
+            "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
         }
     )
 
@@ -419,6 +421,7 @@ def edit_activity_page(request: Request, activity_id: int):
 @app.post("/edit/{activity_id}")
 def edit_activity_post(
     activity_id: int,
+    day_of_week: int = Form(...),
     start: str = Form(...),
     end: str = Form(...),
     description: str = Form(""),
@@ -426,6 +429,8 @@ def edit_activity_post(
     picture_id: int = Form(...)
 ):
     # dodac walidacje gdy start mniejszy od end np!! patrz add
+
+
 
     db = get_db()
     cursor = db.cursor()
@@ -444,6 +449,7 @@ def edit_activity_post(
     cursor.execute("""
         UPDATE ActiviesDays
         SET
+            DayOfWeek = ?, 
             StartTime = ?,
             EndTime = ?,
             Description = ?,
@@ -451,6 +457,7 @@ def edit_activity_post(
             ModelPictureActivityId = ?
         WHERE Id = ?
     """, (
+        day_of_week,
         start,
         end,
         description,
