@@ -4,65 +4,21 @@
 {% block content %}
 
 <!-- 🔝 TOP BAR -->
-<div style="
-    display:flex;
-    gap:12px;
-    margin-bottom:20px;
-">
-
+<div style="display:flex; gap:12px; margin-bottom:20px;">
     <a href="/" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#e5e7eb;
-            cursor:pointer;
-        ">
-            ⬅ POWRÓT
-        </button>
+        <button class="btn gray">⬅ POWRÓT</button>
     </a>
 
     <a href="/status" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#22c55e;
-            color:#022c22;
-            cursor:pointer;
-        ">
-            ⏱ LIVE
-        </button>
+        <button class="btn green">⏱ LIVE</button>
     </a>
 
     <a href="/week" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#38bdf8;
-            color:#020617;
-            cursor:pointer;
-            box-shadow:0 0 0 2px #0ea5e9 inset;
-        ">
-            📅 WEEK
-        </button>
+        <button class="btn blue active">📅 WEEK</button>
     </a>
-
 </div>
 
-{% set days = {
-  1:"Poniedziałek",2:"Wtorek",3:"Środa",
-  4:"Czwartek",5:"Piątek",6:"Sobota",7:"Niedziela"
-} %}
-
-{% for d, items in week.items() %}
+{% for day, items in week.items() %}
 <div style="
     margin-bottom:20px;
     background:#020617;
@@ -70,19 +26,34 @@
     padding:14px;
     box-shadow:0 8px 20px rgba(0,0,0,0.35);
 ">
-    <h3 style="margin-bottom:10px;">{{ days[d] }}</h3>
+    <h3 style="margin-bottom:12px; color:#38bdf8;">
+        {{ day_names.get(day, "Nieznany dzień") }}
+    </h3>
 
     {% for i in items %}
     <div style="
-        opacity:0.9;
-        margin-bottom:8px;
-        padding-bottom:6px;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:8px 0;
         border-bottom:1px dashed rgba(255,255,255,0.08);
+        font-size:14px;
     ">
-        <strong>{{ i.StartTime }} – {{ i.EndTime }}</strong>
-        • {{ i.Description }}
+        <div>
+            <strong>{{ i.StartTime }} – {{ i.EndTime }}</strong><br>
+            <span style="opacity:.85;">{{ i.Description }}</span>
+        </div>
+
         {% if i.PersonName %}
-            <span style="opacity:0.7;">({{ i.PersonName }})</span>
+        <span style="
+            background:#1e293b;
+            padding:4px 10px;
+            border-radius:999px;
+            font-size:12px;
+            opacity:.8;
+        ">
+            {{ i.PersonName }}
+        </span>
         {% endif %}
     </div>
     {% endfor %}

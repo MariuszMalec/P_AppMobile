@@ -18,13 +18,14 @@ templates = Jinja2Templates(directory=str(BASE_DIR / "templates"))
 
 # ---------- DAY NAMES ----------
 DAY_NAMES = {
-    1: "Poniedziałek",
-    2: "Wtorek",
-    3: "Środa",
-    4: "Czwartek",
-    5: "Piątek",
-    6: "Sobota",
-    7: "Niedziela",
+    0: "ALL",
+    1: "Niedziela",
+    2: "Poniedzialek",
+    3: "Wtorek",
+    4: "Sroda",
+    5: "Czwartek",
+    6: "Piatek",
+    7: "Sobota",
 }
 
 class PersonFamilyEnum(str, enum.Enum):
@@ -61,6 +62,7 @@ class ActivityNameEnum(str, enum.Enum):
     Tance = "Tance"
 
 PERSON_ENUM_MAP = {
+    0: PersonFamilyEnum.ALL,
     1: PersonFamilyEnum.TATA,
     2: PersonFamilyEnum.MAMA,
     3: PersonFamilyEnum.GOSIA,
@@ -184,7 +186,6 @@ def add_activity_form(request: Request):
             }
         }
     )
-
 
 
 @app.post("/activities/add")
@@ -432,13 +433,18 @@ def status_page(request: Request):
 
     now = datetime.now()
     current_day = now.isoweekday()          # 1–7
+    current_day_name = now.strftime("%A")
     current_time = now.strftime("%H:%M:%S")  # HH:MM:SS
+
+    #current_day mam 6 a u mnie to piatek z enum musze tu podmienic bo baze mam zrobiona wg moich dni
+    current_day = current_day + 1
 
     rows = cursor.execute("""
         SELECT
             ad.StartTime,
             ad.EndTime,
             ad.Description,
+            ad.DayOfWeek,
             pf.PersonName,
             pf.PersonPicture,
             pa.Picture
@@ -470,7 +476,7 @@ def status_page(request: Request):
             "description": r["Description"],
             "person": person_label,
             "personPicture": r["PersonPicture"],
-            "picture": r["Picture"],
+            "picture": r["Picture"],            
         }
 
         if r["StartTime"] <= current_time <= r["EndTime"]:
@@ -485,6 +491,7 @@ def status_page(request: Request):
             "now": current_time,
             "current": current,
             "next": next_item,
+            "current_day_name" : current_day_name,
         }
     )
 
@@ -514,8 +521,13 @@ def week_page(request: Request):
 
     return templates.TemplateResponse(
         "week.html",
-        {"request": request, "week": week}
-    )   
+        {
+            "request": request,
+            "week": week,
+            "day_names": DAY_NAMES,   # 👈 KLUCZOWE
+        }
+    )
+ 
 
 
 @app.get("/api/pictureactivities")
