@@ -100,6 +100,19 @@
             justify-content: center;
             color: #111;
         }
+
+        .errors {
+            background: #7f1d1d;
+            color: #fecaca;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .errors ul {
+            margin: 6px 0 0 16px;
+        }
+
     </style>
 </head>
 
@@ -110,6 +123,18 @@
 
     <div class="card">
         <form method="post">
+
+            {# ---------- BŁĘDY ---------- #}
+            {% if errors %}
+            <div class="errors">
+                <strong>Popraw formularz:</strong>
+                <ul>
+                    {% for e in errors %}
+                    <li>{{ e }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
 
             {# ---------- DZIEŃ ---------- #}
             <div class="field">

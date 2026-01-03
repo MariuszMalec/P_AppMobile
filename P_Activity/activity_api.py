@@ -74,6 +74,49 @@ def validate_activity_form(
 
     return errors
 
+def validate_activity_edit_form(
+    start: str,
+    end: str,
+    day_of_week: int,
+    person_id: int,
+) -> list[str]:
+    errors = []
+
+    # --- czas ---
+    if not TIME_RE.match(start):
+        errors.append("StartTime musi być w formacie HH:MM")
+
+    if not TIME_RE.match(end):
+        errors.append("EndTime musi być w formacie HH:MM")
+
+    if TIME_RE.match(start) and TIME_RE.match(end):
+
+        try:
+            start_min = time_to_minutes(start)
+            end_min = time_to_minutes(end)
+        except ValueError as e:
+            errors.append(str(e))
+
+
+        print(start_min)
+        print(end_min)
+
+        # ✅ TU JEST WŁAŚCIWA WALIDACJA
+        if not errors and start_min >= end_min:
+            errors.append("Godzina startu musi być wcześniejsza niż zakończenia")
+
+
+    # --- dzień ---
+    if day_of_week not in DAY_NAMES or day_of_week == 0:
+        errors.append("Nieprawidłowy dzień tygodnia")
+
+    # --- enumy ---
+    if person_id not in PERSON_ENUM_MAP:
+        errors.append("Nieprawidłowa osoba")
+
+
+    return errors
+
 
 
 # ---------- DAY NAMES ----------
@@ -351,8 +394,6 @@ def add_activity_post(
 
 
 
-
-
 @app.get("/edit/{activity_id}", response_class=HTMLResponse)
 def edit_activity_page(request: Request, activity_id: int):
     db = get_db()
@@ -418,8 +459,9 @@ def edit_activity_page(request: Request, activity_id: int):
 
 
 
-@app.post("/edit/{activity_id}")
+@app.post("/edit/{activity_id}", response_class=HTMLResponse)
 def edit_activity_post(
+    request: Request,
     activity_id: int,
     day_of_week: int = Form(...),
     start: str = Form(...),
@@ -428,28 +470,88 @@ def edit_activity_post(
     person_id: int = Form(...),
     picture_id: int = Form(...)
 ):
-    # dodac walidacje gdy start mniejszy od end np!! patrz add
-
-
+    errors = validate_activity_edit_form(
+        start, end, day_of_week, person_id
+    )
 
     db = get_db()
     cursor = db.cursor()
 
-    # sprawdzamy czy rekord istnieje
-    existing = cursor.execute(
-        "SELECT Id FROM ActiviesDays WHERE Id = ?",
-        (activity_id,)
-    ).fetchone()
+    # --- pobieramy aktywność (potrzebna przy błędach) ---
+    activity = cursor.execute("""
+        SELECT
+            Id,
+            DayOfWeek,
+            StartTime,
+            EndTime,
+            Description,
+            ModelPersonFamilyId,
+            ModelPictureActivityId
+        FROM ActiviesDays
+        WHERE Id = ?
+    """, (activity_id,)).fetchone()
 
-    if not existing:
+    if not activity:
         db.close()
         return HTMLResponse("Nie znaleziono aktywności", status_code=404)
 
-    # update
+    # --- OSOBY ---
+    persons_raw = cursor.execute("""
+        SELECT Id, PersonName
+        FROM PersonFamilies
+    """).fetchall()
+
+    persons = []
+    for p in persons_raw:
+        enum_val = PERSON_ENUM_MAP.get(p["PersonName"])
+        persons.append({
+            "id": p["Id"],
+            "label": enum_val.value if enum_val else "Nieznana"
+        })
+
+    # --- AKTYWNOŚCI ---
+    pictures_raw = cursor.execute("""
+        SELECT Id, Name, Picture
+        FROM PictureActivities
+    """).fetchall()
+
+    pictures = []
+    for pic in pictures_raw:
+        pictures.append({
+            "id": pic["Id"],
+            "label": pic["Name"],
+            "picture": pic["Picture"]
+        })
+
+    # ❌ BŁĘDY → wracamy do formularza
+    if errors:
+        db.close()
+        return templates.TemplateResponse(
+            "edit_activity.html",
+            {
+                "request": request,
+                "errors": errors,
+                "activity": {
+                    "Id": activity_id,
+                    "DayOfWeek": day_of_week,
+                    "StartTime": start,
+                    "EndTime": end,
+                    "Description": description,
+                    "ModelPersonFamilyId": person_id,
+                    "ModelPictureActivityId": picture_id,
+                },
+                "persons": persons,
+                "pictures": pictures,
+                "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+            },
+            status_code=400
+        )
+
+    # ✅ UPDATE
     cursor.execute("""
         UPDATE ActiviesDays
         SET
-            DayOfWeek = ?, 
+            DayOfWeek = ?,
             StartTime = ?,
             EndTime = ?,
             Description = ?,
@@ -460,7 +562,7 @@ def edit_activity_post(
         day_of_week,
         start,
         end,
-        description,
+        description.strip() or None,
         person_id,
         picture_id,
         activity_id
@@ -470,6 +572,9 @@ def edit_activity_post(
     db.close()
 
     return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+
+
+
 
 # ---------- API ----------
 @app.get("/api/activities")
