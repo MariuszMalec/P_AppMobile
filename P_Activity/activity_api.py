@@ -692,6 +692,8 @@ def get_picture_activities():
 
 
 # ---------- PICTURE ACTIVITIES UI ----------
+
+# ---------- PICTURE ACTIVITIES UI ----------
 @app.get("/pictureactivities", response_class=HTMLResponse)
 def picture_activities_page(request: Request):
     db = get_db()
@@ -700,7 +702,7 @@ def picture_activities_page(request: Request):
     rows = cursor.execute("""
         SELECT
             Id,
-            ActivityName,
+            Name,
             Picture
         FROM PictureActivities
         ORDER BY Id
@@ -711,12 +713,9 @@ def picture_activities_page(request: Request):
     items = []
 
     for r in rows:
-        enum_value = ACTIVITY_ENUM_MAP.get(r["ActivityName"])
-        activity_name = enum_value.value if enum_value else "Nieznana"
-
         items.append({
             "id": r["Id"],
-            "activityName": activity_name,
+            "activityName": r["Name"],   # ✅ TYLKO Name
             "picture": r["Picture"],
         })
 
@@ -727,6 +726,7 @@ def picture_activities_page(request: Request):
             "items": items
         }
     )
+
 
 
 
