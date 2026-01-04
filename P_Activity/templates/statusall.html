@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>LIVE ALL</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #020617;
+            color: #e5e7eb;
+            padding: 16px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #334155;
+            padding: 10px;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        th {
+            background: #0f172a;
+            font-weight: bold;
+        }
+
+        td {
+            background: #020617;
+        }
+
+        .time {
+            font-weight: bold;
+            background: #020617;
+        }
+
+        .activity {
+            font-size: 0.9em;
+        }
+
+        .activity img {
+            width: 100%;
+            max-width: 120px;
+            border-radius: 8px;
+            margin-top: 6px;
+        }
+
+        .back {
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .back a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="back">
+    <a href="/">⬅ Powrót</a>
+</div>
+
+<h1>🟢 LIVE ALL — {{ day_name }}</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>⏰ Czas</th>
+            {% for p in persons %}
+                <th>{{ p }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for time, row in table.items() %}
+        <tr>
+            <td class="time">{{ time }}</td>
+
+            {% for p in persons %}
+            <td>
+                {% if row[p] %}
+                    <div class="activity">
+                        {{ row[p].description }}
+                        {% if row[p].picture %}
+                            <img src="{{ row[p].picture }}">
+                        {% endif %}
+                    </div>
+                {% else %}
+                    —
+                {% endif %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

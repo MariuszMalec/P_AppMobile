@@ -739,6 +739,71 @@ def status_page(request: Request):
         }
     )
 
+
+
+@app.get("/statusall", response_class=HTMLResponse)
+def statusall_page(request: Request):
+    db = get_db()
+    cursor = db.cursor()
+
+    now = datetime.now()
+    iso_day = now.isoweekday()      # 1–7
+    current_day = system_day_to_db_day(iso_day)
+    current_day_name = now.strftime("%A")
+
+    rows = cursor.execute("""
+        SELECT
+            ad.StartTime,
+            ad.EndTime,
+            ad.Description,
+            pf.PersonName,          -- INTEGER (0–5)
+            pf.PersonPicture,
+            pa.Picture
+        FROM ActiviesDays ad
+        LEFT JOIN PersonFamilies pf
+            ON ad.ModelPersonFamilyId = pf.Id
+        LEFT JOIN PictureActivities pa
+            ON ad.ModelPictureActivityId = pa.Id
+        WHERE ad.DayOfWeek = ?
+        ORDER BY ad.StartTime
+    """, (current_day,)).fetchall()
+
+    db.close()
+
+    # 👉 STAŁA KOLEJNOŚĆ KOLUMN
+    persons = list(PERSON_ENUM_MAP.keys())
+
+    # 👉 BUDOWA TABELI (PUSTE KOMÓRKI DOMYŚLNIE)
+    table = {}
+
+    for r in rows:
+        time_key = f'{r["StartTime"]} – {r["EndTime"]}'
+
+        if time_key not in table:
+            table[time_key] = {p: None for p in persons}
+
+        person_id = r["PersonName"]
+
+        if person_id in persons:
+            table[time_key][person_id] = {
+                "description": r["Description"],
+                "picture": r["Picture"],
+                "personPicture": r["PersonPicture"],
+            }
+
+    return templates.TemplateResponse(
+        "statusall.html",
+        {
+            "request": request,
+            "table": table,
+            "persons": persons,
+            "PERSON_ENUM_MAP": PERSON_ENUM_MAP,
+            "day_name": current_day_name,
+        }
+    )
+
+
+
 @app.get("/week", response_class=HTMLResponse)
 def week_page(request: Request):
     db = get_db()
