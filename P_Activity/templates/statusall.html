@@ -1,99 +1,153 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <title>LIVE ALL</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="refresh" content="30">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #020617;
-            color: #e5e7eb;
-            padding: 16px;
-        }
+<title>LIVE ALL</title>
 
-        h1 {
-            text-align: center;
-            margin-bottom: 16px;
-        }
+<style>
+:root {
+    --bg: #050515;
+    --panel: #0c0f2a;
+    --border: rgba(255,255,255,.12);
+    --text: #ffffff;
+    --muted: #8c8cb8;
+    --live: #00c853;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, #0a0d3a, #020210);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
 
-        th, td {
-            border: 1px solid #334155;
-            padding: 10px;
-            text-align: center;
-            vertical-align: top;
-        }
+.header {
+    text-align: center;
+    padding: 16px 8px;
+}
 
-        th {
-            background: #0f172a;
-            font-weight: bold;
-        }
+.header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
 
-        td {
-            background: #020617;
-        }
+.table-wrap {
+    overflow-x: auto;
+    padding: 8px;
+}
 
-        .time {
-            font-weight: bold;
-            background: #020617;
-        }
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background: var(--panel);
+    border-radius: 14px;
+    overflow: hidden;
+}
 
-        .activity {
-            font-size: 0.9em;
-        }
+th, td {
+    border: 1px solid var(--border);
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+}
 
-        .activity img {
-            width: 100%;
-            max-width: 120px;
-            border-radius: 8px;
-            margin-top: 6px;
-        }
+th {
+    font-size: 12px;
+    color: var(--muted);
+    background: rgba(255,255,255,.04);
+    height: 44px;
+}
 
-        .back {
-            margin-bottom: 16px;
-            text-align: center;
-        }
+th.time {
+    width: 90px;
+}
 
-        .back a {
-            text-decoration: none;
-            font-weight: bold;
-            color: #38bdf8;
-        }
+td.time {
+    font-size: 11px;
+    color: var(--muted);
+    padding: 6px;
+    white-space: nowrap;
+}
 
-        .live {
-            background: #16a34a !important;
-            color: white;
-            box-shadow: 0 0 12px rgba(34,197,94,0.8);
-        }
+/* 🔲 kafelek */
+td {
+    height: 96px;
+    position: relative;
+    overflow: hidden;
+}
 
-        .live img {
-            border: 2px solid #22c55e;
-        }
+/* obrazek jako tło */
+.tile-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
+/* overlay z napisem */
+.tile-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,.65),
+        rgba(0,0,0,.35),
+        rgba(0,0,0,.65)
+    );
+}
 
-    </style>
+/* LIVE */
+.live {
+    outline: 3px solid var(--live);
+    outline-offset: -3px;
+}
 
+/* puste */
+.empty {
+    background: rgba(255,255,255,.03);
+    color: #444;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+    td {
+        height: 86px;
+    }
+
+    .tile-overlay {
+        font-size: 11px;
+    }
+}
+</style>
 </head>
 
 <body>
 
-<div class="back">
-    <a href="/">⬅ Powrót</a>
+<div class="header">
+    <h1>🟢 LIVE ALL — {{ day_name }}</h1>
 </div>
 
-<h1>🟢 LIVE ALL — {{ day_name }}</h1>
-
+<div class="table-wrap">
 <table>
     <thead>
         <tr>
-            <th>⏰ Czas</th>
+            <th class="time">⏰ Czas</th>
             {% for p in persons %}
                 <th>{{ p.name }}</th>
             {% endfor %}
@@ -101,32 +155,34 @@
     </thead>
 
     <tbody>
-        {% for time, row in table.items() %}
+    {% for time, row in table.items() %}
         <tr>
             <td class="time">{{ time }}</td>
 
             {% for p in persons %}
-                <td class="{% if row[p.id] and row[p.id].is_live %}live{% endif %}">
-                    {% if row[p.id] %}
-                        <div class="activity">
-                            {{ row[p.id].description }}
-                            {% if row[p.id].picture %}
-                                <img src="{{ row[p.id].picture }}">
-                            {% endif %}
-                        </div>
+                {% set cell = row[p.id] %}
+                <td class="{% if cell and cell.is_live %}live{% endif %}">
+                    {% if cell %}
+                        {% if cell.picture %}
+                            <img src="{{ cell.picture }}" class="tile-img">
+                            <div class="tile-overlay">
+                                {{ cell.description }}
+                            </div>
+                        {% else %}
+                            <div class="tile-overlay">
+                                {{ cell.description }}
+                            </div>
+                        {% endif %}
                     {% else %}
-                        —
+                        <div class="empty">—</div>
                     {% endif %}
                 </td>
-
             {% endfor %}
         </tr>
-        {% endfor %}
+    {% endfor %}
     </tbody>
 </table>
-
-
-
+</div>
 
 </body>
 </html>
