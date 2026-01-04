@@ -747,7 +747,8 @@ def statusall_page(request: Request):
     cursor = db.cursor()
 
     now = datetime.now()
-    iso_day = now.isoweekday()              # 1–7
+    current_time = now.strftime("%H:%M:%S")
+    iso_day = now.isoweekday()
     current_day = system_day_to_db_day(iso_day)
     current_day_name = now.strftime("%A")
 
@@ -756,7 +757,8 @@ def statusall_page(request: Request):
             ad.StartTime,
             ad.EndTime,
             ad.Description,
-            pf.PersonName,              -- INTEGER (enum value!)
+            pf.PersonName,
+            pf.PersonPicture,
             pa.Picture
         FROM ActiviesDays ad
         LEFT JOIN PersonFamilies pf
@@ -769,9 +771,7 @@ def statusall_page(request: Request):
 
     db.close()
 
-    # ==================================================
-    # STAŁE KOLUMNY (KOLEJNOŚĆ + NAZWY)
-    # ==================================================
+    # STAŁE KOLUMNY
     persons = [
         {"id": 3, "name": "GOSIA"},
         {"id": 2, "name": "MAMA"},
@@ -779,9 +779,6 @@ def statusall_page(request: Request):
         {"id": 4, "name": "EMILKA"},
     ]
 
-    # ==================================================
-    # BUDOWA TABELI (PUSTE KOMÓRKI DOMYŚLNIE)
-    # ==================================================
     table = {}
 
     for r in rows:
@@ -796,6 +793,7 @@ def statusall_page(request: Request):
             table[time_key][person_id] = {
                 "description": r["Description"],
                 "picture": r["Picture"],
+                "is_live": r["StartTime"] <= current_time <= r["EndTime"]
             }
 
     return templates.TemplateResponse(
@@ -805,8 +803,10 @@ def statusall_page(request: Request):
             "table": table,
             "persons": persons,
             "day_name": current_day_name,
+            "now": current_time,
         }
     )
+
 
 
 
