@@ -57,7 +57,7 @@ table {
     border-collapse: collapse;
     background: var(--panel);
     border-radius: 14px;
-    overflow: hidden;
+    overflow: visible;
 }
 
 th, td {
@@ -120,11 +120,27 @@ td {
     );
 }
 
-/* LIVE */
-.live {
-    outline: 3px solid var(--live);
-    outline-offset: -3px;
+/* ====== LIVE PULSE (POPRAWIONE) ====== */
+@keyframes pulse {
+    0%   { opacity: 1; transform: scale(1); }
+    70%  { opacity: 0; transform: scale(1.05); }
+    100% { opacity: 0; transform: scale(1.05); }
 }
+
+.live {
+    border: 2px solid var(--live);
+}
+
+/* overlay pulsujący – DZIAŁA W TABELI */
+td.live::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 3px solid rgba(0,200,83,.9);
+    animation: pulse 2s infinite;
+    pointer-events: none;
+}
+/* =================================== */
 
 /* puste */
 .empty {
@@ -181,14 +197,10 @@ td {
                     {% if cell %}
                         {% if cell.picture %}
                             <img src="{{ cell.picture }}" class="tile-img">
-                            <div class="tile-overlay">
-                                {{ cell.description }}
-                            </div>
-                        {% else %}
-                            <div class="tile-overlay">
-                                {{ cell.description }}
-                            </div>
                         {% endif %}
+                        <div class="tile-overlay">
+                            {{ cell.description }}
+                        </div>
                     {% else %}
                         <div class="empty">—</div>
                     {% endif %}
@@ -199,6 +211,15 @@ td {
     </tbody>
 </table>
 </div>
+
+<script>
+(function () {
+    const REFRESH_MS = 30000;
+    setInterval(() => {
+        if (!document.hidden) location.reload();
+    }, REFRESH_MS);
+})();
+</script>
 
 </body>
 </html>
