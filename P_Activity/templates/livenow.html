@@ -36,12 +36,20 @@ body {
 /* HEADER */
 .header {
     text-align: center;
-    padding: 12px 8px 20px;
+    padding: 12px 8px 6px;
 }
 .header h1 {
     margin: 0;
     font-size: 26px;
     font-weight: 700;
+}
+
+/* NOW: DATE TIME */
+.datetime {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 12px;
 }
 
 /* GRID */
@@ -62,7 +70,6 @@ body {
 }
 
 /* IMAGE */
-
 .tile-bg {
     position: absolute;
     inset: 0;
@@ -71,8 +78,7 @@ body {
     object-fit: cover;
 }
 
-
-/* OVERLAY (LIVE SAFE) */
+/* OVERLAY */
 .tile-overlay {
     position: absolute;
     inset: 0;
@@ -91,29 +97,22 @@ body {
     animation: livePulse 2s ease-in-out infinite;
 }
 
-/* PERSON ROW */
-.person-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 8px;
-}
-
+/* PERSON */
 .person {
     font-size: 16px;
     color: var(--muted);
     font-weight: 600;
+    margin-bottom: 6px;
 }
 
+/* PERSON ROW */
 .person-row {
     position: absolute;
     top: 10px;
     left: 10px;
-
     display: flex;
     align-items: center;
     gap: 8px;
-
     background: rgba(0,0,0,.55);
     padding: 6px 10px;
     border-radius: 20px;
@@ -122,18 +121,14 @@ body {
 .personpicture-pic {
     width: 80px;
     height: 80px;
-
     border-radius: 50%;
     object-fit: cover;
-
     border: 2px solid #00c853;
     background: #000;
-
     box-shadow:
         0 0 0 2px rgba(0,0,0,.6),
         0 4px 12px rgba(0,0,0,.8);
 }
-
 
 /* DESCRIPTION */
 .desc {
@@ -143,8 +138,7 @@ body {
     font-weight: 700;
 }
 
-
-/* LIVE PULSE — ANDROID SAFE */
+/* LIVE PULSE */
 @keyframes livePulse {
     0%   { opacity: 0.85; }
     50%  { opacity: 1; }
@@ -177,6 +171,9 @@ body {
     <h1>🟢 LIVE TERAZ</h1>
 </div>
 
+<!-- NOW: DATE + TIME -->
+<div class="datetime" id="datetime"></div>
+
 {% if live_items %}
 <div class="grid">
     {% for item in live_items %}
@@ -186,11 +183,9 @@ body {
         {% endif %}
 
         <div class="tile-overlay">
-            
             <div class="person">👤 {{ item.person }}</div>
 
             <div class="person-row">
-                
                 {% if item.personPicture %}
                     <img class="personpicture-pic" src="{{ item.personPicture }}">
                 {% endif %}
@@ -208,14 +203,33 @@ body {
 {% endif %}
 
 <script>
-(function () {
-    const REFRESH_MS = 30000;
-    setInterval(() => {
-        if (!document.hidden) {
-            location.reload();
-        }
-    }, REFRESH_MS);
-})();
+/* AUTO REFRESH */
+setInterval(() => {
+    if (!document.hidden) location.reload();
+}, 30000);
+
+/* DATE TIME LIVE */
+function updateDateTime() {
+    const el = document.getElementById('datetime');
+    const now = new Date();
+
+    const days = [
+        'Niedziela','Poniedziałek','Wtorek',
+        'Środa','Czwartek','Piątek','Sobota'
+    ];
+
+    const day = days[now.getDay()];
+    const time = now.toLocaleTimeString('pl-PL', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    el.textContent = `${day} • ${time}`;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
 </script>
 
 </body>
