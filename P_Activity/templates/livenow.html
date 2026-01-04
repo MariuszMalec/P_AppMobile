@@ -12,6 +12,7 @@
     --panel: #0c0f2a;
     --text: #ffffff;
     --muted: #8c8cb8;
+    --live: #00c853;
 }
 
 body {
@@ -26,7 +27,6 @@ body {
 .back {
     padding: 14px 16px 0;
 }
-
 .back a {
     color: #38bdf8;
     text-decoration: none;
@@ -38,7 +38,6 @@ body {
     text-align: center;
     padding: 12px 8px 20px;
 }
-
 .header h1 {
     margin: 0;
     font-size: 26px;
@@ -60,11 +59,11 @@ body {
     border-radius: 18px;
     overflow: hidden;
     background: var(--panel);
-    animation: livePulse 2s ease-in-out infinite;
 }
 
 /* IMAGE */
-.tile img {
+
+.tile-bg {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -72,7 +71,8 @@ body {
     object-fit: cover;
 }
 
-/* OVERLAY */
+
+/* OVERLAY (LIVE SAFE) */
 .tile-overlay {
     position: absolute;
     inset: 0;
@@ -81,31 +81,74 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 12px;
+    padding: 14px;
     background: linear-gradient(
         to top,
-        rgba(0,0,0,.8),
-        rgba(0,0,0,.4),
-        rgba(0,0,0,.8)
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.45),
+        rgba(0,0,0,.85)
     );
+    animation: livePulse 2s ease-in-out infinite;
+}
+
+/* PERSON ROW */
+.person-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .person {
     font-size: 16px;
     color: var(--muted);
-    margin-bottom: 6px;
+    font-weight: 600;
 }
 
+.person-row {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    background: rgba(0,0,0,.55);
+    padding: 6px 10px;
+    border-radius: 20px;
+}
+
+.personpicture-pic {
+    width: 80px;
+    height: 80px;
+
+    border-radius: 50%;
+    object-fit: cover;
+
+    border: 2px solid #00c853;
+    background: #000;
+
+    box-shadow:
+        0 0 0 2px rgba(0,0,0,.6),
+        0 4px 12px rgba(0,0,0,.8);
+}
+
+
+/* DESCRIPTION */
 .desc {
+    margin-top: auto;
+    padding-bottom: 12px;
     font-size: 22px;
     font-weight: 700;
 }
 
-/* PULSE — BEZ RAMKI (ANDROID SAFE) */
+
+/* LIVE PULSE — ANDROID SAFE */
 @keyframes livePulse {
-    0%   { filter: brightness(1) saturate(1); }
-    50%  { filter: brightness(1.6) saturate(1.8); }
-    100% { filter: brightness(1) saturate(1); }
+    0%   { opacity: 0.85; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.85; }
 }
 
 /* EMPTY */
@@ -116,7 +159,7 @@ body {
     padding: 80px 16px;
 }
 
-/* TV */
+/* TV MODE */
 @media (min-width: 1200px) {
     .tile { height: 260px; }
     .desc { font-size: 26px; }
@@ -139,10 +182,20 @@ body {
     {% for item in live_items %}
     <div class="tile">
         {% if item.picture %}
-            <img src="{{ item.picture }}">
+            <img class="tile-bg" src="{{ item.picture }}">
         {% endif %}
+
         <div class="tile-overlay">
+            
             <div class="person">👤 {{ item.person }}</div>
+
+            <div class="person-row">
+                
+                {% if item.personPicture %}
+                    <img class="personpicture-pic" src="{{ item.personPicture }}">
+                {% endif %}
+            </div>
+
             <div class="desc">{{ item.description }}</div>
         </div>
     </div>

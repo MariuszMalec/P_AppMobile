@@ -1149,6 +1149,7 @@ def livenow_page(request: Request):
             ad.EndTime,
             ad.Description,
             pf.PersonName,
+            pf.PersonPicture,
             pa.Picture
         FROM ActiviesDays ad
         LEFT JOIN PersonFamilies pf
@@ -1177,7 +1178,8 @@ def livenow_page(request: Request):
         live_items.append({
             "person": PERSON_NAME_MAP.get(r["PersonName"], ""),
             "description": r["Description"],
-            "picture": r["Picture"]
+            "picture": r["Picture"],
+            "personPicture": r["PersonPicture"],
         })
 
 
