@@ -747,7 +747,7 @@ def statusall_page(request: Request):
     cursor = db.cursor()
 
     now = datetime.now()
-    iso_day = now.isoweekday()      # 1–7
+    iso_day = now.isoweekday()              # 1–7
     current_day = system_day_to_db_day(iso_day)
     current_day_name = now.strftime("%A")
 
@@ -756,8 +756,7 @@ def statusall_page(request: Request):
             ad.StartTime,
             ad.EndTime,
             ad.Description,
-            pf.PersonName,          -- INTEGER (0–5)
-            pf.PersonPicture,
+            pf.PersonName,              -- INTEGER (enum value!)
             pa.Picture
         FROM ActiviesDays ad
         LEFT JOIN PersonFamilies pf
@@ -770,25 +769,33 @@ def statusall_page(request: Request):
 
     db.close()
 
-    # 👉 STAŁA KOLEJNOŚĆ KOLUMN
-    persons = list(PERSON_ENUM_MAP.keys())
+    # ==================================================
+    # STAŁE KOLUMNY (KOLEJNOŚĆ + NAZWY)
+    # ==================================================
+    persons = [
+        {"id": 3, "name": "GOSIA"},
+        {"id": 2, "name": "MAMA"},
+        {"id": 1, "name": "TATA"},
+        {"id": 4, "name": "EMILKA"},
+    ]
 
-    # 👉 BUDOWA TABELI (PUSTE KOMÓRKI DOMYŚLNIE)
+    # ==================================================
+    # BUDOWA TABELI (PUSTE KOMÓRKI DOMYŚLNIE)
+    # ==================================================
     table = {}
 
     for r in rows:
         time_key = f'{r["StartTime"]} – {r["EndTime"]}'
 
         if time_key not in table:
-            table[time_key] = {p: None for p in persons}
+            table[time_key] = {p["id"]: None for p in persons}
 
         person_id = r["PersonName"]
 
-        if person_id in persons:
+        if person_id in table[time_key]:
             table[time_key][person_id] = {
                 "description": r["Description"],
                 "picture": r["Picture"],
-                "personPicture": r["PersonPicture"],
             }
 
     return templates.TemplateResponse(
@@ -797,10 +804,10 @@ def statusall_page(request: Request):
             "request": request,
             "table": table,
             "persons": persons,
-            "PERSON_ENUM_MAP": PERSON_ENUM_MAP,
             "day_name": current_day_name,
         }
     )
+
 
 
 

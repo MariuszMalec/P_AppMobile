@@ -81,7 +81,7 @@
         <tr>
             <th>⏰ Czas</th>
             {% for p in persons %}
-                <th>{{ p }}</th>
+                <th>{{ p.name }}</th>
             {% endfor %}
         </tr>
     </thead>
@@ -93,11 +93,11 @@
 
             {% for p in persons %}
             <td>
-                {% if row[p] %}
+                {% if row[p.id] %}
                     <div class="activity">
-                        {{ row[p].description }}
-                        {% if row[p].picture %}
-                            <img src="{{ row[p].picture }}">
+                        {{ row[p.id].description }}
+                        {% if row[p.id].picture %}
+                            <img src="{{ row[p.id].picture }}">
                         {% endif %}
                     </div>
                 {% else %}
@@ -109,6 +109,9 @@
         {% endfor %}
     </tbody>
 </table>
+
+
+
 
 </body>
 </html>
