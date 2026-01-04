@@ -50,6 +50,13 @@
             margin-top: 8px;
             background: #e5e7eb;
         }
+
+        select:disabled {
+            background: #e5e7eb;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
     </style>
 </head>
 
@@ -60,7 +67,7 @@
 <form method="post">
 
     <label>Aktywność</label>
-    <select name="name">
+    <select name="name" disabled>
         {% for k, v in activities.items() %}
             <option value="{{ v.value }}"
                 {% if v.value == item.name %}selected{% endif %}>
