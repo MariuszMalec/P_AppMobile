@@ -169,6 +169,7 @@ class ActivityNameEnum(str, enum.Enum):
     Czas_z_mama = "Czas_z_mama"
     Czas_z_tata = "Czas_z_tata"
     Tance = "Tance"
+    Test = "Test"
 
 PERSON_ENUM_MAP = {
     0: PersonFamilyEnum.ALL,
@@ -203,6 +204,7 @@ ACTIVITY_ENUM_MAP = {
                                                                                             21: ActivityNameEnum.Czas_z_mama,
                                                                                                 22: ActivityNameEnum.Czas_z_tata,
                                                                                                     23: ActivityNameEnum.Tance,
+                                                                                                    24: ActivityNameEnum.Test,
                                                                                                     }
 
 # ---------- DB ----------
@@ -910,3 +912,81 @@ def delete_activity(activity_id: int):
     conn.close()
 
     return RedirectResponse("/", status_code=303)
+
+
+
+# ---------- ADD PICTURE ACTIVITY ----------
+@app.get("/pictureactivities/add", response_class=HTMLResponse)
+def add_picture_activity_form(request: Request):
+    return templates.TemplateResponse(
+        "pictureactivity_add.html",
+        {
+            "request": request,
+            "activities": ACTIVITY_ENUM_MAP
+        }
+    )
+
+@app.post("/pictureactivities/add", response_class=HTMLResponse)
+def add_picture_activity_save(
+    request: Request,
+    activityName: int = Form(...),
+    name: str = Form(...),
+    picture: str = Form("")
+):
+    errors = []
+
+    if not name.strip():
+        errors.append("Nazwa jest wymagana")
+
+    if errors:
+        return templates.TemplateResponse(
+            "pictureactivity_add.html",
+            {
+                "request": request,
+                "activities": ACTIVITY_ENUM_MAP,
+                "errors": errors,
+                "form": {
+                    "activityName": activityName,
+                    "name": name,
+                    "picture": picture,
+                }
+            }
+        )
+
+    db = get_db()
+    cursor = db.cursor()
+
+    try:
+        cursor.execute("""
+            INSERT INTO PictureActivities (ActivityName, Name, Picture)
+            VALUES (?, ?, ?)
+        """, (
+            activityName,
+            name.strip(),
+            picture.strip() or None
+        ))
+
+        db.commit()
+
+    except sqlite3.IntegrityError:
+        db.close()
+        return templates.TemplateResponse(
+            "pictureactivity_add.html",
+            {
+                "request": request,
+                "activities": ACTIVITY_ENUM_MAP,
+                "errors": ["Ta aktywność MA JUŻ przypisany obrazek"],
+                "form": {
+                    "activityName": activityName,
+                    "name": name,
+                    "picture": picture,
+                }
+            }
+        )
+
+    db.close()
+
+    return RedirectResponse(
+        url="/pictureactivities",
+        status_code=303
+    )

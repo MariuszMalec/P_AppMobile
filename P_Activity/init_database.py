@@ -32,7 +32,7 @@ def init_db():
     cur.execute("""
         CREATE TABLE PictureActivities (
             Id INTEGER PRIMARY KEY,
-            ActivityName INTEGER NOT NULL,
+            ActivityName INTEGER NOT NULL UNIQUE,
             Name TEXT NOT NULL,
             Picture TEXT
         )
