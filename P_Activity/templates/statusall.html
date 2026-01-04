@@ -121,16 +121,16 @@ td {
 }
 
 /* ====== LIVE PULSE (POPRAWIONE) ====== */
-@keyframes glow {
-    0%,100% { filter: brightness(1); }
-    50%     { filter: brightness(1.15); }
+@keyframes liveBrightness {
+    0%   { filter: brightness(1) saturate(1); }
+    50%  { filter: brightness(1.7) saturate(1.25); }
+    100% { filter: brightness(1) saturate(1); }
 }
 
 .live {
-    animation:
-        livePulse 1.8s infinite,
-        glow 1.8s infinite;
+    animation: liveBrightness 1.8s ease-in-out infinite;
 }
+
 
 
 /* =================================== */
