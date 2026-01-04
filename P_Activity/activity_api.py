@@ -1130,3 +1130,62 @@ def add_picture_activity_save(
         url="/pictureactivities",
         status_code=303
     )
+
+
+
+@app.get("/livenow", response_class=HTMLResponse)
+def livenow_page(request: Request):
+    db = get_db()
+    cursor = db.cursor()
+
+    now = datetime.now()
+    current_time = now.strftime("%H:%M:%S")
+    iso_day = now.isoweekday()
+    current_day = system_day_to_db_day(iso_day)
+
+    rows = cursor.execute("""
+        SELECT
+            ad.StartTime,
+            ad.EndTime,
+            ad.Description,
+            pf.PersonName,
+            pa.Picture
+        FROM ActiviesDays ad
+        LEFT JOIN PersonFamilies pf
+            ON ad.ModelPersonFamilyId = pf.Id
+        LEFT JOIN PictureActivities pa
+            ON ad.ModelPictureActivityId = pa.Id
+        WHERE ad.DayOfWeek = ?
+          AND ad.StartTime <= ?
+          AND ad.EndTime >= ?
+        ORDER BY ad.StartTime
+    """, (current_day, current_time, current_time)).fetchall()
+
+    db.close()
+
+    PERSON_NAME_MAP = {
+        1: "TATA",
+        2: "MAMA",
+        3: "GOSIA",
+        4: "EMILKA",
+        5: "ALL",
+    }
+
+
+    live_items = []
+    for r in rows:
+        live_items.append({
+            "person": PERSON_NAME_MAP.get(r["PersonName"], ""),
+            "description": r["Description"],
+            "picture": r["Picture"]
+        })
+
+
+    return templates.TemplateResponse(
+        "livenow.html",
+        {
+            "request": request,
+            "live_items": live_items,
+            "now": current_time
+        }
+    )
