@@ -215,7 +215,12 @@ def get_db():
 
 
 # ---------- MAIN PAGE ----------
-@app.get("/", response_class=HTMLResponse)
+@app.get("/")
+def root_redirect():
+    return RedirectResponse("/livenow", status_code=302)
+
+
+@app.get("/activities", response_class=HTMLResponse)
 def activities_page(request: Request):
     db = get_db()
     cursor = db.cursor()
@@ -396,7 +401,7 @@ def add_activity_post(
 
 
 
-@app.get("/edit/{activity_id}", response_class=HTMLResponse)
+@app.get("/activities/edit/{activity_id}", response_class=HTMLResponse)
 def edit_activity_page(request: Request, activity_id: int):
     db = get_db()
     cursor = db.cursor()
@@ -461,7 +466,7 @@ def edit_activity_page(request: Request, activity_id: int):
 
 
 
-@app.post("/edit/{activity_id}", response_class=HTMLResponse)
+@app.post("/activities/edit/{activity_id}", response_class=HTMLResponse)
 def edit_activity_post(
     request: Request,
     activity_id: int,
