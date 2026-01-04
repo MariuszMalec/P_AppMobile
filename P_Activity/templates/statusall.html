@@ -8,91 +8,68 @@
 
 <style>
 :root {
-    --bg: #050515;
     --panel: #0c0f2a;
     --border: rgba(255,255,255,.12);
     --text: #ffffff;
     --muted: #8c8cb8;
-    --live: #00c853;
 }
 
 body {
     margin: 0;
     background: radial-gradient(circle at top, #0a0d3a, #020210);
     color: var(--text);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: system-ui, sans-serif;
 }
 
-/* 🔙 POWRÓT */
-.back {
-    padding: 12px 16px 0;
-}
-
+/* POWRÓT */
+.back { padding: 12px 16px 0; }
 .back a {
     color: #38bdf8;
     text-decoration: none;
-    font-size: 14px;
     font-weight: 600;
 }
 
+/* HEADER */
 .header {
     text-align: center;
     padding: 8px 8px 16px;
 }
-
 .header h1 {
     margin: 0;
     font-size: 18px;
     font-weight: 600;
 }
 
+/* TABLE */
 .table-wrap {
     overflow-x: auto;
     padding: 8px;
 }
-
 table {
     width: 100%;
     table-layout: fixed;
     border-collapse: collapse;
     background: var(--panel);
     border-radius: 14px;
-    overflow: visible;
 }
-
 th, td {
     border: 1px solid var(--border);
     text-align: center;
-    vertical-align: middle;
     padding: 0;
 }
-
 th {
+    height: 44px;
     font-size: 12px;
     color: var(--muted);
-    background: rgba(255,255,255,.04);
-    height: 44px;
 }
-
-th.time {
-    width: 90px;
-}
-
-td.time {
-    font-size: 11px;
-    color: var(--muted);
-    padding: 6px;
-    white-space: nowrap;
-}
-
-/* 🔲 kafelek */
 td {
     height: 96px;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
 }
 
-/* obrazek jako tło */
+/* TILE */
 .tile-img {
     position: absolute;
     inset: 0;
@@ -100,15 +77,12 @@ td {
     height: 100%;
     object-fit: cover;
 }
-
-/* overlay z napisem */
 .tile-overlay {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
     padding: 6px;
     font-size: 12px;
     font-weight: 600;
@@ -120,40 +94,79 @@ td {
     );
 }
 
-/* ====== LIVE PULSE (POPRAWIONE) ====== */
-@keyframes liveBrightness {
-    0%   { filter: brightness(1) saturate(1); }
-    50%  { filter: brightness(1.7) saturate(1.25); }
-    100% { filter: brightness(1) saturate(1); }
+/* LIVE */
+@keyframes livePulse {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.6); }
+    100% { filter: brightness(1); }
 }
-
 .live {
-    animation: liveBrightness 1.8s ease-in-out infinite;
+    animation: livePulse 1.8s infinite;
 }
 
-
-
-/* =================================== */
-
-/* puste */
+/* EMPTY */
 .empty {
-    background: rgba(255,255,255,.03);
-    color: #444;
-    font-size: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #444;
+    font-size: 20px;
+}
+
+/* ================= PREVIEW CARD ================= */
+
+.preview-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.preview-bg.active {
+    display: flex;
+}
+
+.preview-card {
+    width: min(92vw, 420px);
+    background: var(--panel);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    animation: pop .18s ease-out;
+}
+
+@keyframes pop {
+    from { transform: scale(.92); opacity: .5; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.preview-card img {
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+}
+
+.preview-desc {
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.preview-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 22px;
+    cursor: pointer;
 }
 
 /* MOBILE */
 @media (max-width: 600px) {
-    td {
-        height: 86px;
-    }
-
-    .tile-overlay {
-        font-size: 11px;
-    }
+    td { height: 86px; }
 }
 </style>
 </head>
@@ -170,48 +183,70 @@ td {
 
 <div class="table-wrap">
 <table>
-    <thead>
-        <tr>
-            <th class="time">⏰ Czas</th>
-            {% for p in persons %}
-                <th>{{ p.name }}</th>
-            {% endfor %}
-        </tr>
-    </thead>
-
-    <tbody>
-    {% for time, row in table.items() %}
-        <tr>
-            <td class="time">{{ time }}</td>
-
-            {% for p in persons %}
-                {% set cell = row[p.id] %}
-                <td class="{% if cell and cell.is_live %}live{% endif %}">
-                    {% if cell %}
-                        {% if cell.picture %}
-                            <img src="{{ cell.picture }}" class="tile-img">
-                        {% endif %}
-                        <div class="tile-overlay">
-                            {{ cell.description }}
-                        </div>
-                    {% else %}
-                        <div class="empty">—</div>
-                    {% endif %}
-                </td>
-            {% endfor %}
-        </tr>
+<thead>
+<tr>
+    <th>⏰</th>
+    {% for p in persons %}
+        <th>{{ p.name }}</th>
     {% endfor %}
-    </tbody>
+</tr>
+</thead>
+
+<tbody>
+{% for time, row in table.items() %}
+<tr>
+    <td>{{ time }}</td>
+
+    {% for p in persons %}
+        {% set cell = row[p.id] %}
+        <td class="{% if cell and cell.is_live %}live{% endif %}"
+            {% if cell %}
+            data-desc="{{ cell.description }}"
+            data-img="{{ cell.picture }}"
+            onclick="openPreview(this)"
+            {% endif %}
+        >
+            {% if cell %}
+                {% if cell.picture %}
+                    <img src="{{ cell.picture }}" class="tile-img">
+                {% endif %}
+                <div class="tile-overlay">
+                    {{ cell.description }}
+                </div>
+            {% else %}
+                <div class="empty">—</div>
+            {% endif %}
+        </td>
+    {% endfor %}
+</tr>
+{% endfor %}
+</tbody>
 </table>
 </div>
 
+<!-- PREVIEW -->
+<div class="preview-bg" id="preview" onclick="closePreview()">
+    <div class="preview-card" onclick="event.stopPropagation()">
+        <div class="preview-close" onclick="closePreview()">✕</div>
+        <img id="p-img">
+        <div class="preview-desc" id="p-desc"></div>
+    </div>
+</div>
+
 <script>
-(function () {
-    const REFRESH_MS = 30000;
-    setInterval(() => {
-        if (!document.hidden) location.reload();
-    }, REFRESH_MS);
-})();
+function openPreview(el) {
+    document.getElementById('p-img').src = el.dataset.img || '';
+    document.getElementById('p-desc').textContent = el.dataset.desc || '';
+    document.getElementById('preview').classList.add('active');
+}
+
+function closePreview() {
+    document.getElementById('preview').classList.remove('active');
+}
+
+setInterval(() => {
+    if (!document.hidden) location.reload();
+}, 30000);
 </script>
 
 </body>
