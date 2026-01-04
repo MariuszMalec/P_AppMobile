@@ -757,6 +757,7 @@ def statusall_page(request: Request):
             ad.StartTime,
             ad.EndTime,
             ad.Description,
+            pf.Id AS PersonId,
             pf.PersonName,
             pf.PersonPicture,
             pa.Picture
@@ -771,12 +772,12 @@ def statusall_page(request: Request):
 
     db.close()
 
-    # STAŁE KOLUMNY
     persons = [
         {"id": 3, "name": "GOSIA"},
         {"id": 2, "name": "MAMA"},
         {"id": 1, "name": "TATA"},
         {"id": 4, "name": "EMILKA"},
+        {"id": 5, "name": "ALL"},
     ]
 
     table = {}
@@ -787,7 +788,7 @@ def statusall_page(request: Request):
         if time_key not in table:
             table[time_key] = {p["id"]: None for p in persons}
 
-        person_id = r["PersonName"]
+        person_id = r["PersonId"]   # 🔥 KLUCZOWA LINIA
 
         if person_id in table[time_key]:
             table[time_key][person_id] = {
