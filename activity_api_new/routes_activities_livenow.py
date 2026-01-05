@@ -133,7 +133,7 @@ def register_routes_livenow(app):
                 next_item = item
 
         return templates.TemplateResponse(
-            "status.html",
+            "home.html",
             {
                 "request": request,
                 "now": current_time,

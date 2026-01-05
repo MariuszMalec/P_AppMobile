@@ -8,6 +8,7 @@ from db import (
     insert_activities_days,
 )
 
+from routes_activities_home import register_routes_home
 from routes_activities_activity import register_routes_activity
 from routes_activities_livenow import register_routes_livenow
 from routes_activities_pictureactivity import register_routes_pictureactivity
@@ -26,10 +27,11 @@ def startup():
 # ---------- MAIN PAGE ----------
 @app.get("/")
 def root_redirect():
-    return RedirectResponse("/livenow", status_code=302)    
+    return RedirectResponse("/home", status_code=302)    
 
 
 # ⬅️ TU REJESTRUJEMY ENDPOINTY
+register_routes_home(app)
 register_routes_activity(app)
 register_routes_livenow(app)
 register_routes_pictureactivity(app)

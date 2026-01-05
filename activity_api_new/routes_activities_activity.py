@@ -17,7 +17,7 @@ def register_routes_activity(app):
     # ==============================
     # LISTA AKTYWNOŚCI
     # ==============================
-    @app.get("/activities", response_class=HTMLResponse)
+    @app.get("/activity", response_class=HTMLResponse)
     def activities_page(request: Request):
         db = get_db()
         cursor = db.cursor()
@@ -71,7 +71,7 @@ def register_routes_activity(app):
             })
 
         return templates.TemplateResponse(
-            "activities.html",
+            "activity.html",
             {
                 "request": request,
                 "days": grouped_days
