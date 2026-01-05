@@ -151,6 +151,54 @@ def register_routes_activity(app):
                 status_code=400
             )
 
+        # 🔒 BLOKADA: ta sama osoba + ten sam dzień + zachodzący przedział czasu
+        cursor.execute("""
+            SELECT
+                StartTime,
+                EndTime
+            FROM ActiviesDays
+            WHERE
+                DayOfWeek = ?
+                AND ModelPersonFamilyId = ?
+                AND (
+                    ? < EndTime
+                    AND ? > StartTime
+                )
+            LIMIT 1
+        """, (
+            day_of_week,
+            5 if person_id == 0 else person_id,
+            start,
+            end
+        ))
+
+        conflict = cursor.fetchone()
+
+        if conflict:
+            db.close()
+            return templates.TemplateResponse(
+                "activity_add.html",
+                {
+                    "request": request,
+                    "errors": [
+                        f"❌ Masz już zaplanowaną aktywność w tym czasie "
+                        f"({conflict['StartTime']} – {conflict['EndTime']})"
+                    ],
+                    "form": {
+                        "start": start,
+                        "end": end,
+                        "day_of_week": day_of_week,
+                        "description": description,
+                        "person_id": person_id,
+                        "activity_name": activity_name,
+                    },
+                    "persons": PERSON_ENUM_MAP,
+                    "activities": activities,
+                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+                },
+                status_code=400
+            )
+
         # ✅ Szukamy obrazka po Name
         cursor.execute(
             "SELECT Id FROM PictureActivities WHERE Name = ?",
