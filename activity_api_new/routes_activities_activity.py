@@ -108,7 +108,7 @@ def register_routes_activity(app):
 
 
     @app.post("/activities/add", response_class=HTMLResponse)
-    def add_activity_post(
+    def add_activity_post(  
         request: Request,
         start: str = Form(...),
         end: str = Form(...),
@@ -382,6 +382,40 @@ def register_routes_activity(app):
 
         return RedirectResponse("/activity", status_code=HTTP_303_SEE_OTHER)
     
+
+    @app.get("/week", response_class=HTMLResponse)
+    def week_page(request: Request):
+        db = get_db()
+        cursor = db.cursor()
+
+        rows = cursor.execute("""
+            SELECT
+                ad.DayOfWeek,
+                ad.StartTime,
+                ad.EndTime,
+                ad.Description,
+                pf.PersonName
+            FROM ActiviesDays ad
+            LEFT JOIN PersonFamilies pf
+                ON ad.ModelPersonFamilyId = pf.Id
+            ORDER BY ad.DayOfWeek, ad.StartTime
+        """).fetchall()
+
+        db.close()
+
+        week = {}
+        for r in rows:
+            week.setdefault(r["DayOfWeek"], []).append(r)
+
+        return templates.TemplateResponse(
+            "week.html",
+            {
+                "request": request,
+                "week": week,
+                "day_names": DAY_NAMES,   # 👈 KLUCZOWE
+            }
+        )
+
 
     @app.post("/activities/delete/{activity_id}")
     def delete_activity(activity_id: int):
