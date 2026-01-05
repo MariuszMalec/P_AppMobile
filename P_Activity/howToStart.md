@@ -18,7 +18,10 @@
 
 
 ## Linux
-
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn activity_api:app
 
 ## Mobile
 python -m venv venv

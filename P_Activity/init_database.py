@@ -32,7 +32,8 @@ def init_db():
     cur.execute("""
         CREATE TABLE PictureActivities (
             Id INTEGER PRIMARY KEY,
-            ActivityName INTEGER NOT NULL,
+            ActivityName INTEGER NOT NULL UNIQUE,
+            Name TEXT NOT NULL,
             Picture TEXT
         )
     """)
@@ -44,7 +45,7 @@ def init_db():
     cur.execute("""
         CREATE TABLE ActiviesDays (
             Id INTEGER PRIMARY KEY,
-            CreatedAt TEXT NOT NULL,
+            CreatedAt TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
             StartTime INTEGER NOT NULL,
             EndTime INTEGER NOT NULL,
             Description TEXT,

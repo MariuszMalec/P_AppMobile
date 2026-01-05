@@ -13,7 +13,7 @@
     margin-bottom:20px;
 ">
 
-    <a href="/" style="flex:1">
+    <a href="/activities" style="flex:1">
         <button style="
             width:100%;
             padding:12px;
@@ -60,7 +60,7 @@
 </div>
 
 <h2 style="text-align:center; margin-bottom:8px;">
-    Teraz: {{ now }}
+    Teraz: {{ now }} {{current_day_name}}
 </h2>
 
 {% if current %}
@@ -112,6 +112,22 @@
     <div style="opacity:0.7; font-size:0.9em;">
         Następnie
     </div>
+
+    {% if next.picture %}
+        <img src="{{ next.picture }}"
+             style="width:50%; max-height:90px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
+    {% endif %}
+
+    {% if next.person %}
+    <div style="display:flex; align-items:center; gap:12px;">
+        {% if next.personPicture %}
+            <img src="{{ next.personPicture }}"
+                 style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+        {% endif %}
+        <div>{{ next.person }}</div>
+    </div>
+    {% endif %}
+
     <div style="font-weight:bold;">
         {{ next.start }} – {{ next.end }}
     </div>
