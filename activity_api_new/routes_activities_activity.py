@@ -87,12 +87,12 @@ def register_routes_activity(app):
         db = get_db()
         cursor = db.cursor()
 
-        activities = cursor.execute("""
+        cursor.execute("""
             SELECT Id, ActivityName, Name, Picture
             FROM PictureActivities
             ORDER BY Name
-        """).fetchall()
-
+        """)
+        activities = cursor.fetchall()
         db.close()
 
         return templates.TemplateResponse(
@@ -104,6 +104,7 @@ def register_routes_activity(app):
                 "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
             }
         )
+
 
 
     @app.post("/activities/add", response_class=HTMLResponse)
@@ -123,10 +124,11 @@ def register_routes_activity(app):
         db = get_db()
         cursor = db.cursor()
 
-        activities = cursor.execute(
-            "SELECT Id, Name FROM PictureActivities ORDER BY Name"
-        ).fetchall()
+        # 🔁 ZAWSZE pobieramy aktywności (potrzebne przy błędzie)
+        cursor.execute("SELECT Id, Name FROM PictureActivities ORDER BY Name")
+        activities = cursor.fetchall()
 
+        # ❌ BŁĘDY → wracamy do formularza
         if errors:
             db.close()
             return templates.TemplateResponse(
@@ -134,18 +136,27 @@ def register_routes_activity(app):
                 {
                     "request": request,
                     "errors": errors,
-                    "form": locals(),
+                    "form": {
+                        "start": start,
+                        "end": end,
+                        "day_of_week": day_of_week,
+                        "description": description,
+                        "person_id": person_id,
+                        "activity_name": activity_name,
+                    },
                     "persons": PERSON_ENUM_MAP,
-                    "activities": activities,
+                    "activities": activities,   # 🔴 TO BYŁ BRAK
                     "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
                 },
                 status_code=400
             )
 
-        row = cursor.execute(
+        # ✅ Szukamy obrazka po Name
+        cursor.execute(
             "SELECT Id FROM PictureActivities WHERE Name = ?",
             (activity_name,)
-        ).fetchone()
+        )
+        row = cursor.fetchone()
 
         if not row:
             db.close()
@@ -161,6 +172,9 @@ def register_routes_activity(app):
                 status_code=400
             )
 
+        picture_id = row["Id"]
+
+        # ✅ INSERT
         cursor.execute("""
             INSERT INTO ActiviesDays (
                 DayOfWeek,
@@ -176,14 +190,14 @@ def register_routes_activity(app):
             start,
             end,
             description.strip() or None,
-            5 if person_id == 0 else person_id,
-            row["Id"]
+            5 if person_id == 0 else person_id,  # ✅ # 0 = ALL → zapisujemy jako RODZINA (Id=5)
+            picture_id
         ))
 
         db.commit()
         db.close()
 
-        return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+        return RedirectResponse("/activity", status_code=303)
 
 
     # ==============================
@@ -195,7 +209,14 @@ def register_routes_activity(app):
         cursor = db.cursor()
 
         activity = cursor.execute("""
-            SELECT *
+            SELECT
+                Id,
+                DayOfWeek,
+                StartTime,
+                EndTime,
+                Description,
+                ModelPersonFamilyId,
+                ModelPictureActivityId
             FROM ActiviesDays
             WHERE Id = ?
         """, (activity_id,)).fetchone()
@@ -204,18 +225,33 @@ def register_routes_activity(app):
             db.close()
             return HTMLResponse("Nie znaleziono aktywności", status_code=404)
 
-        persons = [
-            {
-                "id": p["Id"],
-                "label": PERSON_ENUM_MAP.get(p["PersonName"], p["PersonName"]).value
-            }
-            for p in cursor.execute("SELECT * FROM PersonFamilies").fetchall()
-        ]
+        # --- OSOBY ---
+        persons_raw = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+        """).fetchall()
 
-        pictures = cursor.execute("""
+        persons = []
+        for p in persons_raw:
+            enum_val = PERSON_ENUM_MAP.get(p["PersonName"])
+            persons.append({
+                "id": p["Id"],
+                "label": enum_val.value if enum_val else "Nieznana"
+            })
+
+        # --- AKTYWNOŚCI (POPRAWKA) ---
+        pictures_raw = cursor.execute("""
             SELECT Id, Name, Picture
             FROM PictureActivities
         """).fetchall()
+
+        pictures = []
+        for pic in pictures_raw:
+            pictures.append({
+                "id": pic["Id"],
+                "label": pic["Name"],       # ✅ BEZ ENUM
+                "picture": pic["Picture"]
+            })
 
         db.close()
 
@@ -231,6 +267,7 @@ def register_routes_activity(app):
         )
 
 
+
     @app.post("/activities/edit/{activity_id}", response_class=HTMLResponse)
     def edit_activity_post(
         request: Request,
@@ -242,15 +279,84 @@ def register_routes_activity(app):
         person_id: int = Form(...),
         picture_id: int = Form(...)
     ):
-        errors = validate_activity_edit_form(start, end, day_of_week, person_id)
+        errors = validate_activity_edit_form(
+            start, end, day_of_week, person_id
+        )
 
         db = get_db()
         cursor = db.cursor()
 
+        # --- pobieramy aktywność (potrzebna przy błędach) ---
+        activity = cursor.execute("""
+            SELECT
+                Id,
+                DayOfWeek,
+                StartTime,
+                EndTime,
+                Description,
+                ModelPersonFamilyId,
+                ModelPictureActivityId
+            FROM ActiviesDays
+            WHERE Id = ?
+        """, (activity_id,)).fetchone()
+
+        if not activity:
+            db.close()
+            return HTMLResponse("Nie znaleziono aktywności", status_code=404)
+
+        # --- OSOBY ---
+        persons_raw = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+        """).fetchall()
+
+        persons = []
+        for p in persons_raw:
+            enum_val = PERSON_ENUM_MAP.get(p["PersonName"])
+            persons.append({
+                "id": p["Id"],
+                "label": enum_val.value if enum_val else "Nieznana"
+            })
+
+        # --- AKTYWNOŚCI ---
+        pictures_raw = cursor.execute("""
+            SELECT Id, Name, Picture
+            FROM PictureActivities
+        """).fetchall()
+
+        pictures = []
+        for pic in pictures_raw:
+            pictures.append({
+                "id": pic["Id"],
+                "label": pic["Name"],
+                "picture": pic["Picture"]
+            })
+
+        # ❌ BŁĘDY → wracamy do formularza
         if errors:
             db.close()
-            return HTMLResponse(str(errors), status_code=400)
+            return templates.TemplateResponse(
+                "edit_activity.html",
+                {
+                    "request": request,
+                    "errors": errors,
+                    "activity": {
+                        "Id": activity_id,
+                        "DayOfWeek": day_of_week,
+                        "StartTime": start,
+                        "EndTime": end,
+                        "Description": description,
+                        "ModelPersonFamilyId": person_id,
+                        "ModelPictureActivityId": picture_id,
+                    },
+                    "persons": persons,
+                    "pictures": pictures,
+                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+                },
+                status_code=400
+            )
 
+        # ✅ UPDATE
         cursor.execute("""
             UPDATE ActiviesDays
             SET
@@ -274,38 +380,20 @@ def register_routes_activity(app):
         db.commit()
         db.close()
 
-        return RedirectResponse("/", status_code=HTTP_303_SEE_OTHER)
+        return RedirectResponse("/activity", status_code=HTTP_303_SEE_OTHER)
+    
 
-    @app.get("/week", response_class=HTMLResponse)
-    def week_page(request: Request):
-        db = get_db()
-        cursor = db.cursor()
+    @app.post("/activities/delete/{activity_id}")
+    def delete_activity(activity_id: int):
+        conn = get_db()
+        cur = conn.cursor()
 
-        rows = cursor.execute("""
-            SELECT
-                ad.DayOfWeek,
-                ad.StartTime,
-                ad.EndTime,
-                ad.Description,
-                pf.PersonName
-            FROM ActiviesDays ad
-            LEFT JOIN PersonFamilies pf
-                ON ad.ModelPersonFamilyId = pf.Id
-            ORDER BY ad.DayOfWeek, ad.StartTime
-        """).fetchall()
-
-        db.close()
-
-        week = {}
-        for r in rows:
-            week.setdefault(r["DayOfWeek"], []).append(r)
-
-        return templates.TemplateResponse(
-            "week.html",
-            {
-                "request": request,
-                "week": week,
-                "day_names": DAY_NAMES,   # 👈 KLUCZOWE
-            }
+        cur.execute(
+            "DELETE FROM ActiviesDays WHERE Id = ?",
+            (activity_id,)
         )
- 
+
+        conn.commit()
+        conn.close()
+
+        return RedirectResponse("/activity", status_code=303)    
