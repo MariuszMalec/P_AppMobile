@@ -154,8 +154,8 @@ def register_routes_activity(app):
         # 🔒 BLOKADA: ta sama osoba + ten sam dzień + zachodzący przedział czasu
         cursor.execute("""
             SELECT
-                StartTime,
-                EndTime
+                StartTime AS start_time,
+                EndTime   AS end_time
             FROM ActiviesDays
             WHERE
                 DayOfWeek = ?
@@ -165,11 +165,12 @@ def register_routes_activity(app):
                     AND ? > StartTime
                 )
             LIMIT 1
+
         """, (
             day_of_week,
             5 if person_id == 0 else person_id,
-            start,
-            end
+            start,   # INT (sekundy)
+            end      # INT (sekundy)
         ))
 
         conflict = cursor.fetchone()
@@ -180,9 +181,9 @@ def register_routes_activity(app):
                 "activity_add.html",
                 {
                     "request": request,
-                    "errors": [
+                    "errors": [ 
                         f"❌ Masz już zaplanowaną aktywność w tym czasie "
-                        f"({conflict['StartTime']} – {conflict['EndTime']})"
+                        f"({conflict['start_time']} – {conflict['end_time']})"
                     ],
                     "form": {
                         "start": start,
