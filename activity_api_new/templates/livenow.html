@@ -185,6 +185,10 @@ body {
         <div class="tile-overlay">
             <div class="person">👤 {{ item.person }}</div>
 
+            <div style="font-size:3.0em; font-weight:bold;">
+                {{ item.start }} – {{ item.end }}
+            </div>
+
             <div class="person-row">
                 {% if item.personPicture %}
                     <img class="personpicture-pic" src="{{ item.personPicture }}">

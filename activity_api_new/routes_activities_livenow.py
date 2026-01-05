@@ -63,6 +63,8 @@ def register_routes_livenow(app):
                 "description": r["Description"],
                 "picture": r["Picture"],
                 "personPicture": r["PersonPicture"],
+                "start": r["StartTime"],
+                "end": r["EndTime"],                
             })
 
 
