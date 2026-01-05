@@ -404,6 +404,58 @@ def register_routes_activity(app):
                 },
                 status_code=400
             )
+        
+        # 🔒 BLOKADA: konflikt czasu (EDIT) – pomijamy edytowaną aktywność
+        cursor.execute("""
+            SELECT
+                StartTime AS start_time,
+                EndTime   AS end_time
+            FROM ActiviesDays
+            WHERE
+                DayOfWeek = ?
+                AND ModelPersonFamilyId = ?
+                AND Id != ?
+                AND (
+                    ? < EndTime
+                    AND ? > StartTime
+                )
+            LIMIT 1
+        """, (
+            day_of_week,
+            person_id,
+            activity_id,   # ⬅️ KLUCZOWE
+            start,
+            end
+        ))
+
+        conflict = cursor.fetchone()
+
+        if conflict:
+            db.close()
+            return templates.TemplateResponse(
+                "edit_activity.html",
+                {
+                    "request": request,
+                    "errors": [
+                        f"❌ Masz już zaplanowaną aktywność w tym czasie "
+                        f"({conflict['start_time']} – {conflict['end_time']})"
+                    ],
+                    "activity": {
+                        "Id": activity_id,
+                        "DayOfWeek": day_of_week,
+                        "StartTime": start,
+                        "EndTime": end,
+                        "Description": description,
+                        "ModelPersonFamilyId": person_id,
+                        "ModelPictureActivityId": picture_id,
+                    },
+                    "persons": persons,
+                    "pictures": pictures,
+                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+                },
+                status_code=400
+            )
+
 
         # ✅ UPDATE
         cursor.execute("""
