@@ -532,7 +532,20 @@ def register_routes_activity(app):
 
         week = {}
         for r in rows:
-            week.setdefault(r["DayOfWeek"], []).append(r)
+
+            # 👉 mapowanie osoby
+            person_label = None
+            if r["PersonName"] is not None:
+                enum_value = PERSON_ENUM_MAP.get(r["PersonName"])
+                if enum_value:
+                    person_label = enum_value.value
+
+            # kopiujemy r i dokładamy nowe pole
+            row_dict = dict(r)
+            row_dict["PersonName"] = person_label
+
+            week.setdefault(r["DayOfWeek"], []).append(row_dict)
+
 
         return templates.TemplateResponse(
             "week.html",
