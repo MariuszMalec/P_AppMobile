@@ -22,17 +22,16 @@ def register_routes_home(app):
         cursor = db.cursor()
 
         now = datetime.now()
-        iso_day = now.isoweekday()          # 1-7
+        current_time = now.strftime("%H:%M:%S")
+        iso_day = now.isoweekday()
         current_day = system_day_to_db_day(iso_day)
         current_day_name = now.strftime("%A")
-        current_time = now.strftime("%H:%M:%S")  # HH:MM:SS
 
         rows = cursor.execute("""
             SELECT
                 ad.StartTime,
                 ad.EndTime,
                 ad.Description,
-                ad.DayOfWeek,
                 pf.PersonName,
                 pf.PersonPicture,
                 pa.Picture
@@ -47,41 +46,45 @@ def register_routes_home(app):
 
         db.close()
 
-        current = None
-        next_item = None
+        PERSON_NAME_MAP = {
+            1: "TATA",
+            2: "MAMA",
+            3: "GOSIA",
+            4: "EMILKA",
+            5: "ALL",
+        }
+
+        current_items = []
+        next_items = []
 
         for r in rows:
-            # 👉 MAPOWANIE ENUM
-            person_label = None
-            if r["PersonName"] is not None:
-                enum_value = PERSON_ENUM_MAP.get(r["PersonName"])
-                if enum_value:
-                    person_label = enum_value.value  # "TATA", "MAMA", itd.
-
             item = {
                 "start": r["StartTime"],
                 "end": r["EndTime"],
                 "description": r["Description"],
-                "person": person_label,
+                "person": PERSON_NAME_MAP.get(r["PersonName"], ""),
                 "personPicture": r["PersonPicture"],
-                "picture": r["Picture"],            
+                "picture": r["Picture"],
             }
 
+            # 🔴 TERAZ
             if r["StartTime"] <= current_time <= r["EndTime"]:
-                current = item
-            elif r["StartTime"] > current_time and next_item is None:
-                next_item = item
+                current_items.append(item)
+
+            # 🔵 NASTĘPNIE
+            elif r["StartTime"] > current_time:
+                next_items.append(item)
 
         return templates.TemplateResponse(
             "home.html",
             {
                 "request": request,
                 "now": current_time,
-                "current": current,
-                "next": next_item,
-                "current_day_name" : current_day_name,
+                "current": current_items,
+                "next": next_items,
+                "current_day_name": current_day_name,
             }
-        ) 
+        )
 
     
     @app.get("/activities")

@@ -59,80 +59,87 @@
 
 </div>
 
-<h2 style="text-align:center; margin-bottom:8px;">
-    Teraz: {{ now }} {{current_day_name}}
+<h2 style="text-align:center; margin-bottom:12px;">
+    Teraz: {{ now }} {{ current_day_name }}
 </h2>
 
-{% if current %}
-<div style="
-    background:#020617;
-    border:2px solid #22c55e;
-    border-radius:16px;
-    padding:16px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.4);
-">
+<!-- ================= CURRENT ================= -->
+{% if current and current|length > 0 %}
+    {% for item in current %}
+    <div style="
+        background:#020617;
+        border:2px solid #22c55e;
+        border-radius:16px;
+        padding:16px;
+        margin-bottom:16px;
+        box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    ">
 
-    {% if current.picture %}
-        <img src="{{ current.picture }}"
-             style="width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
-    {% endif %}
-
-    <div style="font-size:1.4em; font-weight:bold;">
-        {{ current.start }} – {{ current.end }}
-    </div>
-
-    <div style="margin:10px 0; font-size:1.2em;">
-        {{ current.description }}
-    </div>
-
-    {% if current.person %}
-    <div style="display:flex; align-items:center; gap:12px;">
-        {% if current.personPicture %}
-            <img src="{{ current.personPicture }}"
-                 style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+        {% if item.picture %}
+            <img src="{{ item.picture }}"
+                 style="width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
         {% endif %}
-        <div>{{ current.person }}</div>
+
+        <div style="font-size:1.4em; font-weight:bold;">
+            {{ item.start }} – {{ item.end }}
+        </div>
+
+        <div style="margin:10px 0; font-size:1.2em;">
+            {{ item.description }}
+        </div>
+
+        {% if item.person %}
+        <div style="display:flex; align-items:center; gap:12px;">
+            {% if item.personPicture %}
+                <img src="{{ item.personPicture }}"
+                     style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+            {% endif %}
+            <div>{{ item.person }}</div>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
-</div>
+    {% endfor %}
 {% else %}
 <p style="text-align:center; opacity:0.6;">
     Brak aktualnej aktywności
 </p>
 {% endif %}
 
-{% if next %}
-<div style="
-    margin-top:24px;
-    background:#020617;
-    border:2px dashed #38bdf8;
-    border-radius:16px;
-    padding:16px;
-">
-    <div style="opacity:0.7; font-size:0.9em;">
-        Następnie
-    </div>
+<!-- ================= NEXT ================= -->
+{% if next and next|length > 0 %}
+<h3 style="margin-top:28px; opacity:0.7;">Następnie</h3>
 
-    {% if next.picture %}
-        <img src="{{ next.picture }}"
-             style="width:50%; max-height:90px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
-    {% endif %}
+    {% for item in next %}
+    <div style="
+        margin-top:16px;
+        background:#020617;
+        border:2px dashed #38bdf8;
+        border-radius:16px;
+        padding:16px;
+    ">
 
-    {% if next.person %}
-    <div style="display:flex; align-items:center; gap:12px;">
-        {% if next.personPicture %}
-            <img src="{{ next.personPicture }}"
-                 style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+        {% if item.picture %}
+            <img src="{{ item.picture }}"
+                 style="width:50%; max-height:90px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
         {% endif %}
-        <div>{{ next.person }}</div>
-    </div>
-    {% endif %}
 
-    <div style="font-weight:bold;">
-        {{ next.start }} – {{ next.end }}
+        <div style="font-weight:bold;">
+            {{ item.start }} – {{ item.end }}
+        </div>
+
+        <div>{{ item.description }}</div>
+
+        {% if item.person %}
+        <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
+            {% if item.personPicture %}
+                <img src="{{ item.personPicture }}"
+                     style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+            {% endif %}
+            <div>{{ item.person }}</div>
+        </div>
+        {% endif %}
     </div>
-    <div>{{ next.description }}</div>
-</div>
+    {% endfor %}
 {% endif %}
 
 {% endblock %}
