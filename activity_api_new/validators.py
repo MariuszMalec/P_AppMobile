@@ -78,10 +78,6 @@ def validate_activity_edit_form(
         except ValueError as e:
             errors.append(str(e))
 
-
-        print(start_min)
-        print(end_min)
-
         # ✅ TU JEST WŁAŚCIWA WALIDACJA
         if not errors and start_min >= end_min:
             errors.append("Godzina startu musi być wcześniejsza niż zakończenia")

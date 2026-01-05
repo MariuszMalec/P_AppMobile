@@ -7,7 +7,7 @@ from templates import templates
 from enums import DAY_NAMES, PERSON_ENUM_MAP
 from validators import (    
     validate_activity_form,
-    validate_activity_edit_form,
+    validate_activity_edit_form,    
 )
 from db import get_db
 
@@ -161,17 +161,16 @@ def register_routes_activity(app):
                 DayOfWeek = ?
                 AND ModelPersonFamilyId = ?
                 AND (
-                    ? < EndTime
-                    AND ? > StartTime
+                    time(?) < time(EndTime)
+                    AND time(?) > time(StartTime)
                 )
-            LIMIT 1
-
+            LIMIT 1 
         """, (
             day_of_week,
             5 if person_id == 0 else person_id,
             start,   # INT (sekundy)
             end      # INT (sekundy)
-        ))
+        ))       
 
         conflict = cursor.fetchone()
 
@@ -224,27 +223,54 @@ def register_routes_activity(app):
         picture_id = row["Id"]
 
         # ✅ INSERT
-        cursor.execute("""
-            INSERT INTO ActiviesDays (
-                DayOfWeek,
-                StartTime,
-                EndTime,
-                Description,
-                ModelPersonFamilyId,
-                ModelPictureActivityId
-            )
-            VALUES (?, ?, ?, ?, ?, ?)
-        """, (
-            day_of_week,
-            start,
-            end,
-            description.strip() or None,
-            5 if person_id == 0 else person_id,  # ✅ # 0 = ALL → zapisujemy jako RODZINA (Id=5)
-            picture_id
-        ))
+        try:
+            cursor.execute("""
+                INSERT INTO ActiviesDays (
+                    DayOfWeek,
+                    StartTime,
+                    EndTime,
+                    Description,
+                    ModelPersonFamilyId,
+                    ModelPictureActivityId
+                )
+                VALUES (?, ?, ?, ?, ?, ?)
+            """, (
+                day_of_week,
+                start,
+                end,
+                description.strip() or None,
+                5 if person_id == 0 else person_id,  # ✅ # 0 = ALL → zapisujemy jako RODZINA (Id=5)
+                picture_id
+            ))
 
-        db.commit()
-        db.close()
+            db.commit()
+            db.close()
+        except sqlite3.IntegrityError as e:
+            db.rollback()
+
+            if "TIME_OVERLAP" in str(e):
+                db.close()
+                return templates.TemplateResponse(
+                    "activity_add.html",
+                    {
+                        "request": request,
+                        "errors": [
+                            "❌ Masz już zaplanowaną aktywność w tym czasie (TIME_OVERLAP)"
+                        ],
+                        "form": {
+                            "start": start,
+                            "end": end,
+                            "day_of_week": day_of_week,
+                            "description": description,
+                            "person_id": person_id,
+                            "activity_name": activity_name,
+                        },
+                        "persons": PERSON_ENUM_MAP,
+                        "activities": activities,
+                        "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+                    },
+                    status_code=400
+                )          
 
         return RedirectResponse("/activity", status_code=303)
 
@@ -316,7 +342,6 @@ def register_routes_activity(app):
         )
 
 
-
     @app.post("/activities/edit/{activity_id}", response_class=HTMLResponse)
     def edit_activity_post(
         request: Request,
@@ -328,6 +353,7 @@ def register_routes_activity(app):
         person_id: int = Form(...),
         picture_id: int = Form(...)
     ):
+
         errors = validate_activity_edit_form(
             start, end, day_of_week, person_id
         )
@@ -416,14 +442,14 @@ def register_routes_activity(app):
                 AND ModelPersonFamilyId = ?
                 AND Id != ?
                 AND (
-                    ? < EndTime
-                    AND ? > StartTime
+                    time(?) < time(EndTime)
+                    AND time(?) > time(StartTime)
                 )
             LIMIT 1
         """, (
             day_of_week,
-            person_id,
-            activity_id,   # ⬅️ KLUCZOWE
+            5 if person_id == 0 else person_id,
+            activity_id,
             start,
             end
         ))

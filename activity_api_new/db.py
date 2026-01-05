@@ -80,8 +80,8 @@ def init_db_if_not_exists():
                 WHERE
                     DayOfWeek = NEW.DayOfWeek
                     AND ModelPersonFamilyId = NEW.ModelPersonFamilyId
-                    AND NEW.StartTime < EndTime
-                    AND NEW.EndTime   > StartTime
+                    AND time(NEW.StartTime) < time(EndTime)
+                    AND time(NEW.EndTime)   > time(StartTime)
             );
         END;
 
