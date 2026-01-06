@@ -224,12 +224,12 @@ td {
         {% set cell = row[p.id] %}
         <td class="{% if cell and cell.is_live %}live{% endif %}"
             {% if cell %}
+            data-activity-id="{{ cell.activity_id }}"
             data-desc="{{ cell.description }}"
             data-img="{{ cell.picture }}"
             data-start="{{ cell.start }}"
             data-end="{{ cell.end }}"
             data-activityname="{{ cell.activityname }}"
-            data-activity-id="{{ cell.activity_id }}"
             onclick="openPreview(this)"
             {% endif %}
         >
@@ -296,16 +296,20 @@ function openPreview(el) {
     currentCell = el;
 
     document.getElementById('p-img').src = el.dataset.img || '';
-    document.getElementById('p-desc-input').value = el.dataset.desc || '';
     document.getElementById('p-start').value = el.dataset.start || '';
     document.getElementById('p-end').value = el.dataset.end || '';
+    document.getElementById('p-desc-input').value = el.dataset.desc || '';
 
-    const activityName = el.dataset.activityname || "";
     const select = document.getElementById('p-activity-select');
-    select.value = activityName;    
+    const activityName = el.dataset.activityname || "";
+
+    // ustawienie selecta PO VALUE
+    select.value = activityName;
 
     document.getElementById('preview').classList.add('active');
 }
+
+
 
 document.getElementById('p-activity-select').addEventListener('change', e => {
     const selected = e.target.selectedOptions[0];
@@ -336,15 +340,37 @@ function closePreview() {
 }
 
 function saveEdit() {
-    const start = document.getElementById('p-start').value;
-    const end   = document.getElementById('p-end').value;
-    const desc  = document.getElementById('p-desc-input').value;
+    if (!currentCell) return;
 
-    console.log("SAVE:", start, end, desc);
+    const activityId = currentCell.dataset.activityId;
 
-    // 🔜 tu docelowo fetch POST do FastAPI
+    const formData = new FormData();
+    formData.append("start", document.getElementById('p-start').value);
+    formData.append("end", document.getElementById('p-end').value);
+    formData.append("description", document.getElementById('p-desc-input').value);
+    formData.append(
+        "activityname",
+        document.getElementById('p-activity-select').value
+    );
 
-    closePreview();
+    fetch(`/statusall/edit/${activityId}`, {
+        method: "PUT",
+        body: formData
+    })
+    .then(async r => {
+        const text = await r.text();
+        if (!r.ok) {
+            console.error("STATUS:", r.status);
+            console.error("RESPONSE:", text);
+            throw new Error(text || "Błąd zapisu");
+        }
+        return text;
+    })
+    .then(() => {
+        closePreview();
+        location.reload(); // NA RAZIE – później zrobimy live update
+    })
+    .catch(err => alert(err.message));
 }
 
 setInterval(() => {

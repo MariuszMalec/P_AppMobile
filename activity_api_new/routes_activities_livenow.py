@@ -1,4 +1,4 @@
-from fastapi import Request
+from fastapi import Request, Form
 from fastapi.responses import HTMLResponse
 import sqlite3
 from db import DB_PATH
@@ -10,6 +10,7 @@ from validators import (
 )
 from db import get_db
 from datetime import datetime
+from fastapi.responses import JSONResponse
 
 
 def register_routes_livenow(app):
@@ -161,6 +162,7 @@ def register_routes_livenow(app):
 
         rows = cursor.execute("""
             SELECT
+                ad.Id,
                 ad.StartTime,
                 ad.EndTime,
                 ad.Description,
@@ -205,7 +207,8 @@ def register_routes_livenow(app):
         table = {}
 
         for r in rows:
-            time_key = f'{r["StartTime"]} – {r["EndTime"]}'
+            
+            time_key = f'{hhmm(r["StartTime"])} – {hhmm(r["EndTime"])}'
 
             if time_key not in table:
                 table[time_key] = {p["id"]: None for p in persons}
@@ -214,6 +217,7 @@ def register_routes_livenow(app):
 
             if person_id in table[time_key]:
                 table[time_key][person_id] = {
+                    "activity_id": r["Id"],
                     "description": r["Description"],
                     "picture": r["Picture"],
                     "activityname": r["ActivityName"],
@@ -302,6 +306,49 @@ def register_routes_livenow(app):
                 "now": current_time,
             }
         )
+
+    
+
+    @app.put("/statusall/edit/{activity_id}")
+    def edit_activity_put(
+        activity_id: int,
+        start: str = Form(...),
+        end: str = Form(...),
+        description: str = Form(""),
+        activityname: str = Form(""),
+    ):
+        db = get_db()
+        cursor = db.cursor()
+
+        # 🔎 znajdź ID aktywności po nazwie
+        picture = cursor.execute("""
+            SELECT Id FROM PictureActivities
+            WHERE Name = ?
+        """, (activityname,)).fetchone()
+
+        picture_id = picture["Id"] if picture else None
+
+        cursor.execute("""
+            UPDATE ActiviesDays
+            SET
+                StartTime = ?,
+                EndTime = ?,
+                Description = ?,
+                ModelPictureActivityId = ?
+            WHERE Id = ?
+        """, (
+            start,
+            end,
+            description.strip() or None,
+            picture_id,
+            activity_id
+        ))
+
+        db.commit()
+        db.close()
+
+        return JSONResponse({"status": "ok"})
+
 
 
 
