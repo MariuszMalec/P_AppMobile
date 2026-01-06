@@ -167,7 +167,8 @@ def register_routes_livenow(app):
                 pf.Id AS PersonId,
                 pf.PersonName,
                 pf.PersonPicture,
-                pa.Picture
+                pa.Picture,
+                pa.Name
             FROM ActiviesDays ad
             LEFT JOIN PersonFamilies pf
                 ON ad.ModelPersonFamilyId = pf.Id
@@ -201,6 +202,9 @@ def register_routes_livenow(app):
                 table[time_key][person_id] = {
                     "description": r["Description"],
                     "picture": r["Picture"],
+                    "activityname": r["Name"],
+                    "start": r["StartTime"],
+                    "end": r["EndTime"],
                     "is_live": r["StartTime"] <= current_time <= r["EndTime"]
                 }
 

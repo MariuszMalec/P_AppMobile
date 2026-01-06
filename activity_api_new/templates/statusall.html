@@ -124,7 +124,6 @@ td {
     justify-content: center;
     z-index: 999;
 }
-
 .preview-bg.active {
     display: flex;
 }
@@ -136,6 +135,7 @@ td {
     overflow: hidden;
     box-shadow: 0 20px 60px rgba(0,0,0,.6);
     animation: pop .18s ease-out;
+    position: relative;
 }
 
 @keyframes pop {
@@ -151,9 +151,32 @@ td {
 
 .preview-desc {
     padding: 14px;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.preview-desc label {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.preview-desc input {
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+}
+
+.preview-desc button {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #38bdf8;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
 }
 
 .preview-close {
@@ -203,6 +226,9 @@ td {
             {% if cell %}
             data-desc="{{ cell.description }}"
             data-img="{{ cell.picture }}"
+            data-start="{{ cell.start }}"
+            data-end="{{ cell.end }}"
+            data-activityname="{{ cell.activityname }}"
             onclick="openPreview(this)"
             {% endif %}
         >
@@ -228,20 +254,58 @@ td {
 <div class="preview-bg" id="preview" onclick="closePreview()">
     <div class="preview-card" onclick="event.stopPropagation()">
         <div class="preview-close" onclick="closePreview()">✕</div>
+
         <img id="p-img">
-        <div class="preview-desc" id="p-desc"></div>
+
+        <div class="preview-desc">
+            <div id="p-name" style="font-weight:600; text-align:center;"></div>
+
+            <label>Start</label>
+            <input type="time" id="p-start">    
+
+            <label>Koniec</label>
+            <input type="time" id="p-end">
+
+            <label>Name</label>
+            <input type="text" id="p-activityname">
+
+            <label>Opis</label>
+            <input type="text" id="p-desc-input">
+
+            <button onclick="saveEdit()">💾 Zapisz</button>
+        </div>
     </div>
 </div>
 
 <script>
+let currentCell = null;
+
 function openPreview(el) {
+    currentCell = el;
+
     document.getElementById('p-img').src = el.dataset.img || '';
-    document.getElementById('p-desc').textContent = el.dataset.desc || '';
+    document.getElementById('p-desc-input').value = el.dataset.desc || '';
+    document.getElementById('p-start').value = el.dataset.start || '';
+    document.getElementById('p-end').value = el.dataset.end || '';
+    document.getElementById('p-activityname').value = el.dataset.activityname || '';
+
     document.getElementById('preview').classList.add('active');
 }
 
 function closePreview() {
     document.getElementById('preview').classList.remove('active');
+}
+
+function saveEdit() {
+    const start = document.getElementById('p-start').value;
+    const end   = document.getElementById('p-end').value;
+    const desc  = document.getElementById('p-desc-input').value;
+
+    console.log("SAVE:", start, end, desc);
+
+    // 🔜 tu docelowo fetch POST do FastAPI
+
+    closePreview();
 }
 
 setInterval(() => {
