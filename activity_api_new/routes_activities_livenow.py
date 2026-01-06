@@ -1,4 +1,4 @@
-from fastapi import Request, Form
+from fastapi import Request, Form, Query
 from fastapi.responses import HTMLResponse
 import sqlite3
 from db import DB_PATH
@@ -80,18 +80,34 @@ def register_routes_livenow(app):
         )
 
 
+
     @app.get("/status", response_class=HTMLResponse)
-    def status_page(request: Request):
+    def status_page(
+        request: Request,
+        person: str = Query(default="ALL")   # 👈 STRING
+    ):
         db = get_db()
         cursor = db.cursor()
 
         now = datetime.now()
-        iso_day = now.isoweekday()          # 1-7
+        iso_day = now.isoweekday()
         current_day = system_day_to_db_day(iso_day)
         current_day_name = now.strftime("%A")
-        current_time = now.strftime("%H:%M:%S")  # HH:MM:SS
+        current_time = now.strftime("%H:%M:%S")
 
-        rows = cursor.execute("""
+        PERSON_LABEL_TO_ENUM = {
+            "ALL": 0,
+            "TATA": 1,
+            "MAMA": 2,
+            "GOSIA": 3,
+            "EMILKA": 4,
+            "RODZINA": 5,
+        }
+
+        person = person.upper()
+        person_enum = PERSON_LABEL_TO_ENUM.get(person, 0)  # fallback ALL
+
+        sql = """
             SELECT
                 ad.StartTime,
                 ad.EndTime,
@@ -106,21 +122,26 @@ def register_routes_livenow(app):
             LEFT JOIN PictureActivities pa
                 ON ad.ModelPictureActivityId = pa.Id
             WHERE ad.DayOfWeek = ?
-            ORDER BY ad.StartTime
-        """, (current_day,)).fetchall()
+        """
 
+        params = [current_day]
+
+        if person_enum != 0:
+            sql += " AND pf.PersonName = ?"
+            params.append(person_enum)
+
+        sql += " ORDER BY ad.StartTime"
+
+        rows = cursor.execute(sql, params).fetchall()
         db.close()
 
         current = None
         next_item = None
 
         for r in rows:
-            # 👉 MAPOWANIE ENUM
             person_label = None
-            if r["PersonName"] is not None:
-                enum_value = PERSON_ENUM_MAP.get(r["PersonName"])
-                if enum_value:
-                    person_label = enum_value.value  # "TATA", "MAMA", itd.
+            if r["PersonName"] in PERSON_ENUM_MAP:
+                person_label = PERSON_ENUM_MAP[r["PersonName"]].value
 
             item = {
                 "start": r["StartTime"],
@@ -128,7 +149,7 @@ def register_routes_livenow(app):
                 "description": r["Description"],
                 "person": person_label,
                 "personPicture": r["PersonPicture"],
-                "picture": r["Picture"],            
+                "picture": r["Picture"],
             }
 
             if r["StartTime"] <= current_time <= r["EndTime"]:
@@ -137,13 +158,17 @@ def register_routes_livenow(app):
                 next_item = item
 
         return templates.TemplateResponse(
-            "home.html",
+            "status.html",
             {
                 "request": request,
                 "now": current_time,
                 "current": current,
                 "next": next_item,
-                "current_day_name" : current_day_name,
+                "current_day_name": current_day_name,
+
+                # 👇 DO WIDOKU
+                "selected_person": person,
+                "persons": list(PERSON_LABEL_TO_ENUM.keys()),
             }
         )
 
