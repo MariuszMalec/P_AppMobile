@@ -229,6 +229,7 @@ td {
             data-start="{{ cell.start }}"
             data-end="{{ cell.end }}"
             data-activityname="{{ cell.activityname }}"
+            data-activity-id="{{ cell.activity_id }}"
             onclick="openPreview(this)"
             {% endif %}
         >
@@ -266,8 +267,13 @@ td {
             <label>Koniec</label>
             <input type="time" id="p-end">
 
-            <label>Name</label>
-            <input type="text" id="p-activityname">
+            <label>Aktywność</label>
+            <select id="p-activity-select" name="activityname">
+                <option value="">— BRAK —</option>
+                {% for v in pictures %}
+                    <option value="{{ v.label }}">{{ v.label }}</option>
+                {% endfor %}
+            </select>
 
             <label>Opis</label>
             <input type="text" id="p-desc-input">
@@ -287,7 +293,10 @@ function openPreview(el) {
     document.getElementById('p-desc-input').value = el.dataset.desc || '';
     document.getElementById('p-start').value = el.dataset.start || '';
     document.getElementById('p-end').value = el.dataset.end || '';
-    document.getElementById('p-activityname').value = el.dataset.activityname || '';
+
+    const activityName = el.dataset.activityname || "";
+    const select = document.getElementById('p-activity-select');
+    select.value = activityName;    
 
     document.getElementById('preview').classList.add('active');
 }

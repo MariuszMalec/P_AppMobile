@@ -168,7 +168,7 @@ def register_routes_livenow(app):
                 pf.PersonName,
                 pf.PersonPicture,
                 pa.Picture,
-                pa.Name
+                pa.Name AS ActivityName
             FROM ActiviesDays ad
             LEFT JOIN PersonFamilies pf
                 ON ad.ModelPersonFamilyId = pf.Id
@@ -177,9 +177,7 @@ def register_routes_livenow(app):
             WHERE ad.DayOfWeek = ?
             ORDER BY ad.StartTime
         """, (current_day,)).fetchall()
-
-        db.close()
-
+        
         persons = [
             {"id": 3, "name": "GOSIA"},
             {"id": 2, "name": "MAMA"},
@@ -187,6 +185,22 @@ def register_routes_livenow(app):
             {"id": 4, "name": "EMILKA"},
             {"id": 5, "name": "ALL"},
         ]
+
+        # --- AKTYWNOŚCI (POPRAWKA) ---
+        pictures_raw = cursor.execute("""
+            SELECT Id, Name, Picture
+            FROM PictureActivities
+        """).fetchall()
+
+        pictures = []
+        for pic in pictures_raw:
+            pictures.append({
+                "id": pic["Id"],
+                "label": pic["Name"],       # ✅ BEZ ENUM
+                "picture": pic["Picture"]
+            })
+
+        db.close()
 
         table = {}
 
@@ -202,7 +216,7 @@ def register_routes_livenow(app):
                 table[time_key][person_id] = {
                     "description": r["Description"],
                     "picture": r["Picture"],
-                    "activityname": r["Name"],
+                    "activityname": r["ActivityName"],
                     "start": r["StartTime"],
                     "end": r["EndTime"],
                     "is_live": r["StartTime"] <= current_time <= r["EndTime"]
@@ -215,6 +229,7 @@ def register_routes_livenow(app):
                 "table": table,
                 "persons": persons,
                 "day_name": current_day_name,
+                "pictures": pictures,
                 "now": current_time,
             }
         )
