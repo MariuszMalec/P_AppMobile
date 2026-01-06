@@ -295,18 +295,60 @@ let currentCell = null;
 function openPreview(el) {
     currentCell = el;
 
-    document.getElementById('p-img').src = el.dataset.img || '';
-    document.getElementById('p-start').value = el.dataset.start || '';
-    document.getElementById('p-end').value = el.dataset.end || '';
-    document.getElementById('p-desc-input').value = el.dataset.desc || '';
+    // 🔒 zapamiętaj stan przed edycją
+    originalState = {
+        img: el.dataset.img || '',
+        desc: el.dataset.desc || '',
+        activityname: el.dataset.activityname || '',
+        start: el.dataset.start || '',
+        end: el.dataset.end || ''
+    };
+
+    document.getElementById('p-img').src = originalState.img;
+    document.getElementById('p-start').value = originalState.start;
+    document.getElementById('p-end').value = originalState.end;
+    document.getElementById('p-desc-input').value = originalState.desc;
 
     const select = document.getElementById('p-activity-select');
-    const activityName = el.dataset.activityname || "";
-
-    // ustawienie selecta PO VALUE
-    select.value = activityName;
+    select.value = originalState.activityname;
 
     document.getElementById('preview').classList.add('active');
+}
+
+
+function closePreview() {
+    if (currentCell && originalState) {
+
+        // 🔙 cofnięcie dataset
+        currentCell.dataset.img = originalState.img;
+        currentCell.dataset.desc = originalState.desc;
+        currentCell.dataset.activityname = originalState.activityname;
+        currentCell.dataset.start = originalState.start;
+        currentCell.dataset.end = originalState.end;
+
+        // 🔙 cofnięcie obrazka
+        let tileImg = currentCell.querySelector('.tile-img');
+        if (originalState.img) {
+            if (!tileImg) {
+                tileImg = document.createElement('img');
+                tileImg.className = 'tile-img';
+                currentCell.prepend(tileImg);
+            }
+            tileImg.src = originalState.img;
+        } else if (tileImg) {
+            tileImg.remove();
+        }
+
+        // 🔙 cofnięcie opisu
+        const overlay = currentCell.querySelector('.tile-overlay');
+        if (overlay) overlay.textContent = originalState.desc;
+    }
+
+    document.getElementById('preview').classList.remove('active');
+
+    // 🧹 cleanup
+    currentCell = null;
+    originalState = null;
 }
 
 
