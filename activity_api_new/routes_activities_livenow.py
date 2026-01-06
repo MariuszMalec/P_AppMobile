@@ -6,6 +6,7 @@ from templates import templates
 from enums import DAY_NAMES, PERSON_ENUM_MAP
 from validators import (    
     system_day_to_db_day,
+    hhmm
 )
 from db import get_db
 from datetime import datetime
@@ -258,7 +259,8 @@ def register_routes_livenow(app):
         table = {}
 
         for r in rows:
-            time_key = f'{r["StartTime"]} – {r["EndTime"]}'
+
+            time_key = f'{hhmm(r["StartTime"])} – {hhmm(r["EndTime"])}'
 
             if time_key not in table:
                 table[time_key] = {p["id"]: None for p in persons}

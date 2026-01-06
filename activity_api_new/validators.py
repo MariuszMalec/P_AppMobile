@@ -5,6 +5,19 @@ from enums import DAY_NAMES, PERSON_ENUM_MAP
 
 TIME_RE = re.compile(r"^\d{2}:\d{2}$")
 
+
+def hhmm(t: str) -> str:
+    t = t.strip()
+
+    for fmt in ("%H:%M:%S", "%H:%M"):
+        try:
+            return datetime.strptime(t, fmt).strftime("%H:%M")
+        except ValueError:
+            pass
+
+    raise ValueError(f"Nieobsługiwany format czasu: {t}")
+
+
 def time_to_minutes(value: str) -> int:
     t = datetime.strptime(value, "%H:%M")
     return t.hour * 60 + t.minute
