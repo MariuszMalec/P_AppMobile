@@ -88,7 +88,10 @@ def register_routes_home(app):
 
     
     @app.get("/homebyperson", response_class=HTMLResponse)
-    def home_page(request: Request, person: str = Query(default="MAMA") ):
+    def home_page(
+        request: Request,
+        person: str = Query(default="MAMA")
+    ):
         db = get_db()
         cursor = db.cursor()
 
@@ -96,9 +99,32 @@ def register_routes_home(app):
         current_time = now.strftime("%H:%M:%S")
         iso_day = now.isoweekday()
         current_day = system_day_to_db_day(iso_day)
-        current_day_name = now.strftime("%A")       
+        current_day_name = now.strftime("%A")
 
-        rows = cursor.execute("""
+        # 👉 MAPY (STRING <-> ID)
+        PERSON_NAME_MAP = {
+            1: "TATA",
+            2: "MAMA",
+            3: "GOSIA",
+            4: "EMILKA",
+            5: "ALL",
+        }
+
+        PERSON_STRING_TO_ID = {
+            "TATA": 1,
+            "MAMA": 2,
+            "GOSIA": 3,
+            "EMILKA": 4,
+            "ALL": 5,
+        }
+
+        persons = ["ALL", "TATA", "MAMA", "GOSIA", "EMILKA"]
+        selected_person = person if person in persons else "ALL"
+
+        person_id = PERSON_STRING_TO_ID[selected_person]
+
+        # 👉 SQL
+        sql = """
             SELECT
                 ad.StartTime,
                 ad.EndTime,
@@ -112,18 +138,18 @@ def register_routes_home(app):
             LEFT JOIN PictureActivities pa
                 ON ad.ModelPictureActivityId = pa.Id
             WHERE ad.DayOfWeek = ?
-            ORDER BY ad.StartTime
-        """, (current_day,)).fetchall()
+        """
+        params = [current_day]
 
+        # 👉 FILTR OSOBY (jeśli nie ALL)
+        if person_id != 5:
+            sql += " AND ad.ModelPersonFamilyId = ?"
+            params.append(person_id)
+
+        sql += " ORDER BY ad.StartTime"
+
+        rows = cursor.execute(sql, params).fetchall()
         db.close()
-
-        PERSON_NAME_MAP = {
-            1: "TATA",
-            2: "MAMA",
-            3: "GOSIA",
-            4: "EMILKA",
-            5: "ALL",
-        }
 
         current_items = []
         next_items = []
@@ -154,10 +180,11 @@ def register_routes_home(app):
                 "current": current_items,
                 "next": next_items,
                 "current_day_name": current_day_name,
+                "persons": persons,
+                "selected_person": selected_person,
             }
         )
-
-        
+            
 
 
     @app.get("/activities")
