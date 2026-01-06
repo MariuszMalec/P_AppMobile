@@ -158,6 +158,18 @@ body {
     .tile { height: 260px; }
     .desc { font-size: 26px; }
 }
+
+.time-range {
+    font-weight: 600;
+    font-size: 1.3em;
+}
+
+@media (max-width: 600px) {
+    .time-range {
+        font-size: 1.05em;
+    }
+}
+
 </style>
 </head>
 
@@ -185,7 +197,8 @@ body {
         <div class="tile-overlay">
             <div class="person">👤 {{ item.person }}</div>
 
-            <div style="font-size:1.6em; font-weight:bold;">
+            <div  style="font-weight:600; font-size: clamp(1em, 4vw, 1.4em);">
+            <!-- <div class="time-range"></div> -->
                 {{ item.start }} – {{ item.end }}
             </div>
 
