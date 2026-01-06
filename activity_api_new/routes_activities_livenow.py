@@ -84,7 +84,7 @@ def register_routes_livenow(app):
     @app.get("/status", response_class=HTMLResponse)
     def status_page(
         request: Request,
-        person: str = Query(default="ALL")   # 👈 STRING
+        person: str = Query(default="MAMA")   # 👈 STRING
     ):
         db = get_db()
         cursor = db.cursor()
