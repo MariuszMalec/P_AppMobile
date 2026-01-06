@@ -49,8 +49,6 @@ def register_routes_pictureactivity(app):
         )
 
 
-
-
     # ---------- EDIT PICTURE ACTIVITY ----------
     @app.get("/pictureactivities/edit/{item_id}", response_class=HTMLResponse)
     def edit_picture_activity_form(item_id: int, request: Request):
@@ -83,7 +81,6 @@ def register_routes_pictureactivity(app):
         )
 
 
-
     @app.post("/pictureactivities/edit/{item_id}")
     def edit_picture_activity_save(
         item_id: int,
@@ -106,23 +103,6 @@ def register_routes_pictureactivity(app):
             url="/pictureactivities",
             status_code=303
         )
-
-    @app.post("/activities/delete/{activity_id}")
-    def delete_activity(activity_id: int):
-        conn = get_db()
-        cur = conn.cursor()
-
-        cur.execute(
-            "DELETE FROM ActiviesDays WHERE Id = ?",
-            (activity_id,)
-        )
-
-        conn.commit()
-        conn.close()
-
-        return RedirectResponse("/", status_code=303)
-
-
 
     # ---------- ADD PICTURE ACTIVITY ----------
     @app.get("/pictureactivities/add", response_class=HTMLResponse)
