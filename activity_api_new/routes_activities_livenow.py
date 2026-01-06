@@ -253,7 +253,6 @@ def register_routes_livenow(app):
             {"id": 1, "name": "TATA"},
             {"id": 4, "name": "EMILKA"},
             {"id": 5, "name": "ALL"},
-            {"id": 0, "name": "ALL"},
         ]
 
         table = {}
