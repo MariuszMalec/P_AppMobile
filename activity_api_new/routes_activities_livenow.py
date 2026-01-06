@@ -96,12 +96,11 @@ def register_routes_livenow(app):
         current_time = now.strftime("%H:%M:%S")
 
         PERSON_LABEL_TO_ENUM = {
-            "ALL": 0,
+            "ALL": 5,
             "TATA": 1,
             "MAMA": 2,
             "GOSIA": 3,
-            "EMILKA": 4,
-            "RODZINA": 5,
+            "EMILKA": 4
         }
 
         person = person.upper()

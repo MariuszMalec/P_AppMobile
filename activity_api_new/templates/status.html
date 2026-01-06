@@ -29,9 +29,39 @@
 
 </div>
 
-<form method="get" style="margin-bottom:16px;">
-    <select name="person" onchange="this.form.submit()"
-            style="padding:10px;border-radius:12px;">
+<form method="get"
+      style="
+        display:flex;
+        align-items:center;
+        gap:12px;
+        justify-content:center;
+        margin-bottom:18px;
+      ">
+
+    {% if current and current.personPicture %}
+        <img
+            src="{{ current.personPicture }}"
+            id="person-avatar"
+            style="
+                width:48px;
+                height:48px;
+                border-radius:50%;
+                object-fit:cover;
+                border:2px solid #22c55e;
+                animation:pulse 1.6s infinite;
+            "
+        >
+    {% else %}
+        <div style="width:48px;height:48px;"></div>
+    {% endif %}
+
+    <select name="person"
+            onchange="this.form.submit()"
+            style="
+                padding:10px 14px;
+                border-radius:14px;
+                font-weight:600;
+            ">
         {% for p in persons %}
             <option value="{{ p }}"
                 {% if p == selected_person %}selected{% endif %}>
@@ -39,8 +69,8 @@
             </option>
         {% endfor %}
     </select>
-</form>
 
+</form>
 
 
 <h2 style="text-align:center; margin-bottom:8px;">
