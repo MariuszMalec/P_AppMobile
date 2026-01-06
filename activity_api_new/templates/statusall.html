@@ -271,9 +271,15 @@ td {
             <select id="p-activity-select" name="activityname">
                 <option value="">— BRAK —</option>
                 {% for v in pictures %}
-                    <option value="{{ v.label }}">{{ v.label }}</option>
+                    <option
+                        value="{{ v.label }}"
+                        data-picture="{{ v.picture }}"
+                    >
+                        {{ v.label }}
+                    </option>
                 {% endfor %}
             </select>
+
 
             <label>Opis</label>
             <input type="text" id="p-desc-input">
@@ -300,6 +306,30 @@ function openPreview(el) {
 
     document.getElementById('preview').classList.add('active');
 }
+
+document.getElementById('p-activity-select').addEventListener('change', e => {
+    const selected = e.target.selectedOptions[0];
+    if (!selected) return;
+
+    const imgUrl = selected.dataset.picture || '';
+
+    // 🖼️ preview
+    const previewImg = document.getElementById('p-img');
+    previewImg.src = imgUrl;
+
+    // 🧠 zapamiętaj do zapisu
+    if (currentCell) {
+        currentCell.dataset.img = imgUrl;
+
+        let tileImg = currentCell.querySelector('.tile-img');
+        if (!tileImg) {
+            tileImg = document.createElement('img');
+            tileImg.className = 'tile-img';
+            currentCell.prepend(tileImg);
+        }
+        tileImg.src = imgUrl;
+    }
+});
 
 function closePreview() {
     document.getElementById('preview').classList.remove('active');
