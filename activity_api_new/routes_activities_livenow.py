@@ -6,7 +6,8 @@ from templates import templates
 from enums import DAY_NAMES, PERSON_ENUM_MAP
 from validators import (    
     system_day_to_db_day,
-    hhmm
+    hhmm,
+    validate_activity_edit_form
 )
 from db import get_db
 from datetime import datetime
@@ -344,14 +345,92 @@ def register_routes_livenow(app):
         db = get_db()
         cursor = db.cursor()
 
-        # 🔎 znajdź ID aktywności po nazwie
-        picture = cursor.execute("""
-            SELECT Id FROM PictureActivities
-            WHERE Name = ?
-        """, (activityname,)).fetchone()
+        # 🔎 POBIERZ EDYTOWANĄ AKTYWNOŚĆ (ŹRÓDŁO PRAWDY)
+        activity = cursor.execute("""
+            SELECT
+                DayOfWeek,
+                ModelPersonFamilyId
+            FROM ActiviesDays
+            WHERE Id = ?
+        """, (activity_id,)).fetchone()
 
-        picture_id = picture["Id"] if picture else None
+        if not activity:
+            db.close()
+            raise HTTPException(status_code=404, detail="Aktywność nie istnieje")
 
+        day_of_week = activity["DayOfWeek"]
+        person_id = activity["ModelPersonFamilyId"]
+
+        # ===============================
+        # 🧠 WALIDACJE PODSTAWOWE
+        # ===============================
+        errors = validate_activity_edit_form(
+            start,
+            end,
+            day_of_week,
+            person_id
+        )
+
+        if errors:
+            db.close()
+            return JSONResponse(
+                {"status": "error", "errors": errors},
+                status_code=400
+            )
+
+        # ===============================
+        # 🔒 KONFLIKT CZASOWY (EDIT)
+        # ===============================
+        conflict = cursor.execute("""
+            SELECT
+                StartTime AS start_time,
+                EndTime   AS end_time
+            FROM ActiviesDays
+            WHERE
+                DayOfWeek = ?
+                AND ModelPersonFamilyId = ?
+                AND Id != ?
+                AND (
+                    time(?) < time(EndTime)
+                    AND time(?) > time(StartTime)
+                )
+            LIMIT 1
+        """, (
+            day_of_week,
+            5 if person_id == 0 else person_id,
+            activity_id,
+            start,
+            end
+        )).fetchone()
+
+        if conflict:
+            db.close()
+            return JSONResponse(
+                {
+                    "status": "error",
+                    "errors": [
+                        f"Masz już zaplanowaną aktywność w tym czasie "
+                        f"({conflict['start_time']} – {conflict['end_time']})"
+                    ]
+                },
+                status_code=400
+            )
+
+        # ===============================
+        # 🖼️ AKTYWNOŚĆ → ID OBRAZKA
+        # ===============================
+        picture_id = None
+        if activityname:
+            pic = cursor.execute("""
+                SELECT Id FROM PictureActivities
+                WHERE Name = ?
+            """, (activityname,)).fetchone()
+            if pic:
+                picture_id = pic["Id"]
+
+        # ===============================
+        # ✅ UPDATE
+        # ===============================
         cursor.execute("""
             UPDATE ActiviesDays
             SET
@@ -372,7 +451,4 @@ def register_routes_livenow(app):
         db.close()
 
         return JSONResponse({"status": "ok"})
-
-
-
 
