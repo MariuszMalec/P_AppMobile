@@ -1,4 +1,4 @@
-from fastapi import Request, Form, Query
+from fastapi import HTTPException, Request, Form, Query
 from fastapi.responses import HTMLResponse
 import sqlite3
 from db import DB_PATH
