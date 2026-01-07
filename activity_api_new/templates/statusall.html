@@ -207,8 +207,28 @@ td {
 </div>
 
 <div class="header">
-    <h1>🟢 LIVE ALL — {{ day_name }}</h1>
+    <div style="
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:14px;
+        font-size:18px;
+        font-weight:600;
+    ">
+        <span
+            style="cursor:pointer; user-select:none;"
+            onclick="changeDay(-1)"
+        >⬅</span>
+
+        <span>🟢 LIVE ALL — {{ day_name }}</span>
+
+        <span
+            style="cursor:pointer; user-select:none;"
+            onclick="changeDay(1)"
+        >➡</span>
+    </div>
 </div>
+
 
 <div class="table-wrap">
 <table>
@@ -500,6 +520,23 @@ function deleteActivity() {
     })
     .catch(err => showErrorToast(err.message));
 }
+
+
+const currentDay = {{ day_index }};
+
+function changeDay(step) {
+    let newDay = currentDay + step;
+
+    if (newDay < 1) newDay = 7;
+    if (newDay > 7) newDay = 1;
+
+    // wariant URL /liveall/2
+    window.location.href = `/liveall/${newDay}`;
+
+    // JEŚLI masz querystring zamiast path – użyj tego:
+    // window.location.href = `/liveall?day=${newDay}`;
+}
+
 
 
 </script>
