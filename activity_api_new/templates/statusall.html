@@ -487,8 +487,15 @@ function saveEdit() {
 
 /* AUTO REFRESH */
 setInterval(() => {
-    if (!document.hidden) location.reload();
+    const previewOpen = document
+        .getElementById('preview')
+        .classList.contains('active');
+
+    if (!document.hidden && !previewOpen) {
+        location.reload();
+    }
 }, 30000);
+
 
 function showErrorToast(message) {
     const toast = document.getElementById("toast");
