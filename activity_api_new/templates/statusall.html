@@ -220,12 +220,15 @@ td {
             onclick="changeDay(-1)"
         >⬅</span>
 
-        <span>🟢 LIVE ALL — {{ day_name }}</span>
+        <span>🟢 LIVE — {{ day_name }}</span> 
+
+        <span class="datetime" id="datetime"></span>
 
         <span
             style="cursor:pointer; user-select:none;"
             onclick="changeDay(1)"
         >➡</span>
+
     </div>
 </div>
 
@@ -482,6 +485,7 @@ function saveEdit() {
 
 }
 
+/* AUTO REFRESH */
 setInterval(() => {
     if (!document.hidden) location.reload();
 }, 30000);
@@ -537,7 +541,28 @@ function changeDay(step) {
     // window.location.href = `/liveall?day=${newDay}`;
 }
 
+/* DATE TIME LIVE */
+function updateDateTime() {
+    const el = document.getElementById('datetime');
+    const now = new Date();
 
+    const days = [
+        'Niedziela','Poniedziałek','Wtorek',
+        'Środa','Czwartek','Piątek','Sobota'
+    ];
+
+    const day = days[now.getDay()];
+    const time = now.toLocaleTimeString('pl-PL', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    el.textContent = `${time}`;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
 
 </script>
 
