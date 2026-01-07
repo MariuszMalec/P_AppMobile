@@ -291,6 +291,20 @@ td {
             <input type="text" id="p-desc-input">
 
             <button onclick="saveEdit()">💾 Zapisz</button>
+
+            <button
+                onclick="deleteActivity()"
+                style="
+                    margin-top:6px;
+                    background:#ef4444;
+                    color:#fff;
+                    font-weight:700;
+                "
+            >
+                🗑 Usuń aktywność
+            </button>
+
+
         </div>
     </div>
 </div>
@@ -467,6 +481,26 @@ function showErrorToast(message) {
         }, 300);
     }, 4500);
 }
+
+function deleteActivity() {
+    if (!currentCell) return;
+
+    const activityId = currentCell.dataset.activityId;
+    if (!activityId) return;
+
+    if (!confirm("Czy na pewno usunąć tę aktywność?")) return;
+
+    fetch(`/activities/delete/${activityId}`, {
+        method: "POST"
+    })
+    .then(r => {
+        if (!r.ok) throw new Error("Nie udało się usunąć aktywności");
+        closePreview();
+        location.reload();
+    })
+    .catch(err => showErrorToast(err.message));
+}
+
 
 </script>
 
