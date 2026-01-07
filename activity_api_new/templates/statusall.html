@@ -7,6 +7,12 @@
 <title>LIVE ALL</title>
 
 <style>
+
+@keyframes slideDown {
+    from { opacity:0; transform:translate(-50%, -10px); }
+    to   { opacity:1; transform:translate(-50%, 0); }
+}
+
 :root {
     --panel: #0c0f2a;
     --border: rgba(255,255,255,.12);
@@ -289,6 +295,30 @@ td {
     </div>
 </div>
 
+<div id="toast"
+     style="
+        position:fixed;
+        top:24px;
+        left:50%;
+        transform:translateX(-50%);
+        background:#020617;
+        color:#fff;
+        padding:16px 20px;
+        border-radius:14px;
+        border:2px solid #ef4444;
+        box-shadow:0 10px 30px rgba(0,0,0,.5);
+        font-weight:600;
+        min-width:280px;
+        max-width:90%;
+        z-index:9999;
+        display:none;
+        animation:slideDown .3s ease;
+     ">
+    <span id="toast-text"></span>
+</div>
+
+
+
 <script>
 let currentCell = null;
 
@@ -412,12 +442,32 @@ function saveEdit() {
         closePreview();
         location.reload(); // NA RAZIE – później zrobimy live update
     })
-    .catch(err => alert(err.message));
+    .catch(err => {
+        showErrorToast(err.message);
+    });
+
 }
 
 setInterval(() => {
     if (!document.hidden) location.reload();
 }, 30000);
+
+function showErrorToast(message) {
+    const toast = document.getElementById("toast");
+    const text  = document.getElementById("toast-text");
+
+    text.innerText = "❌ " + message;
+    toast.style.display = "block";
+
+    setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => {
+            toast.style.display = "none";
+            toast.style.opacity = "1";
+        }, 300);
+    }, 4500);
+}
+
 </script>
 
 </body>
