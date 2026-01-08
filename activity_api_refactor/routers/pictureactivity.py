@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, Depends
 from fastapi.responses import HTMLResponse, RedirectResponse
 import sqlite3
 from templates import templates
@@ -20,8 +20,8 @@ router = APIRouter(
 # ==============================
 
 @router.get("", response_class=HTMLResponse)
-def picture_activities_page(request: Request):
-        db = get_db()
+def picture_activities_page(request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         rows = cursor.execute("""
@@ -57,8 +57,8 @@ def picture_activities_page(request: Request):
     
     
 @router.get("/edit/{item_id}", response_class=HTMLResponse)
-def edit_picture_activity_form(item_id: int, request: Request):
-        db = get_db()
+def edit_picture_activity_form(item_id: int, request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         row = cursor.execute("""
@@ -91,9 +91,11 @@ def edit_picture_activity_form(item_id: int, request: Request):
 def edit_picture_activity_save(
         item_id: int,
         name: str = Form(...),      # ✅ STRING
-        picture: str = Form("")
+        picture: str = Form(""), 
+        db = Depends(get_db)
+        
     ):
-        db = get_db()
+
         cursor = db.cursor()
 
         cursor.execute("""
@@ -114,7 +116,7 @@ def edit_picture_activity_save(
     
     
 @router.get("/add", response_class=HTMLResponse)
-def add_picture_activity_form(request: Request):
+def add_picture_activity_form(request: Request, db = Depends(get_db)):
         return templates.TemplateResponse(
             "pictureactivity_add.html",
             {
@@ -129,7 +131,8 @@ def add_picture_activity_save(
         request: Request,
         activityName: int = Form(...),
         name: str = Form(...),
-        picture: str = Form("")
+        picture: str = Form(""), 
+        db = Depends(get_db)
     ):
         errors = []
 
@@ -151,7 +154,6 @@ def add_picture_activity_save(
                 }
             )
 
-        db = get_db()
         cursor = db.cursor()
 
         try:

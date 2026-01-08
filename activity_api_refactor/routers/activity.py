@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, Depends
 from fastapi.responses import RedirectResponse, HTMLResponse
 from starlette.status import HTTP_303_SEE_OTHER
 import sqlite3
@@ -13,7 +13,7 @@ from validators import (
     ranges_overlap
 )
 from db import get_db
-from fastapi import Depends
+
 
 
 router = APIRouter(
@@ -22,8 +22,8 @@ router = APIRouter(
 )
 
 @router.get("", response_class=HTMLResponse)
-def activities_page(request: Request):
-        db = get_db()
+def activities_page(request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         query = """
@@ -87,8 +87,8 @@ def activities_page(request: Request):
 # DODAWANIE AKTYWNOŚCI
 # ==============================
 @router.get("/add", response_class=HTMLResponse)
-def add_activity_form(request: Request):
-        db = get_db()
+def add_activity_form(request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         cursor.execute("""
@@ -108,11 +108,6 @@ def add_activity_form(request: Request):
                 "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
             }
         )
-
-
-
-
-
 
 
 @router.post("/add", response_class=HTMLResponse)
@@ -303,8 +298,8 @@ def add_activity_post(
 # EDYCJA AKTYWNOŚCI
 # ==============================
 @router.get("/edit/{activity_id}", response_class=HTMLResponse)
-def edit_activity_page(request: Request, activity_id: int):
-        db = get_db()
+def edit_activity_page(request: Request, activity_id: int, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         activity = cursor.execute("""
@@ -374,13 +369,13 @@ def add_activity_post(
     day_of_week: int = Form(...),
     description: str = Form(""),
     person_id: int = Form(...),
-    activity_name: str = Form(...)
+    activity_name: str = Form(...),
+    db = Depends(get_db)
 ):
     errors = validate_activity_form(
         start, end, day_of_week, person_id, activity_name
     )
 
-    db = get_db()
     cursor = db.cursor()
 
     # potrzebne przy błędzie
@@ -503,8 +498,8 @@ def add_activity_post(
     
 
 @router.get("/week", response_class=HTMLResponse)
-def week_page(request: Request):
-        db = get_db()
+def week_page(request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         rows = cursor.execute("""
@@ -550,16 +545,13 @@ def week_page(request: Request):
 
 
 @router.post("/delete/{activity_id}")
-def delete_activity(activity_id: int):
-        conn = get_db()
-        cur = conn.cursor()
+def delete_activity(activity_id: int, db = Depends(get_db)):
+
+        cur = db.cursor()
 
         cur.execute(
             "DELETE FROM ActiviesDays WHERE Id = ?",
             (activity_id,)
         )
-
-        conn.commit()
-        conn.close()
 
         return RedirectResponse("/activities", status_code=303)    

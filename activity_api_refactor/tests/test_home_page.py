@@ -25,7 +25,7 @@ def test_home_current_and_next_items(client):
 
 
 def test_home_page_return_status_code_200():
-    response = client.get("/")
+    response = client.get("/home")
     assert response.status_code == 200
 
 def test_home_works_with_empty_db(client, empty_db):
