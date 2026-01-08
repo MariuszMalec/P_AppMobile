@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Request, Form, Query
+from fastapi import APIRouter, HTTPException, Request, Form, Query, Depends
 from fastapi.responses import HTMLResponse
 import sqlite3
 from db import DB_PATH
@@ -29,8 +29,8 @@ router = APIRouter(
 # ==============================
 
 @router.get("/now", response_class=HTMLResponse)
-def livenow_page(request: Request):
-        db = get_db()
+def livenow_page(request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         now = datetime.now()
@@ -93,9 +93,10 @@ def livenow_page(request: Request):
 @router.get("/status", response_class=HTMLResponse)
 def status_page(
         request: Request,
-        person: str = Query(default="MAMA")   # 👈 STRING
+        person: str = Query(default="MAMA"),
+        db = Depends(get_db)
     ):
-        db = get_db()
+
         cursor = db.cursor()
 
         now = datetime.now()
@@ -182,8 +183,8 @@ def status_page(
 
 
 @router.get("/statusall", response_class=HTMLResponse)
-def statusall_page(request: Request):
-        db = get_db()
+def statusall_page(request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         now = datetime.now()
@@ -273,8 +274,8 @@ def statusall_page(request: Request):
 
 
 @router.get("/liveall/{day}", response_class=HTMLResponse)
-def statusall_by_day(request: Request, day: int):
-        db = get_db()
+def statusall_by_day(request: Request, day: int, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         # 🔒 zabezpieczenie zakresu
@@ -379,8 +380,8 @@ def statusall_by_day(request: Request, day: int):
 
 
 @router.get("/statusalltv", response_class=HTMLResponse)
-def statusalltv_page(request: Request):
-        db = get_db()
+def statusalltv_page(request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         now = datetime.now()
@@ -454,8 +455,9 @@ def edit_activity_put(
         end: str = Form(...),
         description: str = Form(""),
         activityname: str = Form(""),
+        db = Depends(get_db)
     ):
-        db = get_db()
+
         cursor = db.cursor()
 
         # 🔎 POBIERZ EDYTOWANĄ AKTYWNOŚĆ (ŹRÓDŁO PRAWDY)
