@@ -181,7 +181,7 @@ def insert_activities_days(conn):
         """)
 
         conn.commit()
-        conn.close()
+
         print("✅ DB ensured (tables ActiviesDays exist)")
 
     except sqlite3.IntegrityError as e:

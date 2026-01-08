@@ -1,13 +1,14 @@
 from contextlib import asynccontextmanager
-
+import sqlite3
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from pathlib import Path
 
 from db import (
     init_db_if_not_exists,
-    # insert_person_families,
-    # insert_picture_activities,
-    # insert_activities_days,
+    insert_person_families,
+    insert_picture_activities,
+    insert_activities_days,
 )
 
 from routers.home import router as home_router
@@ -20,18 +21,23 @@ from routers.pictureactivity import router as pictureactivity_router
 # =========================
 # LIFESPAN (startup/shutdown)
 # =========================
+DB_PATH = Path(__file__).parent / "activity.db"
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # --- STARTUP ---
-    init_db_if_not_exists()
-    insert_person_families()
-    insert_picture_activities()
-    insert_activities_days()
+    # 🔌 PRODUKCYJNE POŁĄCZENIE
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
 
-    yield
-
-    # --- SHUTDOWN ---
-    # (na razie nic)
+    try:
+        init_db_if_not_exists(conn)
+        insert_person_families(conn)
+        insert_picture_activities(conn)
+        insert_activities_days(conn)
+        yield
+    finally:
+        conn.close()
 
 
 # ⬅️ TU PODPINAMY LIFESPAN
