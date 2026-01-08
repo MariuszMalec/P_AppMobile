@@ -44,17 +44,17 @@ def validate_activity_form(
     if not TIME_RE.match(end):
         errors.append("EndTime musi być w formacie HH:MM")
 
-    # if TIME_RE.match(start) and TIME_RE.match(end):
+    if TIME_RE.match(start) and TIME_RE.match(end):
 
-    #     try:
-    #         start_min = time_to_minutes(start)
-    #         end_min = time_to_minutes(end)
-    #     except ValueError as e:
-    #         errors.append(str(e))
+        try:
+            start_min = time_to_minutes(start)
+            end_min = time_to_minutes(end)
+        except ValueError as e:
+            errors.append(str(e))
 
-    #     # ✅ TU JEST WŁAŚCIWA WALIDACJA
-    #     if not errors and start_min >= end_min:
-    #         errors.append("Godzina startu musi być wcześniejsza niż zakończenia")
+        # ✅ TU JEST WŁAŚCIWA WALIDACJA
+        if not errors and start_min == end_min:
+            errors.append("Godzina startu musi być inna niż zakończenia")
 
     # if TIME_RE.match(start) and TIME_RE.match(end):
 
@@ -101,17 +101,17 @@ def validate_activity_edit_form(
     if not TIME_RE.match(end):
         errors.append("EndTime musi być w formacie HH:MM")
 
-    # if TIME_RE.match(start) and TIME_RE.match(end):
+    if TIME_RE.match(start) and TIME_RE.match(end):
 
-    #     try:
-    #         start_min = time_to_minutes(start)
-    #         end_min = time_to_minutes(end)
-    #     except ValueError as e:
-    #         errors.append(str(e))
+        try:
+            start_min = time_to_minutes(start)
+            end_min = time_to_minutes(end)
+        except ValueError as e:
+            errors.append(str(e))
 
-    #     # ✅ TU JEST WŁAŚCIWA WALIDACJA
-    #     if not errors and start_min >= end_min:
-    #         errors.append("Godzina startu musi być wcześniejsza niż zakończenia")
+        # ✅ TU JEST WŁAŚCIWA WALIDACJA
+        if not errors and start_min == end_min:
+            errors.append("Godzina startu musi być inna niż zakończenia")
 
 
     # --- dzień ---

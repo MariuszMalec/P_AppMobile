@@ -454,30 +454,42 @@ def edit_activity_post(
                 status_code=400
             )
         
-        # 🔒 BLOKADA: konflikt czasu (EDIT) – pomijamy edytowaną aktywność
+         # 🔒 BLOKADA: kolizje czasowe (z północą + stykami)
+        start_min = time_to_minutes(start)
+        end_min   = time_to_minutes(end)
+
         cursor.execute("""
-            SELECT
-                StartTime AS start_time,
-                EndTime   AS end_time
+            SELECT StartTime, EndTime
             FROM ActiviesDays
             WHERE
                 DayOfWeek = ?
                 AND ModelPersonFamilyId = ?
-                AND Id != ?
-                AND (
-                    time(?) < time(EndTime)
-                    AND time(?) > time(StartTime)
-                )
-            LIMIT 1
         """, (
             day_of_week,
-            5 if person_id == 0 else person_id,
-            activity_id,
-            start,
-            end
+            5 if person_id == 0 else person_id
         ))
 
-        conflict = cursor.fetchone()
+        existing = cursor.fetchall()
+
+        new_ranges = normalize_range(start_min, end_min)
+
+        conflict = None
+
+        for row in existing:
+            ex_start = time_to_minutes(row["StartTime"])
+            ex_end   = time_to_minutes(row["EndTime"])
+
+            ex_ranges = normalize_range(ex_start, ex_end)
+
+            for nr in new_ranges:
+                for er in ex_ranges:
+                    if ranges_overlap(nr, er):
+                        conflict = row
+                        break
+                if conflict:
+                    break
+            if conflict:
+                break
 
         if conflict:
             db.close()
@@ -487,7 +499,7 @@ def edit_activity_post(
                     "request": request,
                     "errors": [
                         f"❌ Masz już zaplanowaną aktywność w tym czasie "
-                        f"({conflict['start_time']} – {conflict['end_time']})"
+                        f"({conflict['StartTime']} – {conflict['EndTime']})"
                     ],
                     "activity": {
                         "Id": activity_id,
