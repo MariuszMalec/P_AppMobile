@@ -80,9 +80,9 @@ def home_page(request: Request, db = Depends(get_db) ):
                 next_items.append(item)
 
         return templates.TemplateResponse(
+            request,
             "home.html",
             {
-                "request": request,
                 "now": current_time,
                 "current": current_items,
                 "next": next_items,
@@ -90,12 +90,14 @@ def home_page(request: Request, db = Depends(get_db) ):
             }
         )
 
+
 @router.get("/homebyperson", response_class=HTMLResponse)    
 def home_page_by_person(
         request: Request,
-        person: str = Query(default="MAMA")
+        person: str = Query(default="MAMA"),
+        db = Depends(get_db)
     ):
-        db = get_db()
+
         cursor = db.cursor()
 
         now = datetime.now()
@@ -176,9 +178,9 @@ def home_page_by_person(
                 next_items.append(item)
 
         return templates.TemplateResponse(
+            request,
             "statusbyperson.html",
             {
-                "request": request,
                 "now": current_time,
                 "current": current_items,
                 "next": next_items,
