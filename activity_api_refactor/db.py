@@ -1,21 +1,23 @@
-import sqlite3
+import sqlite3, os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / "activity.db"
 
-def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    return conn
 
-def init_db_if_not_exists():
-    conn = sqlite3.connect(DB_PATH)
+def get_db():
+    db_path = os.getenv("DATABASE_PATH", "activity.db")
+    conn = sqlite3.connect(db_path)
+    conn.row_factory = sqlite3.Row
+    try:
+        yield conn
+    finally:
+        conn.close()
+
+
+def init_db_if_not_exists(conn):
     cur = conn.cursor()
 
-    # ==========================================================
-    # PersonFamilies
-    # ==========================================================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS PersonFamilies (
             Id INTEGER PRIMARY KEY,
@@ -24,9 +26,6 @@ def init_db_if_not_exists():
         )
     """)
 
-    # ==========================================================
-    # PictureActivities
-    # ==========================================================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS PictureActivities (
             Id INTEGER PRIMARY KEY,
@@ -36,10 +35,6 @@ def init_db_if_not_exists():
         )
     """)
 
-    # ==========================================================
-    # ActiviesDays
-    # StartTime / EndTime = sekundy od 00:00
-    # ==========================================================
     cur.execute("""
         CREATE TABLE IF NOT EXISTS ActiviesDays (
             Id INTEGER PRIMARY KEY,
@@ -48,32 +43,24 @@ def init_db_if_not_exists():
             EndTime INTEGER NOT NULL,
             Description TEXT,
             DayOfWeek INTEGER NOT NULL,
-
             ModelPersonFamilyId INTEGER,
             ModelPictureActivityId INTEGER,
-
             FOREIGN KEY (ModelPersonFamilyId)
                 REFERENCES PersonFamilies(Id)
                 ON DELETE SET NULL,
-
             FOREIGN KEY (ModelPictureActivityId)
                 REFERENCES PictureActivities(Id)
                 ON DELETE SET NULL
         )
     """)
 
-    # ==========================================================
-    # TRIGGER: blokada nakładających się czasów (INSERT)
-    # ==========================================================
-
     cur.execute("DROP TRIGGER IF EXISTS trg_no_time_overlap_insert;")
 
     cur.execute("""
-        CREATE TRIGGER IF NOT EXISTS trg_no_time_overlap_insert
+        CREATE TRIGGER trg_no_time_overlap_insert
         BEFORE INSERT ON ActiviesDays
         BEGIN
-            SELECT
-                RAISE(ABORT, 'TIME_OVERLAP')
+            SELECT RAISE(ABORT, 'TIME_OVERLAP')
             WHERE EXISTS (
                 SELECT 1
                 FROM ActiviesDays
@@ -84,19 +71,16 @@ def init_db_if_not_exists():
                     AND time(NEW.EndTime)   > time(StartTime)
             );
         END;
-
-
     """)
 
-
     conn.commit()
-    conn.close()
+
+
     print("✅ Database initialized successfully")
 
 
-def insert_person_families():
-    conn = sqlite3.connect(DB_PATH)
 
+def insert_person_families(conn):
     cur = conn.cursor()
 
     cur.execute("""
@@ -109,12 +93,11 @@ def insert_person_families():
     """)
 
     conn.commit()
-    conn.close()
+
     print("✅ DB ensured (tables PersonFamilies exist)")
 
 
-def insert_picture_activities():
-    conn = sqlite3.connect(DB_PATH)
+def insert_picture_activities(conn):
 
     cur = conn.cursor()
 
@@ -146,13 +129,11 @@ def insert_picture_activities():
     """)
 
     conn.commit()
-    conn.close()
+
     print("✅ DB ensured (tables PictureActivities exist)")
 
 
-def insert_activities_days():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row   # ⬅️ DODAJ TO
+def insert_activities_days(conn):
     cur = conn.cursor()
 
     try:
@@ -210,4 +191,4 @@ def insert_activities_days():
             raise
 
     finally:
-        conn.close()  
+        pass
