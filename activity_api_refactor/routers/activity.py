@@ -361,141 +361,173 @@ def edit_activity_page(request: Request, activity_id: int, db = Depends(get_db))
         )
 
 
-@router.post("/add", response_class=HTMLResponse)
-def add_activity_post(
-    request: Request,
-    start: str = Form(...),
-    end: str = Form(...),
-    day_of_week: int = Form(...),
-    description: str = Form(""),
-    person_id: int = Form(...),
-    activity_name: str = Form(...),
-    db = Depends(get_db)
-):
-    errors = validate_activity_form(
-        start, end, day_of_week, person_id, activity_name
-    )
+@router.post("/edit/{activity_id}", response_class=HTMLResponse)
+def edit_activity_post(
+        request: Request,
+        activity_id: int,
+        day_of_week: int = Form(...),
+        start: str = Form(...),
+        end: str = Form(...),
+        description: str = Form(""),
+        person_id: int = Form(...),
+        picture_id: int = Form(...), 
+        db = Depends(get_db)
+    ):
 
-    cursor = db.cursor()
+        errors = validate_activity_edit_form(
+            start, end, day_of_week, person_id
+        )
 
-    # potrzebne przy błędzie
-    cursor.execute("SELECT Id, Name FROM PictureActivities ORDER BY Name")
-    activities = cursor.fetchall()
+        cursor = db.cursor()
 
-    if errors:
-        db.close()
-        return templates.TemplateResponse(
-            "activity_add.html",
-            {
-                "request": request,
-                "errors": errors,
-                "form": {
-                    "start": start,
-                    "end": end,
-                    "day_of_week": day_of_week,
-                    "description": description,
-                    "person_id": person_id,
-                    "activity_name": activity_name,
+        # --- pobieramy aktywność (potrzebna przy błędach) ---
+        activity = cursor.execute("""
+            SELECT
+                Id,
+                DayOfWeek,
+                StartTime,
+                EndTime,
+                Description,
+                ModelPersonFamilyId,
+                ModelPictureActivityId
+            FROM ActiviesDays
+            WHERE Id = ?
+        """, (activity_id,)).fetchone()
+
+        if not activity:
+            db.close()
+            return HTMLResponse("Nie znaleziono aktywności", status_code=404)
+
+        # --- OSOBY ---
+        persons_raw = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+        """).fetchall()
+
+        persons = []
+        for p in persons_raw:
+            enum_val = PERSON_ENUM_MAP.get(p["PersonName"])
+            persons.append({
+                "id": p["Id"],
+                "label": enum_val.value if enum_val else "Nieznana"
+            })
+
+        # --- AKTYWNOŚCI ---
+        pictures_raw = cursor.execute("""
+            SELECT Id, Name, Picture
+            FROM PictureActivities
+        """).fetchall()
+
+        pictures = []
+        for pic in pictures_raw:
+            pictures.append({
+                "id": pic["Id"],
+                "label": pic["Name"],
+                "picture": pic["Picture"]
+            })
+
+        # ❌ BŁĘDY → wracamy do formularza
+        if errors:
+            db.close()
+            return templates.TemplateResponse(
+                "edit_activity.html",
+                {
+                    "request": request,
+                    "errors": errors,
+                    "activity": {
+                        "Id": activity_id,
+                        "DayOfWeek": day_of_week,
+                        "StartTime": start,
+                        "EndTime": end,
+                        "Description": description,
+                        "ModelPersonFamilyId": person_id,
+                        "ModelPictureActivityId": picture_id,
+                    },
+                    "persons": persons,
+                    "pictures": pictures,
+                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
                 },
-                "persons": PERSON_ENUM_MAP,
-                "activities": activities,
-                "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-            },
-            status_code=400
-        )
+                status_code=400
+            )
+        
+        # 🔒 BLOKADA: konflikt czasu (EDIT) – pomijamy edytowaną aktywność
+        cursor.execute("""
+            SELECT
+                StartTime AS start_time,
+                EndTime   AS end_time
+            FROM ActiviesDays
+            WHERE
+                DayOfWeek = ?
+                AND ModelPersonFamilyId = ?
+                AND Id != ?
+                AND (
+                    time(?) < time(EndTime)
+                    AND time(?) > time(StartTime)
+                )
+            LIMIT 1
+        """, (
+            day_of_week,
+            5 if person_id == 0 else person_id,
+            activity_id,
+            start,
+            end
+        ))
 
-    # --- KOLIZJE (PYTHON, NIE SQL) ---
-    start_min = time_to_minutes(start)
-    end_min   = time_to_minutes(end)
+        conflict = cursor.fetchone()
 
-    cursor.execute("""
-        SELECT StartTime, EndTime
-        FROM ActiviesDays
-        WHERE DayOfWeek = ?
-          AND ModelPersonFamilyId = ?
-    """, (
-        day_of_week,
-        5 if person_id == 0 else person_id
-    ))
+        if conflict:
+            db.close()
+            return templates.TemplateResponse(
+                "edit_activity.html",
+                {
+                    "request": request,
+                    "errors": [
+                        f"❌ Masz już zaplanowaną aktywność w tym czasie "
+                        f"({conflict['start_time']} – {conflict['end_time']})"
+                    ],
+                    "activity": {
+                        "Id": activity_id,
+                        "DayOfWeek": day_of_week,
+                        "StartTime": start,
+                        "EndTime": end,
+                        "Description": description,
+                        "ModelPersonFamilyId": person_id,
+                        "ModelPictureActivityId": picture_id,
+                    },
+                    "persons": persons,
+                    "pictures": pictures,
+                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+                },
+                status_code=400
+            )
 
-    existing = cursor.fetchall()
 
-    new_ranges = normalize_range(start_min, end_min)
+        # ✅ UPDATE
+        cursor.execute("""
+            UPDATE ActiviesDays
+            SET
+                DayOfWeek = ?,
+                StartTime = ?,
+                EndTime = ?,
+                Description = ?,
+                ModelPersonFamilyId = ?,
+                ModelPictureActivityId = ?
+            WHERE Id = ?
+        """, (
+            day_of_week,
+            start,
+            end,
+            description.strip() or None,
+            person_id,
+            picture_id,
+            activity_id
+        ))
 
-    for row in existing:
-        ex_start = time_to_minutes(row["StartTime"])
-        ex_end   = time_to_minutes(row["EndTime"])
-
-        for nr in new_ranges:
-            for er in normalize_range(ex_start, ex_end):
-                if ranges_overlap(nr, er):
-                    db.close()
-                    return templates.TemplateResponse(
-                        "activity_add.html",
-                        {
-                            "request": request,
-                            "errors": [
-                                f"❌ Masz już zaplanowaną aktywność "
-                                f"({row['StartTime']} – {row['EndTime']})"
-                            ],
-                            "form": {
-                                "start": start,
-                                "end": end,
-                                "day_of_week": day_of_week,
-                                "description": description,
-                                "person_id": person_id,
-                                "activity_name": activity_name,
-                            },
-                            "persons": PERSON_ENUM_MAP,
-                            "activities": activities,
-                            "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                        },
-                        status_code=400
-                    )
-
-    # --- ID obrazka ---
-    cursor.execute(
-        "SELECT Id FROM PictureActivities WHERE Name = ?",
-        (activity_name,)
-    )
-    row = cursor.fetchone()
-
-    if not row:
+        db.commit()
         db.close()
-        return templates.TemplateResponse(
-            "activity_add.html",
-            {
-                "request": request,
-                "errors": ["Nieprawidłowa aktywność"],
-                "persons": PERSON_ENUM_MAP,
-                "activities": activities,
-                "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-            },
-            status_code=400
-        )
 
-    # --- INSERT ---
-    cursor.execute("""
-        INSERT INTO ActiviesDays (
-            DayOfWeek, StartTime, EndTime, Description,
-            ModelPersonFamilyId, ModelPictureActivityId
-        )
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (
-        day_of_week,
-        start,
-        end,
-        description.strip() or None,
-        5 if person_id == 0 else person_id,
-        row["Id"]
-    ))
-
-    db.commit()
-    db.close()
-
-    return RedirectResponse("/activities", status_code=303)
-
-    
+        return RedirectResponse("/activities", status_code=HTTP_303_SEE_OTHER)
+      
 
 @router.get("/week", response_class=HTMLResponse)
 def week_page(request: Request, db = Depends(get_db)):
