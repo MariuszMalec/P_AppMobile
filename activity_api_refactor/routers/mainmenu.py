@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form, Query
+from fastapi import APIRouter, Request, Form, Query, Depends
 from fastapi.responses import RedirectResponse, HTMLResponse
 from starlette.status import HTTP_303_SEE_OTHER
 import sqlite3
@@ -21,8 +21,8 @@ router = APIRouter(
 # MAIN MENU
 # ==============================
 @router.get("", response_class=HTMLResponse)    
-def mainmenu_page(request: Request):
-        db = get_db()
+def mainmenu_page(request: Request, db = Depends(get_db)):
+
         cursor = db.cursor()
 
         now = datetime.now()

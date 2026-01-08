@@ -10,10 +10,11 @@ from main import app
 client = TestClient(app)
 
 
-def test_home_by_person_return_status_code_200():
-    response = client.get(
-        "/home/homebyperson",
-        params={"person": "MAMA"}
-    )
 
+def test_mainmenu_page_return_status_code_200():
+    response = client.get("/")
+    assert response.status_code == 200
+
+def test_mainmenu_works_with_empty_db(client, empty_db):
+    response = client.get("/mainmenu")
     assert response.status_code == 200
