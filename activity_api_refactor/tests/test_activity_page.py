@@ -47,7 +47,7 @@ def test_add_activity_return_Status_code_303(client):
     assert response.status_code == 303
 
 
-def test_add_activity_return_Status_code_400(client):
+def test_add_activity_return_Status_When_StartTimeIsTheSameAsEndTime_code_400(client):
     response = client.post(
         "/activities/add",
         data={
