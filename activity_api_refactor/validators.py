@@ -109,10 +109,13 @@ def validate_activity_edit_form(
         except ValueError as e:
             errors.append(str(e))
 
-        # ✅ TU JEST WŁAŚCIWA WALIDACJA
-        if not errors and start_min == end_min:
-            errors.append("Godzina startu musi być inna niż zakończenia")
+        # ❌ tylko gdy start jest PO end
+        if start_min > end_min:
+            errors.append("❌ Godzina rozpoczęcia musi być wcześniejsza niż zakończenia")
 
+        # ❌ opcjonalnie: blokada zerowej aktywności
+        if start_min == end_min:
+            errors.append("❌ Czas trwania aktywności nie może wynosić 0 minut")
 
     # --- dzień ---
     if day_of_week not in DAY_NAMES or day_of_week == 0:
