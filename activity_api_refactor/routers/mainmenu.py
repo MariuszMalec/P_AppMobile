@@ -77,9 +77,9 @@ def mainmenu_page(request: Request, db = Depends(get_db)):
                 next_item = item
 
         return templates.TemplateResponse(
+            request,
             "mainmenu.html",
             {
-                "request": request,
                 "now": current_time,
                 "current": current,
                 "next": next_item,

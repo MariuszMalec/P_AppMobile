@@ -81,9 +81,9 @@ def livenow_page(request: Request, db = Depends(get_db)):
 
 
         return templates.TemplateResponse(
+            request,
             "livenow.html",
             {
-                "request": request,
                 "live_items": live_items,
                 "now": current_time
             }
@@ -167,9 +167,9 @@ def status_page(
                 next_item = item
 
         return templates.TemplateResponse(
+            request,
             "status.html",
             {
-                "request": request,
                 "now": current_time,
                 "current": current,
                 "next": next_item,
@@ -260,9 +260,9 @@ def statusall_page(request: Request, db = Depends(get_db)):
                 }
 
         return templates.TemplateResponse(
+            request,
             "statusall.html",
             {
-                "request": request,
                 "table": table,
                 "persons": persons,
                 "day_name": current_day_name,
@@ -366,9 +366,9 @@ def statusall_by_day(request: Request, day: int, db = Depends(get_db)):
                 }
 
         return templates.TemplateResponse(
+            request,
             "statusall.html",
             {
-                "request": request,
                 "table": table,
                 "persons": persons,
                 "day_name": current_day_name,
@@ -437,9 +437,9 @@ def statusalltv_page(request: Request, db = Depends(get_db)):
                 }
 
         return templates.TemplateResponse(
+            request,
             "statusalltv.html",
             {
-                "request": request,
                 "table": table,
                 "persons": persons,
                 "day_name": current_day_name,

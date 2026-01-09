@@ -45,9 +45,9 @@ def picture_activities_page(request: Request, db = Depends(get_db)):
             })
 
         return templates.TemplateResponse(
+            request,
             "pictureactivities.html",
             {
-                "request": request,
                 "items": items
             }
         )
@@ -74,9 +74,9 @@ def edit_picture_activity_form(item_id: int, request: Request, db = Depends(get_
         db.close()
 
         return templates.TemplateResponse(
+            request,
             "pictureactivity_edit.html",
             {
-                "request": request,
                 "item": {
                     "id": row["Id"],
                     "name": row["Name"],          # ✅ STRING
@@ -118,9 +118,9 @@ def edit_picture_activity_save(
 @router.get("/add", response_class=HTMLResponse)
 def add_picture_activity_form(request: Request, db = Depends(get_db)):
         return templates.TemplateResponse(
+            request,
             "pictureactivity_add.html",
             {
-                "request": request,
                 "activities": ACTIVITY_ENUM_MAP
             }
         )
@@ -171,9 +171,9 @@ def add_picture_activity_save(
         except sqlite3.IntegrityError:
             db.close()
             return templates.TemplateResponse(
+                request,
                 "pictureactivity_add.html",
                 {
-                    "request": request,
                     "activities": ACTIVITY_ENUM_MAP,
                     "errors": ["Ta aktywność MA JUŻ przypisany obrazek"],
                     "form": {

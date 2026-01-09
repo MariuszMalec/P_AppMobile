@@ -75,9 +75,9 @@ def activities_page(request: Request, db = Depends(get_db)):
             })
 
         return templates.TemplateResponse(
+            request,
             "activity.html",
             {
-                "request": request,
                 "days": grouped_days
             }
         )
@@ -100,9 +100,9 @@ def add_activity_form(request: Request, db = Depends(get_db)):
         db.close()
 
         return templates.TemplateResponse(
+            request,
             "activity_add.html",
             {
-                "request": request,
                 "persons": PERSON_ENUM_MAP,
                 "activities": activities,
                 "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
@@ -135,9 +135,9 @@ def add_activity_post(
         if errors:
             db.close()
             return templates.TemplateResponse(
+                request,
                 "activity_add.html",
                 {
-                    "request": request,
                     "errors": errors,
                     "form": {
                         "start": start,
@@ -195,9 +195,9 @@ def add_activity_post(
         if conflict:
             db.close()
             return templates.TemplateResponse(
+                request,
                 "activity_add.html",
                 {
-                    "request": request,
                     "errors": [
                         f"❌ Masz już zaplanowaną aktywność w tym czasie "
                         f"({conflict['StartTime']} – {conflict['EndTime']})"
@@ -228,9 +228,9 @@ def add_activity_post(
         if not row:
             db.close()
             return templates.TemplateResponse(
+                request,
                 "activity_add.html",
                 {
-                    "request": request,
                     "errors": ["Nieprawidłowa aktywność"],
                     "persons": PERSON_ENUM_MAP,
                     "activities": activities,
@@ -270,9 +270,9 @@ def add_activity_post(
             if "TIME_OVERLAP" in str(e):
                 db.close()
                 return templates.TemplateResponse(
+                    request,
                     "activity_add.html",
                     {
-                        "request": request,
                         "errors": [
                             "❌ Masz już zaplanowaną aktywność w tym czasie (TIME_OVERLAP)"
                         ],
@@ -350,9 +350,9 @@ def edit_activity_page(request: Request, activity_id: int, db = Depends(get_db))
         db.close()
 
         return templates.TemplateResponse(
+            request,
             "edit_activity.html",
             {
-                "request": request,
                 "activity": activity,
                 "persons": persons,
                 "pictures": pictures,
@@ -430,9 +430,9 @@ def edit_activity_post(
         if errors:
             db.close()
             return templates.TemplateResponse(
+                request,
                 "edit_activity.html",
                 {
-                    "request": request,
                     "errors": errors,
                     "activity": {
                         "Id": activity_id,
@@ -478,9 +478,9 @@ def edit_activity_post(
         if conflict:
             db.close()
             return templates.TemplateResponse(
+                request,
                 "edit_activity.html",
                 {
-                    "request": request,
                     "errors": [
                         f"❌ Masz już zaplanowaną aktywność w tym czasie "
                         f"({conflict['start_time']} – {conflict['end_time']})"
@@ -567,9 +567,9 @@ def week_page(request: Request, db = Depends(get_db)):
 
 
         return templates.TemplateResponse(
+            request,
             "week.html",
             {
-                "request": request,
                 "week": week,
                 "day_names": DAY_NAMES,   # 👈 KLUCZOWE
             }
