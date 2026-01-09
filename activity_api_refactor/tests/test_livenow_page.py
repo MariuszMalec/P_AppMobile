@@ -10,7 +10,7 @@ from main import app
 client = TestClient(app)
 
 
-def test_livenow_page_page_return_status_code_200():
+def test_livenow_page_page_return_status_code_200(client):
     response = client.get("/live/now")
     assert response.status_code == 200
 

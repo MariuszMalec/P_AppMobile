@@ -11,7 +11,7 @@ client = TestClient(app)
 
 
 
-def test_mainmenu_page_return_status_code_200():
+def test_mainmenu_page_return_status_code_200(client):
     response = client.get("/mainmenu")
     assert response.status_code == 200
 

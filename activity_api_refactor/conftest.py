@@ -45,3 +45,16 @@ def client():
     yield TestClient(app)
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture
+def empty_db():
+    conn = sqlite3.connect(TEST_DB, check_same_thread=False)
+    cursor = conn.cursor()
+
+    cursor.execute("DELETE FROM ActiviesDays")
+    cursor.execute("DELETE FROM PersonFamilies")
+    cursor.execute("DELETE FROM PictureActivities")
+
+    conn.commit()
+    conn.close()
