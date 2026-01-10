@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, Form, Depends
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from starlette.status import HTTP_303_SEE_OTHER
 import sqlite3
 
@@ -10,7 +10,8 @@ from validators import (
     validate_activity_edit_form,    
     time_to_minutes,
     normalize_range,
-    ranges_overlap
+    ranges_overlap,
+    hhmm
 )
 from db import get_db
 
@@ -81,6 +82,92 @@ def activities_page(request: Request, db = Depends(get_db)):
                 "days": grouped_days
             }
         )
+
+
+@router.get("{activity_id}", response_class=JSONResponse)
+def get_activity_page(request: Request, activity_id: int, db = Depends(get_db)):
+
+        cursor = db.cursor()
+
+        activity = cursor.execute("""
+            SELECT
+                Id,
+                DayOfWeek,
+                StartTime,
+                EndTime,
+                Description,
+                ModelPersonFamilyId,
+                ModelPictureActivityId
+            FROM ActiviesDays
+            WHERE Id = ?
+        """, (activity_id,)).fetchone()
+
+        if not activity:
+            db.close()
+            return HTMLResponse("Nie znaleziono aktywności", status_code=404)
+
+        # --- OSOBY ---
+        persons_raw = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+        """).fetchall()
+
+        persons = []
+        for p in persons_raw:
+            enum_val = PERSON_ENUM_MAP.get(p["PersonName"])
+            persons.append({
+                "id": p["Id"],
+                "label": enum_val.value if enum_val else "Nieznana"
+            })
+
+        # --- AKTYWNOŚCI (POPRAWKA) ---
+        pictures_raw = cursor.execute("""
+            SELECT Id, Name, Picture
+            FROM PictureActivities
+        """).fetchall()
+
+        pictures = []
+        for pic in pictures_raw:
+            pictures.append({
+                "id": pic["Id"],
+                "label": pic["Name"],       # ✅ BEZ ENUM
+                "picture": pic["Picture"]
+            })
+
+        db.close()
+
+        person_id = activity["ModelPersonFamilyId"]
+        person = next(
+            (p for p in persons_raw if p["Id"] == person_id),
+            None
+        )
+        person_name = person["PersonName"] if person else None
+
+
+
+
+        return JSONResponse({
+            "status": "ok",
+            "description": activity["Description"],
+            "activity_id": f"{activity_id}",
+            "person": {
+                "id": person["Id"],
+                "name": person["PersonName"]
+            } if person else None
+        })
+
+
+        
+        # return templates.TemplateResponse(
+        #     request,
+        #     "get_activity.html",
+        #     {
+        #         "activity": activity,
+        #         "persons": persons,
+        #         "pictures": pictures,
+        #         "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+        #     }
+        # )
 
 
 # ==============================
@@ -374,8 +461,11 @@ def edit_activity_post(
         db = Depends(get_db)
     ):
 
+
+        normalized_person_id = 5 if person_id == 0 else person_id
+
         errors = validate_activity_edit_form(
-            start, end, day_of_week, person_id
+            start, end, day_of_week, normalized_person_id
         )
 
         cursor = db.cursor()
@@ -440,7 +530,7 @@ def edit_activity_post(
                         "StartTime": start,
                         "EndTime": end,
                         "Description": description,
-                        "ModelPersonFamilyId": person_id,
+                        "ModelPersonFamilyId": normalized_person_id,
                         "ModelPictureActivityId": picture_id,
                     },
                     "persons": persons,
@@ -467,7 +557,7 @@ def edit_activity_post(
             LIMIT 1
         """, (
             day_of_week,
-            5 if person_id == 0 else person_id,
+            normalized_person_id,
             activity_id,
             start,
             end
@@ -491,7 +581,7 @@ def edit_activity_post(
                         "StartTime": start,
                         "EndTime": end,
                         "Description": description,
-                        "ModelPersonFamilyId": person_id,
+                        "ModelPersonFamilyId": normalized_person_id,
                         "ModelPictureActivityId": picture_id,
                     },
                     "persons": persons,
@@ -518,13 +608,12 @@ def edit_activity_post(
             start,
             end,
             description.strip() or None,
-            person_id,
+            normalized_person_id,
             picture_id,
             activity_id
         ))
 
         db.commit()
-        db.close()
 
         return RedirectResponse("/activities", status_code=HTTP_303_SEE_OTHER)
       

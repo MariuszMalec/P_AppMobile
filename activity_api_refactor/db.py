@@ -73,8 +73,28 @@ def init_db_if_not_exists(conn):
         END;
     """)
 
-    conn.commit()
+    # cur.execute("DROP TRIGGER IF EXISTS trg_no_time_overlap_update;")
 
+    # # 🔒 TRIGGER DLA UPDATE
+    # cur.execute("""
+    #     CREATE TRIGGER trg_no_time_overlap_update
+    #     BEFORE UPDATE ON ActiviesDays
+    #     BEGIN
+    #         SELECT RAISE(ABORT, 'TIME_OVERLAP')
+    #         WHERE EXISTS (
+    #             SELECT 1
+    #             FROM ActiviesDays
+    #             WHERE
+    #                 DayOfWeek = NEW.DayOfWeek
+    #                 AND ModelPersonFamilyId = NEW.ModelPersonFamilyId
+    #                 AND Id != NEW.Id
+    #                 AND time(NEW.StartTime) < time(EndTime)
+    #                 AND time(NEW.EndTime)   > time(StartTime)
+    #         );
+    #     END;
+    # """)
+
+    conn.commit()
 
     print("✅ Database initialized successfully")
 

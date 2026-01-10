@@ -79,7 +79,7 @@ def test_add_activity_return_Status_WhenStart_Later_ThenEnd_code_400(client):
     assert response.status_code == 400
 
 
-def test_add_activity_return_Status_code_303(client):
+def test_add_activity_midnight_return_Status_code_303(client):
     response = client.post(
         "/activities/add",
         data={
@@ -93,6 +93,55 @@ def test_add_activity_return_Status_code_303(client):
         follow_redirects=False
     )
     assert response.status_code == 303
+
+def test_add_activity_time_conflict_does_not_update(client):
+    # 1️⃣ Dodajemy PIERWSZĄ aktywność (ta zostaje)
+    client.post(
+        "/activities/add",
+        data={
+            "day_of_week": 1,
+            "start": "19:30",
+            "end": "20:30",
+            "description": "EXISTING",
+            "person_id": 2,
+            "activity_name": 1
+        },
+        follow_redirects=False
+    )
+
+    # 2️⃣ Dodajemy DRUGĄ aktywność (tę będziemy edytować)
+    client.post(
+        "/activities/add",
+        data={
+            "day_of_week": 1,
+            "start": "21:30",
+            "end": "22:30",
+            "description": "TO ADD",
+            "person_id": 2,
+            "activity_name": 1
+        },
+        follow_redirects=False
+    )
+
+    # 3️⃣ Edytujemy DRUGĄ aktywność → konflikt z pierwszą
+    response = client.post(
+        "/activities/add/2",   # 🔴 UWAGA: ID = 2
+        data={
+            "day_of_week": 1,
+            "start": "20:00",
+            "end": "21:00",
+            "description": "SHOULD NOT SAVE",
+            "person_id": 2,
+            "activity_name": 1
+        },
+        follow_redirects=False
+    )
+
+    assert response.status_code == 404
+    assert "Masz już zaplanowaną aktywność w tym czasie" in response.text
+
+    page = client.get("/activities")
+    assert "SHOULD NOT SAVE" not in page.text
 
 
 def test_edit_activity_return_303(client):
@@ -129,7 +178,7 @@ def test_edit_activity_not_found_returns_404(client):
 
 
 def test_edit_activity_time_conflict_does_not_update_activity(client):
-    # 1️⃣ Dodajemy aktywność, która MA powodować konflikt
+    # 1️⃣ Dodajemy PIERWSZĄ aktywność (ta zostaje)
     client.post(
         "/activities/add",
         data={
@@ -137,35 +186,45 @@ def test_edit_activity_time_conflict_does_not_update_activity(client):
             "start": "19:30",
             "end": "20:30",
             "description": "EXISTING",
-            "person_id": 1,
+            "person_id": 2,
             "picture_id": 1
         },
         follow_redirects=False
     )
 
-    # 2️⃣ Próbujemy edytować inną aktywność w konflikcie
+    # 2️⃣ Dodajemy DRUGĄ aktywność (tę będziemy edytować)
+    client.post(
+        "/activities/add",
+        data={
+            "day_of_week": 1,
+            "start": "21:30",
+            "end": "22:30",
+            "description": "TO EDIT",
+            "person_id": 2,
+            "picture_id": 1
+        },
+        follow_redirects=False
+    )
+
+    # 3️⃣ Edytujemy DRUGĄ aktywność → konflikt z pierwszą
     response = client.post(
-        "/activities/edit/1",
+        "/activities/edit/2",   # 🔴 UWAGA: ID = 2
         data={
             "day_of_week": 1,
             "start": "20:00",
             "end": "21:00",
             "description": "SHOULD NOT SAVE",
-            "person_id": 1,
+            "person_id": 2,
             "picture_id": 1
         },
-        follow_redirects=False   # 🔴 KLUCZOWE
+        follow_redirects=False
     )
 
-    # 3️⃣ ASSERTY
     assert response.status_code == 400
     assert "Masz już zaplanowaną aktywność" in response.text
 
-    # 4️⃣ Sprawdzamy, że zapis NIE nastąpił
     page = client.get("/activities")
     assert "SHOULD NOT SAVE" not in page.text
-
-
 
 
 def test_edit_activity_return_Status_When_StartTimeIsTheSameAsEndTime_code_400(client):

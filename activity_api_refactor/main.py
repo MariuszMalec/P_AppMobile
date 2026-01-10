@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
         yield
     finally:
         conn.close()
-
+    yield
 
 # ⬅️ TU PODPINAMY LIFESPAN
 app = FastAPI(lifespan=lifespan)
