@@ -49,3 +49,48 @@ def test_picture_activities_page_items_context(client, monkeypatch):
     
     assert any(i["activityName"] == "Test" for i in items)
 
+
+
+def test_picture_activities_page_builds_items(monkeypatch):
+    from routers.pictureactivity import picture_activities_page
+
+    # --- fake DB ---
+    class FakeCursor:
+        def execute(self, sql):
+            return self
+        def fetchall(self):
+            return [
+                {"Id": 1, "Name": "Test", "Picture": "/img/test.png"},
+                {"Id": 2, "Name": "ABC",  "Picture": "/img/abc.png"},
+            ]
+
+    class FakeDB:
+        def cursor(self):
+            return FakeCursor()
+        def close(self):
+            pass
+
+    fake_db = FakeDB()
+
+    captured = {}
+
+    # --- przechwyć TemplateResponse ---
+    from templates import templates
+    original = templates.TemplateResponse
+
+    def fake_template_response(request, name, context):
+        captured["name"] = name
+        captured["context"] = context
+        return {"_template": name, "_context": context}
+
+    monkeypatch.setattr(templates, "TemplateResponse", fake_template_response)
+
+    # --- wywołanie funkcji bez HTTP ---
+    result = picture_activities_page(request=None, db=fake_db)
+
+    items = captured["context"]["items"]
+
+    assert items == [
+        {"id": 1, "activityName": "Test", "picture": "/img/test.png"},
+        {"id": 2, "activityName": "ABC",  "picture": "/img/abc.png"},
+    ]
