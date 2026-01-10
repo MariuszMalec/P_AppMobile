@@ -61,19 +61,10 @@ def livenow_page(request: Request, db = Depends(get_db)):
 
         db.close()
 
-        PERSON_NAME_MAP = {
-            1: "TATA",
-            2: "MAMA",
-            3: "GOSIA",
-            4: "EMILKA",
-            5: "ALL",
-        }
-
-
         live_items = []
         for r in rows:
             live_items.append({
-                "person": PERSON_NAME_MAP.get(r["PersonName"], ""),
+                "person": r["PersonName"],
                 "description": r["Description"],
                 "picture": r["Picture"],
                 "personPicture": r["PersonPicture"],
