@@ -167,7 +167,7 @@ def status_page(
                 "current_day_name": current_day_name,
 
                 # 👇 DO WIDOKU
-                "selected_person": person_id,
+                "selected_person": person,
                 "persons": list(PERSON_LABEL_TO_ID.keys()),
             }
         )
