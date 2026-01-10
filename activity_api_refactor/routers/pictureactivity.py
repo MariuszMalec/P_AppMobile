@@ -141,9 +141,9 @@ def add_picture_activity_save(
 
         if errors:
             return templates.TemplateResponse(
+                request,
                 "pictureactivity_add.html",
                 {
-                    "request": request,
                     "activities": ACTIVITY_ENUM_MAP,
                     "errors": errors,
                     "form": {

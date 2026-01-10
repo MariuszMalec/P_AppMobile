@@ -144,9 +144,6 @@ def get_activity_page(request: Request, activity_id: int, db = Depends(get_db)):
         )
         person_name = person["PersonName"] if person else None
 
-
-
-
         return JSONResponse({
             "status": "ok",
             "description": activity["Description"],
@@ -225,9 +222,9 @@ def add_activity_post(
             if errors:
 
                 return templates.TemplateResponse(
+                    request,
                     "activity_add.html",
                     {
-                        "request": request,                         
                         "errors": errors,
                         "form": {
                             "start": start,
@@ -284,9 +281,9 @@ def add_activity_post(
             if conflict:
 
                 return templates.TemplateResponse(
+                    request,
                     "activity_add.html",
                     {
-                        "request": request,
                         "errors": [
                             f"❌ Masz już zaplanowaną aktywność w tym czasie "
                             f"({conflict['StartTime']} – {conflict['EndTime']})"
@@ -317,9 +314,9 @@ def add_activity_post(
             if not row:
 
                 return templates.TemplateResponse(
+                    request,
                     "activity_add.html",
                     {
-                        "request": request,
                         "errors": ["Nieprawidłowa aktywność"],
                         "persons": PERSON_ENUM_MAP,
                         "activities": activities,
@@ -361,9 +358,9 @@ def add_activity_post(
             if "TIME_OVERLAP" in str(e):
                 db.close()
                 return templates.TemplateResponse(
+                    request,
                     "activity_add.html",
                     {
-                        "request": request,
                         "errors": [
                             "❌ Masz już zaplanowaną aktywność w tym czasie (TIME_OVERLAP)"
                         ],

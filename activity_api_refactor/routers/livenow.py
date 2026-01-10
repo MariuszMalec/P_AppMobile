@@ -35,6 +35,7 @@ def livenow_page(request: Request, db = Depends(get_db)):
 
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
+        #current_time = now.strftime("%H:%M")
         iso_day = now.isoweekday()
         current_day = system_day_to_db_day(iso_day)
 
@@ -52,10 +53,11 @@ def livenow_page(request: Request, db = Depends(get_db)):
             LEFT JOIN PictureActivities pa
                 ON ad.ModelPictureActivityId = pa.Id
             WHERE ad.DayOfWeek = ?
-            AND ad.StartTime <= ?
-            AND ad.EndTime >= ?
+            AND time(ad.StartTime) <= time(?)
+            AND time(ad.EndTime)   >= time(?)
             ORDER BY ad.StartTime
         """, (current_day, current_time, current_time)).fetchall()
+
 
         db.close()
 
@@ -105,17 +107,6 @@ def status_page(
         current_day_name = now.strftime("%A")
         current_time = now.strftime("%H:%M:%S")
 
-        PERSON_LABEL_TO_ENUM = {
-            "RODZINA": 5,
-            "TATA": 1,
-            "MAMA": 2,
-            "GOSIA": 3,
-            "EMILKA": 4
-        }
-
-        person = person.upper()
-        person_enum = PERSON_LABEL_TO_ENUM.get(person, 0)  # fallback ALL
-
         sql = """
             SELECT
                 ad.StartTime,
@@ -135,9 +126,21 @@ def status_page(
 
         params = [current_day]
 
-        if person_enum != 0:
-            sql += " AND pf.PersonName = ?"
-            params.append(person_enum)
+        PERSON_LABEL_TO_ID = {
+            "TATA": 1,
+            "MAMA": 2,
+            "GOSIA": 3,
+            "EMILKA": 4,
+            "RODZINA": 5,
+        }
+
+        person = person.upper()
+        person_id = PERSON_LABEL_TO_ID.get(person)
+
+        # filtr tylko gdy wybrano konkretną osobę
+        if person_id is not None:
+            sql += " AND ad.ModelPersonFamilyId = ?"
+            params.append(person_id)
 
         sql += " ORDER BY ad.StartTime"
 
@@ -148,15 +151,12 @@ def status_page(
         next_item = None
 
         for r in rows:
-            person_label = None
-            if r["PersonName"] in PERSON_ENUM_MAP:
-                person_label = PERSON_ENUM_MAP[r["PersonName"]].value
 
             item = {
                 "start": r["StartTime"],
                 "end": r["EndTime"],
                 "description": r["Description"],
-                "person": person_label,
+                "person": r["PersonName"],
                 "personPicture": r["PersonPicture"],
                 "picture": r["Picture"],
             }
@@ -169,15 +169,15 @@ def status_page(
         return templates.TemplateResponse(
             request,
             "status.html",
-            {
+            {                 
                 "now": current_time,
                 "current": current,
                 "next": next_item,
                 "current_day_name": current_day_name,
 
                 # 👇 DO WIDOKU
-                "selected_person": person,
-                "persons": list(PERSON_LABEL_TO_ENUM.keys()),
+                "selected_person": person_id,
+                "persons": list(PERSON_LABEL_TO_ID.keys()),
             }
         )
 
