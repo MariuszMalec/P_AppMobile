@@ -384,7 +384,6 @@ def add_activity_post(
         finally:
             db.close()
 
-        
 
 # ==============================
 # EDYCJA AKTYWNOŚCI
@@ -455,27 +454,25 @@ def edit_activity_page(request: Request, activity_id: int, db = Depends(get_db))
 
 @router.post("/edit/{activity_id}", response_class=HTMLResponse)
 def edit_activity_post(
-        request: Request,
-        activity_id: int,
-        day_of_week: int = Form(...),
-        start: str = Form(...),
-        end: str = Form(...),
-        description: str = Form(""),
-        person_id: int = Form(...),
-        picture_id: int = Form(...), 
-        db = Depends(get_db)
-    ):
+    request: Request,
+    activity_id: int,
+    day_of_week: int = Form(...),
+    start: str = Form(...),
+    end: str = Form(...),
+    description: str = Form(""),
+    person_id: int = Form(...),
+    picture_id: int = Form(...),
+    db=Depends(get_db)
+):
+    normalized_person_id = 5 if person_id == 0 else person_id
+    errors = validate_activity_edit_form(
+        start, end, day_of_week, normalized_person_id
+    )
 
+    cursor = db.cursor()
 
-        normalized_person_id = 5 if person_id == 0 else person_id
-
-        errors = validate_activity_edit_form(
-            start, end, day_of_week, normalized_person_id
-        )
-
-        cursor = db.cursor()
-
-        # --- pobieramy aktywność (potrzebna przy błędach) ---
+    try:
+        # --- pobieramy aktywność ---
         activity = cursor.execute("""
             SELECT
                 Id,
@@ -490,7 +487,6 @@ def edit_activity_post(
         """, (activity_id,)).fetchone()
 
         if not activity:
-            db.close()
             return HTMLResponse("Nie znaleziono aktywności", status_code=404)
 
         # --- OSOBY ---
@@ -521,9 +517,8 @@ def edit_activity_post(
                 "picture": pic["Picture"]
             })
 
-        # ❌ BŁĘDY → wracamy do formularza
+        # ❌ BŁĘDY FORMULARZA
         if errors:
-            db.close()
             return templates.TemplateResponse(
                 request,
                 "edit_activity.html",
@@ -544,41 +539,33 @@ def edit_activity_post(
                 },
                 status_code=400
             )
-        
-        # 🔒 BLOKADA: konflikt czasu (EDIT) – pomijamy edytowaną aktywność
-        cursor.execute("""
-            SELECT
-                StartTime AS start_time,
-                EndTime   AS end_time
+
+        # 🔒 KOLIZJE CZASOWE (bez samej siebie!)
+        conflict = cursor.execute("""
+            SELECT StartTime, EndTime
             FROM ActiviesDays
             WHERE
                 DayOfWeek = ?
                 AND ModelPersonFamilyId = ?
                 AND Id != ?
-                AND (
-                    time(?) < time(EndTime)
-                    AND time(?) > time(StartTime)
-                )
-            LIMIT 1
+                AND time(?) < time(EndTime)
+                AND time(?) > time(StartTime)
         """, (
             day_of_week,
             normalized_person_id,
             activity_id,
             start,
-            end
-        ))
-
-        conflict = cursor.fetchone()
+            end,
+        )).fetchone()
 
         if conflict:
-            db.close()
             return templates.TemplateResponse(
                 request,
                 "edit_activity.html",
                 {
                     "errors": [
                         f"❌ Masz już zaplanowaną aktywność w tym czasie "
-                        f"({conflict['start_time']} – {conflict['end_time']})"
+                        f"({conflict['StartTime']} – {conflict['EndTime']})"
                     ],
                     "activity": {
                         "Id": activity_id,
@@ -595,7 +582,6 @@ def edit_activity_post(
                 },
                 status_code=400
             )
-
 
         # ✅ UPDATE
         cursor.execute("""
@@ -619,8 +605,37 @@ def edit_activity_post(
         ))
 
         db.commit()
-
         return RedirectResponse("/activities", status_code=HTTP_303_SEE_OTHER)
+
+    except sqlite3.IntegrityError as e:
+        db.rollback()
+
+        if "TIME_OVERLAP" in str(e):
+            return templates.TemplateResponse(
+                request,
+                "edit_activity.html",
+                {
+                    "errors": ["❌ Masz już zaplanowaną aktywność w tym czasie"],
+                    "activity": {
+                        "Id": activity_id,
+                        "DayOfWeek": day_of_week,
+                        "StartTime": start,
+                        "EndTime": end,
+                        "Description": description,
+                        "ModelPersonFamilyId": normalized_person_id,
+                        "ModelPictureActivityId": picture_id,
+                    },
+                    "persons": persons,
+                    "pictures": pictures,
+                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+                },
+                status_code=400
+            )
+        raise
+
+    finally:
+        db.close()
+             
       
 
 @router.get("/week", response_class=HTMLResponse)

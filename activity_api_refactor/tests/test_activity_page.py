@@ -203,8 +203,8 @@ def test_edit_activity_not_found_returns_404(client):
 
 
 def test_edit_activity_time_conflict_does_not_update_activity(client):
-    # 1️⃣ Dodajemy PIERWSZĄ aktywność (ta zostaje)
-    client.post(
+    # 1️⃣ pierwsza
+    r1 = client.post(
         "/activities/add",
         data={
             "day_of_week": 1,
@@ -212,30 +212,45 @@ def test_edit_activity_time_conflict_does_not_update_activity(client):
             "end": "20:30",
             "description": "EXISTING",
             "person_id": 2,
-            "activity_name": "Pranie",  # <- prawdziwa nazwa z PictureActivities
+            "activity_name": "Pranie",
         },
-        follow_redirects=False
+        follow_redirects=True,
     )
 
-    # 3️⃣ Edytujemy DRUGĄ aktywność → konflikt z pierwszą
-    response = client.post(
-        "/activities/edit/38",   # 🔴 UWAGA: ID = Wyciagnac poprzednie jak?
+    # 2️⃣ druga
+    r2 = client.post(
+        "/activities/add",
         data={
             "day_of_week": 1,
-            "start": "20:29",
-            "end": "21:30",
+            "start": "21:00",
+            "end": "22:00",
+            "description": "SECOND",
+            "person_id": 2,
+            "activity_name": "Pranie",
+        },
+        follow_redirects=True,
+    )
+
+    activity_id = 2  # jeśli wiesz, że testowa baza startuje pusta
+
+    # 3️⃣ edycja drugiej – wchodzi w pierwszą
+    response = client.post(
+        f"/activities/edit/{activity_id}",
+        data={
+            "day_of_week": 1,
+            "start": "20:00",
+            "end": "21:15",
             "description": "NOT EDIT",
             "person_id": 2,
-            "activity_name": "Pranie",  # <- prawdziwa nazwa z PictureActivities
+            "picture_id": 1,
         },
-        follow_redirects=False
+        follow_redirects=False,
     )
 
     assert response.status_code == 400
-    #assert "Masz już zaplanowaną aktywność" in response.text
+    assert "aktywność w tym czasie" in response.text
 
-    page = client.get("/activities")
-    #assert "SHOULD NOT SAVE" not in page.text
+
 
 
 def test_edit_activity_return_Status_When_StartTimeIsTheSameAsEndTime_code_400(client):
