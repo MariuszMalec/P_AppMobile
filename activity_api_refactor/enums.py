@@ -2,7 +2,6 @@ import enum
 
 
 class PersonFamilyEnum(str, enum.Enum):
-    ALL = "ALL"
     TATA = "TATA"
     MAMA = "MAMA"
     GOSIA = "GOSIA"
@@ -37,7 +36,6 @@ class ActivityNameEnum(str, enum.Enum):
 
 
 PERSON_ENUM_MAP = {
-    0: PersonFamilyEnum.ALL,
     1: PersonFamilyEnum.TATA,
     2: PersonFamilyEnum.MAMA,
     3: PersonFamilyEnum.GOSIA,

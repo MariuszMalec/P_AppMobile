@@ -31,61 +31,11 @@ def home_page(request: Request, db = Depends(get_db) ):
         current_day = system_day_to_db_day(iso_day)
         current_day_name = now.strftime("%A")
 
-        rows = cursor.execute("""
-            SELECT
-                ad.StartTime,
-                ad.EndTime,
-                ad.Description,
-                pf.PersonName,
-                pf.PersonPicture,
-                pa.Picture
-            FROM ActiviesDays ad
-            LEFT JOIN PersonFamilies pf
-                ON ad.ModelPersonFamilyId = pf.Id
-            LEFT JOIN PictureActivities pa
-                ON ad.ModelPictureActivityId = pa.Id
-            WHERE ad.DayOfWeek = ?
-            ORDER BY ad.StartTime
-        """, (current_day,)).fetchall()
-
-        db.close()
-
-        PERSON_NAME_MAP = {
-            1: "TATA",
-            2: "MAMA",
-            3: "GOSIA",
-            4: "EMILKA",
-            5: "ALL",
-        }
-
-        current_items = []
-        next_items = []
-
-        for r in rows:
-            item = {
-                "start": r["StartTime"],
-                "end": r["EndTime"],
-                "description": r["Description"],
-                "person": PERSON_NAME_MAP.get(r["PersonName"], ""),
-                "personPicture": r["PersonPicture"],
-                "picture": r["Picture"],
-            }
-
-            # 🔴 TERAZ
-            if r["StartTime"] <= current_time <= r["EndTime"]:
-                current_items.append(item)
-
-            # 🔵 NASTĘPNIE
-            elif r["StartTime"] > current_time:
-                next_items.append(item)
-
         return templates.TemplateResponse(
             request,
             "home.html",
             {
                 "now": current_time,
-                "current": current_items,
-                "next": next_items,
                 "current_day_name": current_day_name,
             }
         )
@@ -112,7 +62,7 @@ def home_page_by_person(
             2: "MAMA",
             3: "GOSIA",
             4: "EMILKA",
-            5: "ALL",
+            5: "RODZINA",
         }
 
         PERSON_STRING_TO_ID = {
@@ -120,11 +70,11 @@ def home_page_by_person(
             "MAMA": 2,
             "GOSIA": 3,
             "EMILKA": 4,
-            "ALL": 5,
+            "RODZINA": 5,
         }
 
-        persons = ["ALL", "TATA", "MAMA", "GOSIA", "EMILKA"]
-        selected_person = person if person in persons else "ALL"
+        persons = ["RODZINA", "TATA", "MAMA", "GOSIA", "EMILKA"]
+        selected_person = person if person in persons else "RODZINA"
 
         person_id = PERSON_STRING_TO_ID[selected_person]
 

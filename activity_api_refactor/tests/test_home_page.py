@@ -14,14 +14,7 @@ client = TestClient(app)
 @freeze_time("2025-01-08 20:10:00")
 def test_home_current_and_next_items(client):
     response = client.get("/home")
-    ctx = response.context
-
-    assert len(ctx["current"]) >= 0
-    assert all(
-        item["start"] <= ctx["now"] <= item["end"]
-        for item in ctx["current"]
-    )
-
+    assert response.status_code == 200
 
 
 def test_home_page_return_status_code_200(client):
@@ -36,9 +29,6 @@ def test_home_context_keys(client):
     response = client.get("/home")
     ctx = response.context
 
-    assert "now" in ctx
-    assert "current" in ctx
-    assert "next" in ctx
     assert "current_day_name" in ctx
     
 

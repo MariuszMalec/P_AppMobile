@@ -106,7 +106,7 @@ def status_page(
         current_time = now.strftime("%H:%M:%S")
 
         PERSON_LABEL_TO_ENUM = {
-            "ALL": 5,
+            "RODZINA": 5,
             "TATA": 1,
             "MAMA": 2,
             "GOSIA": 3,

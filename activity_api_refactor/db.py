@@ -7,12 +7,17 @@ DB_PATH = BASE_DIR / "activity.db"
 
 def get_db():
     db_path = os.getenv("DATABASE_PATH", "activity.db")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(
+        db_path,
+        timeout=5.0,
+        check_same_thread=False
+    )
     conn.row_factory = sqlite3.Row
     try:
         yield conn
     finally:
         conn.close()
+
 
 
 def init_db_if_not_exists(conn):
@@ -21,7 +26,7 @@ def init_db_if_not_exists(conn):
     cur.execute("""
         CREATE TABLE IF NOT EXISTS PersonFamilies (
             Id INTEGER PRIMARY KEY,
-            PersonName INTEGER NOT NULL,
+            PersonName TEXT NOT NULL UNIQUE,
             PersonPicture TEXT
         )
     """)
@@ -105,11 +110,11 @@ def insert_person_families(conn):
 
     cur.execute("""
         INSERT OR IGNORE INTO PersonFamilies (Id, PersonName, PersonPicture) VALUES
-        (1, 1, 'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=2070'),
-        (2, 2, 'https://plus.unsplash.com/premium_photo-1661274027494-1d556441e1c4?q=80&w=2070&auto=format&fit=crop'),
-        (3, 3, 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2040&auto=format&fit=crop'),
-        (4, 4, 'https://images.unsplash.com/photo-1566004100631-35d015d6a491?q=80&w=2070&auto=format&fit=crop'),
-        (5, 0, 'https://images.unsplash.com/photo-1696446702183-cbd13d78e1e7?q=80&w=2070&auto=format&fit=crop');
+        (1, "TATA", 'https://images.unsplash.com/photo-1516733725897-1aa73b87c8e8?auto=format&fit=crop&q=80&w=2070'),
+        (2, "MAMA", 'https://plus.unsplash.com/premium_photo-1661274027494-1d556441e1c4?q=80&w=2070&auto=format&fit=crop'),
+        (3, "GOSIA", 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?q=80&w=2040&auto=format&fit=crop'),
+        (4, "EMILKA", 'https://images.unsplash.com/photo-1566004100631-35d015d6a491?q=80&w=2070&auto=format&fit=crop'),
+        (5, "RODZINA", 'https://images.unsplash.com/photo-1696446702183-cbd13d78e1e7?q=80&w=2070&auto=format&fit=crop');
     """)
 
     conn.commit()

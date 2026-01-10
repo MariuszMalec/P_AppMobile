@@ -46,6 +46,13 @@ def activities_page(request: Request, db = Depends(get_db)):
         """
 
         rows = cursor.execute(query).fetchall()
+
+        # --- OSOBY ---
+        p = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+        """).fetchall()
+
         db.close()
 
         grouped_days = {}
@@ -59,18 +66,12 @@ def activities_page(request: Request, db = Depends(get_db)):
                     "items": []
                 }
 
-            person_label = None
-            if r["PersonName"] is not None:
-                enum_value = PERSON_ENUM_MAP.get(r["PersonName"])
-                if enum_value:
-                    person_label = enum_value.value
-
             grouped_days[day]["items"].append({
                 "id": r["Id"],
                 "start": r["StartTime"],
                 "end": r["EndTime"],
                 "description": r["Description"],
-                "person": person_label,
+                "person": r["PersonName"],          # ⬅️ gotowe z JOIN
                 "personPicture": r["PersonPicture"],
                 "picture": r["Picture"],
             })
@@ -213,153 +214,156 @@ def add_activity_post(
         )
 
         cursor = db.cursor()   # ✅ TERAZ TO JEST sqlite3.Connection
+        
+        try:
 
-        # 🔁 ZAWSZE pobieramy aktywności (potrzebne przy błędzie)
-        cursor.execute("SELECT Id, Name FROM PictureActivities ORDER BY Name")
-        activities = cursor.fetchall()
+            # 🔁 ZAWSZE pobieramy aktywności (potrzebne przy błędzie)
+            cursor.execute("SELECT Id, Name FROM PictureActivities ORDER BY Name")
+            activities = cursor.fetchall()
 
-        # ❌ BŁĘDY → wracamy do formularza
-        if errors:
-            db.close()
-            return templates.TemplateResponse(
-                request,
-                "activity_add.html",
-                {
-                    "errors": errors,
-                    "form": {
-                        "start": start,
-                        "end": end,
-                        "day_of_week": day_of_week,
-                        "description": description,
-                        "person_id": person_id,
-                        "activity_name": activity_name,
+            # ❌ BŁĘDY → wracamy do formularza
+            if errors:
+
+                return templates.TemplateResponse(
+                    "activity_add.html",
+                    {
+                        "request": request,                         
+                        "errors": errors,
+                        "form": {
+                            "start": start,
+                            "end": end,
+                            "day_of_week": day_of_week,
+                            "description": description,
+                            "person_id": person_id,
+                            "activity_name": activity_name,
+                        },
+                        "persons": PERSON_ENUM_MAP,
+                        "activities": activities,   # 🔴 TO BYŁ BRAK
+                        "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
                     },
-                    "persons": PERSON_ENUM_MAP,
-                    "activities": activities,   # 🔴 TO BYŁ BRAK
-                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                },
-                status_code=400
-            )
+                    status_code=400
+                )
 
-        # 🔒 BLOKADA: kolizje czasowe (z północą + stykami)
-        start_min = time_to_minutes(start)
-        end_min   = time_to_minutes(end)
+            # 🔒 BLOKADA: kolizje czasowe (z północą + stykami)
+            start_min = time_to_minutes(start)
+            end_min   = time_to_minutes(end)
 
-        cursor.execute("""
-            SELECT StartTime, EndTime
-            FROM ActiviesDays
-            WHERE
-                DayOfWeek = ?
-                AND ModelPersonFamilyId = ?
-        """, (
-            day_of_week,
-            5 if person_id == 0 else person_id
-        ))
+            cursor.execute("""
+                SELECT StartTime, EndTime
+                FROM ActiviesDays
+                WHERE
+                    DayOfWeek = ?
+                    AND ModelPersonFamilyId = ?
+            """, (
+                day_of_week,
+                5 if person_id == 0 else person_id
+            ))
 
-        existing = cursor.fetchall()
+            existing = cursor.fetchall()
 
-        new_ranges = normalize_range(start_min, end_min)
+            new_ranges = normalize_range(start_min, end_min)
 
-        conflict = None
+            conflict = None
 
-        for row in existing:
-            ex_start = time_to_minutes(row["StartTime"])
-            ex_end   = time_to_minutes(row["EndTime"])
+            for row in existing:
+                ex_start = time_to_minutes(row["StartTime"])
+                ex_end   = time_to_minutes(row["EndTime"])
 
-            ex_ranges = normalize_range(ex_start, ex_end)
+                ex_ranges = normalize_range(ex_start, ex_end)
 
-            for nr in new_ranges:
-                for er in ex_ranges:
-                    if ranges_overlap(nr, er):
-                        conflict = row
+                for nr in new_ranges:
+                    for er in ex_ranges:
+                        if ranges_overlap(nr, er):
+                            conflict = row
+                            break
+                    if conflict:
                         break
                 if conflict:
                     break
+
             if conflict:
-                break
 
-
-        if conflict:
-            db.close()
-            return templates.TemplateResponse(
-                request,
-                "activity_add.html",
-                {
-                    "errors": [
-                        f"❌ Masz już zaplanowaną aktywność w tym czasie "
-                        f"({conflict['StartTime']} – {conflict['EndTime']})"
-                    ],
-                    "form": {
-                        "start": start,
-                        "end": end,
-                        "day_of_week": day_of_week,
-                        "description": description,
-                        "person_id": person_id,
-                        "activity_name": activity_name,
+                return templates.TemplateResponse(
+                    "activity_add.html",
+                    {
+                        "request": request,
+                        "errors": [
+                            f"❌ Masz już zaplanowaną aktywność w tym czasie "
+                            f"({conflict['StartTime']} – {conflict['EndTime']})"
+                        ],
+                        "form": {
+                            "start": start,
+                            "end": end,
+                            "day_of_week": day_of_week,
+                            "description": description,
+                            "person_id": person_id,
+                            "activity_name": activity_name,
+                        },
+                        "persons": PERSON_ENUM_MAP,
+                        "activities": activities,
+                        "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
                     },
-                    "persons": PERSON_ENUM_MAP,
-                    "activities": activities,
-                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                },
-                status_code=400
-            )
-
-
-        # ✅ Szukamy obrazka po Name
-        cursor.execute(
-            "SELECT Id FROM PictureActivities WHERE Name = ?",
-            (activity_name,)
-        )
-        row = cursor.fetchone()
-
-        if not row:
-            db.close()
-            return templates.TemplateResponse(
-                request,
-                "activity_add.html",
-                {
-                    "errors": ["Nieprawidłowa aktywność"],
-                    "persons": PERSON_ENUM_MAP,
-                    "activities": activities,
-                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                },
-                status_code=400
-            )
-
-        picture_id = row["Id"]
-
-        # ✅ INSERT
-        try:
-            cursor.execute("""
-                INSERT INTO ActiviesDays (
-                    DayOfWeek,
-                    StartTime,
-                    EndTime,
-                    Description,
-                    ModelPersonFamilyId,
-                    ModelPictureActivityId
+                    status_code=400
                 )
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (
-                day_of_week,
-                start,
-                end,
-                description.strip() or None,
-                5 if person_id == 0 else person_id,  # ✅ # 0 = ALL → zapisujemy jako RODZINA (Id=5)
-                picture_id
-            ))
+
+
+            # ✅ Szukamy obrazka po Name
+            cursor.execute(
+                "SELECT Id FROM PictureActivities WHERE Name = ?",
+                (activity_name,)
+            )
+            row = cursor.fetchone()
+
+            if not row:
+
+                return templates.TemplateResponse(
+                    "activity_add.html",
+                    {
+                        "request": request,
+                        "errors": ["Nieprawidłowa aktywność"],
+                        "persons": PERSON_ENUM_MAP,
+                        "activities": activities,
+                        "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+                    },
+                    status_code=400
+                )
+
+            picture_id = row["Id"]
+
+            # ✅ INSERT
+
+            cursor.execute("""
+                    INSERT INTO ActiviesDays (
+                        DayOfWeek,
+                        StartTime,
+                        EndTime,
+                        Description,
+                        ModelPersonFamilyId,
+                        ModelPictureActivityId
+                    )
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (
+                    day_of_week,
+                    start,
+                    end,
+                    description.strip() or None,
+                    5 if person_id == 0 else person_id,  # ✅ # 0 = ALL → zapisujemy jako RODZINA (Id=5)
+                    picture_id
+                ))
 
             db.commit()
-            db.close()
+
+            return RedirectResponse("/activities", status_code=303)
+
         except sqlite3.IntegrityError as e:
             db.rollback()
 
             if "TIME_OVERLAP" in str(e):
                 db.close()
                 return templates.TemplateResponse(
-                    request,
                     "activity_add.html",
                     {
+                        "request": request,
                         "errors": [
                             "❌ Masz już zaplanowaną aktywność w tym czasie (TIME_OVERLAP)"
                         ],
@@ -377,9 +381,10 @@ def add_activity_post(
                     },
                     status_code=400
                 )          
+        finally:
+            db.close()
 
-        return RedirectResponse("/activities", status_code=303)
-
+        
 
 # ==============================
 # EDYCJA AKTYWNOŚCI
@@ -414,11 +419,11 @@ def edit_activity_page(request: Request, activity_id: int, db = Depends(get_db))
 
         persons = []
         for p in persons_raw:
-            enum_val = PERSON_ENUM_MAP.get(p["PersonName"])
+            person_name = p["PersonName"]
             persons.append({
                 "id": p["Id"],
-                "label": enum_val.value if enum_val else "Nieznana"
-            })
+                "label": p["PersonName"]
+            })   
 
         # --- AKTYWNOŚCI (POPRAWKA) ---
         pictures_raw = cursor.execute("""
@@ -674,5 +679,7 @@ def delete_activity(activity_id: int, db = Depends(get_db)):
             "DELETE FROM ActiviesDays WHERE Id = ?",
             (activity_id,)
         )
+
+        db.commit()  # 🔴 to jest kluczowe
 
         return RedirectResponse("/activities", status_code=303)    

@@ -26,19 +26,26 @@ DB_PATH = Path(__file__).parent / "activity.db"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 🔌 PRODUKCYJNE POŁĄCZENIE
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
 
     try:
+        # konfiguracja bazy RAZ na start
+        conn.execute("PRAGMA journal_mode=WAL;")
+        conn.execute("PRAGMA busy_timeout = 5000;")
+
         init_db_if_not_exists(conn)
         insert_person_families(conn)
         insert_picture_activities(conn)
         insert_activities_days(conn)
-        yield
+
+        conn.commit()
+        conn.close()   # ← zamykasz TU
+
+        yield  # start aplikacji
     finally:
-        conn.close()
-    yield
+        conn.close()  # shutdown
+
 
 # ⬅️ TU PODPINAMY LIFESPAN
 app = FastAPI(lifespan=lifespan)
