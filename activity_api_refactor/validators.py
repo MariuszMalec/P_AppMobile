@@ -28,7 +28,79 @@ def time_to_minutes(value: str) -> int:
 
     return int(h) * 60 + int(m)
 
+
 def validate_activity_form(
+    start: str,
+    end: str,
+    day_of_week: int,
+    person_id: int,
+    activity_name: str,
+    db,
+):
+    errors = []
+    cursor = db.cursor()
+
+    # --- format czasu ---
+    try:
+        start_min = time_to_minutes(start)
+        end_min   = time_to_minutes(end)
+    except Exception:
+        errors.append("Nieprawidłowy format czasu")
+        return errors, None
+
+    if start_min == end_min:
+        errors.append("Godzina rozpoczęcia i zakończenia nie mogą być takie same")
+
+    if day_of_week not in range(1, 8):
+        errors.append("Nieprawidłowy dzień tygodnia")
+
+    # --- aktywność ---
+    cursor.execute(
+        "SELECT Id FROM PictureActivities WHERE Name = ?",
+        (activity_name,)
+    )
+    row = cursor.fetchone()
+
+    if not row:
+        errors.append("Nieprawidłowa aktywność")
+        return errors, None
+
+    picture_id = row["Id"]
+
+    # --- kolizje ---
+    cursor.execute("""
+        SELECT StartTime, EndTime
+        FROM ActiviesDays
+        WHERE
+            DayOfWeek = ?
+            AND ModelPersonFamilyId = ?
+    """, (
+        day_of_week,
+        5 if person_id == 0 else person_id
+    ))
+
+    existing = cursor.fetchall()
+    new_ranges = normalize_range(start_min, end_min)
+
+    for row in existing:
+        ex_start = time_to_minutes(row["StartTime"])
+        ex_end   = time_to_minutes(row["EndTime"])
+        ex_ranges = normalize_range(ex_start, ex_end)
+
+        for nr in new_ranges:
+            for er in ex_ranges:
+                if ranges_overlap(nr, er):
+                    errors.append(
+                        f"❌ Masz już zaplanowaną aktywność w tym czasie "
+                        f"({row['StartTime']} – {row['EndTime']})"
+                    )
+                    return errors, None
+
+    return errors, picture_id
+
+
+
+def validate_activity_form_old(
     start: str,
     end: str,
     day_of_week: int,

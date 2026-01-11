@@ -196,190 +196,68 @@ def add_activity_form(request: Request, db = Depends(get_db)):
 
 
 @router.post("/add", response_class=HTMLResponse)
-def add_activity_post(  
-        request: Request,
-        start: str = Form(...),
-        end: str = Form(...),
-        day_of_week: int = Form(...),
-        description: str = Form(""),
-        person_id: int = Form(...),
-        activity_name: str = Form(...),
-        db = Depends(get_db),   # ✅ TU
-    ):
-        errors = validate_activity_form(
-            start, end, day_of_week, person_id, activity_name
+def add_activity_post(
+    request: Request,
+    start: str = Form(...),
+    end: str = Form(...),
+    day_of_week: int = Form(...),
+    description: str = Form(""),
+    person_id: int = Form(...),
+    activity_name: str = Form(...),
+    db = Depends(get_db),
+):
+    cursor = db.cursor()
+
+    cursor.execute("SELECT Id, Name FROM PictureActivities ORDER BY Name")
+    activities = cursor.fetchall()
+
+    errors, picture_id = validate_activity_form(
+        start, end, day_of_week, person_id, activity_name, db
+    )
+
+    if errors:
+        return templates.TemplateResponse(
+            request,
+            "activity_add.html",
+            {
+                "errors": errors,
+                "form": {
+                    "start": start,
+                    "end": end,
+                    "day_of_week": day_of_week,
+                    "description": description,
+                    "person_id": person_id,
+                    "activity_name": activity_name,
+                },
+                "persons": PERSON_ENUM_MAP,
+                "activities": activities,
+                "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
+            },
+            status_code=400
         )
 
-        cursor = db.cursor()   # ✅ TERAZ TO JEST sqlite3.Connection
-        
-        try:
+    cursor.execute("""
+        INSERT INTO ActiviesDays (
+            DayOfWeek,
+            StartTime,
+            EndTime,
+            Description,
+            ModelPersonFamilyId,
+            ModelPictureActivityId
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (
+        day_of_week,
+        start,
+        end,
+        description.strip() or None,
+        5 if person_id == 0 else person_id,
+        picture_id
+    ))
 
-            # 🔁 ZAWSZE pobieramy aktywności (potrzebne przy błędzie)
-            cursor.execute("SELECT Id, Name FROM PictureActivities ORDER BY Name")
-            activities = cursor.fetchall()
+    db.commit()
+    return RedirectResponse("/activities", status_code=303)
 
-            # ❌ BŁĘDY → wracamy do formularza
-            if errors:
-
-                return templates.TemplateResponse(
-                    request,
-                    "activity_add.html",
-                    {
-                        "errors": errors,
-                        "form": {
-                            "start": start,
-                            "end": end,
-                            "day_of_week": day_of_week,
-                            "description": description,
-                            "person_id": person_id,
-                            "activity_name": activity_name,
-                        },
-                        "persons": PERSON_ENUM_MAP,
-                        "activities": activities,   # 🔴 TO BYŁ BRAK
-                        "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                    },
-                    status_code=400
-                )
-
-            # 🔒 BLOKADA: kolizje czasowe (z północą + stykami)
-            start_min = time_to_minutes(start)
-            end_min   = time_to_minutes(end)
-
-            cursor.execute("""
-                SELECT StartTime, EndTime
-                FROM ActiviesDays
-                WHERE
-                    DayOfWeek = ?
-                    AND ModelPersonFamilyId = ?
-            """, (
-                day_of_week,
-                5 if person_id == 0 else person_id
-            ))
-
-            existing = cursor.fetchall()
-
-            new_ranges = normalize_range(start_min, end_min)
-
-            conflict = None
-
-            for row in existing:
-                ex_start = time_to_minutes(row["StartTime"])
-                ex_end   = time_to_minutes(row["EndTime"])
-
-                ex_ranges = normalize_range(ex_start, ex_end)
-
-                for nr in new_ranges:
-                    for er in ex_ranges:
-                        if ranges_overlap(nr, er):
-                            conflict = row
-                            break
-                    if conflict:
-                        break
-                if conflict:
-                    break
-
-            if conflict:
-
-                return templates.TemplateResponse(
-                    request,
-                    "activity_add.html",
-                    {
-                        "errors": [
-                            f"❌ Masz już zaplanowaną aktywność w tym czasie "
-                            f"({conflict['StartTime']} – {conflict['EndTime']})"
-                        ],
-                        "form": {
-                            "start": start,
-                            "end": end,
-                            "day_of_week": day_of_week,
-                            "description": description,
-                            "person_id": person_id,
-                            "activity_name": activity_name,
-                        },
-                        "persons": PERSON_ENUM_MAP,
-                        "activities": activities,
-                        "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                    },
-                    status_code=400
-                )
-
-
-            # ✅ Szukamy obrazka po Name
-            cursor.execute(
-                "SELECT Id FROM PictureActivities WHERE Name = ?",
-                (activity_name,)
-            )
-            row = cursor.fetchone()
-
-            if not row:
-
-                return templates.TemplateResponse(
-                    request,
-                    "activity_add.html",
-                    {
-                        "errors": ["Nieprawidłowa aktywność"],
-                        "persons": PERSON_ENUM_MAP,
-                        "activities": activities,
-                        "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                    },
-                    status_code=400
-                )
-
-            picture_id = row["Id"]
-
-            # ✅ INSERT
-
-            cursor.execute("""
-                    INSERT INTO ActiviesDays (
-                        DayOfWeek,
-                        StartTime,
-                        EndTime,
-                        Description,
-                        ModelPersonFamilyId,
-                        ModelPictureActivityId
-                    )
-                    VALUES (?, ?, ?, ?, ?, ?)
-                """, (
-                    day_of_week,
-                    start,
-                    end,
-                    description.strip() or None,
-                    5 if person_id == 0 else person_id,  # ✅ # 0 = ALL → zapisujemy jako RODZINA (Id=5)
-                    picture_id
-                ))
-
-            db.commit()
-
-            return RedirectResponse("/activities", status_code=303)
-
-        except sqlite3.IntegrityError as e:
-            db.rollback()
-
-            if "TIME_OVERLAP" in str(e):
-                db.close()
-                return templates.TemplateResponse(
-                    request,
-                    "activity_add.html",
-                    {
-                        "errors": [
-                            "❌ Masz już zaplanowaną aktywność w tym czasie (TIME_OVERLAP)"
-                        ],
-                        "form": {
-                            "start": start,
-                            "end": end,
-                            "day_of_week": day_of_week,
-                            "description": description,
-                            "person_id": person_id,
-                            "activity_name": activity_name,
-                        },
-                        "persons": PERSON_ENUM_MAP,
-                        "activities": activities,
-                        "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                    },
-                    status_code=400
-                )          
-        finally:
-            db.close()
 
 
 # ==============================
