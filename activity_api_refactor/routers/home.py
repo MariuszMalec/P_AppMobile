@@ -81,9 +81,9 @@ def home_page(request: Request,
                 next_items.append(item)
 
         return templates.TemplateResponse(
+            request,
             "home.html",
             {
-                "request": request,
                 "now": current_time,
                 "current": current_items,
                 "next": next_items,
