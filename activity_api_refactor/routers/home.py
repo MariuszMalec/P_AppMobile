@@ -166,7 +166,7 @@ def home_page_by_person(
                 "start": r["StartTime"],
                 "end": r["EndTime"],
                 "description": r["Description"],
-                "person": PERSON_NAME_MAP.get(r["PersonName"], ""),
+                "person": r["PersonName"],
                 "personPicture": r["PersonPicture"],
                 "picture": r["Picture"],
             }
