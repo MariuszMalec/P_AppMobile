@@ -21,11 +21,13 @@ router = APIRouter(
 # HOME
 # ==============================
 @router.get("", response_class=HTMLResponse)
-def home_page(request: Request,
-        db = Depends(get_db)):
+def home_page(
+    request: Request,
+    db = Depends(get_db)
+):
+    cursor = db.cursor()
 
-        cursor = db.cursor()
-
+    try:
         now = datetime.now()
         current_time = now.strftime("%H:%M:%S")
         iso_day = now.isoweekday()
@@ -49,16 +51,6 @@ def home_page(request: Request,
             ORDER BY ad.StartTime
         """, (current_day,)).fetchall()
 
-        db.close()
-
-        PERSON_NAME_MAP = {
-            1: "TATA",
-            2: "MAMA",
-            3: "GOSIA",
-            4: "EMILKA",
-            5: "RODZINA",
-        }
-
         current_items = []
         next_items = []
 
@@ -72,11 +64,8 @@ def home_page(request: Request,
                 "picture": r["Picture"],
             }
 
-            # 🔴 TERAZ
             if r["StartTime"] <= current_time <= r["EndTime"]:
                 current_items.append(item)
-
-            # 🔵 NASTĘPNIE
             elif r["StartTime"] > current_time:
                 next_items.append(item)
 
@@ -88,9 +77,28 @@ def home_page(request: Request,
                 "current": current_items,
                 "next": next_items,
                 "current_day_name": current_day_name,
-            }
+                "no_data": False,
+            },
+            status_code=200
         )
 
+    except Exception:
+        # brak bazy / tabel / inny błąd → pokaż stronę z komunikatem
+        return templates.TemplateResponse(
+            request,
+            "home.html",
+            {
+                "now": "",
+                "current": [],
+                "next": [],
+                "current_day_name": "",
+                "no_data": True,
+            },
+            status_code=400
+        )
+
+    finally:
+        db.close()
 
 
 @router.get("/homebyperson", response_class=HTMLResponse)    

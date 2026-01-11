@@ -6,6 +6,18 @@
 
 <meta http-equiv="refresh" content="30">
 
+<style>
+
+.no-data {
+    padding: 12px;
+    background: #331;
+    color: #ffcc00;
+    border-radius: 8px;
+    text-align: center;
+}
+
+</style>
+
 <!-- 🔝 TOP BAR -->
 <div style="
     display:flex;
@@ -13,6 +25,7 @@
     margin-bottom:20px;
 ">
 
+{% if not no_data %}
     <a href="/mainmenu" style="flex:1">
         <button style="
             width:100%;
@@ -72,6 +85,8 @@
         </button>
     </a>    
 
+{% endif %}
+
 </div>
 
 <h2 style="text-align:center; margin-bottom:12px;">
@@ -118,6 +133,14 @@
 <p style="text-align:center; opacity:0.6;">
     Brak aktualnej aktywności
 </p>
+
+{% if no_data %}
+    <div class="no-data">
+        Brak danych – baza lub tabele nie istnieją.
+    </div>
+{% endif %}
+
+
 {% endif %}
 
 <!-- ================= NEXT ================= -->

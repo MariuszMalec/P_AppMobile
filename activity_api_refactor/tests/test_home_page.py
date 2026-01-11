@@ -2,13 +2,11 @@ import sys
 from pathlib import Path
 from freezegun import freeze_time
 
-BASE_DIR = Path(__file__).resolve().parent
-sys.path.append(str(BASE_DIR))
 
-from fastapi.testclient import TestClient
-from main import app
+import sqlite3
+from pathlib import Path
 
-client = TestClient(app)
+from conftest import TEST_DB
 
 
 @freeze_time("2025-01-08 20:10:00")
@@ -24,6 +22,19 @@ def test_home_page_return_status_code_200(client):
 def test_home_works_with_empty_db(client, empty_db):
     response = client.get("/home")
     assert response.status_code == 200
+    assert "hej" not in response.text
+
+def test_home_works_when_tables_missing(client):
+    # symulujemy brak bazy
+    if TEST_DB.exists():
+        TEST_DB.unlink()
+
+    response = client.get("/home")
+
+    assert response.status_code == 400
+    assert "Brak danych" in response.text
+
+
 
 def test_home_context_keys(client):
     response = client.get("/home")
