@@ -66,7 +66,6 @@ def test_validate_fails_when_start_thesame_end(client):
     db.close()
 
 
-
 def test_validate_fails_on_time_conflict(client):
     db = get_conn()
     cur = db.cursor()

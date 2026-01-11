@@ -100,6 +100,67 @@ def validate_activity_form(
 
 
 
+def validate_activity_edit_form(
+    start: str,
+    end: str,
+    day_of_week: int,
+    person_id: int,
+    activity_id: int,
+    db,
+):
+    errors: list[str] = []
+
+    # --- walidacja podstawowa czasu ---
+    try:
+        start_min = time_to_minutes(start)
+        end_min = time_to_minutes(end)
+    except Exception:
+        errors.append("Nieprawidłowy format czasu")
+        return errors
+
+    # jeżeli nie pozwalasz na „przez północ” w EDIT:
+    if start_min >= end_min:
+        errors.append("Start musi być wcześniejszy niż koniec")
+
+    # jeżeli są już błędy – nie ma sensu iść do bazy
+    if errors:
+        return errors
+
+    cursor = db.cursor()
+
+    # --- pobieramy inne aktywności (bez tej edytowanej) ---
+    cursor.execute("""
+        SELECT StartTime, EndTime
+        FROM ActiviesDays
+        WHERE
+            DayOfWeek = ?
+            AND ModelPersonFamilyId = ?
+            AND Id != ?
+    """, (day_of_week, person_id, activity_id))
+
+    existing = cursor.fetchall()
+
+    new_ranges = normalize_range(start_min, end_min)
+
+    for row in existing:
+        ex_start = time_to_minutes(row["StartTime"])
+        ex_end = time_to_minutes(row["EndTime"])
+
+        ex_ranges = normalize_range(ex_start, ex_end)
+
+        for nr in new_ranges:
+            for er in ex_ranges:
+                if ranges_overlap(nr, er):
+                    errors.append(
+                        f"❌ Masz już zaplanowaną aktywność w tym czasie "
+                        f"({row['StartTime']} – {row['EndTime']})"
+                    )
+                    return errors  # jedna kolizja wystarczy
+
+    return errors
+
+
+
 def validate_activity_form_old(
     start: str,
     end: str,
@@ -158,7 +219,7 @@ def validate_activity_form_old(
 
     return errors
 
-def validate_activity_edit_form(
+def validate_activity_edit_form_old(
     start: str,
     end: str,
     day_of_week: int,

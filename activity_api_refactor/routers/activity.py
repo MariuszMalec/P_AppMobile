@@ -340,10 +340,6 @@ def edit_activity_post(
     db=Depends(get_db)
 ):
     normalized_person_id = 5 if person_id == 0 else person_id
-    errors = validate_activity_edit_form(
-        start, end, day_of_week, normalized_person_id
-    )
-
     cursor = db.cursor()
 
     try:
@@ -392,7 +388,16 @@ def edit_activity_post(
                 "picture": pic["Picture"]
             })
 
-        # ❌ BŁĘDY FORMULARZA
+        # 🧠 CAŁA WALIDACJA TUTAJ
+        errors = validate_activity_edit_form(
+            start,
+            end,
+            day_of_week,
+            normalized_person_id,
+            activity_id,
+            db
+        )
+
         if errors:
             return templates.TemplateResponse(
                 request,
@@ -415,50 +420,7 @@ def edit_activity_post(
                 status_code=400
             )
 
-        # 🔒 KOLIZJE CZASOWE (bez samej siebie!)
-        conflict = cursor.execute("""
-            SELECT StartTime, EndTime
-            FROM ActiviesDays
-            WHERE
-                DayOfWeek = ?
-                AND ModelPersonFamilyId = ?
-                AND Id != ?
-                AND time(?) < time(EndTime)
-                AND time(?) > time(StartTime)
-        """, (
-            day_of_week,
-            normalized_person_id,
-            activity_id,
-            start,
-            end,
-        )).fetchone()
-
-        if conflict:
-            return templates.TemplateResponse(
-                request,
-                "edit_activity.html",
-                {
-                    "errors": [
-                        f"❌ Masz już zaplanowaną aktywność w tym czasie "
-                        f"({conflict['StartTime']} – {conflict['EndTime']})"
-                    ],
-                    "activity": {
-                        "Id": activity_id,
-                        "DayOfWeek": day_of_week,
-                        "StartTime": start,
-                        "EndTime": end,
-                        "Description": description,
-                        "ModelPersonFamilyId": normalized_person_id,
-                        "ModelPictureActivityId": picture_id,
-                    },
-                    "persons": persons,
-                    "pictures": pictures,
-                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                },
-                status_code=400
-            )
-
-        # ✅ UPDATE
+        # ✅ UPDATE – tu już nie ma żadnej walidacji
         cursor.execute("""
             UPDATE ActiviesDays
             SET
@@ -482,34 +444,9 @@ def edit_activity_post(
         db.commit()
         return RedirectResponse("/activities", status_code=HTTP_303_SEE_OTHER)
 
-    except sqlite3.IntegrityError as e:
-        db.rollback()
-
-        if "TIME_OVERLAP" in str(e):
-            return templates.TemplateResponse(
-                request,
-                "edit_activity.html",
-                {
-                    "errors": ["❌ Masz już zaplanowaną aktywność w tym czasie"],
-                    "activity": {
-                        "Id": activity_id,
-                        "DayOfWeek": day_of_week,
-                        "StartTime": start,
-                        "EndTime": end,
-                        "Description": description,
-                        "ModelPersonFamilyId": normalized_person_id,
-                        "ModelPictureActivityId": picture_id,
-                    },
-                    "persons": persons,
-                    "pictures": pictures,
-                    "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-                },
-                status_code=400
-            )
-        raise
-
     finally:
         db.close()
+
              
       
 
