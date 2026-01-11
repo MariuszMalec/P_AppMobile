@@ -298,3 +298,18 @@ def test_add_activity_invalid_time_startendthesame(monkeypatch):
     assert captured["status"] == 400
     assert "errors" in captured["context"]
     assert captured["context"]["errors"] == ["Start musi być != End"]
+
+
+def test_validate_activity_form_fails_when_start_thesame_end():
+    from validators import validate_activity_form
+
+    errors = validate_activity_form(
+        "11:00",
+        "11:00",
+        2,
+        1,
+        "Test"
+    )
+
+    assert errors
+    assert "Godzina startu musi być inna niż zakończenia" in errors[0]
