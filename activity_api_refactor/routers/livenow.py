@@ -449,115 +449,79 @@ def edit_activity_put(
         db = Depends(get_db)
     ):
 
-        cursor = db.cursor()
+    cursor = db.cursor()
 
-        # 🔎 POBIERZ EDYTOWANĄ AKTYWNOŚĆ (ŹRÓDŁO PRAWDY)
-        activity = cursor.execute("""
-            SELECT
-                DayOfWeek,
-                ModelPersonFamilyId
-            FROM ActiviesDays
-            WHERE Id = ?
-        """, (activity_id,)).fetchone()
+    # 🔎 ŹRÓDŁO PRAWDY
+    activity = cursor.execute("""
+        SELECT
+            DayOfWeek,
+            ModelPersonFamilyId
+        FROM ActiviesDays
+        WHERE Id = ?
+    """, (activity_id,)).fetchone()
 
-        if not activity:
-            db.close()
-            raise HTTPException(status_code=404, detail="Aktywność nie istnieje")
+    if not activity:
+        db.close()
+        raise HTTPException(status_code=404, detail="Aktywność nie istnieje")
 
-        day_of_week = activity["DayOfWeek"]
-        person_id = activity["ModelPersonFamilyId"]
+    day_of_week = activity["DayOfWeek"]
+    person_id = activity["ModelPersonFamilyId"]
 
-        # ===============================
-        # 🧠 WALIDACJE PODSTAWOWE
-        # ===============================
-        start = hhmm(start)
-        end = hhmm(end)
+    start = hhmm(start)
+    end   = hhmm(end)
 
-        errors = validate_activity_edit_form(
-            start,
-            end,
-            day_of_week,
-            person_id
+    # ===============================
+    # 🧠 WALIDACJA (WSZYSTKO W JEDNYM MIEJSCU)
+    # ===============================
+    errors = validate_activity_edit_form(
+        start=start,
+        end=end,
+        day_of_week=day_of_week,
+        person_id=person_id,
+        activity_id=activity_id,
+        db=db,
+    )
+
+    if errors:
+        db.close()
+        return JSONResponse(
+            {"status": "error", "errors": errors},
+            status_code=400
         )
 
-        if errors:
-            db.close()
-            return JSONResponse(
-                {"status": "error", "errors": errors},
-                status_code=400
-            )
+    # ===============================
+    # 🖼️ AKTYWNOŚĆ → ID OBRAZKA
+    # ===============================
+    picture_id = None
+    if activityname:
+        pic = cursor.execute("""
+            SELECT Id FROM PictureActivities
+            WHERE Name = ?
+        """, (activityname,)).fetchone()
+        if pic:
+            picture_id = pic["Id"]
 
-        # ===============================
-        # 🔒 KONFLIKT CZASOWY (EDIT)
-        # ===============================
-        conflict = cursor.execute("""
-            SELECT
-                StartTime AS start_time,
-                EndTime   AS end_time
-            FROM ActiviesDays
-            WHERE
-                DayOfWeek = ?
-                AND ModelPersonFamilyId = ?
-                AND Id != ?
-                AND (
-                    time(?) < time(EndTime)
-                    AND time(?) > time(StartTime)
-                )
-            LIMIT 1
-        """, (
-            day_of_week,
-            5 if person_id == 0 else person_id,
-            activity_id,
-            start,
-            end
-        )).fetchone()
+    # ===============================
+    # ✅ UPDATE
+    # ===============================
+    cursor.execute("""
+        UPDATE ActiviesDays
+        SET
+            StartTime = ?,
+            EndTime = ?,
+            Description = ?,
+            ModelPictureActivityId = ?
+        WHERE Id = ?
+    """, (
+        start,
+        end,
+        description.strip() or None,
+        picture_id,
+        activity_id
+    ))
 
-        if conflict:
-            db.close()
-            return JSONResponse(
-                {
-                    "status": "error",
-                    "errors": [
-                        f"Masz już zaplanowaną aktywność w tym czasie "
-                        f"({conflict['start_time']} – {conflict['end_time']})"
-                    ]
-                },
-                status_code=400
-            )
+    db.commit()
+    db.close()
 
-        # ===============================
-        # 🖼️ AKTYWNOŚĆ → ID OBRAZKA
-        # ===============================
-        picture_id = None
-        if activityname:
-            pic = cursor.execute("""
-                SELECT Id FROM PictureActivities
-                WHERE Name = ?
-            """, (activityname,)).fetchone()
-            if pic:
-                picture_id = pic["Id"]
-
-        # ===============================
-        # ✅ UPDATE
-        # ===============================
-        cursor.execute("""
-            UPDATE ActiviesDays
-            SET
-                StartTime = ?,
-                EndTime = ?,
-                Description = ?,
-                ModelPictureActivityId = ?
-            WHERE Id = ?
-        """, (
-            start,
-            end,
-            description.strip() or None,
-            picture_id,
-            activity_id
-        ))
-
-        db.commit()
-        db.close()
-
-        return JSONResponse({"status": "ok"})
+    return JSONResponse({"status": "ok"})
 

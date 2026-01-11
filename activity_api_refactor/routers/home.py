@@ -21,7 +21,8 @@ router = APIRouter(
 # HOME
 # ==============================
 @router.get("", response_class=HTMLResponse)
-def home_page(request: Request, db = Depends(get_db) ):
+def home_page(request: Request,
+        db = Depends(get_db)):
 
         cursor = db.cursor()
 
@@ -31,14 +32,65 @@ def home_page(request: Request, db = Depends(get_db) ):
         current_day = system_day_to_db_day(iso_day)
         current_day_name = now.strftime("%A")
 
+        rows = cursor.execute("""
+            SELECT
+                ad.StartTime,
+                ad.EndTime,
+                ad.Description,
+                pf.PersonName,
+                pf.PersonPicture,
+                pa.Picture
+            FROM ActiviesDays ad
+            LEFT JOIN PersonFamilies pf
+                ON ad.ModelPersonFamilyId = pf.Id
+            LEFT JOIN PictureActivities pa
+                ON ad.ModelPictureActivityId = pa.Id
+            WHERE ad.DayOfWeek = ?
+            ORDER BY ad.StartTime
+        """, (current_day,)).fetchall()
+
+        db.close()
+
+        PERSON_NAME_MAP = {
+            1: "TATA",
+            2: "MAMA",
+            3: "GOSIA",
+            4: "EMILKA",
+            5: "RODZINA",
+        }
+
+        current_items = []
+        next_items = []
+
+        for r in rows:
+            item = {
+                "start": r["StartTime"],
+                "end": r["EndTime"],
+                "description": r["Description"],
+                "person": r["PersonName"],
+                "personPicture": r["PersonPicture"],
+                "picture": r["Picture"],
+            }
+
+            # 🔴 TERAZ
+            if r["StartTime"] <= current_time <= r["EndTime"]:
+                current_items.append(item)
+
+            # 🔵 NASTĘPNIE
+            elif r["StartTime"] > current_time:
+                next_items.append(item)
+
         return templates.TemplateResponse(
-            request,
             "home.html",
             {
+                "request": request,
                 "now": current_time,
+                "current": current_items,
+                "next": next_items,
                 "current_day_name": current_day_name,
             }
         )
+
 
 
 @router.get("/homebyperson", response_class=HTMLResponse)    
