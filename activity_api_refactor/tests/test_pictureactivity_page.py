@@ -198,11 +198,11 @@ def test_add_activity_success_redirect(monkeypatch):
 
     result = add_activity_post(
         request=None,
-        start="11:00",
-        end="12:00",
+        start="10:00",
+        end="09:00",
         day_of_week=2,
         description="",
-        person_id=1,
+        person_id=1,    
         activity_name="Test",
         db=fake_db,
     )
@@ -242,7 +242,7 @@ def test_add_activity_invalid_time_range(monkeypatch):
 
     result = add_activity_post(
         request=None,
-        start="11:00",
+        start="09:00",
         end="10:00",
         day_of_week=2,
         description="",
@@ -254,50 +254,6 @@ def test_add_activity_invalid_time_range(monkeypatch):
     assert captured["status"] == 400
     assert "errors" in captured["context"]
     assert captured["context"]["errors"] == ["Start musi być < End"]
-
-
-def test_add_activity_invalid_time_startendthesame(monkeypatch):
-    from routers.activity import add_activity_post
-    from templates import templates
-
-    # walidator zawsze zwraca błąd
-    monkeypatch.setattr(
-        "routers.activity.validate_activity_form",
-        lambda *a, **k: ["Start musi być != End"]
-    )
-
-    class FakeDB:
-        def cursor(self): return self
-        def execute(self, *a, **k): return self
-        def fetchall(self): return []
-        def close(self): pass
-
-    captured = {}
-
-    original = templates.TemplateResponse
-
-    def fake_template_response(request, name, context, status_code=200):
-        captured["name"] = name
-        captured["context"] = context
-        captured["status"] = status_code
-        return {"_template": name, "_context": context}
-
-    monkeypatch.setattr(templates, "TemplateResponse", fake_template_response)
-
-    result = add_activity_post(
-        request=None,
-        start="10:00",
-        end="11:00",
-        day_of_week=2,
-        description="",
-        person_id=1,
-        activity_name="Test",
-        db=FakeDB(),
-    )
-
-    assert captured["status"] == 400
-    assert "errors" in captured["context"]
-    assert captured["context"]["errors"] == ["Start musi być != End"]
 
 
 def test_validate_activity_form_fails_when_start_thesame_end():
