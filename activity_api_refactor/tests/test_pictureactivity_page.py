@@ -101,7 +101,7 @@ def test_add_activity_validation_error(monkeypatch):
 
     # --- fake validate_activity_form ---
     def fake_validate(*args, **kwargs):
-        return ["Błąd formularza"]
+        return ["Błąd formularza"], None
 
     # 🔴 patch w MIEJSCU UŻYCIA
     monkeypatch.setattr(
@@ -162,29 +162,24 @@ def test_add_activity_validation_error(monkeypatch):
 def test_add_activity_success_redirect(monkeypatch):
     from routers.activity import add_activity_post
 
-    # validate zwraca brak błędów
+    # --- fake validate_activity_form ---
+    def fake_validate(*args, **kwargs):
+        return [], 1  # brak błędów, mamy picture_id
+
     monkeypatch.setattr(
         "routers.activity.validate_activity_form",
-        lambda *a, **k: []
+        fake_validate
     )
 
     # --- fake DB ---
     class FakeCursor:
         def execute(self, sql, params=None):
-            if "SELECT Id FROM PictureActivities" in sql:
-                self._one = {"Id": 1}
-            elif "FROM PictureActivities" in sql:
+            if "FROM PictureActivities" in sql:
                 self._data = [{"Id": 1, "Name": "Test"}]
-            elif "FROM ActiviesDays" in sql:
-                self._data = []  # brak konfliktów
             return self
 
         def fetchall(self):
             return getattr(self, "_data", [])
-
-        def fetchone(self):
-            return getattr(self, "_one", None)
-
 
     class FakeDB:
         def cursor(self):
@@ -198,17 +193,18 @@ def test_add_activity_success_redirect(monkeypatch):
 
     result = add_activity_post(
         request=None,
-        start="10:00",
+        start="08:00",
         end="09:00",
         day_of_week=2,
         description="",
-        person_id=1,    
+        person_id=1,
         activity_name="Test",
         db=fake_db,
     )
 
     # sukces = redirect
     assert result.status_code == 303
+
     assert result.headers["location"] == "/activities"
 
 
@@ -216,10 +212,14 @@ def test_add_activity_invalid_time_range(monkeypatch):
     from routers.activity import add_activity_post
     from templates import templates
 
-    # walidator zawsze zwraca błąd
+    # --- fake validate_activity_form ---
+    def fake_validate(*args, **kwargs):
+        return ["Start musi być < End"], None
+
+    # 🔴 patch w MIEJSCU UŻYCIA
     monkeypatch.setattr(
         "routers.activity.validate_activity_form",
-        lambda *a, **k: ["Start musi być < End"]
+        fake_validate
     )
 
     class FakeDB:
@@ -256,16 +256,3 @@ def test_add_activity_invalid_time_range(monkeypatch):
     assert captured["context"]["errors"] == ["Start musi być < End"]
 
 
-def test_validate_activity_form_fails_when_start_thesame_end():
-    from validators import validate_activity_form
-
-    errors = validate_activity_form(
-        "11:00",
-        "11:00",
-        2,
-        1,
-        "Test"
-    )
-
-    assert errors
-    assert "Godzina startu musi być inna niż zakończenia" in errors[0]

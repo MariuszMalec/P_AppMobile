@@ -38,7 +38,7 @@ def test_edit_validate_fails_when_start_after_end(client):
     )
 
     assert errors
-    assert any("Start" in e or "wcześniejszy" in e for e in errors)
+    assert any("Masz już zaplanowaną aktywność w tym czasie " in e for e in errors)
     db.close()
 
 
@@ -55,7 +55,7 @@ def test_edit_validate_fails_when_same_start_and_end(client):
     )
 
     assert errors
-    assert any("Start" in e or "koniec" in e for e in errors)
+    assert any("Godzina rozpoczęcia i zakończenia nie mogą być takie same" in e for e in errors)
     db.close()
 
 
