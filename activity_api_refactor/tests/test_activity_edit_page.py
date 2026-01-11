@@ -120,6 +120,6 @@ def test_edit_activity_return_Status_When_StartTimeIsTheSameAsEndTime_code_400(c
         }
     )
     assert response.status_code == 400
-    assert "Czas trwania aktywności nie może wynosić 0 minut" in response.text
+    assert "Godzina rozpoczęcia i zakończenia nie mogą być takie same" in response.text
 
 

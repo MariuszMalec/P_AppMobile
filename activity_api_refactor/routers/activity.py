@@ -473,16 +473,9 @@ def week_page(request: Request, db = Depends(get_db)):
         week = {}
         for r in rows:
 
-            # 👉 mapowanie osoby
-            person_label = None
-            if r["PersonName"] is not None:
-                enum_value = PERSON_ENUM_MAP.get(r["PersonName"])
-                if enum_value:
-                    person_label = enum_value.value
-
             # kopiujemy r i dokładamy nowe pole
             row_dict = dict(r)
-            row_dict["PersonName"] = person_label
+            row_dict["PersonName"] = r["PersonName"]
 
             week.setdefault(r["DayOfWeek"], []).append(row_dict)
 
