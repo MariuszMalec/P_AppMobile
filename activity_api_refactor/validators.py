@@ -118,9 +118,8 @@ def validate_activity_edit_form(
         errors.append("Nieprawidłowy format czasu")
         return errors
 
-    # jeżeli nie pozwalasz na „przez północ” w EDIT:
-    if start_min >= end_min:
-        errors.append("Start musi być wcześniejszy niż koniec")
+    if start_min == end_min:
+        errors.append("Godzina rozpoczęcia i zakończenia nie mogą być takie same")
 
     # jeżeli są już błędy – nie ma sensu iść do bazy
     if errors:
