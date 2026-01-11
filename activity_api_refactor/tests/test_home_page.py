@@ -21,8 +21,10 @@ def test_home_page_return_status_code_200(client):
 
 def test_home_works_with_empty_db(client, empty_db):
     response = client.get("/home")
+
     assert response.status_code == 200
-    assert "hej" not in response.text
+    assert "no-data" in response.text  # np. klasa w HTML
+
 
 def test_home_works_when_tables_missing(client):
     # symulujemy brak bazy
