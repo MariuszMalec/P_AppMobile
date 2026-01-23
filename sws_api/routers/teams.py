@@ -87,3 +87,74 @@ def create_teams_bulk(teams: List[Dict] = Body(...),db = Depends(get_db)):
         "inserted": len(teams),
         "status": "ok"
     }
+
+
+# =============================
+# GET TEAM TROPHIES BY SEASON
+# =============================
+@router.get("/{team_id}/trophies_by_season/")
+def get_team_trophies_by_season(
+    team_id: int,
+    request: Request,
+    db = Depends(get_db)
+):
+    cursor = db.cursor()
+
+    team = cursor.execute(
+        "SELECT * FROM Teams WHERE Id = ?",
+        (team_id,)
+    ).fetchone()
+
+    if not team:
+        db.close()
+        raise HTTPException(404, "Team not found")
+
+    team_name = team["Name"]
+
+    records = cursor.execute(
+        """
+        SELECT DISTINCT Season, TrophyModelId
+        FROM Teams
+        WHERE Name = ?
+        """,
+        (team_name,)
+    ).fetchall()
+
+    season_map: Dict[int, List[dict]] = {}
+
+    for r in records:
+        season_map.setdefault(r["Season"], [])
+
+    for r in records:
+        if r["TrophyModelId"]:
+            trophy = cursor.execute(
+                "SELECT * FROM Trophies WHERE Id = ?",
+                (r["TrophyModelId"],)
+            ).fetchone()
+
+            if trophy:
+                season_map[r["Season"]].append({
+                    "Id": trophy["Id"],
+                    "Name": trophy["Name"],
+                    "Picture": trophy["Picture"],
+                    "Description": trophy["Description"]
+                })
+
+    db.close()
+
+    seasons = [
+        {
+            "Season": season,
+            "Trophies": trophies
+        }
+        for season, trophies in sorted(season_map.items())
+    ]
+
+    return templates.TemplateResponse(
+        "trophies_by_season.html",
+        {
+            "request": request,
+            "team_name": team_name,
+            "seasons": seasons
+        }
+    )
