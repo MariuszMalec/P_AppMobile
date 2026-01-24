@@ -158,3 +158,25 @@ def get_team_trophies_by_season(
             "seasons": seasons
         }
     )
+
+
+# =============================
+# GET TEAM PICTURE
+# =============================
+@router.get("/{team_id}/picture", response_class=JSONResponse)
+def get_team_picture(team_id: int, db = Depends(get_db)):
+    cursor = db.cursor()
+
+    team = cursor.execute(
+        "SELECT Picture FROM Teams WHERE Id = ?",
+        (team_id,)
+    ).fetchone()
+
+    db.close()
+
+    if not team or not team["Picture"]:
+        raise HTTPException(status_code=404, detail="Picture not found")
+
+    return {
+        "picture": team["Picture"]
+    }
