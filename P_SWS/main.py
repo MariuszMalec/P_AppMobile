@@ -1,9 +1,19 @@
 from fastapi import FastAPI, HTTPException
 from typing import List, Dict
 from database import get_db
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 
+BASE_DIR = Path(__file__).resolve().parent
 
 app = FastAPI()
+
+
+app.mount(
+    "/static",
+    StaticFiles(directory=BASE_DIR / "static"),
+    name="static"
+)
 
 # =============================
 # GET TEAMS
@@ -15,6 +25,29 @@ def get_teams():
     db.close()
     return [dict(r) for r in rows]
 
+
+# =============================
+# GET TEAM BY ID
+# =============================
+@app.get("/teams/{team_id}")
+def get_team(team_id: int):
+    db = get_db()
+    try:
+        row = db.execute(
+            "SELECT * FROM Teams WHERE id = ?",
+            (team_id,)
+        ).fetchone()
+
+        if row is None:
+            raise HTTPException(
+                status_code=404,
+                detail=f"Team with id {team_id} not found"
+            )
+
+        return dict(row)
+
+    finally:
+        db.close()
 
 # =============================
 # BULK POST TEAMS
