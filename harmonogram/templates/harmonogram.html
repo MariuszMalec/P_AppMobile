@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Harmonogram</title>
+
+<style>
+.calendar {
+    max-width: 1200px;
+    margin: 20px auto;
+    font-family: system-ui, sans-serif;
+}
+
+.calendar-header, .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+}
+
+.calendar-header div {
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.day {
+    border: 1px solid #ddd;
+    min-height: 160px;
+    padding: 6px;
+    font-size: 12px;
+}
+
+.date {
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.order {
+    border-radius: 6px;
+    padding: 6px;
+    margin-bottom: 6px;
+    background: #f4f4f4;
+}
+
+.nc { background: #ffe0e0; }
+.cmm { background: #e0f0ff; }
+.mat { background: #e0ffe6; }
+
+.day.overload {
+    border: 2px solid red;
+    background-color: #ffe6e6;
+}
+
+
+</style>
+</head>
+
+<body>
+
+<div class="calendar">
+    <div class="calendar-header">
+        <div>Pon</div><div>Wt</div><div>Śr</div>
+        <div>Czw</div><div>Pt</div><div>Sob</div><div>Nd</div>
+    </div>
+
+<div class="calendar-grid">
+    {% for day in days %}
+    <div class="day {% if day.overload %}overload{% endif %}">
+        <div class="date">{{ day.number }} ({{ day.total_hours }}h)</div>
+
+        {% for o in day.orders %}
+        <div class="order
+            {% if o.ExistNC %}nc{% endif %}
+            {% if o.ExistCMM %} cmm{% endif %}
+            {% if o.ExistMaterial %} mat{% endif %}
+        ">
+            <div><b>ID:</b> {{ o.Id }}</div>
+            <div><b>Name:</b> {{ o.Name }}</div>
+            <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
+            <div><b>Hasło:</b> {{ o.Haslo }}</div>
+            <div><b>Projekt:</b> {{ o.ProjectName }}</div>
+            <div><b>Blade:</b> {{ o.TypeOfBlade }}</div>
+            <div><b>Godziny:</b> {{ o.Hours }}</div>
+            <div>
+                NC: {{ o.ExistNC }} |
+                CMM: {{ o.ExistCMM }} |
+                MAT: {{ o.ExistMaterial }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
+
+</div>
+
+</body>
+</html>

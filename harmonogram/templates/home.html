@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Harmonogram App{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap 5 -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    >
+
+    <!-- Optional icons -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="/">
+      🏆 Harmonogram Manager
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="bg-white border-bottom">
+  <div class="container py-5 text-center">
+    <h1 class="display-5 fw-bold">Welcome to Harmonogram Manager</h1>
+    <p class="lead text-muted mt-3">
+      Manage orders, exw time, projects and machines
+    </p>
+  </div>
+</header>
+
+<!-- MAIN CONTENT -->
+<main class="container my-5">
+
+  <div class="row g-4">
+
+    <!-- Teams -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body text-center">
+          <i class="bi bi-people-fill fs-1 text-primary"></i>
+          <h3 class="card-title mt-3">Harmonogram</h3>
+          <p class="card-text text-muted">
+            Browse, view Harmonogram.
+          </p>
+          <a href="/harmonogram" class="btn btn-primary px-4">
+            Go to Harmonogram
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trophies -->
+    <div class="col-md-6">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body text-center">
+          <i class="bi bi-trophy-fill fs-1 text-warning"></i>
+          <h3 class="card-title mt-3">Manage</h3>
+          <p class="card-text text-muted">
+            Manage Harmonogram.
+          </p>
+          <a href="/trophies" class="btn btn-secondary px-4">
+            Go to manage Harmonogram
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  {% block content %}{% endblock %}
+
+</main>
+
+<!-- FOOTER -->
+<footer class="bg-dark text-light py-3 mt-5">
+  <div class="container text-center small">
+    © {{ year | default(2026) }} Harmonogram Manager • FastAPI + Bootstrap
+  </div>
+</footer>
+
+</body>
+</html>
