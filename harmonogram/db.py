@@ -45,16 +45,14 @@ def init_db_if_not_exists(conn):
     # =============================
     # MACHINE
     # =============================
-    # cur.execute("""
-    # CREATE TABLE IF NOT EXISTS Trophies (
-    #     Id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #     Name TEXT NOT NULL,
-    #     Description TEXT NOT NULL,
-    #     Picture TEXT NOT NULL,
-    #     TeamModelId INTEGER,
-    #     FOREIGN KEY (TeamModelId) REFERENCES Teams(Id)
-    # );
-    # """)
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS Machines (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        Name TEXT NOT NULL DEFAULT 'hstm',
+        Description TEXT NOT NULL DEFAULT '5axis',
+        Picture TEXT NOT NULL DEFAULT 'test'
+    );
+    """)
 
     conn.commit()
 
@@ -88,5 +86,25 @@ def insert_orders(conn):
 
     print("✅ DB ensured (table Orders exist & seeded)")
 
+
+def insert_machines(conn):
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT OR IGNORE INTO Machines (
+            Id,
+            Name,
+            Description,
+            Picture
+        ) VALUES
+        (1, 'LINIA1', '5-axis milling machine', 'hstm_01.png'),
+        (2, 'LINIA2', '5-axis milling machine', 'hstm_02.png'),
+        (3, 'LINIA3', 'Coordinate Measuring Machine', 'cmm_01.png'),
+        (4, 'LINIA4', 'CNC Lathe', 'lathe_01.png');
+    """)
+
+    conn.commit()
+
+    print("✅ DB ensured (table Machines exist & seeded)")
 
 

@@ -8,6 +8,7 @@ from db import (
     get_db,
     init_db_if_not_exists,
     insert_orders,
+    insert_machines,
 )
 
 TEST_DB = Path(__file__).parent / "test.db"
@@ -24,6 +25,7 @@ def client():
 
     init_db_if_not_exists(conn)
     insert_orders(conn)
+    insert_machines(conn)
 
     conn.close()
 
