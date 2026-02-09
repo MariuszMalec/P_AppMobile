@@ -5,10 +5,14 @@
 <title>Harmonogram</title>
 
 <style>
+body {
+    font-family: system-ui, sans-serif;
+    margin: 20px;
+}
+
 .calendar {
     max-width: 1200px;
-    margin: 20px auto;
-    font-family: system-ui, sans-serif;
+    margin: 0 auto;
 }
 
 .calendar-header, .calendar-grid {
@@ -22,16 +26,41 @@
     padding: 10px 0;
 }
 
+.calendar-grid {
+    gap: 6px;
+}
+
 .day {
     border: 1px solid #ddd;
     min-height: 160px;
     padding: 6px;
     font-size: 12px;
+    position: relative;
+    border-radius: 8px;
+}
+
+.day.overload {
+    border: 2px solid red;
+    background-color: #ffe6e6;
 }
 
 .date {
     font-weight: bold;
     margin-bottom: 4px;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 8px;
+    background-color: #ddd;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 4px;
 }
 
 .order {
@@ -45,12 +74,6 @@
 .cmm { background: #e0f0ff; }
 .mat { background: #e0ffe6; }
 
-.day.overload {
-    border: 2px solid red;
-    background-color: #ffe6e6;
-}
-
-
 </style>
 </head>
 
@@ -62,35 +85,45 @@
         <div>Czw</div><div>Pt</div><div>Sob</div><div>Nd</div>
     </div>
 
-<div class="calendar-grid">
-    {% for day in days %}
-    <div class="day {% if day.overload %}overload{% endif %}">
-        <div class="date">{{ day.number }} ({{ day.total_hours }}h)</div>
+    <div class="calendar-grid">
+        {% for day in days %}
+        <div class="day {% if day.overload %}overload{% endif %}">
+            <div class="date">{{ day.number }} ({{ day.total_hours }}h)</div>
 
-        {% for o in day.orders %}
-        <div class="order
-            {% if o.ExistNC %}nc{% endif %}
-            {% if o.ExistCMM %} cmm{% endif %}
-            {% if o.ExistMaterial %} mat{% endif %}
-        ">
-            <div><b>ID:</b> {{ o.Id }}</div>
-            <div><b>Name:</b> {{ o.Name }}</div>
-            <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
-            <div><b>Hasło:</b> {{ o.Haslo }}</div>
-            <div><b>Projekt:</b> {{ o.ProjectName }}</div>
-            <div><b>Blade:</b> {{ o.TypeOfBlade }}</div>
-            <div><b>Godziny:</b> {{ o.Hours }}</div>
-            <div>
-                NC: {{ o.ExistNC }} |
-                CMM: {{ o.ExistCMM }} |
-                MAT: {{ o.ExistMaterial }}
+            <!-- Pasek postępu godzin -->
+            <div class="progress-bar-container">
+                {% set percent = day.total_hours / 24 * 100 %}
+                {% if percent > 100 %}
+                    {% set percent = 100 %}
+                {% endif %}
+                <div class="progress-bar" style="width: {{ percent }}%;
+                    background-color: {% if day.overload %}red{% else %}#4caf50{% endif %};">
+                </div>
             </div>
+
+            {% for o in day.orders %}
+            <div class="order
+                {% if o.ExistNC %}nc{% endif %}
+                {% if o.ExistCMM %} cmm{% endif %}
+                {% if o.ExistMaterial %} mat{% endif %}
+            ">
+                <div><b>ID:</b> {{ o.Id }}</div>
+                <div><b>Name:</b> {{ o.Name }}</div>
+                <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
+                <div><b>Hasło:</b> {{ o.Haslo }}</div>
+                <div><b>Projekt:</b> {{ o.ProjectName }}</div>
+                <div><b>Blade:</b> {{ o.TypeOfBlade }}</div>
+                <div><b>Godziny:</b> {{ o.Hours }}</div>
+                <div>
+                    NC: {{ o.ExistNC }} |
+                    CMM: {{ o.ExistCMM }} |
+                    MAT: {{ o.ExistMaterial }}
+                </div>
+            </div>
+            {% endfor %}
         </div>
         {% endfor %}
     </div>
-    {% endfor %}
-</div>
-
 </div>
 
 </body>
