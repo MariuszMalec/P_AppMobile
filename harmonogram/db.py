@@ -62,6 +62,7 @@ def init_db_if_not_exists(conn):
 def insert_orders(conn):
     cur = conn.cursor()
 
+    # Projekty przypisane do jednej maszyny, nawet jeśli Hours > 24
     cur.execute("""
         INSERT OR IGNORE INTO Orders (
             Id,
@@ -76,14 +77,20 @@ def insert_orders(conn):
             ExistCMM,
             ExistMaterial
         ) VALUES
-        (1, 'IMR', '000001', '0', 'test', 'k1', CURRENT_TIMESTAMP, 8, 0, 0, 0),
-        (2, 'IMR', '000002', '0', 'test', 'k1', CURRENT_TIMESTAMP, 16, 1, 0, 0),
-        (3, 'IMR', '000003', '0', 'test', 'k2', CURRENT_TIMESTAMP, 24, 1, 1, 0),
-        (4, 'IMR', '000004', '0', 'project_x', 'k3', CURRENT_TIMESTAMP, 32, 0, 1, 1);
+        -- Projekty dla LINIA1
+        (1, 'IMR', '000001', '0', 'Projekt_A', 'k1', CURRENT_TIMESTAMP, 72, 0, 0, 0),
+
+        -- Projekty dla LINIA2
+        (2, 'IMR', '000002', '0', 'Projekt_B', 'k1', CURRENT_TIMESTAMP, 16, 1, 0, 0),
+
+        -- Projekty dla LINIA3
+        (3, 'IMR', '000003', '0', 'Projekt_C', 'k2', CURRENT_TIMESTAMP, 24, 1, 1, 0),
+
+        -- Projekty dla LINIA4
+        (4, 'IMR', '000004', '0', 'Projekt_D', 'k3', CURRENT_TIMESTAMP, 32, 0, 1, 1);
     """)
 
     conn.commit()
-
     print("✅ DB ensured (table Orders exist & seeded)")
 
 

@@ -3,40 +3,49 @@
 <head>
 <meta charset="UTF-8">
 <title>Harmonogram</title>
-
 <style>
+/* Dodane, by padding i border liczyć do szerokości */
+* {
+    box-sizing: border-box;
+}
+
 body {
     font-family: system-ui, sans-serif;
     margin: 20px;
+    overflow-x: auto;
 }
-
 .calendar {
-    max-width: 1400px;
+    max-width: 1800px;
     margin: 0 auto;
+    display: block;
 }
 
-/* HEADER: maszyna + dni miesiąca */
+/* HEADER: maszyna + dni */
 .calendar-header {
     display: grid;
-    grid-template-columns: 160px repeat({{ days|length }}, 1fr);
+    /* Stała szerokość kolumn: 160px na maszynę + 60px na każdy dzień */
+    grid-template-columns: 160px repeat({{ days|length }}, 80px);
+    gap: 6px;
 }
-
 .calendar-header div {
     text-align: center;
     font-weight: bold;
     padding: 10px 0;
     border-bottom: 2px solid #ccc;
+    border-right: 1px solid #ddd;
+    overflow-wrap: break-word; /* łamanie długich słów */
 }
 
-/* JEDEN WIERSZ = JEDNA MASZYNA */
+/* MASZYNA + DZIEN */
 .calendar-grid {
     display: grid;
-    grid-template-columns: 160px repeat({{ days|length }}, 1fr);
+    grid-template-columns: 160px repeat({{ days|length }}, 80px);
     gap: 6px;
     margin-bottom: 8px;
+    align-items: start;
 }
 
-/* KOMÓRKA MASZYNY */
+/* NAZWA MASZYNY */
 .machine-cell {
     font-weight: bold;
     background: #f0f0f0;
@@ -44,42 +53,43 @@ body {
     border-right: 2px solid #ccc;
     display: flex;
     align-items: center;
+    justify-content: center;
+    /* Zapewnienie pełnej szerokości */
+    width: 160px;
 }
 
-/* DZIEŃ */
+/* KOMÓRKA DNIA */
 .day {
     border: 1px solid #ddd;
-    min-height: 160px;
-    padding: 6px;
+    min-height: 120px;
+    padding: 4px;
     font-size: 12px;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+    overflow-wrap: break-word;
 }
-
 .day.overload {
     border: 2px solid red;
     background-color: #ffe6e6;
 }
-
 .day.today {
     border: 2px solid #4caf50;
     background-color: #e6ffe6;
 }
 
-.date {
-    font-weight: bold;
-    margin-bottom: 4px;
-}
-
 /* PROGRESS */
 .progress-bar-container {
     width: 100%;
-    height: 8px;
+    height: 6px;
     background-color: #ddd;
     border-radius: 4px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     overflow: hidden;
 }
-
 .progress-bar {
     height: 100%;
     border-radius: 4px;
@@ -88,17 +98,20 @@ body {
 /* ORDER */
 .order {
     border-radius: 6px;
-    padding: 6px;
-    margin-bottom: 6px;
+    padding: 4px;
+    margin-bottom: 4px;
     background: #f4f4f4;
+    width: 100%;
+    font-size: 11px;
+    white-space: normal;
+    box-sizing: border-box;
 }
-
 .nc { background: #ffe0e0; }
 .cmm { background: #e0f0ff; }
 .mat { background: #e0ffe6; }
+
 </style>
 </head>
-
 <body>
 
 <div class="calendar">
@@ -107,9 +120,8 @@ body {
     <div class="calendar-header">
         <div>Maszyna</div>
         {% for day in days %}
-        <div>{{ day.number }}<br>
-            {% set weekdays = ["Pon", "Wt", "Śr", "Czw", "Pt", "Sob", "Nd"] %}
-            {{ weekdays[day.weekday] }}
+        <div>
+            {{ day.number }} {{ ['Pon','Wt','Śr','Czw','Pt','Sob','Nd'][day.weekday] }}
         </div>
         {% endfor %}
     </div>
@@ -117,44 +129,28 @@ body {
     <!-- WIERSZE MASZYN -->
     {% for machine in machines %}
     <div class="calendar-grid">
-
         <!-- NAZWA MASZYNY -->
-        <div class="machine-cell">
-            {{ machine.Name }}
-        </div>
+        <div class="machine-cell">{{ machine.Name }}</div>
 
         <!-- DNI -->
         {% for day in days %}
-        <div class="day {% if day.overload %}overload{% endif %} {% if day.is_today %}today{% endif %}">
-            <div class="date">{{ day.number }} ({{ day.total_hours }}h)</div>
-
-            <div class="progress-bar-container">
-                {% set percent = day.total_hours / 24 * 100 %}
-                {% if percent > 100 %}{% set percent = 100 %}{% endif %}
-                <div class="progress-bar"
-                     style="width: {{ percent }}%;
-                     background-color: {% if day.overload %}red{% else %}#4caf50{% endif %};">
-                </div>
-            </div>
-
-            {% for o in day.orders %}
+        {% set day_schedule = schedule.get(machine.Id, {}).get(day.date_str, []) %}
+        <div class="day
+            {% if day.is_today %}today{% endif %}
+            {% for o in day_schedule %}{% if o.Hours > 24 %} overload{% endif %}{% endfor %}
+        ">
+            <!-- Projekty w dniu -->
+            {% for o in day_schedule %}
             <div class="order
                 {% if o.ExistNC %}nc{% endif %}
                 {% if o.ExistCMM %} cmm{% endif %}
                 {% if o.ExistMaterial %} mat{% endif %}
             ">
                 <div><b>ID:</b> {{ o.Id }}</div>
-                <div><b>Name:</b> {{ o.Name }}</div>
                 <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
-                <div><b>Hasło:</b> {{ o.Haslo }}</div>
                 <div><b>Projekt:</b> {{ o.ProjectName }}</div>
-                <div><b>Blade:</b> {{ o.TypeOfBlade }}</div>
+                <div><b>NC:</b> {{ o.ExistNC }} | <b>CMM:</b> {{ o.ExistCMM }} | <b>MAT:</b> {{ o.ExistMaterial }}</div>
                 <div><b>Godziny:</b> {{ o.Hours }}</div>
-                <div>
-                    NC: {{ o.ExistNC }} |
-                    CMM: {{ o.ExistCMM }} |
-                    MAT: {{ o.ExistMaterial }}
-                </div>
             </div>
             {% endfor %}
         </div>
@@ -164,11 +160,5 @@ body {
     {% endfor %}
 
 </div>
-
-
-
 </body>
-
-
-
 </html>

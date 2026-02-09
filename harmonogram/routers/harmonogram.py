@@ -15,38 +15,27 @@ router = APIRouter(
 def harmonogram_page(request: Request, db=Depends(get_db)):
     cursor = db.cursor()
 
-    # Pobieramy zamówienia
+    # Pobierz maszyny
+    machines = cursor.execute("SELECT * FROM Machines").fetchall()
+
+    # Pobierz zamówienia i przypisz je do maszyn (zakładamy, że Orders już mają maszynę w ProjectName)
     orders = cursor.execute("""
-        SELECT
-            Id,
-            Name,
-            Zlecenie,
-            Haslo,
-            ProjectName,
-            TypeOfBlade,
-            Exw,
-            Hours,
-            ExistNC,
-            ExistCMM,
-            ExistMaterial
+        SELECT 
+            Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade, Exw, Hours, ExistNC, ExistCMM, ExistMaterial, Id as MachineId
         FROM Orders
     """).fetchall()
 
-    # Pobieramy maszyny
-    machines = cursor.execute(
-        "SELECT * FROM Machines"
-    ).fetchall()
-
-    # Tworzymy harmonogram dzienny
-    schedule = defaultdict(list)
+    # Harmonogram dla każdej maszyny
+    schedule = defaultdict(lambda: defaultdict(list))
     for o in orders:
         remaining_hours = o["Hours"]
         start_date = datetime.strptime(o["Exw"][:10], "%Y-%m-%d")
+        machine_id = o["MachineId"]  # każda maszyna dostaje projekt
         while remaining_hours > 0:
             hours_for_day = min(24, remaining_hours)
             day_key = start_date.strftime("%Y-%m-%d")
-
-            schedule[day_key].append({
+            # Jeden projekt na maszynę na dzień
+            schedule[machine_id][day_key].append({
                 "Id": o["Id"],
                 "Name": o["Name"],
                 "Zlecenie": o["Zlecenie"],
@@ -58,35 +47,34 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                 "ExistCMM": o["ExistCMM"],
                 "ExistMaterial": o["ExistMaterial"]
             })
-
             remaining_hours -= hours_for_day
             start_date += timedelta(days=1)
 
-    # Bieżący miesiąc i rok
-    current_month = datetime.now().month
-    current_year = datetime.now().year
-    num_days = calendar.monthrange(current_year, current_month)[1]  # liczba dni w miesiącu
+    # Bieżący miesiąc
+    now = datetime.now()
+    current_year = now.year
+    current_month = now.month
+    num_days = calendar.monthrange(current_year, current_month)[1]
 
+    # Tworzymy listę dni
     days = []
     for day in range(1, num_days + 1):
         date_obj = datetime(current_year, current_month, day)
         date_str = date_obj.strftime("%Y-%m-%d")
-        day_orders = schedule.get(date_str, [])
-        total_hours = sum(o["Hours"] for o in day_orders)
-
         days.append({
             "number": day,
-            "orders": day_orders,
-            "total_hours": total_hours,
-            "overload": total_hours > 24,
-            "weekday": date_obj.weekday()  # 0=Pon, 6=Nd
+            "date": date_obj,
+            "weekday": date_obj.weekday(),
+            "is_today": date_obj.date() == now.date(),
+            "date_str": date_str
         })
 
     return templates.TemplateResponse(
         "harmonogram.html",
         {
             "request": request,
+            "machines": machines,
             "days": days,
-            "machines": machines
+            "schedule": schedule
         }
     )
