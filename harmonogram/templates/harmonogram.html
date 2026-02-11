@@ -81,7 +81,7 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
              data-date="{{ day.date_str }}"
              ondragover="allowDrop(event)"
              ondrop="drop(event, '{{ machine.Id }}', '{{ day.date_str }}')"
-             onclick="addOrder(this, '{{ machine.Id }}', '{{ day.date_str }}')">
+             onclick="openAddModal(this, '{{ machine.Id }}', '{{ day.date_str }}')">
 
             {% for o in day_schedule %}
             <div class="order
@@ -95,6 +95,7 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
                  data-start="{{ o.StartDate[:10] if o.StartDate else '' }}"
                  data-exw="{{ o.Exw[:10] }}"
                  data-hours="{{ o.Hours }}"
+                 data-project="{{ o.ProjectName }}"
                  data-nc="{{ o.ExistNC }}"
                  data-cmm="{{ o.ExistCMM }}"
                  data-mat="{{ o.ExistMaterial }}"
@@ -113,10 +114,10 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
     {% endfor %}
 </div>
 
-<!-- MODAL EDYCJI -->
+<!-- MODAL EDYCJI / DODAWANIA -->
 <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
     <div style="background:white; padding:20px; width:400px; border-radius:8px;">
-        <h3>Edit Order</h3>
+        <h3 id="modalTitle">Edit Order</h3>
         <input type="hidden" id="editId">
         <label>Maszyna</label>
         <select id="editMachine">
@@ -124,6 +125,9 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
             <option value="{{ machine.Id }}">{{ machine.Name }}</option>
             {% endfor %}
         </select><br><br>
+
+        <label>Projekt</label>
+        <input type="text" id="editProjectName"><br><br>
 
         <label>StartDate</label>
         <input type="date" id="editStartDate"><br><br>
@@ -148,12 +152,14 @@ function selectOrder(el, event){
     el.style.outline='2px solid blue';
 }
 
-// Otwieranie modala
+// Otwieranie modala do edycji
 function openModal(el, event){
     event.stopPropagation();
+    document.getElementById("modalTitle").innerText = "Edit Order";
     document.getElementById("editModal").style.display="flex";
     document.getElementById("editId").value = el.dataset.id;
     document.getElementById("editMachine").value = el.dataset.machine;
+    document.getElementById("editProjectName").value = el.dataset.project;
     document.getElementById("editStartDate").value = el.dataset.start;
     document.getElementById("editExw").value = el.dataset.exw;
     document.getElementById("editHours").value = el.dataset.hours;
@@ -162,27 +168,46 @@ function openModal(el, event){
     document.getElementById("editMAT").checked = el.dataset.mat==1;
 }
 
+// Otwieranie modala do dodania nowego ordera
+function openAddModal(cell, machineId, date){
+    document.getElementById("modalTitle").innerText = "Add Order";
+    document.getElementById("editModal").style.display="flex";
+    document.getElementById("editId").value = ""; // nowy order
+    document.getElementById("editMachine").value = machineId;
+    document.getElementById("editProjectName").value = "";
+    document.getElementById("editStartDate").value = date;
+    document.getElementById("editExw").value = date;
+    document.getElementById("editHours").value = 8;
+    document.getElementById("editNC").checked = false;
+    document.getElementById("editCMM").checked = false;
+    document.getElementById("editMAT").checked = false;
+}
+
 // Zamknięcie modala
 function closeModal(){
     document.getElementById("editModal").style.display="none";
 }
 
-// Zapis edycji
+// Zapis edycji / dodawania
 function saveOrder(){
     const id = document.getElementById("editId").value;
+    const payload = {
+        MachineId: parseInt(document.getElementById("editMachine").value),
+        ProjectName: document.getElementById("editProjectName").value,
+        StartDate: document.getElementById("editStartDate").value,
+        Exw: document.getElementById("editExw").value,
+        Hours: parseInt(document.getElementById("editHours").value),
+        ExistNC: document.getElementById("editNC").checked ? 1 : 0,
+        ExistCMM: document.getElementById("editCMM").checked ? 1 : 0,
+        ExistMaterial: document.getElementById("editMAT").checked ? 1 : 0
+    };
 
-    fetch(`/harmonogram/edit/${id}`, {
+    const url = id ? `/harmonogram/edit/${id}` : `/harmonogram/add`;
+
+    fetch(url, {
         method: "POST",
         headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({
-            MachineId: parseInt(document.getElementById("editMachine").value),
-            StartDate: document.getElementById("editStartDate").value,
-            Exw: document.getElementById("editExw").value,
-            Hours: parseInt(document.getElementById("editHours").value),
-            ExistNC: document.getElementById("editNC").checked?1:0,
-            ExistCMM: document.getElementById("editCMM").checked?1:0,
-            ExistMaterial: document.getElementById("editMAT").checked?1:0
-        })
+        body: JSON.stringify(payload)
     }).then(res=>res.json()).then(data=>{
         if(data.status==="error") alert(data.message);
         else location.reload();
@@ -208,30 +233,6 @@ function drop(ev,machineId,newDate){
         body: JSON.stringify({
             MachineId: parseInt(machineId),
             StartDate: newDate
-        })
-    }).then(res=>res.json()).then(data=>{
-        if(data.status==="error") alert(data.message);
-        else location.reload();
-    });
-}
-
-// Dodawanie ordera w pustym dniu
-function addOrder(cell, machineId, date){
-    if(cell.querySelector('.order')) return alert("Maszyna zajęta tego dnia!");
-
-    const projectName = prompt("Podaj nazwę projektu:");
-    if(!projectName) return;
-
-    const hours = parseInt(prompt("Podaj liczbę godzin:"),10) || 8;
-
-    fetch("/harmonogram/add", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-            MachineId: parseInt(machineId),
-            StartDate: date,
-            ProjectName: projectName,
-            Hours: hours
         })
     }).then(res=>res.json()).then(data=>{
         if(data.status==="error") alert(data.message);
