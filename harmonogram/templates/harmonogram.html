@@ -95,11 +95,11 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
                  data-start="{{ o.StartDate[:10] if o.StartDate else '' }}"
                  data-exw="{{ o.Exw[:10] }}"
                  data-hours="{{ o.Hours }}"
-                 data-project="{{ o.ProjectName }}"
                  data-nc="{{ o.ExistNC }}"
                  data-cmm="{{ o.ExistCMM }}"
                  data-mat="{{ o.ExistMaterial }}"
-                 data-machine="{{ o.MachineId }}">
+                 data-machine="{{ o.MachineId }}"
+                 data-project="{{ o.ProjectName }}">
 
                 <div><b>ID:</b> {{ o.Id }}</div>
                 <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
@@ -114,11 +114,12 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
     {% endfor %}
 </div>
 
-<!-- MODAL EDYCJI / DODAWANIA -->
+<!-- MODAL EDYCJI I DODAWANIA -->
 <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
     <div style="background:white; padding:20px; width:400px; border-radius:8px;">
         <h3 id="modalTitle">Edit Order</h3>
         <input type="hidden" id="editId">
+
         <label>Maszyna</label>
         <select id="editMachine">
             {% for machine in machines %}
@@ -141,18 +142,23 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
 
         <button onclick="saveOrder()">Save</button>
         <button onclick="closeModal()">Cancel</button>
+        <button id="deleteBtn" style="float:right; background:red; color:white; display:none;" onclick="deleteOrder()">Delete</button>
     </div>
 </div>
 
 <script>
-// Zaznaczanie ordera
+// ===============================
+// ZAZNACZANIE ORDERA
+// ===============================
 function selectOrder(el, event){
     event.stopPropagation();
     document.querySelectorAll('.order').forEach(o=>o.style.outline='');
     el.style.outline='2px solid blue';
 }
 
-// Otwieranie modala do edycji
+// ===============================
+// MODAL
+// ===============================
 function openModal(el, event){
     event.stopPropagation();
     document.getElementById("modalTitle").innerText = "Edit Order";
@@ -166,13 +172,14 @@ function openModal(el, event){
     document.getElementById("editNC").checked = el.dataset.nc==1;
     document.getElementById("editCMM").checked = el.dataset.cmm==1;
     document.getElementById("editMAT").checked = el.dataset.mat==1;
+
+    document.getElementById("deleteBtn").style.display = "inline-block";
 }
 
-// Otwieranie modala do dodania nowego ordera
 function openAddModal(cell, machineId, date){
     document.getElementById("modalTitle").innerText = "Add Order";
     document.getElementById("editModal").style.display="flex";
-    document.getElementById("editId").value = ""; // nowy order
+    document.getElementById("editId").value = "";
     document.getElementById("editMachine").value = machineId;
     document.getElementById("editProjectName").value = "";
     document.getElementById("editStartDate").value = date;
@@ -181,28 +188,32 @@ function openAddModal(cell, machineId, date){
     document.getElementById("editNC").checked = false;
     document.getElementById("editCMM").checked = false;
     document.getElementById("editMAT").checked = false;
+
+    document.getElementById("deleteBtn").style.display = "none";
 }
 
-// Zamknięcie modala
 function closeModal(){
     document.getElementById("editModal").style.display="none";
 }
 
-// Zapis edycji / dodawania
+// ===============================
+// ZAPIS ORDERA
+// ===============================
 function saveOrder(){
     const id = document.getElementById("editId").value;
+
     const payload = {
         MachineId: parseInt(document.getElementById("editMachine").value),
         ProjectName: document.getElementById("editProjectName").value,
         StartDate: document.getElementById("editStartDate").value,
         Exw: document.getElementById("editExw").value,
         Hours: parseInt(document.getElementById("editHours").value),
-        ExistNC: document.getElementById("editNC").checked ? 1 : 0,
-        ExistCMM: document.getElementById("editCMM").checked ? 1 : 0,
-        ExistMaterial: document.getElementById("editMAT").checked ? 1 : 0
+        ExistNC: document.getElementById("editNC").checked?1:0,
+        ExistCMM: document.getElementById("editCMM").checked?1:0,
+        ExistMaterial: document.getElementById("editMAT").checked?1:0
     };
 
-    const url = id ? `/harmonogram/edit/${id}` : `/harmonogram/add`;
+    const url = id ? `/harmonogram/edit/${id}` : "/harmonogram/add";
 
     fetch(url, {
         method: "POST",
@@ -214,7 +225,25 @@ function saveOrder(){
     });
 }
 
-// Drag & Drop
+// ===============================
+// DELETE ORDER
+// ===============================
+function deleteOrder(){
+    if(!confirm("Czy na pewno chcesz usunąć ten order?")) return;
+
+    const id = document.getElementById("editId").value;
+    fetch(`/harmonogram/delete/${id}`, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"}
+    }).then(res=>res.json()).then(data=>{
+        if(data.status==="error") alert(data.message);
+        else location.reload();
+    });
+}
+
+// ===============================
+// DRAG & DROP
+// ===============================
 function allowDrop(ev){ ev.preventDefault(); }
 
 document.addEventListener("dragstart", function(e){

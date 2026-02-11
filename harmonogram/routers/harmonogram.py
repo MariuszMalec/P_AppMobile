@@ -167,3 +167,20 @@ def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     """, (data["MachineId"], data["StartDate"], order_id))
     db.commit()
     return {"status": "ok"}
+
+
+# =====================================================
+# USUWANIE ORDERA
+# =====================================================
+@router.post("/delete/{order_id}")
+def delete_order(order_id: int, db=Depends(get_db)):
+    cursor = db.cursor()
+
+    # Sprawdzenie, czy order istnieje
+    existing = cursor.execute("SELECT 1 FROM Orders WHERE Id = ?", (order_id,)).fetchone()
+    if not existing:
+        return {"status": "error", "message": "Order nie istnieje!"}
+
+    cursor.execute("DELETE FROM Orders WHERE Id = ?", (order_id,))
+    db.commit()
+    return {"status": "ok"}
