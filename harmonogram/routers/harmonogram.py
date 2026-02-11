@@ -105,22 +105,33 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
     return {"status": "ok"}
 
 # =====================================================
-# EDYCJA ORDERA
+# EDYCJA ORDERA Z KONTROLĄ KONFLIKTÓW GODZINOWYCH
 # =====================================================
 @router.post("/edit/{order_id}")
 def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    # Sprawdzenie konfliktu tylko z innymi orderami
-    conflict = cursor.execute("""
-        SELECT 1 FROM Orders
-        WHERE MachineId = ? AND StartDate = ? AND Id != ?
-        LIMIT 1
-    """, (data["MachineId"], data["StartDate"], order_id)).fetchone()
+    new_start = datetime.strptime(data["StartDate"], "%Y-%m-%d")
+    new_hours = int(data.get("Hours", 8))
+    new_machine = data["MachineId"]
 
-    if conflict:
-        return {"status": "error", "message": "Maszyna zajęta w tym dniu!"}
+    # Pobierz wszystkie ordery w tej maszynie oprócz edytowanego
+    other_orders = cursor.execute("""
+        SELECT Id, StartDate, Hours FROM Orders
+        WHERE MachineId = ? AND Id != ?
+    """, (new_machine, order_id)).fetchall()
 
+    # Sprawdzenie konfliktu godzinowego
+    for o in other_orders:
+        existing_start = datetime.strptime(o["StartDate"], "%Y-%m-%d")
+        existing_end = existing_start + timedelta(hours=o["Hours"])
+        new_end = new_start + timedelta(hours=new_hours)
+
+        # Sprawdzenie nakładania się przedziałów czasowych
+        if (new_start < existing_end) and (new_end > existing_start):
+            return {"status": "error", "message": f"Konflikt z orderem ID {o['Id']}!"}
+
+    # Jeśli brak konfliktu, aktualizuj order
     cursor.execute("""
         UPDATE Orders
         SET MachineId = ?,
@@ -132,10 +143,10 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
             ExistMaterial = ?
         WHERE Id = ?
     """, (
-        data["MachineId"],
+        new_machine,
         data["StartDate"],
         data.get("Exw", None),
-        data.get("Hours", 8),
+        new_hours,
         data.get("ExistNC", 0),
         data.get("ExistCMM", 0),
         data.get("ExistMaterial", 0),
@@ -143,6 +154,7 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     ))
     db.commit()
     return {"status": "ok"}
+
 
 # =====================================================
 # PRZENOSZENIE ORDERA (DRAG & DROP)
