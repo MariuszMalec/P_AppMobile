@@ -1,27 +1,26 @@
-from fastapi import APIRouter, Request, Depends
+from fastapi import APIRouter, Request, Depends, Body
 from fastapi.responses import HTMLResponse
 from templates import templates
 from db import get_db
 from collections import defaultdict
 from datetime import datetime, timedelta
 import calendar
-from fastapi import Form
-from fastapi.responses import RedirectResponse
-
 
 router = APIRouter(
     prefix="/harmonogram",
     tags=["harmonogram"]
 )
 
+# =====================================================
+# GŁÓWNA STRONA HARMONOGRAMU
+# =====================================================
+
 @router.get("", response_class=HTMLResponse)
 def harmonogram_page(request: Request, db=Depends(get_db)):
     cursor = db.cursor()
 
-    # Pobierz maszyny
     machines = cursor.execute("SELECT * FROM Machines").fetchall()
 
-    # Pobierz zamówienia i przypisz je do maszyn (zakładamy, że Orders już mają maszynę w ProjectName)
     orders = cursor.execute("""
         SELECT 
             Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
@@ -31,16 +30,19 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
         FROM Orders
     """).fetchall()
 
-    # Harmonogram dla każdej maszyny
     schedule = defaultdict(lambda: defaultdict(list))
+
     for o in orders:
         remaining_hours = o["Hours"]
-        start_date = datetime.strptime(o["Exw"][:10], "%Y-%m-%d")
-        machine_id = o["MachineId"]  # każda maszyna dostaje projekt
+
+        # 🔥 PLANUJEMY OD StartDate
+        start_date = datetime.strptime(o["StartDate"][:10], "%Y-%m-%d")
+        machine_id = o["MachineId"]
+
         while remaining_hours > 0:
             hours_for_day = min(24, remaining_hours)
             day_key = start_date.strftime("%Y-%m-%d")
-            # Jeden projekt na maszynę na dzień
+
             schedule[machine_id][day_key].append({
                 "Id": o["Id"],
                 "Name": o["Name"],
@@ -51,18 +53,19 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                 "Hours": hours_for_day,
                 "ExistNC": o["ExistNC"],
                 "ExistCMM": o["ExistCMM"],
-                "ExistMaterial": o["ExistMaterial"]
+                "ExistMaterial": o["ExistMaterial"],
+                "StartDate": o["StartDate"],
+                "Exw": o["Exw"]
             })
+
             remaining_hours -= hours_for_day
             start_date += timedelta(days=1)
 
-    # Bieżący miesiąc
     now = datetime.now()
     current_year = now.year
     current_month = now.month
     num_days = calendar.monthrange(current_year, current_month)[1]
 
-    # Tworzymy listę dni
     days = []
     for day in range(1, num_days + 1):
         date_obj = datetime(current_year, current_month, day)
@@ -85,36 +88,12 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
         }
     )
 
-
-@router.get("/edit/{order_id}", response_class=HTMLResponse)
-def edit_order_page(order_id: int, request: Request, db=Depends(get_db)):
-    cursor = db.cursor()
-
-    order = cursor.execute(
-        "SELECT * FROM Orders WHERE Id = ?",
-        (order_id,)
-    ).fetchone()
-
-    return templates.TemplateResponse(
-        "edit_order.html",
-        {
-            "request": request,
-            "order": order
-        }
-    )
-
+# =====================================================
+# EDYCJA (JSON - pod modal)
+# =====================================================
 
 @router.post("/edit/{order_id}")
-def update_order(
-    order_id: int,
-    StartDate: str = Form(...),
-    Exw: str = Form(...),
-    Hours: int = Form(...),
-    ExistNC: int = Form(0),
-    ExistCMM: int = Form(0),
-    ExistMaterial: int = Form(0),
-    db=Depends(get_db)
-):
+def update_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
     cursor.execute("""
@@ -127,16 +106,34 @@ def update_order(
             ExistMaterial = ?
         WHERE Id = ?
     """, (
-        StartDate,
-        Exw,
-        Hours,
-        ExistNC,
-        ExistCMM,
-        ExistMaterial,
+        data["StartDate"],
+        data["Exw"],
+        int(data["Hours"]),
+        int(data["ExistNC"]),
+        int(data["ExistCMM"]),
+        int(data["ExistMaterial"]),
         order_id
     ))
 
     db.commit()
+    return {"status": "ok"}
 
-    return RedirectResponse(url="/harmonogram", status_code=303)
+# =====================================================
+# DRAG & DROP - PRZENOSZENIE
+# =====================================================
 
+@router.post("/move/{order_id}")
+def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
+    cursor = db.cursor()
+
+    cursor.execute("""
+        UPDATE Orders
+        SET StartDate = ?
+        WHERE Id = ?
+    """, (
+        data["StartDate"],
+        order_id
+    ))
+
+    db.commit()
+    return {"status": "moved"}

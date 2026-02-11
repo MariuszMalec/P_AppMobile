@@ -3,49 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <title>Harmonogram</title>
+
 <style>
-/* Dodane, by padding i border liczyć do szerokości */
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
     font-family: system-ui, sans-serif;
     margin: 20px;
     overflow-x: auto;
 }
+
 .calendar {
     max-width: 1800px;
     margin: 0 auto;
-    display: block;
 }
 
-/* HEADER: maszyna + dni */
 .calendar-header {
     display: grid;
-    /* Stała szerokość kolumn: 160px na maszynę + 60px na każdy dzień */
     grid-template-columns: 160px repeat({{ days|length }}, 80px);
     gap: 6px;
 }
+
 .calendar-header div {
     text-align: center;
     font-weight: bold;
     padding: 10px 0;
     border-bottom: 2px solid #ccc;
     border-right: 1px solid #ddd;
-    overflow-wrap: break-word; /* łamanie długich słów */
 }
 
-/* MASZYNA + DZIEN */
 .calendar-grid {
     display: grid;
     grid-template-columns: 160px repeat({{ days|length }}, 80px);
     gap: 6px;
     margin-bottom: 8px;
-    align-items: start;
 }
 
-/* NAZWA MASZYNY */
 .machine-cell {
     font-weight: bold;
     background: #f0f0f0;
@@ -54,11 +47,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Zapewnienie pełnej szerokości */
-    width: 160px;
 }
 
-/* KOMÓRKA DNIA */
 .day {
     border: 1px solid #ddd;
     min-height: 120px;
@@ -67,114 +57,185 @@ body {
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    box-sizing: border-box;
-    overflow-wrap: break-word;
 }
-.day.overload {
-    border: 2px solid red;
-    background-color: #ffe6e6;
-}
+
 .day.today {
     border: 2px solid #4caf50;
     background-color: #e6ffe6;
 }
 
-/* PROGRESS */
-.progress-bar-container {
-    width: 100%;
-    height: 6px;
-    background-color: #ddd;
-    border-radius: 4px;
-    margin-bottom: 4px;
-    overflow: hidden;
-}
-.progress-bar {
-    height: 100%;
-    border-radius: 4px;
+.day.overload {
+    border: 2px solid red;
+    background-color: #ffe6e6;
 }
 
-/* ORDER */
 .order {
     border-radius: 6px;
     padding: 4px;
     margin-bottom: 4px;
     background: #f4f4f4;
-    width: 100%;
     font-size: 11px;
-    white-space: normal;
-    box-sizing: border-box;
-}
-.nc { background: #ffe0e0; }
-.cmm { background: #e0f0ff; }
-.mat { background: #e0ffe6; }
-
-.order-link {
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    width: 100%;
-}
-.order-link:hover .order {
-    outline: 2px solid #4caf50;
     cursor: pointer;
 }
 
+.order:hover {
+    outline: 2px solid #4caf50;
+}
 
+.nc { background: #ffe0e0; }
+.cmm { background: #e0f0ff; }
+.mat { background: #e0ffe6; }
 </style>
 </head>
+
 <body>
 
 <div class="calendar">
 
-    <!-- HEADER -->
-    <div class="calendar-header">
-        <div>Maszyna</div>
-        {% for day in days %}
-        <div>
-            {{ day.number }} {{ ['Pon','Wt','Śr','Czw','Pt','Sob','Nd'][day.weekday] }}
-        </div>
-        {% endfor %}
-    </div>
-
-    <!-- WIERSZE MASZYN -->
-    {% for machine in machines %}
-    <div class="calendar-grid">
-        <!-- NAZWA MASZYNY -->
-        <div class="machine-cell">{{ machine.Name }}</div>
-
-        <!-- DNI -->
-        {% for day in days %}
-        {% set day_schedule = schedule.get(machine.Id, {}).get(day.date_str, []) %}
-        <div class="day
-            {% if day.is_today %}today{% endif %}
-            {% for o in day_schedule %}{% if o.Hours > 24 %} overload{% endif %}{% endfor %}
-        ">
-            <!-- Projekty w dniu -->
-
-            {% for o in day_schedule %}
-            <a href="/harmonogram/edit/{{ o.Id }}" class="order-link">
-                <div class="order
-                    {% if o.ExistNC %}nc{% endif %}
-                    {% if o.ExistCMM %} cmm{% endif %}
-                    {% if o.ExistMaterial %} mat{% endif %}
-                ">
-                    <div><b>ID:</b> {{ o.Id }}</div>
-                    <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
-                    <div><b>Projekt:</b> {{ o.ProjectName }}</div>
-                    <div><b>NC:</b> {{ o.ExistNC }} | <b>CMM:</b> {{ o.ExistCMM }} | <b>MAT:</b> {{ o.ExistMaterial }}</div>
-                    <div><b>Godziny:</b> {{ o.Hours }}</div>
-                </div>
-            </a>
-            {% endfor %}
-
-        </div>
-        {% endfor %}
-
+<div class="calendar-header">
+    <div>Maszyna</div>
+    {% for day in days %}
+    <div>
+        {{ day.number }} {{ ['Pon','Wt','Śr','Czw','Pt','Sob','Nd'][day.weekday] }}
     </div>
     {% endfor %}
+</div>
+
+{% for machine in machines %}
+<div class="calendar-grid">
+
+<div class="machine-cell">{{ machine.Name }}</div>
+
+{% for day in days %}
+{% set day_schedule = schedule.get(machine.Id, {}).get(day.date_str, []) %}
+
+<div class="day
+    {% if day.is_today %}today{% endif %}"
+    ondragover="allowDrop(event)"
+    ondrop="drop(event, '{{ machine.Id }}', '{{ day.date_str }}')"
+>
+
+{% for o in day_schedule %}
+<div class="order
+    {% if o.ExistNC %}nc{% endif %}
+    {% if o.ExistCMM %} cmm{% endif %}
+    {% if o.ExistMaterial %} mat{% endif %}
+"
+draggable="true"
+onclick="selectOrder(this)"
+ondblclick="openModal(this)"
+data-id="{{ o.Id }}"
+data-start="{{ o.StartDate[:10] if o.StartDate else '' }}"
+data-exw="{{ o.Exw[:10] }}"
+data-hours="{{ o.Hours }}"
+data-nc="{{ o.ExistNC }}"
+data-cmm="{{ o.ExistCMM }}"
+data-mat="{{ o.ExistMaterial }}"
+>
+
+<div><b>ID:</b> {{ o.Id }}</div>
+<div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
+<div><b>Projekt:</b> {{ o.ProjectName }}</div>
+<div><b>NC:</b> {{ o.ExistNC }} | <b>CMM:</b> {{ o.ExistCMM }} | <b>MAT:</b> {{ o.ExistMaterial }}</div>
+<div><b>Godziny:</b> {{ o.Hours }}</div>
 
 </div>
+{% endfor %}
+</div>
+{% endfor %}
+</div>
+{% endfor %}
+
+</div>
+
+<!-- MODAL -->
+<div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
+<div style="background:white; padding:20px; width:400px; border-radius:8px;">
+<h3>Edit Order</h3>
+
+<input type="hidden" id="editId">
+
+<label>StartDate</label>
+<input type="date" id="editStartDate"><br><br>
+
+<label>EXW</label>
+<input type="date" id="editExw"><br><br>
+
+<label>Hours</label>
+<input type="number" id="editHours"><br><br>
+
+<label><input type="checkbox" id="editNC"> NC</label><br>
+<label><input type="checkbox" id="editCMM"> CMM</label><br>
+<label><input type="checkbox" id="editMAT"> Material</label><br><br>
+
+<button onclick="saveOrder()">Save</button>
+<button onclick="closeModal()">Cancel</button>
+
+</div>
+</div>
+
+<script>
+
+function selectOrder(el){
+    document.querySelectorAll('.order').forEach(o=>o.style.outline='');
+    el.style.outline='2px solid blue';
+}
+
+function openModal(el){
+    document.getElementById("editModal").style.display="flex";
+    document.getElementById("editId").value=el.dataset.id;
+    document.getElementById("editStartDate").value=el.dataset.start;
+    document.getElementById("editExw").value=el.dataset.exw;
+    document.getElementById("editHours").value=el.dataset.hours;
+    document.getElementById("editNC").checked=el.dataset.nc==1;
+    document.getElementById("editCMM").checked=el.dataset.cmm==1;
+    document.getElementById("editMAT").checked=el.dataset.mat==1;
+}
+
+function closeModal(){
+    document.getElementById("editModal").style.display="none";
+}
+
+function saveOrder(){
+    const id=document.getElementById("editId").value;
+
+    fetch(`/harmonogram/edit/${id}`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            StartDate:document.getElementById("editStartDate").value,
+            Exw:document.getElementById("editExw").value,
+            Hours:document.getElementById("editHours").value,
+            ExistNC:document.getElementById("editNC").checked?1:0,
+            ExistCMM:document.getElementById("editCMM").checked?1:0,
+            ExistMaterial:document.getElementById("editMAT").checked?1:0
+        })
+    }).then(()=>location.reload());
+}
+
+function allowDrop(ev){ ev.preventDefault(); }
+
+document.addEventListener("dragstart",function(e){
+    if(e.target.classList.contains("order")){
+        e.dataTransfer.setData("text",e.target.dataset.id);
+    }
+});
+
+function drop(ev,machineId,newDate){
+    ev.preventDefault();
+    const orderId=ev.dataTransfer.getData("text");
+
+    fetch(`/harmonogram/move/${orderId}`,{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+            MachineId:machineId,
+            StartDate:newDate
+        })
+    }).then(()=>location.reload());
+}
+
+</script>
+
 </body>
 </html>
