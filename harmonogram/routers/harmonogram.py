@@ -16,6 +16,7 @@ router = APIRouter(
 # =====================================================
 # =====================================================
 # GŁÓWNA STRONA HARMONOGRAMU Z AUTOMATYCZNYM PRZERZUCANIEM GODZIN
+# I UNIKALNYM KOLOROWANIEM ORDERÓW
 # =====================================================
 @router.get("", response_class=HTMLResponse)
 def harmonogram_page(request: Request, db=Depends(get_db)):
@@ -33,15 +34,21 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
 
     schedule = defaultdict(lambda: defaultdict(list))
 
+    def get_color(order_id):
+        # Generujemy kolor na podstawie ID (zawsze ten sam dla danego ordera)
+        import hashlib
+        h = hashlib.md5(str(order_id).encode()).hexdigest()
+        return f"#{h[:6]}"  # weź 6 znaków heksa na kolor
+
     for o in orders:
         remaining_hours = o["Hours"]
         start_date = datetime.strptime(o["StartDate"][:10], "%Y-%m-%d")
         machine_id = o["MachineId"]
+        color = get_color(o["Id"])
 
         while remaining_hours > 0:
             day_key = start_date.strftime("%Y-%m-%d")
 
-            # Sprawdzenie ile godzin jest już zaplanowane tego dnia
             already_scheduled = sum(item["Hours"] for item in schedule[machine_id].get(day_key, []))
             available_hours = max(0, 24 - already_scheduled)
 
@@ -60,11 +67,11 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                     "ExistMaterial": o["ExistMaterial"],
                     "StartDate": o["StartDate"],
                     "Exw": o["Exw"],
-                    "MachineId": o["MachineId"]
+                    "MachineId": o["MachineId"],
+                    "Color": color  # <- nowy parametr
                 })
                 remaining_hours -= hours_for_day
 
-            # Przejdź do następnego dnia
             start_date += timedelta(days=1)
 
     now = datetime.now()

@@ -83,31 +83,33 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
              ondrop="drop(event, '{{ machine.Id }}', '{{ day.date_str }}')"
              onclick="openAddModal(this, '{{ machine.Id }}', '{{ day.date_str }}')">
 
-            {% for o in day_schedule %}
-            <div class="order
-                        {% if o.ExistNC %}nc{% endif %}
-                        {% if o.ExistCMM %} cmm{% endif %}
-                        {% if o.ExistMaterial %} mat{% endif %}"
-                 draggable="true"
-                 onclick="selectOrder(this, event)"
-                 ondblclick="openModal(this, event)"
-                 data-id="{{ o.Id }}"
-                 data-start="{{ o.StartDate[:10] if o.StartDate else '' }}"
-                 data-exw="{{ o.Exw[:10] }}"
-                 data-hours="{{ o.Hours }}"
-                 data-nc="{{ o.ExistNC }}"
-                 data-cmm="{{ o.ExistCMM }}"
-                 data-mat="{{ o.ExistMaterial }}"
-                 data-machine="{{ o.MachineId }}"
-                 data-project="{{ o.ProjectName }}">
+        {% for o in day_schedule %}
+        <div class="order
+                    {% if o.ExistNC %}nc{% endif %}
+                    {% if o.ExistCMM %} cmm{% endif %}
+                    {% if o.ExistMaterial %} mat{% endif %}"
+            style="background: {{ o.Color }};"
+            draggable="true"
+            onclick="selectOrder(this, event)"
+            ondblclick="openModal(this, event)"
+            data-id="{{ o.Id }}"
+            data-start="{{ o.StartDate[:10] if o.StartDate else '' }}"
+            data-exw="{{ o.Exw[:10] }}"
+            data-hours="{{ o.Hours }}"
+            data-nc="{{ o.ExistNC }}"
+            data-cmm="{{ o.ExistCMM }}"
+            data-mat="{{ o.ExistMaterial }}"
+            data-machine="{{ o.MachineId }}"
+            data-project="{{ o.ProjectName }}">
 
-                <div><b>ID:</b> {{ o.Id }}</div>
-                <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
-                <div><b>Projekt:</b> {{ o.ProjectName }}</div>
-                <div><b>NC:</b> {{ o.ExistNC }} | <b>CMM:</b> {{ o.ExistCMM }} | <b>MAT:</b> {{ o.ExistMaterial }}</div>
-                <div><b>Godziny:</b> {{ o.Hours }}</div>
-            </div>
-            {% endfor %}
+            <div><b>ID:</b> {{ o.Id }}</div>
+            <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
+            <div><b>Projekt:</b> {{ o.ProjectName }}</div>
+            <div><b>NC:</b> {{ o.ExistNC }} | <b>CMM:</b> {{ o.ExistCMM }} | <b>MAT:</b> {{ o.ExistMaterial }}</div>
+            <div><b>Godziny:</b> {{ o.Hours }}</div>
+        </div>
+        {% endfor %}
+
         </div>
         {% endfor %}
     </div>
