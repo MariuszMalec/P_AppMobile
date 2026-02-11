@@ -14,6 +14,9 @@ router = APIRouter(
 # =====================================================
 # GŁÓWNA STRONA HARMONOGRAMU
 # =====================================================
+# =====================================================
+# GŁÓWNA STRONA HARMONOGRAMU Z AUTOMATYCZNYM PRZERZUCANIEM GODZIN
+# =====================================================
 @router.get("", response_class=HTMLResponse)
 def harmonogram_page(request: Request, db=Depends(get_db)):
     cursor = db.cursor()
@@ -36,26 +39,32 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
         machine_id = o["MachineId"]
 
         while remaining_hours > 0:
-            hours_for_day = min(24, remaining_hours)
             day_key = start_date.strftime("%Y-%m-%d")
 
-            schedule[machine_id][day_key].append({
-                "Id": o["Id"],
-                "Name": o["Name"],
-                "Zlecenie": o["Zlecenie"],
-                "Haslo": o["Haslo"],
-                "ProjectName": o["ProjectName"],
-                "TypeOfBlade": o["TypeOfBlade"],
-                "Hours": hours_for_day,
-                "ExistNC": o["ExistNC"],
-                "ExistCMM": o["ExistCMM"],
-                "ExistMaterial": o["ExistMaterial"],
-                "StartDate": o["StartDate"],
-                "Exw": o["Exw"],
-                "MachineId": o["MachineId"]
-            })
+            # Sprawdzenie ile godzin jest już zaplanowane tego dnia
+            already_scheduled = sum(item["Hours"] for item in schedule[machine_id].get(day_key, []))
+            available_hours = max(0, 24 - already_scheduled)
 
-            remaining_hours -= hours_for_day
+            if available_hours > 0:
+                hours_for_day = min(available_hours, remaining_hours)
+                schedule[machine_id][day_key].append({
+                    "Id": o["Id"],
+                    "Name": o["Name"],
+                    "Zlecenie": o["Zlecenie"],
+                    "Haslo": o["Haslo"],
+                    "ProjectName": o["ProjectName"],
+                    "TypeOfBlade": o["TypeOfBlade"],
+                    "Hours": hours_for_day,
+                    "ExistNC": o["ExistNC"],
+                    "ExistCMM": o["ExistCMM"],
+                    "ExistMaterial": o["ExistMaterial"],
+                    "StartDate": o["StartDate"],
+                    "Exw": o["Exw"],
+                    "MachineId": o["MachineId"]
+                })
+                remaining_hours -= hours_for_day
+
+            # Przejdź do następnego dnia
             start_date += timedelta(days=1)
 
     now = datetime.now()
@@ -79,6 +88,7 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
         "harmonogram.html",
         {"request": request, "machines": machines, "days": days, "schedule": schedule}
     )
+
 
 # =====================================================
 # DODAWANIE ORDERA
