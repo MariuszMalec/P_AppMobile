@@ -110,6 +110,18 @@ body {
 .cmm { background: #e0f0ff; }
 .mat { background: #e0ffe6; }
 
+.order-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+}
+.order-link:hover .order {
+    outline: 2px solid #4caf50;
+    cursor: pointer;
+}
+
+
 </style>
 </head>
 <body>
@@ -140,19 +152,23 @@ body {
             {% for o in day_schedule %}{% if o.Hours > 24 %} overload{% endif %}{% endfor %}
         ">
             <!-- Projekty w dniu -->
+
             {% for o in day_schedule %}
-            <div class="order
-                {% if o.ExistNC %}nc{% endif %}
-                {% if o.ExistCMM %} cmm{% endif %}
-                {% if o.ExistMaterial %} mat{% endif %}
-            ">
-                <div><b>ID:</b> {{ o.Id }}</div>
-                <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
-                <div><b>Projekt:</b> {{ o.ProjectName }}</div>
-                <div><b>NC:</b> {{ o.ExistNC }} | <b>CMM:</b> {{ o.ExistCMM }} | <b>MAT:</b> {{ o.ExistMaterial }}</div>
-                <div><b>Godziny:</b> {{ o.Hours }}</div>
-            </div>
+            <a href="/harmonogram/edit/{{ o.Id }}" class="order-link">
+                <div class="order
+                    {% if o.ExistNC %}nc{% endif %}
+                    {% if o.ExistCMM %} cmm{% endif %}
+                    {% if o.ExistMaterial %} mat{% endif %}
+                ">
+                    <div><b>ID:</b> {{ o.Id }}</div>
+                    <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
+                    <div><b>Projekt:</b> {{ o.ProjectName }}</div>
+                    <div><b>NC:</b> {{ o.ExistNC }} | <b>CMM:</b> {{ o.ExistCMM }} | <b>MAT:</b> {{ o.ExistMaterial }}</div>
+                    <div><b>Godziny:</b> {{ o.Hours }}</div>
+                </div>
+            </a>
             {% endfor %}
+
         </div>
         {% endfor %}
 

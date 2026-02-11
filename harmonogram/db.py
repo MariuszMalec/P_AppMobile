@@ -35,6 +35,7 @@ def init_db_if_not_exists(conn):
         ProjectName TEXT NOT NULL DEFAULT 'test',
         TypeOfBlade TEXT NOT NULL DEFAULT 'k1',
         Exw TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        StartDate TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,  -- ✅ DODANE
         Hours INTEGER NOT NULL DEFAULT 8,
         ExistNC INTEGER NOT NULL DEFAULT 0,
         ExistCMM INTEGER NOT NULL DEFAULT 0,
@@ -72,22 +73,23 @@ def insert_orders(conn):
             ProjectName,
             TypeOfBlade,
             Exw,
+            StartDate,     -- ✅ DODANE
             Hours,
             ExistNC,
             ExistCMM,
             ExistMaterial
         ) VALUES
         -- Projekty dla LINIA1
-        (1, 'IMR', '000001', '0', 'Projekt_A', 'k1', CURRENT_TIMESTAMP, 72, 0, 0, 0),
+        (1, 'IMR', '000001', '0', 'Projekt_A', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 72, 0, 0, 0),
 
         -- Projekty dla LINIA2
-        (2, 'IMR', '000002', '0', 'Projekt_B', 'k1', CURRENT_TIMESTAMP, 16, 1, 0, 0),
+        (2, 'IMR', '000002', '0', 'Projekt_B', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 16, 1, 0, 0),
 
         -- Projekty dla LINIA3
-        (3, 'IMR', '000003', '0', 'Projekt_C', 'k2', CURRENT_TIMESTAMP, 24, 1, 1, 0),
+        (3, 'IMR', '000003', '0', 'Projekt_C', 'k2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0),
 
         -- Projekty dla LINIA4
-        (4, 'IMR', '000004', '0', 'Projekt_D', 'k3', CURRENT_TIMESTAMP, 32, 0, 1, 1);
+        (4, 'IMR', '000004', '0', 'Projekt_D', 'k3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 32, 0, 1, 1);
     """)
 
     conn.commit()
@@ -113,5 +115,3 @@ def insert_machines(conn):
     conn.commit()
 
     print("✅ DB ensured (table Machines exist & seeded)")
-
-

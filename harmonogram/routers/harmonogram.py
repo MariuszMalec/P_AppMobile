@@ -5,6 +5,9 @@ from db import get_db
 from collections import defaultdict
 from datetime import datetime, timedelta
 import calendar
+from fastapi import Form
+from fastapi.responses import RedirectResponse
+
 
 router = APIRouter(
     prefix="/harmonogram",
@@ -21,7 +24,10 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
     # Pobierz zamówienia i przypisz je do maszyn (zakładamy, że Orders już mają maszynę w ProjectName)
     orders = cursor.execute("""
         SELECT 
-            Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade, Exw, Hours, ExistNC, ExistCMM, ExistMaterial, Id as MachineId
+            Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
+            StartDate, Exw, Hours,
+            ExistNC, ExistCMM, ExistMaterial,
+            Id as MachineId
         FROM Orders
     """).fetchall()
 
@@ -78,3 +84,59 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
             "schedule": schedule
         }
     )
+
+
+@router.get("/edit/{order_id}", response_class=HTMLResponse)
+def edit_order_page(order_id: int, request: Request, db=Depends(get_db)):
+    cursor = db.cursor()
+
+    order = cursor.execute(
+        "SELECT * FROM Orders WHERE Id = ?",
+        (order_id,)
+    ).fetchone()
+
+    return templates.TemplateResponse(
+        "edit_order.html",
+        {
+            "request": request,
+            "order": order
+        }
+    )
+
+
+@router.post("/edit/{order_id}")
+def update_order(
+    order_id: int,
+    StartDate: str = Form(...),
+    Exw: str = Form(...),
+    Hours: int = Form(...),
+    ExistNC: int = Form(0),
+    ExistCMM: int = Form(0),
+    ExistMaterial: int = Form(0),
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    cursor.execute("""
+        UPDATE Orders
+        SET StartDate = ?,
+            Exw = ?,
+            Hours = ?,
+            ExistNC = ?,
+            ExistCMM = ?,
+            ExistMaterial = ?
+        WHERE Id = ?
+    """, (
+        StartDate,
+        Exw,
+        Hours,
+        ExistNC,
+        ExistCMM,
+        ExistMaterial,
+        order_id
+    ))
+
+    db.commit()
+
+    return RedirectResponse(url="/harmonogram", status_code=303)
+

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Order</title>
+</head>
+<body>
+<h2>Edit Order ID: {{ order.Id }}</h2>
+
+<form method="post">
+    <label>Start Date:</label>
+    <input type="date" name="StartDate" value="{{ order.StartDate[:10] }}"><br><br>
+
+    <label>EXW:</label>
+    <input type="date" name="Exw" value="{{ order.Exw[:10] }}"><br><br>
+
+    <label>Hours:</label>
+    <input type="number" name="Hours" value="{{ order.Hours }}"><br><br>
+
+    <label>NC:</label>
+    <input type="checkbox" name="ExistNC" value="1" {% if order.ExistNC %}checked{% endif %}><br>
+
+    <label>CMM:</label>
+    <input type="checkbox" name="ExistCMM" value="1" {% if order.ExistCMM %}checked{% endif %}><br>
+
+    <label>Material:</label>
+    <input type="checkbox" name="ExistMaterial" value="1" {% if order.ExistMaterial %}checked{% endif %}><br><br>
+
+    <button type="submit">Save</button>
+</form>
+
+<br>
+<a href="/harmonogram">⬅ Back</a>
+
+</body>
+</html>
