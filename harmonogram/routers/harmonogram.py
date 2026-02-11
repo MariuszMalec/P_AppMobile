@@ -126,16 +126,37 @@ def update_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
+    new_date = data["StartDate"]
+    new_machine = int(data["MachineId"])
+
+    # 🔥 Sprawdź czy na tej maszynie już coś jest tego dnia
+    conflict = cursor.execute("""
+        SELECT Id FROM Orders
+        WHERE MachineId = ?
+        AND date(StartDate) = date(?)
+        AND Id != ?
+    """, (
+        new_machine,
+        new_date,
+        order_id
+    )).fetchone()
+
+    if conflict:
+        return {"status": "error", "message": "Slot zajęty"}
+
+    # Jeśli brak konfliktu – przenieś
     cursor.execute("""
         UPDATE Orders
         SET StartDate = ?,
             MachineId = ?
         WHERE Id = ?
     """, (
-        data["StartDate"],
-        int(data["MachineId"]),  # 🔥 ZMIANA MASZYNY
+        new_date,
+        new_machine,
         order_id
     ))
 
     db.commit()
+
     return {"status": "moved"}
+

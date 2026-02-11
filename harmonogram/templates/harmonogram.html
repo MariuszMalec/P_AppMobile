@@ -225,14 +225,23 @@ function drop(ev,machineId,newDate){
     ev.preventDefault();
     const orderId=ev.dataTransfer.getData("text");
 
-    fetch(`/harmonogram/move/${orderId}`,{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-            MachineId:machineId,
-            StartDate:newDate
+    fetch(`/harmonogram/move/${orderId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            MachineId: machineId,
+            StartDate: newDate
         })
-    }).then(()=>location.reload());
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "error") {
+            alert("Nie można przenieść – maszyna zajęta w tym dniu!");
+        } else {
+            location.reload();
+        }
+    });
+
 }
 
 </script>
