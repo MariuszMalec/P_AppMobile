@@ -21,12 +21,13 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
 
     machines = cursor.execute("SELECT * FROM Machines").fetchall()
 
+    # 🔥 POPRAWKA: używamy prawdziwego MachineId
     orders = cursor.execute("""
         SELECT 
             Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
             StartDate, Exw, Hours,
             ExistNC, ExistCMM, ExistMaterial,
-            Id as MachineId
+            MachineId
         FROM Orders
     """).fetchall()
 
@@ -35,9 +36,8 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
     for o in orders:
         remaining_hours = o["Hours"]
 
-        # 🔥 PLANUJEMY OD StartDate
         start_date = datetime.strptime(o["StartDate"][:10], "%Y-%m-%d")
-        machine_id = o["MachineId"]
+        machine_id = o["MachineId"]  # 🔥 TERAZ TO JEST PRAWDZIWA MASZYNA
 
         while remaining_hours > 0:
             hours_for_day = min(24, remaining_hours)
@@ -89,7 +89,7 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
     )
 
 # =====================================================
-# EDYCJA (JSON - pod modal)
+# EDYCJA
 # =====================================================
 
 @router.post("/edit/{order_id}")
@@ -119,7 +119,7 @@ def update_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     return {"status": "ok"}
 
 # =====================================================
-# DRAG & DROP - PRZENOSZENIE
+# DRAG & DROP - PRZENOSZENIE MIĘDZY MASZYNAMI
 # =====================================================
 
 @router.post("/move/{order_id}")
@@ -128,10 +128,12 @@ def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 
     cursor.execute("""
         UPDATE Orders
-        SET StartDate = ?
+        SET StartDate = ?,
+            MachineId = ?
         WHERE Id = ?
     """, (
         data["StartDate"],
+        int(data["MachineId"]),  # 🔥 ZMIANA MASZYNY
         order_id
     ))
 
