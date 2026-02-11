@@ -14,20 +14,17 @@ router = APIRouter(
 # =====================================================
 # GŁÓWNA STRONA HARMONOGRAMU
 # =====================================================
-
 @router.get("", response_class=HTMLResponse)
 def harmonogram_page(request: Request, db=Depends(get_db)):
     cursor = db.cursor()
 
     machines = cursor.execute("SELECT * FROM Machines").fetchall()
 
-    # 🔥 POPRAWKA: używamy prawdziwego MachineId
     orders = cursor.execute("""
         SELECT 
             Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
-            StartDate, Exw, Hours,
-            ExistNC, ExistCMM, ExistMaterial,
-            MachineId
+            StartDate, Exw, Hours, MachineId,
+            ExistNC, ExistCMM, ExistMaterial
         FROM Orders
     """).fetchall()
 
@@ -35,9 +32,8 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
 
     for o in orders:
         remaining_hours = o["Hours"]
-
         start_date = datetime.strptime(o["StartDate"][:10], "%Y-%m-%d")
-        machine_id = o["MachineId"]  # 🔥 TERAZ TO JEST PRAWDZIWA MASZYNA
+        machine_id = o["MachineId"]
 
         while remaining_hours > 0:
             hours_for_day = min(24, remaining_hours)
@@ -55,7 +51,8 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                 "ExistCMM": o["ExistCMM"],
                 "ExistMaterial": o["ExistMaterial"],
                 "StartDate": o["StartDate"],
-                "Exw": o["Exw"]
+                "Exw": o["Exw"],
+                "MachineId": o["MachineId"]
             })
 
             remaining_hours -= hours_for_day
@@ -80,25 +77,54 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
 
     return templates.TemplateResponse(
         "harmonogram.html",
-        {
-            "request": request,
-            "machines": machines,
-            "days": days,
-            "schedule": schedule
-        }
+        {"request": request, "machines": machines, "days": days, "schedule": schedule}
     )
 
 # =====================================================
-# EDYCJA
+# DODAWANIE ORDERA
 # =====================================================
-
-@router.post("/edit/{order_id}")
-def update_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
+@router.post("/add")
+def add_order(data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
+
+    # Sprawdzenie konfliktu
+    conflict = cursor.execute("""
+        SELECT 1 FROM Orders
+        WHERE MachineId = ? AND StartDate = ?
+        LIMIT 1
+    """, (data["MachineId"], data["StartDate"])).fetchone()
+
+    if conflict:
+        return {"status": "error", "message": "Maszyna zajęta tego dnia!"}
+
+    cursor.execute("""
+        INSERT INTO Orders (MachineId, StartDate, ProjectName, Hours)
+        VALUES (?, ?, ?, ?)
+    """, (data["MachineId"], data["StartDate"], data["ProjectName"], data.get("Hours", 8)))
+    db.commit()
+    return {"status": "ok"}
+
+# =====================================================
+# EDYCJA ORDERA
+# =====================================================
+@router.post("/edit/{order_id}")
+def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
+    cursor = db.cursor()
+
+    # Sprawdzenie konfliktu tylko z innymi orderami
+    conflict = cursor.execute("""
+        SELECT 1 FROM Orders
+        WHERE MachineId = ? AND StartDate = ? AND Id != ?
+        LIMIT 1
+    """, (data["MachineId"], data["StartDate"], order_id)).fetchone()
+
+    if conflict:
+        return {"status": "error", "message": "Maszyna zajęta w tym dniu!"}
 
     cursor.execute("""
         UPDATE Orders
-        SET StartDate = ?,
+        SET MachineId = ?,
+            StartDate = ?,
             Exw = ?,
             Hours = ?,
             ExistNC = ?,
@@ -106,57 +132,38 @@ def update_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
             ExistMaterial = ?
         WHERE Id = ?
     """, (
+        data["MachineId"],
         data["StartDate"],
-        data["Exw"],
-        int(data["Hours"]),
-        int(data["ExistNC"]),
-        int(data["ExistCMM"]),
-        int(data["ExistMaterial"]),
+        data.get("Exw", None),
+        data.get("Hours", 8),
+        data.get("ExistNC", 0),
+        data.get("ExistCMM", 0),
+        data.get("ExistMaterial", 0),
         order_id
     ))
-
     db.commit()
     return {"status": "ok"}
 
 # =====================================================
-# DRAG & DROP - PRZENOSZENIE MIĘDZY MASZYNAMI
+# PRZENOSZENIE ORDERA (DRAG & DROP)
 # =====================================================
-
 @router.post("/move/{order_id}")
 def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    new_date = data["StartDate"]
-    new_machine = int(data["MachineId"])
-
-    # 🔥 Sprawdź czy na tej maszynie już coś jest tego dnia
     conflict = cursor.execute("""
-        SELECT Id FROM Orders
-        WHERE MachineId = ?
-        AND date(StartDate) = date(?)
-        AND Id != ?
-    """, (
-        new_machine,
-        new_date,
-        order_id
-    )).fetchone()
+        SELECT 1 FROM Orders
+        WHERE MachineId = ? AND StartDate = ? AND Id != ?
+        LIMIT 1
+    """, (data["MachineId"], data["StartDate"], order_id)).fetchone()
 
     if conflict:
-        return {"status": "error", "message": "Slot zajęty"}
+        return {"status": "error", "message": "Maszyna zajęta w tym dniu!"}
 
-    # Jeśli brak konfliktu – przenieś
     cursor.execute("""
         UPDATE Orders
-        SET StartDate = ?,
-            MachineId = ?
+        SET MachineId = ?, StartDate = ?
         WHERE Id = ?
-    """, (
-        new_date,
-        new_machine,
-        order_id
-    ))
-
+    """, (data["MachineId"], data["StartDate"], order_id))
     db.commit()
-
-    return {"status": "moved"}
-
+    return {"status": "ok"}
