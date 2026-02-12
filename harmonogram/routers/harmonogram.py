@@ -104,22 +104,32 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
 def add_order(data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    # Sprawdzenie konfliktu
-    conflict = cursor.execute("""
-        SELECT 1 FROM Orders
-        WHERE MachineId = ? AND StartDate = ?
-        LIMIT 1
-    """, (data["MachineId"], data["StartDate"])).fetchone()
-
-    if conflict:
-        return {"status": "error", "message": "Maszyna zajęta tego dnia!"}
-
     cursor.execute("""
-        INSERT INTO Orders (MachineId, StartDate, ProjectName, Hours)
-        VALUES (?, ?, ?, ?)
-    """, (data["MachineId"], data["StartDate"], data["ProjectName"], data.get("Hours", 8)))
+        INSERT INTO Orders (
+            MachineId,
+            StartDate,
+            ProjectName,
+            Hours,
+            Exw,
+            ExistNC,
+            ExistCMM,
+            ExistMaterial
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+    """, (
+        data["MachineId"],
+        data["StartDate"],
+        data["ProjectName"],
+        data.get("Hours", 8),
+        data.get("Exw"),
+        data.get("ExistNC", 0),
+        data.get("ExistCMM", 0),
+        data.get("ExistMaterial", 0)
+    ))
+
     db.commit()
     return {"status": "ok"}
+
 
 # =====================================================
 # EDYCJA ORDERA Z KONTROLĄ KONFLIKTÓW GODZINOWYCH
