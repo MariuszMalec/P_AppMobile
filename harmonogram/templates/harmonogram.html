@@ -2,17 +2,29 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Harmonogram</title>
 
 <style>
 * { box-sizing: border-box; }
-body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
-.calendar { max-width: 1800px; margin: 0 auto; }
+
+body { 
+    font-family: system-ui, sans-serif; 
+    margin: 20px; 
+    overflow-x: auto; 
+}
+
+.calendar { 
+    max-width: 1800px; 
+    margin: 0 auto; 
+}
+
 .calendar-header {
     display: grid;
     grid-template-columns: 160px repeat({{ days|length }}, 80px);
     gap: 6px;
 }
+
 .calendar-header div {
     text-align: center;
     font-weight: bold;
@@ -20,12 +32,14 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
     border-bottom: 2px solid #ccc;
     border-right: 1px solid #ddd;
 }
+
 .calendar-grid {
     display: grid;
     grid-template-columns: 160px repeat({{ days|length }}, 80px);
     gap: 6px;
     margin-bottom: 8px;
 }
+
 .machine-cell {
     font-weight: bold;
     background: #f0f0f0;
@@ -35,6 +49,7 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
     align-items: center;
     justify-content: center;
 }
+
 .day {
     border: 1px solid #ddd;
     min-height: 120px;
@@ -45,8 +60,10 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
     flex-direction: column;
     cursor: pointer;
 }
+
 .day.today { border: 2px solid #4caf50; background-color: #e6ffe6; }
 .day.overload { border: 2px solid red; background-color: #ffe6e6; }
+
 .order {
     border-radius: 6px;
     padding: 4px;
@@ -55,14 +72,73 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
     font-size: 11px;
     cursor: pointer;
 }
+
 .order:hover { outline: 2px solid #4caf50; }
+
 .nc { background: #ffe0e0; }
 .cmm { background: #e0f0ff; }
 .mat { background: #e0ffe6; }
+
+/* ========================= */
+/* MOBILE FIX – NIE PSUJE PC */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+    body {
+        margin: 10px;
+    }
+
+    .calendar {
+        overflow-x: auto;
+    }
+
+    .calendar-header,
+    .calendar-grid {
+        grid-template-columns: 140px repeat({{ days|length }}, 70px);
+    }
+
+    .day {
+        min-height: 90px;
+        font-size: 10px;
+    }
+
+    .order {
+        font-size: 10px;
+    }
+
+    /* MODAL MOBILE */
+    #editModal > div {
+        width: 100% !important;
+        max-width: 95vw;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 12px;
+    }
+
+    #editModal input,
+    #editModal select {
+        width: 100%;
+        font-size: 16px;
+        padding: 8px;
+    }
+
+    #editModal button {
+        width: 100%;
+        margin-bottom: 8px;
+        padding: 10px;
+        font-size: 14px;
+    }
+
+    #deleteBtn {
+        float: none !important;
+    }
+}
 </style>
 </head>
 
 <body>
+
 <div class="calendar">
     <div class="calendar-header">
         <div>Maszyna</div>
@@ -90,8 +166,7 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
                     {% if o.ExistMaterial %} mat{% endif %}"
             style="background: {{ o.Color }};"
             draggable="true"
-            onclick="selectOrder(this, event)"
-            ondblclick="openModal(this, event)"
+            onclick="openModal(this, event)"
             data-id="{{ o.Id }}"
             data-start="{{ o.StartDate[:10] if o.StartDate else '' }}"
             data-exw="{{ o.Exw[:10] }}"
@@ -116,7 +191,7 @@ body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
     {% endfor %}
 </div>
 
-<!-- MODAL EDYCJI I DODAWANIA -->
+<!-- MODAL -->
 <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
     <div style="background:white; padding:20px; width:400px; border-radius:8px;">
         <h3 id="modalTitle">Edit Order</h3>
