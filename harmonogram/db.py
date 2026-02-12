@@ -23,7 +23,7 @@ def init_db_if_not_exists(conn):
     cur = conn.cursor()
 
     # =============================
-    # ORDER
+    # ORDERS
     # =============================
     cur.execute("""
     CREATE TABLE IF NOT EXISTS Orders (
@@ -39,12 +39,13 @@ def init_db_if_not_exists(conn):
         ExistNC INTEGER NOT NULL DEFAULT 0,
         ExistCMM INTEGER NOT NULL DEFAULT 0,
         ExistMaterial INTEGER NOT NULL DEFAULT 0,
-        MachineId INTEGER NOT NULL DEFAULT 1   -- 🔥 NOWE
+        MachineId INTEGER NOT NULL DEFAULT 1
+        -- 🔥 Kolumna Color dodamy niżej jeśli brak
     );
     """)
 
     # =============================
-    # MACHINE
+    # MACHINES
     # =============================
     cur.execute("""
     CREATE TABLE IF NOT EXISTS Machines (
@@ -55,14 +56,21 @@ def init_db_if_not_exists(conn):
     );
     """)
 
-    # 🔥 JEŚLI KOLUMNA NIE ISTNIEJE (stara baza) – dodaj ją
+    # =============================
+    # Sprawdź kolumny i dodaj brakujące
+    # =============================
     cur.execute("PRAGMA table_info(Orders)")
     columns = [col[1] for col in cur.fetchall()]
+
     if "MachineId" not in columns:
         cur.execute("ALTER TABLE Orders ADD COLUMN MachineId INTEGER NOT NULL DEFAULT 1")
 
+    if "Color" not in columns:
+        cur.execute("ALTER TABLE Orders ADD COLUMN Color TEXT NOT NULL DEFAULT '#f4f4f4'")
+
     conn.commit()
-    print("✅ Database initialized successfully")
+    print("✅ Database initialized successfully with Color column")
+
 
 
 def insert_orders(conn):
@@ -82,23 +90,24 @@ def insert_orders(conn):
             ExistNC,
             ExistCMM,
             ExistMaterial,
-            MachineId
+            MachineId,
+            Color
         ) VALUES
         -- Projekty dla LINIA1
-        (1, 'IMR', '000001', '0', 'Projekt_A', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 72, 0, 0, 0, 1),
+        (1, 'IMR', '000001', '0', 'Projekt_A', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 72, 0, 0, 0, 1, '#ff9999'),
 
         -- Projekty dla LINIA2
-        (2, 'IMR', '000002', '0', 'Projekt_B', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 16, 1, 0, 0, 2),
+        (2, 'IMR', '000002', '0', 'Projekt_B', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 16, 1, 0, 0, 2, '#99ccff'),
 
         -- Projekty dla LINIA3
-        (3, 'IMR', '000003', '0', 'Projekt_C', 'k2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 3),
+        (3, 'IMR', '000003', '0', 'Projekt_C', 'k2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 3, '#99ff99'),
 
         -- Projekty dla LINIA4
-        (4, 'IMR', '000004', '0', 'Projekt_D', 'k3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 32, 0, 1, 1, 4);
+        (4, 'IMR', '000004', '0', 'Projekt_D', 'k3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 32, 0, 1, 1, 4, '#ffcc99');
     """)
 
     conn.commit()
-    print("✅ DB ensured (table Orders exist & seeded)")
+    print("✅ DB seeded with initial Orders including Color")
 
 
 def insert_machines(conn):

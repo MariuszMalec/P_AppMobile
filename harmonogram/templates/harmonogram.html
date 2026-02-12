@@ -275,9 +275,9 @@ function saveOrder(){
         Exw: document.getElementById("editExw").value,
         Hours: parseInt(document.getElementById("editHours").value),
         Color: document.getElementById("editColor").value,
-        ExistNC: document.getElementById("editNC").checked?1:0,
-        ExistCMM: document.getElementById("editCMM").checked?1:0,
-        ExistMaterial: document.getElementById("editMAT").checked?1:0
+        ExistNC: document.getElementById("editNC").checked ? 1 : 0,
+        ExistCMM: document.getElementById("editCMM").checked ? 1 : 0,
+        ExistMaterial: document.getElementById("editMAT").checked ? 1 : 0
     };
 
     const url = id ? `/harmonogram/edit/${id}` : "/harmonogram/add";
@@ -286,43 +286,20 @@ function saveOrder(){
         method: "POST",
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(payload)
-    }).then(res=>res.json()).then(data=>{
-        if(data.status==="error") alert(data.message);
-        else {
-            if(id){
-                const orderEl = document.querySelector(`.order[data-id="${id}"]`);
-                if(orderEl){
-                    // aktualizacja klasy nc/cmm/mat
-                    orderEl.classList.toggle('nc', payload.ExistNC==1);
-                    orderEl.classList.toggle('cmm', payload.ExistCMM==1);
-                    orderEl.classList.toggle('mat', payload.ExistMaterial==1);
-
-                    // aktualizacja małych kółek
-                    orderEl.querySelector('.nc-dot').style.background = payload.ExistNC==1 ? 'green':'red';
-                    orderEl.querySelector('.cmm-dot').style.background = payload.ExistCMM==1 ? 'green':'red';
-                    orderEl.querySelector('.mat-dot').style.background = payload.ExistMaterial==1 ? 'green':'red';
-
-                    // pozostałe dane
-                    orderEl.style.background = payload.Color;
-                    orderEl.dataset.color = payload.Color;
-                    orderEl.dataset.hours = payload.Hours;
-                    orderEl.dataset.project = payload.ProjectName;
-                    orderEl.dataset.order = payload.Zlecenie;
-                    orderEl.dataset.nc = payload.ExistNC;
-                    orderEl.dataset.cmm = payload.ExistCMM;
-                    orderEl.dataset.mat = payload.ExistMaterial;
-
-                    orderEl.querySelector("div:nth-child(2)").innerHTML = `<b>Zlecenie:</b> ${payload.Zlecenie}`;
-                    orderEl.querySelector("div:nth-child(3)").innerHTML = `<b>Projekt:</b> ${payload.ProjectName}`;
-                    orderEl.querySelector("div:nth-child(5)").innerHTML = `<b>Godziny:</b> ${payload.Hours}`;
-                }
-            } else {
-                location.reload();
-            }
-            closeModal();
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === "error") {
+            alert(data.message);
+        } else {
+            // odśwież stronę po zapisie, żeby wszystkie dane były aktualne
+            location.reload();
         }
     });
 }
+
+
+
 
 function deleteOrder(){
     if(!confirm("Czy na pewno chcesz usunąć ten order?")) return;

@@ -5,6 +5,7 @@ from db import get_db
 from collections import defaultdict
 from datetime import datetime, timedelta
 import calendar
+import hashlib
 
 router = APIRouter(
     prefix="/harmonogram",
@@ -13,10 +14,6 @@ router = APIRouter(
 
 # =====================================================
 # GŁÓWNA STRONA HARMONOGRAMU
-# =====================================================
-# =====================================================
-# GŁÓWNA STRONA HARMONOGRAMU Z AUTOMATYCZNYM PRZERZUCANIEM GODZIN
-# I UNIKALNYM KOLOROWANIEM ORDERÓW
 # =====================================================
 @router.get("", response_class=HTMLResponse)
 def harmonogram_page(request: Request, db=Depends(get_db)):
@@ -28,23 +25,23 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
         SELECT 
             Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
             StartDate, Exw, Hours, MachineId,
-            ExistNC, ExistCMM, ExistMaterial
+            ExistNC, ExistCMM, ExistMaterial,
+            Color
         FROM Orders
     """).fetchall()
 
     schedule = defaultdict(lambda: defaultdict(list))
 
     def get_color(order_id):
-        # Generujemy kolor na podstawie ID (zawsze ten sam dla danego ordera)
-        import hashlib
+        # Generujemy kolor na podstawie ID (jeśli brak koloru w bazie)
         h = hashlib.md5(str(order_id).encode()).hexdigest()
-        return f"#{h[:6]}"  # weź 6 znaków heksa na kolor
+        return f"#{h[:6]}"
 
     for o in orders:
         remaining_hours = o["Hours"]
         start_date = datetime.strptime(o["StartDate"][:10], "%Y-%m-%d")
         machine_id = o["MachineId"]
-        color = get_color(o["Id"])
+        color = o["Color"] or get_color(o["Id"])
 
         while remaining_hours > 0:
             day_key = start_date.strftime("%Y-%m-%d")
@@ -59,7 +56,7 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                     "Name": o["Name"],
                     "Zlecenie": o["Zlecenie"],
                     "Haslo": o["Haslo"],
-                    "ProjectName": o["ProjectName"],
+                    "ProjectName": o["ProjectName"] or "",
                     "TypeOfBlade": o["TypeOfBlade"],
                     "Hours": hours_for_day,
                     "ExistNC": o["ExistNC"],
@@ -68,7 +65,7 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                     "StartDate": o["StartDate"],
                     "Exw": o["Exw"],
                     "MachineId": o["MachineId"],
-                    "Color": color  # <- nowy parametr
+                    "Color": color
                 })
                 remaining_hours -= hours_for_day
 
@@ -104,6 +101,8 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
 def add_order(data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
+    color = data.get("Color") or "#f4f4f4"
+
     cursor.execute("""
         INSERT INTO Orders (
             MachineId,
@@ -114,24 +113,25 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
             Exw,
             ExistNC,
             ExistCMM,
-            ExistMaterial
+            ExistMaterial,
+            Color
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data["MachineId"],
         data["StartDate"],
-        data["ProjectName"],
-        data.get("Zlecenie", ""),  # <-- nowość
+        data.get("ProjectName", ""),
+        data.get("Zlecenie", ""),
         data.get("Hours", 8),
         data.get("Exw"),
         data.get("ExistNC", 0),
         data.get("ExistCMM", 0),
-        data.get("ExistMaterial", 0)
+        data.get("ExistMaterial", 0),
+        color
     ))
 
     db.commit()
     return {"status": "ok"}
-
 
 
 # =====================================================
@@ -141,7 +141,8 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
 def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    new_start = datetime.strptime(data["StartDate"], "%Y-%m-%d")
+    # Parsowanie daty startu
+    new_start = datetime.fromisoformat(data["StartDate"])
     new_hours = int(data.get("Hours", 8))
     new_machine = data["MachineId"]
 
@@ -153,14 +154,17 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 
     # Sprawdzenie konfliktu godzinowego
     for o in other_orders:
-        existing_start = datetime.strptime(o["StartDate"], "%Y-%m-%d")
+        existing_start = datetime.fromisoformat(o["StartDate"])
         existing_end = existing_start + timedelta(hours=o["Hours"])
         new_end = new_start + timedelta(hours=new_hours)
 
         if (new_start < existing_end) and (new_end > existing_start):
             return {"status": "error", "message": f"Konflikt z orderem ID {o['Id']}!"}
 
-    # Aktualizacja ordera
+    # Pobierz kolor z payload lub ustaw domyślny
+    color = data.get("Color") or "#f4f4f4"
+
+    # Aktualizacja ordera z zapisem wszystkich pól
     cursor.execute("""
         UPDATE Orders
         SET MachineId = ?,
@@ -170,21 +174,27 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
             ExistNC = ?,
             ExistCMM = ?,
             ExistMaterial = ?,
-            Zlecenie = ?  -- <-- nowość
+            Zlecenie = ?,
+            ProjectName = ?,
+            Color = ?
         WHERE Id = ?
     """, (
         new_machine,
-        data["StartDate"],
+        data["StartDate"],          # pełny datetime
         data.get("Exw", None),
         new_hours,
         data.get("ExistNC", 0),
         data.get("ExistCMM", 0),
         data.get("ExistMaterial", 0),
-        data.get("Zlecenie", ""),  # <-- nowość
+        data.get("Zlecenie", ""),
+        data.get("ProjectName", ""),
+        color,
         order_id
     ))
+
     db.commit()
     return {"status": "ok"}
+
 
 
 
@@ -220,7 +230,6 @@ def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 def delete_order(order_id: int, db=Depends(get_db)):
     cursor = db.cursor()
 
-    # Sprawdzenie, czy order istnieje
     existing = cursor.execute("SELECT 1 FROM Orders WHERE Id = ?", (order_id,)).fetchone()
     if not existing:
         return {"status": "error", "message": "Order nie istnieje!"}
