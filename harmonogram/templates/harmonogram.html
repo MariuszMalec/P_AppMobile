@@ -79,10 +79,6 @@ body {
 .cmm { background: #e0f0ff; }
 .mat { background: #e0ffe6; }
 
-/* ========================= */
-/* MOBILE FIX – NIE PSUJE PC */
-/* ========================= */
-
 @media (max-width: 768px) {
 
     body {
@@ -107,7 +103,6 @@ body {
         font-size: 10px;
     }
 
-    /* MODAL MOBILE */
     #editModal > div {
         width: 100% !important;
         max-width: 95vw;
@@ -169,13 +164,14 @@ body {
             onclick="openModal(this, event)"
             data-id="{{ o.Id }}"
             data-start="{{ o.StartDate[:10] if o.StartDate else '' }}"
-            data-exw="{{ o.Exw[:10] }}"
+            data-exw="{{ o.Exw[:10] if o.Exw else '' }}"
             data-hours="{{ o.Hours }}"
             data-nc="{{ o.ExistNC }}"
             data-cmm="{{ o.ExistCMM }}"
             data-mat="{{ o.ExistMaterial }}"
             data-machine="{{ o.MachineId }}"
-            data-project="{{ o.ProjectName }}">
+            data-project="{{ o.ProjectName }}"
+            data-order="{{ o.Zlecenie }}">
 
             <div><b>ID:</b> {{ o.Id }}</div>
             <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
@@ -187,7 +183,6 @@ body {
                 <span><b>MAT:</b> <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistMaterial else 'red' }};"></span></span>
             </div>
 
-
             <div><b>Godziny:</b> {{ o.Hours }}</div>
         </div>
         {% endfor %}
@@ -198,7 +193,6 @@ body {
     {% endfor %}
 </div>
 
-<!-- MODAL -->
 <div id="editModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4); justify-content:center; align-items:center;">
     <div style="background:white; padding:20px; width:400px; border-radius:8px;">
         <h3 id="modalTitle">Edit Order</h3>
@@ -213,6 +207,9 @@ body {
 
         <label>Projekt</label>
         <input type="text" id="editProjectName"><br><br>
+
+        <label>Zlecenie</label>
+        <input type="text" id="editOrderNumber"><br><br>
 
         <label>StartDate</label>
         <input type="date" id="editStartDate"><br><br>
@@ -230,19 +227,14 @@ body {
     </div>
 </div>
 
+
 <script>
-// ===============================
-// ZAZNACZANIE ORDERA
-// ===============================
 function selectOrder(el, event){
     event.stopPropagation();
     document.querySelectorAll('.order').forEach(o=>o.style.outline='');
     el.style.outline='2px solid blue';
 }
 
-// ===============================
-// MODAL
-// ===============================
 function openModal(el, event){
     event.stopPropagation();
     document.getElementById("modalTitle").innerText = "Edit Order";
@@ -250,6 +242,7 @@ function openModal(el, event){
     document.getElementById("editId").value = el.dataset.id;
     document.getElementById("editMachine").value = el.dataset.machine;
     document.getElementById("editProjectName").value = el.dataset.project;
+    document.getElementById("editOrderNumber").value = el.dataset.order || "";
     document.getElementById("editStartDate").value = el.dataset.start;
     document.getElementById("editExw").value = el.dataset.exw;
     document.getElementById("editHours").value = el.dataset.hours;
@@ -266,6 +259,7 @@ function openAddModal(cell, machineId, date){
     document.getElementById("editId").value = "";
     document.getElementById("editMachine").value = machineId;
     document.getElementById("editProjectName").value = "";
+    document.getElementById("editOrderNumber").value = "";
     document.getElementById("editStartDate").value = date;
     document.getElementById("editExw").value = date;
     document.getElementById("editHours").value = 8;
@@ -280,15 +274,13 @@ function closeModal(){
     document.getElementById("editModal").style.display="none";
 }
 
-// ===============================
-// ZAPIS ORDERA
-// ===============================
 function saveOrder(){
     const id = document.getElementById("editId").value;
 
     const payload = {
         MachineId: parseInt(document.getElementById("editMachine").value),
         ProjectName: document.getElementById("editProjectName").value,
+        Zlecenie: document.getElementById("editOrderNumber").value,
         StartDate: document.getElementById("editStartDate").value,
         Exw: document.getElementById("editExw").value,
         Hours: parseInt(document.getElementById("editHours").value),
@@ -309,9 +301,6 @@ function saveOrder(){
     });
 }
 
-// ===============================
-// DELETE ORDER
-// ===============================
 function deleteOrder(){
     if(!confirm("Czy na pewno chcesz usunąć ten order?")) return;
 
@@ -325,9 +314,6 @@ function deleteOrder(){
     });
 }
 
-// ===============================
-// DRAG & DROP
-// ===============================
 function allowDrop(ev){ ev.preventDefault(); }
 
 document.addEventListener("dragstart", function(e){

@@ -109,17 +109,19 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
             MachineId,
             StartDate,
             ProjectName,
+            Zlecenie,
             Hours,
             Exw,
             ExistNC,
             ExistCMM,
             ExistMaterial
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data["MachineId"],
         data["StartDate"],
         data["ProjectName"],
+        data.get("Zlecenie", ""),  # <-- nowość
         data.get("Hours", 8),
         data.get("Exw"),
         data.get("ExistNC", 0),
@@ -129,6 +131,7 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
 
     db.commit()
     return {"status": "ok"}
+
 
 
 # =====================================================
@@ -154,11 +157,10 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
         existing_end = existing_start + timedelta(hours=o["Hours"])
         new_end = new_start + timedelta(hours=new_hours)
 
-        # Sprawdzenie nakładania się przedziałów czasowych
         if (new_start < existing_end) and (new_end > existing_start):
             return {"status": "error", "message": f"Konflikt z orderem ID {o['Id']}!"}
 
-    # Jeśli brak konfliktu, aktualizuj order
+    # Aktualizacja ordera
     cursor.execute("""
         UPDATE Orders
         SET MachineId = ?,
@@ -167,7 +169,8 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
             Hours = ?,
             ExistNC = ?,
             ExistCMM = ?,
-            ExistMaterial = ?
+            ExistMaterial = ?,
+            Zlecenie = ?  -- <-- nowość
         WHERE Id = ?
     """, (
         new_machine,
@@ -177,10 +180,12 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
         data.get("ExistNC", 0),
         data.get("ExistCMM", 0),
         data.get("ExistMaterial", 0),
+        data.get("Zlecenie", ""),  # <-- nowość
         order_id
     ))
     db.commit()
     return {"status": "ok"}
+
 
 
 # =====================================================
