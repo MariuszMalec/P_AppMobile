@@ -205,22 +205,28 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    conflict = cursor.execute("""
-        SELECT 1 FROM Orders
-        WHERE MachineId = ? AND StartDate = ? AND Id != ?
-        LIMIT 1
-    """, (data["MachineId"], data["StartDate"], order_id)).fetchone()
+    # Sprawdzamy, ile godzin są już zaplanowane w danym dniu na tej maszynie
+    existing_hours = cursor.execute("""
+        SELECT SUM(Hours)
+        FROM Orders
+        WHERE MachineId = ? AND StartDate = ?
+    """, (data["MachineId"], data["StartDate"])).fetchone()[0] or 0
 
-    if conflict:
-        return {"status": "error", "message": "Maszyna zajęta w tym dniu!"}
+    # Sprawdzamy, czy dostępne godziny w danym dniu pozwalają na przeniesienie orderu
+    if existing_hours + data.get("Hours", 0) > 24:
+        return {"status": "error", "message": "Nie ma wystarczającej liczby godzin w tym dniu!"}
 
+    # Jeśli w dniu jest wystarczająco miejsca, to wykonujemy przeniesienie orderu
     cursor.execute("""
         UPDATE Orders
         SET MachineId = ?, StartDate = ?
         WHERE Id = ?
     """, (data["MachineId"], data["StartDate"], order_id))
+
     db.commit()
+
     return {"status": "ok"}
+
 
 
 # =====================================================
