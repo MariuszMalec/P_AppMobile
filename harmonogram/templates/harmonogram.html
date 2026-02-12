@@ -81,27 +81,18 @@ body {
 
 @media (max-width: 768px) {
 
-    body {
-        margin: 10px;
-    }
+    body { margin: 10px; }
 
-    .calendar {
-        overflow-x: auto;
-    }
+    .calendar { overflow-x: auto; }
 
     .calendar-header,
     .calendar-grid {
         grid-template-columns: 140px repeat({{ days|length }}, 70px);
     }
 
-    .day {
-        min-height: 90px;
-        font-size: 10px;
-    }
+    .day { min-height: 90px; font-size: 10px; }
 
-    .order {
-        font-size: 10px;
-    }
+    .order { font-size: 10px; }
 
     #editModal > div {
         width: 100% !important;
@@ -112,22 +103,16 @@ body {
     }
 
     #editModal input,
-    #editModal select {
+    #editModal select,
+    #editModal button {
         width: 100%;
         font-size: 16px;
         padding: 8px;
     }
 
-    #editModal button {
-        width: 100%;
-        margin-bottom: 8px;
-        padding: 10px;
-        font-size: 14px;
-    }
+    #editModal button { margin-bottom: 8px; font-size: 14px; }
 
-    #deleteBtn {
-        float: none !important;
-    }
+    #deleteBtn { float: none !important; }
 }
 </style>
 </head>
@@ -171,16 +156,17 @@ body {
             data-mat="{{ o.ExistMaterial }}"
             data-machine="{{ o.MachineId }}"
             data-project="{{ o.ProjectName }}"
-            data-order="{{ o.Zlecenie }}">
+            data-order="{{ o.Zlecenie }}"
+            data-color="{{ o.Color }}">
 
             <div><b>ID:</b> {{ o.Id }}</div>
             <div><b>Zlecenie:</b> {{ o.Zlecenie }}</div>
             <div><b>Projekt:</b> {{ o.ProjectName }}</div>
 
             <div style="display:flex; flex-direction:column; gap:2px; font-size:11px;">
-                <span><b>NC:</b> <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistNC else 'red' }};"></span></span>
-                <span><b>CMM:</b> <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistCMM else 'red' }};"></span></span>
-                <span><b>MAT:</b> <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistMaterial else 'red' }};"></span></span>
+                <span><b>NC:</b> <span class="nc-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistNC else 'red' }};"></span></span>
+                <span><b>CMM:</b> <span class="cmm-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistCMM else 'red' }};"></span></span>
+                <span><b>MAT:</b> <span class="mat-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistMaterial else 'red' }};"></span></span>
             </div>
 
             <div><b>Godziny:</b> {{ o.Hours }}</div>
@@ -217,6 +203,8 @@ body {
         <input type="date" id="editExw"><br><br>
         <label>Hours</label>
         <input type="number" id="editHours"><br><br>
+        <label>Kolor</label>
+        <input type="color" id="editColor" value="#f4f4f4"><br><br>
         <label><input type="checkbox" id="editNC"> NC</label><br>
         <label><input type="checkbox" id="editCMM"> CMM</label><br>
         <label><input type="checkbox" id="editMAT"> Material</label><br><br>
@@ -226,7 +214,6 @@ body {
         <button id="deleteBtn" style="float:right; background:red; color:white; display:none;" onclick="deleteOrder()">Delete</button>
     </div>
 </div>
-
 
 <script>
 function selectOrder(el, event){
@@ -239,6 +226,7 @@ function openModal(el, event){
     event.stopPropagation();
     document.getElementById("modalTitle").innerText = "Edit Order";
     document.getElementById("editModal").style.display="flex";
+
     document.getElementById("editId").value = el.dataset.id;
     document.getElementById("editMachine").value = el.dataset.machine;
     document.getElementById("editProjectName").value = el.dataset.project;
@@ -246,6 +234,7 @@ function openModal(el, event){
     document.getElementById("editStartDate").value = el.dataset.start;
     document.getElementById("editExw").value = el.dataset.exw;
     document.getElementById("editHours").value = el.dataset.hours;
+    document.getElementById("editColor").value = el.dataset.color || "#f4f4f4";
     document.getElementById("editNC").checked = el.dataset.nc==1;
     document.getElementById("editCMM").checked = el.dataset.cmm==1;
     document.getElementById("editMAT").checked = el.dataset.mat==1;
@@ -256,6 +245,7 @@ function openModal(el, event){
 function openAddModal(cell, machineId, date){
     document.getElementById("modalTitle").innerText = "Add Order";
     document.getElementById("editModal").style.display="flex";
+
     document.getElementById("editId").value = "";
     document.getElementById("editMachine").value = machineId;
     document.getElementById("editProjectName").value = "";
@@ -263,6 +253,7 @@ function openAddModal(cell, machineId, date){
     document.getElementById("editStartDate").value = date;
     document.getElementById("editExw").value = date;
     document.getElementById("editHours").value = 8;
+    document.getElementById("editColor").value = "#f4f4f4";
     document.getElementById("editNC").checked = false;
     document.getElementById("editCMM").checked = false;
     document.getElementById("editMAT").checked = false;
@@ -276,7 +267,6 @@ function closeModal(){
 
 function saveOrder(){
     const id = document.getElementById("editId").value;
-
     const payload = {
         MachineId: parseInt(document.getElementById("editMachine").value),
         ProjectName: document.getElementById("editProjectName").value,
@@ -284,6 +274,7 @@ function saveOrder(){
         StartDate: document.getElementById("editStartDate").value,
         Exw: document.getElementById("editExw").value,
         Hours: parseInt(document.getElementById("editHours").value),
+        Color: document.getElementById("editColor").value,
         ExistNC: document.getElementById("editNC").checked?1:0,
         ExistCMM: document.getElementById("editCMM").checked?1:0,
         ExistMaterial: document.getElementById("editMAT").checked?1:0
@@ -297,7 +288,39 @@ function saveOrder(){
         body: JSON.stringify(payload)
     }).then(res=>res.json()).then(data=>{
         if(data.status==="error") alert(data.message);
-        else location.reload();
+        else {
+            if(id){
+                const orderEl = document.querySelector(`.order[data-id="${id}"]`);
+                if(orderEl){
+                    // aktualizacja klasy nc/cmm/mat
+                    orderEl.classList.toggle('nc', payload.ExistNC==1);
+                    orderEl.classList.toggle('cmm', payload.ExistCMM==1);
+                    orderEl.classList.toggle('mat', payload.ExistMaterial==1);
+
+                    // aktualizacja małych kółek
+                    orderEl.querySelector('.nc-dot').style.background = payload.ExistNC==1 ? 'green':'red';
+                    orderEl.querySelector('.cmm-dot').style.background = payload.ExistCMM==1 ? 'green':'red';
+                    orderEl.querySelector('.mat-dot').style.background = payload.ExistMaterial==1 ? 'green':'red';
+
+                    // pozostałe dane
+                    orderEl.style.background = payload.Color;
+                    orderEl.dataset.color = payload.Color;
+                    orderEl.dataset.hours = payload.Hours;
+                    orderEl.dataset.project = payload.ProjectName;
+                    orderEl.dataset.order = payload.Zlecenie;
+                    orderEl.dataset.nc = payload.ExistNC;
+                    orderEl.dataset.cmm = payload.ExistCMM;
+                    orderEl.dataset.mat = payload.ExistMaterial;
+
+                    orderEl.querySelector("div:nth-child(2)").innerHTML = `<b>Zlecenie:</b> ${payload.Zlecenie}`;
+                    orderEl.querySelector("div:nth-child(3)").innerHTML = `<b>Projekt:</b> ${payload.ProjectName}`;
+                    orderEl.querySelector("div:nth-child(5)").innerHTML = `<b>Godziny:</b> ${payload.Hours}`;
+                }
+            } else {
+                location.reload();
+            }
+            closeModal();
+        }
     });
 }
 
