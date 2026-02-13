@@ -23,6 +23,13 @@ body {
     display: grid;
     grid-template-columns: 160px repeat({{ days|length }}, 100px);
     gap: 6px;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    background: white; /* tło dla całego headera */
+    padding-right: 6px; /* aby zakryć grid gap */
 }
 
 .calendar-header div {
@@ -31,7 +38,10 @@ body {
     padding: 10px 0;
     border-bottom: 2px solid #ccc;
     border-right: 1px solid #ddd;
+
+    background: white; /* WAŻNE: każdy nagłówek ma własne tło */
 }
+
 
 .calendar-grid {
     display: grid;
@@ -48,6 +58,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+
+    position: sticky; /* **sticky dla kolumny maszyna** */
+    left: 0;          /* przylega do lewej */
+    z-index: 100;     /* mniej niż header, więcej niż reszta grid */
 }
 
 .day {

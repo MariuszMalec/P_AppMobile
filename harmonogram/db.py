@@ -100,10 +100,16 @@ def insert_orders(conn):
         (2, 'IMR', '000002', '0', 'Projekt_B', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 16, 1, 0, 0, 2, '#99ccff'),
 
         -- Projekty dla LINIA3
-        (3, 'IMR', '000003', '0', 'Projekt_C', 'k2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 3, '#99ff99'),
-
+        (3, 'IMR', '000003', '0', 'Projekt_C', 'k3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 3, '#99ff99'),
+                
         -- Projekty dla LINIA4
-        (4, 'IMR', '000004', '0', 'Projekt_D', 'k3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 32, 0, 1, 1, 4, '#ffcc99');
+        (4, 'IMR', '000004', '0', 'Projekt_D', 'K4', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 4, '#99ff99'),
+                
+        -- Projekty dla LINIA5
+        (5, 'IMR', '000005', '0', 'Projekt_E', 'L0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 128, 1, 1, 0, 5, '#99ff99'),
+
+        -- Projekty dla LINIA6
+        (6, 'IMR', '000006', '0', 'Projekt_F', 'A3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 32, 0, 1, 1, 6, '#ffcc99');
     """)
 
     conn.commit()
@@ -123,7 +129,9 @@ def insert_machines(conn):
         (1, 'LINIA1', '5-axis milling machine', 'hstm_01.png'),
         (2, 'LINIA2', '5-axis milling machine', 'hstm_02.png'),
         (3, 'LINIA3', 'Coordinate Measuring Machine', 'cmm_01.png'),
-        (4, 'LINIA4', 'CNC Lathe', 'lathe_01.png');
+        (4, 'LINIA4', '5-axis milling machine', 'hstm_01.png'),
+        (5, 'LINIA5', '5-axis milling machine', 'hstm_01.png'),
+        (6, 'LINIA6', 'CNC Lathe', 'lathe_01.png');
     """)
 
     conn.commit()
