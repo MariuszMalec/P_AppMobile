@@ -243,8 +243,13 @@ body {
         <input type="date" id="editStartDate"><br><br>
         <label>EXW</label>
         <input type="date" id="editExw"><br><br>
-        <label>Hours</label>
-        <input type="number" id="editHours"><br><br>
+
+        <label>Dni</label>
+        <input type="number" id="editDays" value="1" min="1" style="width:60px;">
+        <label>Godziny</label>
+        <input type="number" id="editHours" value="24" min="1" style="width:80px;">
+        <br><br>
+
         <label>Kolor</label>
         <input type="color" id="editColor" value="#f4f4f4"><br><br>
         <label><input type="checkbox" id="editNC"> NC</label><br>
@@ -297,7 +302,10 @@ function openAddModal(cell, machineId, date){
     document.getElementById("editOrderNumber").value = "IMR-999999";
     document.getElementById("editStartDate").value = date;
     document.getElementById("editExw").value = date;
+
+    document.getElementById("editDays").value = 1;
     document.getElementById("editHours").value = 24;
+
     document.getElementById("editColor").value = "#f4f4f4";
     document.getElementById("editNC").checked = false;
     document.getElementById("editCMM").checked = false;
@@ -342,8 +350,6 @@ function saveOrder(){
         }
     });
 }
-
-
 
 
 function deleteOrder(){
@@ -394,6 +400,31 @@ document.getElementById("todayFloatingBtn").addEventListener("click", function (
         block: "nearest"
     });
 });
+
+
+const daysInput = document.getElementById("editDays");
+const hoursInput = document.getElementById("editHours");
+
+let manualHours = false; // flaga – czy użytkownik ręcznie wpisał godziny
+
+// Zmiana dni → aktualizacja godzin tylko jeśli nie ma manualnej edycji
+daysInput.addEventListener("input", function() {
+    if(manualHours) return; // jeśli ręcznie zmieniano godziny, nie nadpisuj
+    let days = parseInt(daysInput.value);
+    if(isNaN(days) || days < 1) days = 1;
+    daysInput.value = days;
+    hoursInput.value = days * 24;
+});
+
+// Zmiana godzin ręcznie → ustawienie flagi manualnej
+hoursInput.addEventListener("input", function() {
+    let hours = parseInt(hoursInput.value);
+    if(isNaN(hours) || hours < 1) hours = 1;
+    hoursInput.value = hours;
+
+    manualHours = true; // ręczna zmiana, wyłącza automatyczne przeliczanie z dni
+});
+
 
 
 </script>
