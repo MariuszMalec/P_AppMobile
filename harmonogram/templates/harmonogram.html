@@ -283,7 +283,15 @@ function openModal(el, event){
     document.getElementById("editOrderNumber").value = el.dataset.order || "";
     document.getElementById("editStartDate").value = el.dataset.start;
     document.getElementById("editExw").value = el.dataset.exw;
-    document.getElementById("editHours").value = el.dataset.hours;
+
+    // Przeliczanie dni z godzin (zaokrąglamy w górę)
+    let hours = parseInt(el.dataset.hours);
+    if(isNaN(hours) || hours < 1) hours = 24;
+    document.getElementById("editHours").value = hours;
+    let days = Math.ceil(hours / 24);
+    document.getElementById("editDays").value = days;
+
+    manualHours = false; // reset flagi manualnej edycji, żeby dni mogły przeliczać godziny
     document.getElementById("editColor").value = el.dataset.color || "#f4f4f4";
     document.getElementById("editNC").checked = el.dataset.nc==1;
     document.getElementById("editCMM").checked = el.dataset.cmm==1;
@@ -291,6 +299,7 @@ function openModal(el, event){
 
     document.getElementById("deleteBtn").style.display = "inline-block";
 }
+
 
 function openAddModal(cell, machineId, date){
     document.getElementById("modalTitle").innerText = "Add Order";
