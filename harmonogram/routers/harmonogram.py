@@ -19,8 +19,10 @@ router = APIRouter(
 def harmonogram_page(request: Request, db=Depends(get_db)):
     cursor = db.cursor()
 
+    # Pobranie maszyn
     machines = cursor.execute("SELECT * FROM Machines").fetchall()
 
+    # Pobranie zamówień
     orders = cursor.execute("""
         SELECT 
             Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
@@ -28,25 +30,31 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
             ExistNC, ExistCMM, ExistMaterial,
             Color
         FROM Orders
+        ORDER BY StartDate, Id
     """).fetchall()
 
     schedule = defaultdict(lambda: defaultdict(list))
 
     def get_color(order_id):
-        # Generujemy kolor na podstawie ID (jeśli brak koloru w bazie)
         h = hashlib.md5(str(order_id).encode()).hexdigest()
         return f"#{h[:6]}"
 
-    for o in orders:
+    # Lista orderów do wstawienia (kolejka)
+    pending_orders = orders.copy()
+
+    # Wypełnianie harmonogramu
+    while pending_orders:
+        o = pending_orders.pop(0)
         remaining_hours = o["Hours"]
         start_date = datetime.strptime(o["StartDate"][:10], "%Y-%m-%d")
         machine_id = o["MachineId"]
         color = o["Color"] or get_color(o["Id"])
 
-        while remaining_hours > 0:
-            day_key = start_date.strftime("%Y-%m-%d")
+        current_date = start_date
 
-            already_scheduled = sum(item["Hours"] for item in schedule[machine_id].get(day_key, []))
+        while remaining_hours > 0:
+            day_key = current_date.strftime("%Y-%m-%d")
+            already_scheduled = sum(item["DayHours"] for item in schedule[machine_id].get(day_key, []))
             available_hours = max(0, 24 - already_scheduled)
 
             if available_hours > 0:
@@ -59,8 +67,8 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                     "ProjectName": o["ProjectName"] or "",
                     "TypeOfBlade": o["TypeOfBlade"],
 
-                    "Hours": o["Hours"],          # ✅ CAŁOŚĆ (128)
-                    "DayHours": hours_for_day,    # ✅ TYLKO TEN DZIEŃ (24)
+                    "Hours": o["Hours"],          # całkowity czas orderu
+                    "DayHours": hours_for_day,    # przydzielone na ten dzień
 
                     "ExistNC": o["ExistNC"],
                     "ExistCMM": o["ExistCMM"],
@@ -72,8 +80,9 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                 })
                 remaining_hours -= hours_for_day
 
-            start_date += timedelta(days=1)
+            current_date += timedelta(days=1)
 
+    # Tworzenie listy dni bieżącego miesiąca
     now = datetime.now()
     current_year = now.year
     current_month = now.month
@@ -95,6 +104,7 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
         "harmonogram.html",
         {"request": request, "machines": machines, "days": days, "schedule": schedule}
     )
+
 
 
 # =====================================================
