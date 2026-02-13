@@ -58,7 +58,10 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
                     "Haslo": o["Haslo"],
                     "ProjectName": o["ProjectName"] or "",
                     "TypeOfBlade": o["TypeOfBlade"],
-                    "Hours": hours_for_day,
+
+                    "Hours": o["Hours"],          # ✅ CAŁOŚĆ (128)
+                    "DayHours": hours_for_day,    # ✅ TYLKO TEN DZIEŃ (24)
+
                     "ExistNC": o["ExistNC"],
                     "ExistCMM": o["ExistCMM"],
                     "ExistMaterial": o["ExistMaterial"],
