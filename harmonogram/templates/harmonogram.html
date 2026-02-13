@@ -204,9 +204,15 @@ body {
             <div><b>Projekt:</b> {{ o.ProjectName }}</div>
 
             <div style="display:flex; flex-direction:column; gap:2px; font-size:11px;">
-                <span><b>NC:</b> <span class="nc-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistNC else 'red' }};"></span></span>
-                <span><b>CMM:</b> <span class="cmm-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistCMM else 'red' }};"></span></span>
-                <span><b>MAT:</b> <span class="mat-dot" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistMaterial else 'red' }};"></span></span>
+                <span style="display:flex; justify-content:space-between; width:50px; align-items:center;">
+                    <b>NC:</b> <span class="nc-dot" style="width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistNC else 'red' }};"></span>
+                </span>
+                <span style="display:flex; justify-content:space-between; width:50px; align-items:center;">
+                    <b>CMM:</b> <span class="cmm-dot" style="width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistCMM else 'red' }};"></span>
+                </span>
+                <span style="display:flex; justify-content:space-between; width:50px; align-items:center;">
+                    <b>MAT:</b> <span class="mat-dot" style="width:10px;height:10px;border-radius:50%;background:{{ 'green' if o.ExistMaterial else 'red' }};"></span>
+                </span>
             </div>
 
             <div><b>DayHours:</b> {{ o.DayHours }}</div>
