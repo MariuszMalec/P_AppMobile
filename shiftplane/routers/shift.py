@@ -1,0 +1,172 @@
+from fastapi import APIRouter, Request, Depends, Body
+from fastapi.responses import HTMLResponse, JSONResponse
+from templates import templates
+from db import get_db
+from collections import defaultdict
+from datetime import datetime, timedelta
+import calendar
+import hashlib
+
+router = APIRouter(
+    prefix="/shifts",
+    tags=["shifts"]
+)
+
+# =====================================================
+# GŁÓWNA STRONA SHIFTS
+# =====================================================
+@router.get("/", response_class=HTMLResponse)
+def shift_page(request: Request, db=Depends(get_db)):
+    cursor = db.cursor()
+
+    # =============================
+    # Pobranie pracowników
+    # =============================
+    employees = cursor.execute("""
+        SELECT 
+            Id,
+            FirstName,
+            LastName,
+            Color
+        FROM Employees
+        ORDER BY Id
+    """).fetchall()
+
+    # =============================
+    # Pobranie wszystkich WorkShifts
+    # =============================
+    workshifts = cursor.execute("SELECT * FROM WorkShifts ORDER BY Id").fetchall()
+
+    # =============================
+    # Aktualny miesiąc
+    # =============================
+    now = datetime.now()
+    current_year = now.year
+    current_month = now.month
+    num_days = calendar.monthrange(current_year, current_month)[1]
+
+    first_day = f"{current_year}-{current_month:02d}-01"
+    last_day = f"{current_year}-{current_month:02d}-{num_days:02d}"
+
+    # =============================
+    # Pobranie grafiku na miesiąc
+    # =============================
+    shifts = cursor.execute("""
+        SELECT 
+            es.EmployeeId,
+            es.WorkShiftId,
+            es.ShiftDate,
+            ws.Name as ShiftName,
+            ws.Description as ShiftDescription,
+            ws.Picture as ShiftPicture
+        FROM EmployeeShifts es
+        JOIN WorkShifts ws ON ws.Id = es.WorkShiftId
+        WHERE es.ShiftDate BETWEEN ? AND ?
+    """, (first_day, last_day)).fetchall()
+
+    # =============================
+    # Budowanie struktury schedule
+    # =============================
+    schedule = defaultdict(dict)
+
+    for s in shifts:
+        date_key = s["ShiftDate"][:10]
+        schedule[s["EmployeeId"]][date_key] = {
+            "WorkShiftId": s["WorkShiftId"],
+            "ShiftName": s["ShiftName"],
+            "ShiftDescription": s["ShiftDescription"],
+            "ShiftPicture": s["ShiftPicture"]
+        }
+
+    # =============================
+    # Lista dni miesiąca
+    # =============================
+    days = []
+    for day in range(1, num_days + 1):
+        date_obj = datetime(current_year, current_month, day)
+        date_str = date_obj.strftime("%Y-%m-%d")
+
+        days.append({
+            "number": day,
+            "date": date_obj,
+            "weekday": date_obj.weekday(),
+            "is_today": date_obj.date() == now.date(),
+            "date_str": date_str
+        })
+
+    return templates.TemplateResponse(
+        "shifts.html",
+        {
+            "request": request,
+            "employees": employees,
+            "days": days,
+            "schedule": schedule,
+            "workshifts": workshifts
+        }
+    )
+
+
+# =====================================================
+# Ustawienie zmiany dla pracownika
+# =====================================================
+@router.post("/set")
+def set_shift(payload: dict, db=Depends(get_db)):
+    """
+    payload = {
+        "EmployeeId": int,
+        "WorkShiftId": int,
+        "ShiftDate": "YYYY-MM-DD"
+    }
+    """
+    cursor = db.cursor()
+    try:
+        # Sprawdzenie, czy już istnieje wpis dla danego dnia
+        existing = cursor.execute("""
+            SELECT Id FROM EmployeeShifts 
+            WHERE EmployeeId = ? AND ShiftDate = ?
+        """, (payload["EmployeeId"], payload["ShiftDate"])).fetchone()
+
+        if existing:
+            # Update istniejącego wpisu
+            cursor.execute("""
+                UPDATE EmployeeShifts
+                SET WorkShiftId = ?
+                WHERE Id = ?
+            """, (payload["WorkShiftId"], existing["Id"]))
+        else:
+            # Wstaw nowy wpis
+            cursor.execute("""
+                INSERT INTO EmployeeShifts (EmployeeId, WorkShiftId, ShiftDate)
+                VALUES (?, ?, ?)
+            """, (payload["EmployeeId"], payload["WorkShiftId"], payload["ShiftDate"]))
+
+        db.commit()
+        return JSONResponse({"status": "ok"})
+    except Exception as e:
+        db.rollback()
+        return JSONResponse({"status": "error", "message": str(e)})
+
+
+# =====================================================
+# Usunięcie zmiany dla pracownika
+# =====================================================
+@router.post("/delete")
+def delete_shift(payload: dict, db=Depends(get_db)):
+    """
+    payload = {
+        "EmployeeId": int,
+        "ShiftDate": "YYYY-MM-DD"
+    }
+    """
+    cursor = db.cursor()
+    try:
+        cursor.execute("""
+            DELETE FROM EmployeeShifts
+            WHERE EmployeeId = ? AND ShiftDate = ?
+        """, (payload["EmployeeId"], payload["ShiftDate"]))
+
+        db.commit()
+        return JSONResponse({"status": "ok"})
+    except Exception as e:
+        db.rollback()
+        return JSONResponse({"status": "error", "message": str(e)})

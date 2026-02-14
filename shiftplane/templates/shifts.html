@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grafik zmian</title>
+
+<style>
+* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; margin: 20px; overflow-x: auto; }
+.calendar { max-width: 1800px; margin: 0 auto; }
+.calendar-header { display: grid; grid-template-columns: 180px repeat({{ days|length }}, 100px); gap: 6px; position: sticky; top: 0; background: white; z-index: 100; }
+.calendar-header div { text-align: center; font-weight: bold; padding: 10px 0; border-bottom: 2px solid #ccc; background: white; }
+.calendar-grid { display: grid; grid-template-columns: 180px repeat({{ days|length }}, 100px); gap: 6px; margin-bottom: 6px; }
+.employee-cell { font-weight: bold; background: #f0f0f0; padding: 10px; display: flex; align-items: center; justify-content: center; position: sticky; left: 0; z-index: 50; }
+.day { border: 1px solid #ddd; min-height: 80px; padding: 6px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.day.today { border: 2px solid #4caf50; background-color: #e6ffe6; }
+.shift-box { padding: 6px; border-radius: 6px; font-size: 12px; text-align: center; width: 100%; }
+</style>
+</head>
+
+<body>
+
+<div class="calendar">
+
+    <!-- HEADER -->
+    <div class="calendar-header">
+        <div>Pracownik</div>
+        {% for day in days %}
+        <div>{{ day.number }} {{ ['Pn','Wt','Śr','Cz','Pt','So','Nd'][day.weekday] }}</div>
+        {% endfor %}
+    </div>
+
+    <!-- GRID -->
+    {% for employee in employees %}
+    <div class="calendar-grid">
+
+        <div class="employee-cell">
+            {{ employee.FirstName }} {{ employee.LastName }}
+        </div>
+
+        {% for day in days %}
+        {% set shift = schedule.get(employee.Id, {}).get(day.date_str) %}
+        <div class="day {% if day.is_today %}today{% endif %}"
+             onclick="openShiftModal({{ employee.Id }}, '{{ day.date_str }}')">
+
+            {% if shift %}
+            <div class="shift-box" style="background: {{ employee.Color }}">
+                {{ shift.ShiftName }}
+            </div>
+            {% endif %}
+
+        </div>
+        {% endfor %}
+
+    </div>
+    {% endfor %}
+
+</div>
+
+<!-- MODAL -->
+<div id="shiftModal"
+     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4);
+            justify-content:center; align-items:center;">
+
+    <div style="background:white; padding:20px; width:350px; border-radius:10px;">
+        <h3>Ustaw zmianę</h3>
+
+        <input type="hidden" id="modalEmployeeId">
+        <input type="hidden" id="modalDate">
+
+        <label>Zmiana</label>
+        <select id="modalShift">
+            {% for ws in workshifts %}
+            <option value="{{ ws.Id }}">{{ ws.Name }} ({{ ws.Description }})</option>
+            {% endfor %}
+        </select>
+
+        <br><br>
+
+        <button onclick="saveShift()">Zapisz</button>
+        <button onclick="deleteShift()">Usuń</button>
+        <button onclick="closeModal()">Anuluj</button>
+    </div>
+</div>
+
+<script>
+function openShiftModal(employeeId, date){
+    document.getElementById("modalEmployeeId").value = employeeId;
+    document.getElementById("modalDate").value = date;
+
+    const shiftData = {{ schedule|tojson }};
+    if (shiftData[employeeId] && shiftData[employeeId][date]) {
+        document.getElementById("modalShift").value = shiftData[employeeId][date].WorkShiftId;
+    }
+
+    document.getElementById("shiftModal").style.display = "flex";
+}
+
+function closeModal(){ document.getElementById("shiftModal").style.display = "none"; }
+
+function saveShift(){
+    const payload = {
+        EmployeeId: parseInt(document.getElementById("modalEmployeeId").value),
+        WorkShiftId: parseInt(document.getElementById("modalShift").value),
+        ShiftDate: document.getElementById("modalDate").value
+    };
+
+    fetch("/shifts/set", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(payload)
+    })
+    .then(res=>res.json())
+    .then(data=>{ if(data.status==="ok") location.reload(); else alert(data.message); });
+}
+
+function deleteShift(){
+    const payload = {
+        EmployeeId: parseInt(document.getElementById("modalEmployeeId").value),
+        ShiftDate: document.getElementById("modalDate").value
+    };
+
+    fetch("/shifts/delete", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(payload)
+    })
+    .then(res=>res.json())
+    .then(data=>{ if(data.status==="ok") location.reload(); else alert(data.message); });
+}
+</script>
+
+</body>
+</html>
