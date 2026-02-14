@@ -110,41 +110,55 @@ def shift_page(request: Request, db=Depends(get_db)):
 # Ustawienie zmiany dla pracownika
 # =====================================================
 @router.post("/set")
-def set_shift(payload: dict, db=Depends(get_db)):
+def set_shift(
+    data: dict = Body(...),
+    db=Depends(get_db)
+):
     """
-    payload = {
-        "EmployeeId": int,
-        "WorkShiftId": int,
-        "ShiftDate": "YYYY-MM-DD"
+    data = {
+        "EmployeeId": 1,
+        "WorkShiftId": 2,
+        "ShiftDate": "2026-02-14",
+        "Days": 3
     }
     """
-    cursor = db.cursor()
+    from datetime import datetime, timedelta
+
     try:
-        # Sprawdzenie, czy już istnieje wpis dla danego dnia
-        existing = cursor.execute("""
-            SELECT Id FROM EmployeeShifts 
-            WHERE EmployeeId = ? AND ShiftDate = ?
-        """, (payload["EmployeeId"], payload["ShiftDate"])).fetchone()
+        cursor = db.cursor()
 
-        if existing:
-            # Update istniejącego wpisu
-            cursor.execute("""
-                UPDATE EmployeeShifts
-                SET WorkShiftId = ?
-                WHERE Id = ?
-            """, (payload["WorkShiftId"], existing["Id"]))
-        else:
-            # Wstaw nowy wpis
-            cursor.execute("""
-                INSERT INTO EmployeeShifts (EmployeeId, WorkShiftId, ShiftDate)
-                VALUES (?, ?, ?)
-            """, (payload["EmployeeId"], payload["WorkShiftId"], payload["ShiftDate"]))
+        employee_id = int(data["EmployeeId"])
+        workshift_id = int(data["WorkShiftId"])
+        start_date = datetime.strptime(data["ShiftDate"], "%Y-%m-%d")
+        days = int(data.get("Days", 1))
 
-        db.commit()
+        added = 0
+        current_date = start_date
+
+        while added < days:
+            # Sprawdź czy jest już zmiana dla tego pracownika
+            exists = cursor.execute(
+                "SELECT 1 FROM EmployeeShifts WHERE EmployeeId=? AND ShiftDate=?",
+                (employee_id, current_date.strftime("%Y-%m-%d"))
+            ).fetchone()
+
+            if not exists:
+                # Dodajemy zmianę
+                cursor.execute(
+                    "INSERT INTO EmployeeShifts (EmployeeId, WorkShiftId, ShiftDate) VALUES (?, ?, ?)",
+                    (employee_id, workshift_id, current_date.strftime("%Y-%m-%d"))
+                )
+                db.commit()
+                added += 1
+
+            # Idziemy do kolejnego dnia
+            current_date += timedelta(days=1)
+
         return JSONResponse({"status": "ok"})
+
     except Exception as e:
-        db.rollback()
         return JSONResponse({"status": "error", "message": str(e)})
+
 
 
 # =====================================================
