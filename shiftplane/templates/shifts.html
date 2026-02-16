@@ -142,14 +142,12 @@ button {
     margin: 4px 2px;
 }
 
-#todayFloatingBtn {
+/* ===== FLOATING BUTTONS ===== */
+#todayFloatingBtn,
+#deleteAllFloatingBtn {
     position: fixed;
     bottom: 25px;
-    left: 50%;
-    transform: translateX(-50%);
     z-index: 9999;
-    background: #4caf50;
-    color: white;
     padding: 10px 18px;
     border-radius: 30px;
     font-weight: 600;
@@ -159,10 +157,46 @@ button {
     transition: 0.2s ease;
 }
 
+/* Dzisiaj */
+#todayFloatingBtn {
+    left: 50%;
+    transform: translateX(-50%);
+    background: #4caf50;
+    color: white;
+}
+
 #todayFloatingBtn:hover {
     background: #43a047;
     transform: translateX(-50%) scale(1.05);
 }
+
+/* Usuń wszystko */
+#deleteAllFloatingBtn {
+    right: 20px;
+    background: #e53935;
+    color: white;
+}
+
+#deleteAllFloatingBtn:hover {
+    background: #d32f2f;
+    transform: scale(1.05);
+}
+
+/* ===== MOBILE FIX: PRZYCISKI ===== */
+@media (max-width: 767px) {
+
+    #todayFloatingBtn {
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    #deleteAllFloatingBtn {
+        bottom: 80px; /* <- PODNIESIONY */
+        right: 20px;
+    }
+}
+
 
 </style>
 </head>
@@ -234,11 +268,11 @@ button {
     </div>
 </div>
 
-<!-- PRZYCISK -->
+<!-- FLOATING BUTTONS -->
 <div id="todayFloatingBtn">📅 Dzisiaj</div>
+<div id="deleteAllFloatingBtn">🗑 Usuń wszystko</div>
 
 <script>
-
 document.getElementById("todayFloatingBtn").addEventListener("click", function () {
     const todayCell = document.querySelector('.day.today');
     if (!todayCell) return;
@@ -250,6 +284,17 @@ document.getElementById("todayFloatingBtn").addEventListener("click", function (
     });
 });
 
+document.getElementById("deleteAllFloatingBtn").addEventListener("click", function () {
+    if (!confirm("UWAGA!\nUsunąć WSZYSTKIE zmiany?")) return;
+    if (!confirm("Tej operacji NIE DA SIĘ cofnąć.\nNa pewno?")) return;
+
+    fetch("/shifts/delete_all", { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "ok") location.reload();
+            else alert(data.message);
+        });
+});
 
 function openShiftModal(employeeId, date){
     document.getElementById("modalEmployeeId").value = employeeId;
@@ -299,7 +344,6 @@ function deleteShift(){
         else alert(data.message);
     });
 }
-
 </script>
 
 </body>

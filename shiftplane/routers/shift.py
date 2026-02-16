@@ -184,3 +184,24 @@ def delete_shift(payload: dict, db=Depends(get_db)):
     except Exception as e:
         db.rollback()
         return JSONResponse({"status": "error", "message": str(e)})
+
+
+# =====================================================
+# USUNIĘCIE WSZYSTKICH ZMIAN
+# =====================================================
+@router.post("/delete_all")
+def delete_all_shifts(db=Depends(get_db)):
+    cursor = db.cursor()
+    try:
+        cursor.execute("DELETE FROM EmployeeShifts")
+        db.commit()
+        return JSONResponse({
+            "status": "ok",
+            "message": "Wszystkie zmiany zostały usunięte"
+        })
+    except Exception as e:
+        db.rollback()
+        return JSONResponse({
+            "status": "error",
+            "message": str(e)
+        })
