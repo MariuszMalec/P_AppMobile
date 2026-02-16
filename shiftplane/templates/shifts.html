@@ -10,19 +10,61 @@
 
 body {
     font-family: system-ui, sans-serif;
-    margin: 20px;
+    margin: 10px;
+}
+
+/* Kontener z przewijaniem poziomym */
+.calendar {
+    width: 100%;
     overflow-x: auto;
 }
 
-.calendar {
-    max-width: 1800px;
-    margin: 0 auto;
+/* Wspólne dla headera i wierszy */
+.calendar-header,
+.calendar-grid {
+    display: grid;
+    gap: 4px;
+    min-width: max-content;
 }
 
+/* ===== DESKTOP ===== */
+@media (min-width: 768px) {
+    .calendar-header,
+    .calendar-grid {
+        grid-template-columns: 180px repeat({{ days|length }}, 100px);
+    }
+}
+
+/* ===== TELEFON ===== */
+@media (max-width: 767px) {
+    .calendar-header,
+    .calendar-grid {
+        grid-template-columns: 120px repeat({{ days|length }}, 70px);
+    }
+
+    .calendar-header div {
+        font-size: 12px;
+        padding: 6px 0;
+    }
+
+    .day {
+        min-height: 60px;
+        font-size: 11px;
+    }
+
+    .employee-cell {
+        font-size: 12px;
+        padding: 6px;
+    }
+
+    .shift-box {
+        font-size: 10px;
+        padding: 4px;
+    }
+}
+
+/* Header */
 .calendar-header {
-    display: grid;
-    grid-template-columns: 180px repeat({{ days|length }}, 100px);
-    gap: 6px;
     position: sticky;
     top: 0;
     background: white;
@@ -32,22 +74,14 @@ body {
 .calendar-header div {
     text-align: center;
     font-weight: bold;
-    padding: 10px 0;
     border-bottom: 2px solid #ccc;
     background: white;
 }
 
-.calendar-grid {
-    display: grid;
-    grid-template-columns: 180px repeat({{ days|length }}, 100px);
-    gap: 6px;
-    margin-bottom: 6px;
-}
-
+/* Nazwa pracownika */
 .employee-cell {
     font-weight: bold;
     background: #f0f0f0;
-    padding: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -56,11 +90,11 @@ body {
     z-index: 50;
 }
 
+/* Dzień */
 .day {
     border: 1px solid #ddd;
-    min-height: 80px;
-    padding: 6px;
-    border-radius: 8px;
+    padding: 4px;
+    border-radius: 6px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -72,12 +106,40 @@ body {
     background-color: #e6ffe6;
 }
 
+/* Zmiana */
 .shift-box {
-    padding: 6px;
     border-radius: 6px;
-    font-size: 12px;
     text-align: center;
     width: 100%;
+}
+
+/* ===== MODAL ===== */
+#shiftModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+#shiftModal .modal-content {
+    background: white;
+    padding: 20px;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 10px;
+}
+
+select, input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+}
+
+button {
+    padding: 8px 12px;
+    margin: 4px 2px;
 }
 </style>
 </head>
@@ -98,12 +160,10 @@ body {
     {% for employee in employees %}
     <div class="calendar-grid">
 
-        <!-- Nazwa pracownika -->
         <div class="employee-cell">
             {{ employee.FirstName }} {{ employee.LastName }}
         </div>
 
-        <!-- Dni -->
         {% for day in days %}
         {% set shift = schedule.get(employee.Id, {}).get(day.date_str) %}
         <div class="day {% if day.is_today %}today{% endif %}"
@@ -124,11 +184,8 @@ body {
 </div>
 
 <!-- MODAL -->
-<div id="shiftModal"
-     style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.4);
-            justify-content:center; align-items:center;">
-
-    <div style="background:white; padding:20px; width:400px; border-radius:10px;">
+<div id="shiftModal">
+    <div class="modal-content">
         <h3>Ustaw zmianę</h3>
 
         <input type="hidden" id="modalEmployeeId">
@@ -144,7 +201,7 @@ body {
         <br><br>
 
         <label>Ile dni:</label>
-        <input type="number" id="modalDays" value="1" min="1" style="width:60px;">
+        <input type="number" id="modalDays" value="1" min="1">
 
         <br><br>
 
