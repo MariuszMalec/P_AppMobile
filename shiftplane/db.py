@@ -97,9 +97,16 @@ def insert_employees(conn):
             SSO,
             Color
         ) VALUES
-        (1, 'mariusz', 'malec', 'http://127.0.0.1:8001/static/images/avatar1.png', 999999999, '#ff9999'),
-        (2, 'bobek', 'bobkowy', 'http://127.0.0.1:8001/static/images/avatar2.png', 999999999, '#99ccff'),
-        (3, 'pracus', 'prackowy', 'http://127.0.0.1:8001/static/images/avatar3.png', 999999999, '#99ff99');
+        (1, 'mariusz', 'm', 'http://127.0.0.1:8001/static/images/avatar1.png', 999999999, '#FF5733'),
+        (2, 'marcin', 'm', 'http://127.0.0.1:8001/static/images/avatar2.png', 999999999, '#33FF57'),
+        (3, 'michal', 'p', 'http://127.0.0.1:8001/static/images/avatar2.png', 999999999, '#3357FF'),
+        (4, 'michal', 's', 'http://127.0.0.1:8001/static/images/avatar2.png', 999999999, '#FF33A8'),
+        (5, 'krzysztof', 'j', 'http://127.0.0.1:8001/static/images/avatar2.png', 999999999, '#A833FF'),
+        (6, 'krzysztof', 'p', 'http://127.0.0.1:8001/static/images/avatar2.png', 999999999, '#33FFF6'),
+        (7, 'kuba', 'o', 'http://127.0.0.1:8001/static/images/avatar2.png', 999999999, '#FFC733'),
+        (8, 'zbyszek', 'p', 'http://127.0.0.1:8001/static/images/avatar2.png', 999999999, '#8D6E63'),
+        (9, 'mariusz', 'o', 'http://127.0.0.1:8001/static/images/avatar3.png', 999999999, '#4CAF50');
+
     """)
 
     conn.commit()
