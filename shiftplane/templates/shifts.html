@@ -197,6 +197,34 @@ button {
     }
 }
 
+#autoFillFloatingBtn {
+    position: fixed;
+    bottom: 140px;
+    right: 20px;
+    z-index: 9999;
+    padding: 10px 18px;
+    border-radius: 30px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    background: #3949ab;
+    color: white;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.25);
+    transition: 0.2s ease;
+}
+
+#autoFillFloatingBtn:hover {
+    background: #303f9f;
+    transform: scale(1.05);
+}
+
+@media (max-width: 767px) {
+    #autoFillFloatingBtn {
+        bottom: 140px;
+        right: 20px;
+    }
+}
+
 
 </style>
 </head>
@@ -271,8 +299,26 @@ button {
 <!-- FLOATING BUTTONS -->
 <div id="todayFloatingBtn">📅 Dzisiaj</div>
 <div id="deleteAllFloatingBtn">🗑 Usuń wszystko</div>
+<div id="autoFillFloatingBtn">🔁 Wypełnij grafik</div>
+
 
 <script>
+
+document.getElementById("autoFillFloatingBtn").addEventListener("click", function () {
+
+    if (!confirm("Automatycznie wypełnić grafik?")) return;
+
+    fetch("/shifts/auto_fill", {
+        method: "POST"
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === "ok") location.reload();
+        else alert(data.message);
+    });
+});
+
+
 document.getElementById("todayFloatingBtn").addEventListener("click", function () {
     const todayCell = document.querySelector('.day.today');
     if (!todayCell) return;

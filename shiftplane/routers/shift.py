@@ -205,3 +205,96 @@ def delete_all_shifts(db=Depends(get_db)):
             "status": "error",
             "message": str(e)
         })
+    
+
+@router.post("/auto_fill")
+def auto_fill_shifts(db=Depends(get_db)):
+
+    cursor = db.cursor()
+
+    try:
+        # =============================
+        # Pobranie pracowników
+        # =============================
+        employees = cursor.execute("""
+            SELECT Id FROM Employees ORDER BY Id
+        """).fetchall()
+
+        if not employees:
+            return JSONResponse({
+                "status": "error",
+                "message": "Brak pracowników"
+            })
+
+        employee_ids = [e["Id"] for e in employees]
+
+        # =============================
+        # Bieżący miesiąc (tak jak w shift_page)
+        # =============================
+        now = datetime.now()
+        current_year = now.year
+        current_month = now.month
+        num_days = calendar.monthrange(current_year, current_month)[1]
+
+        start_date = datetime(current_year, current_month, 1)
+        end_date = datetime(current_year, current_month, num_days)
+
+        # =============================
+        # Usuwamy zmiany z tego miesiąca
+        # =============================
+        cursor.execute("""
+            DELETE FROM EmployeeShifts
+            WHERE ShiftDate BETWEEN ? AND ?
+        """, (
+            start_date.strftime("%Y-%m-%d"),
+            end_date.strftime("%Y-%m-%d")
+        ))
+
+        # =============================
+        # Generowanie grafiku
+        # =============================
+        current_date = start_date
+        week_index = -1
+        current_week = None
+
+        while current_date <= end_date:
+
+            # ⛔ pomijamy weekend
+            if current_date.weekday() < 5:
+
+                week_number = current_date.isocalendar()[1]
+
+                if week_number != current_week:
+                    current_week = week_number
+                    week_index += 1
+
+                second_shift_index = week_index % len(employee_ids)
+
+                for idx, emp_id in enumerate(employee_ids):
+
+                    work_shift_id = 2 if idx == second_shift_index else 1
+
+                    cursor.execute("""
+                        INSERT INTO EmployeeShifts (EmployeeId, WorkShiftId, ShiftDate)
+                        VALUES (?, ?, ?)
+                    """, (
+                        emp_id,
+                        work_shift_id,
+                        current_date.strftime("%Y-%m-%d")
+                    ))
+
+            current_date += timedelta(days=1)
+
+        db.commit()
+
+        return JSONResponse({
+            "status": "ok",
+            "message": "Grafik wygenerowany poprawnie"
+        })
+
+    except Exception as e:
+        db.rollback()
+        return JSONResponse({
+            "status": "error",
+            "message": str(e)
+        })
