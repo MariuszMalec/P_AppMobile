@@ -298,3 +298,58 @@ def auto_fill_shifts(db=Depends(get_db)):
             "status": "error",
             "message": str(e)
         })
+
+
+# =====================================================
+# AKTUALIZACJA ZMIANY (UPDATE)
+# =====================================================
+@router.post("/update")
+def update_shift(
+    data: dict = Body(...),
+    db=Depends(get_db)
+):
+    """
+    data = {
+        "EmployeeId": 1,
+        "WorkShiftId": 2,
+        "ShiftDate": "2026-02-14"
+    }
+    """
+
+    try:
+        cursor = db.cursor()
+
+        employee_id = int(data["EmployeeId"])
+        workshift_id = int(data["WorkShiftId"])
+        shift_date = data["ShiftDate"]
+
+        # Sprawdź czy istnieje
+        exists = cursor.execute("""
+            SELECT 1 FROM EmployeeShifts
+            WHERE EmployeeId = ? AND ShiftDate = ?
+        """, (employee_id, shift_date)).fetchone()
+
+        if exists:
+            # UPDATE
+            cursor.execute("""
+                UPDATE EmployeeShifts
+                SET WorkShiftId = ?
+                WHERE EmployeeId = ? AND ShiftDate = ?
+            """, (workshift_id, employee_id, shift_date))
+        else:
+            # INSERT jeśli nie istnieje
+            cursor.execute("""
+                INSERT INTO EmployeeShifts (EmployeeId, WorkShiftId, ShiftDate)
+                VALUES (?, ?, ?)
+            """, (employee_id, workshift_id, shift_date))
+
+        db.commit()
+
+        return JSONResponse({"status": "ok"})
+
+    except Exception as e:
+        db.rollback()
+        return JSONResponse({
+            "status": "error",
+            "message": str(e)
+        })
