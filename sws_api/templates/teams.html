@@ -53,6 +53,20 @@
     <a href="/home" class="btn btn-secondary">Back to home</a>
   </div>
 
+
+  <form id="filterNameForm" class="d-inline ms-3" onsubmit="return false;">
+    <input
+      type="text"
+      id="filterNameInput"
+      name="filter_name"
+      placeholder="Filter by name"
+      style="width: 130px;"
+      class="form-control form-control-sm d-inline-block"
+      value="{{ request.query_params.get('filter_name') or '' }}"
+    >
+    <button type="submit" class="btn btn-sm btn-primary ms-1">Filter</button>
+  </form>
+
   <button class="btn btn-primary"
           data-bs-toggle="modal"
           data-bs-target="#createTeamModal">
@@ -342,6 +356,27 @@ document.querySelectorAll(".delete-team-btn").forEach(btn => {
         deleteTeamModal.show();
     });
 });
+
+const filterNameForm = document.getElementById("filterNameForm");
+const filterNameInput = document.getElementById("filterNameInput");
+
+filterNameForm.addEventListener("submit", () => {
+  const filterValue = filterNameInput.value.trim();
+
+  const urlParams = new URLSearchParams(window.location.search);
+
+  if (filterValue) {
+    urlParams.set("filter_name", filterValue);
+  } else {
+    urlParams.delete("filter_name");
+  }
+
+  // Resetujemy stronę do pierwszej (jeśli masz paginację)
+  urlParams.delete("page");
+
+  window.location.search = urlParams.toString();
+});
+
 
 
 </script>

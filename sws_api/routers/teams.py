@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form, Depends, HTTPException, Body
+from fastapi import APIRouter, Request, Form, Depends, HTTPException, Body, Query
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from starlette.status import HTTP_303_SEE_OTHER
 import sqlite3
@@ -14,12 +14,17 @@ router = APIRouter(
     tags=["teams"]
 )
 
-@router.get("", response_class=HTMLResponse)
-def teams_page(request: Request, db = Depends(get_db)):
 
+@router.get("", response_class=HTMLResponse)
+def teams_page(
+    request: Request,
+    filter_name: str = Query(None),  # parametr filtrowania po nazwie
+    sort: str = Query(None),         # parametr sortowania (np. "name_asc" lub "name_desc")
+    db = Depends(get_db)
+):
     cursor = db.cursor()
 
-    teams = cursor.execute("""
+    base_query = """
         SELECT
             Teams.*,
             Trophies.Picture AS TrophyPicture,
@@ -27,17 +32,37 @@ def teams_page(request: Request, db = Depends(get_db)):
         FROM Teams
         LEFT JOIN Trophies
             ON Trophies.Id = Teams.TrophyModelId
-    """).fetchall()
+    """
+
+    # Filtry
+    filters = []
+    params = []
+
+    if filter_name:
+        filters.append("Teams.Name LIKE ?")
+        params.append(f"%{filter_name}%")
+
+    if filters:
+        base_query += " WHERE " + " AND ".join(filters)
+
+    # Sortowanie po nazwie
+    if sort == "name_asc":
+        base_query += " ORDER BY Teams.Name ASC"
+    elif sort == "name_desc":
+        base_query += " ORDER BY Teams.Name DESC"
+
+    teams = cursor.execute(base_query, params).fetchall()
     db.close()
 
     return templates.TemplateResponse(
         "teams.html",
         {
             "request": request,
-            "teams": teams
+            "teams": teams,
+            "filter_name": filter_name,
+            "sort": sort
         }
     )
-
 
 @router.post("/bulk", response_class=HTMLResponse)
 def create_teams_bulk(teams: List[Dict] = Body(...),db = Depends(get_db)):
