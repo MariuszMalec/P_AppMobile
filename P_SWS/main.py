@@ -229,3 +229,114 @@ def get_team_trophies_by_season(team_id: int):
         }
         for season, trophies in sorted(season_map.items())
     ]
+
+# =============================
+# CREATE SINGLE TEAM
+# =============================
+@app.post("/teams")
+def create_team(team: dict):
+
+    if not team.get("Name") or not team["Name"].strip():
+        raise HTTPException(400, "Team name cannot be empty")
+
+    db = get_db()
+
+    try:
+        # opcjonalna walidacja TrophyModelId
+        trophy_id = team.get("TrophyModelId")
+        if trophy_id is not None:
+            trophy = db.execute(
+                "SELECT 1 FROM Trophies WHERE Id = ?",
+                (trophy_id,)
+            ).fetchone()
+
+            if not trophy:
+                raise HTTPException(404, f"Trophy {trophy_id} not found")
+
+        cursor = db.execute(
+            """
+            INSERT INTO Teams
+            (Name, Description, NationalityName, Season, TopScorer,
+             Picture, FinalResult, TrophyWin, TrophyModelId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                team.get("Name"),
+                team.get("Description"),
+                team.get("NationalityName"),
+                team.get("Season"),
+                team.get("TopScorer"),
+                team.get("Picture"),
+                team.get("FinalResult"),
+                team.get("TrophyWin"),
+                trophy_id,
+            )
+        )
+
+        db.commit()
+
+        new_id = cursor.lastrowid
+
+    except HTTPException:
+        db.rollback()
+        raise
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, str(e))
+
+    finally:
+        db.close()
+
+    return {
+        "id": new_id,
+        "status": "created"
+    }
+
+# =============================
+# DELETE TEAM
+# =============================
+@app.delete("/teams/{team_id}")
+def delete_team(team_id: int):
+
+    db = get_db()
+
+    try:
+        # sprawdź czy istnieje
+        team = db.execute(
+            "SELECT * FROM Teams WHERE Id = ?",
+            (team_id,)
+        ).fetchone()
+
+        if not team:
+            raise HTTPException(404, f"Team with id {team_id} not found")
+
+        # opcjonalnie: wyczyść powiązania w Trophies (jeśli istnieją)
+        db.execute(
+            "UPDATE Trophies SET TeamModelId = NULL WHERE TeamModelId = ?",
+            (team_id,)
+        )
+
+        # usuń team
+        db.execute(
+            "DELETE FROM Teams WHERE Id = ?",
+            (team_id,)
+        )
+
+        db.commit()
+
+    except HTTPException:
+        db.rollback()
+        raise
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(500, str(e))
+
+    finally:
+        db.close()
+
+    return {
+        "id": team_id,
+        "status": "deleted"
+    }
