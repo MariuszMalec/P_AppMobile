@@ -180,3 +180,90 @@ def get_team_picture(team_id: int, db = Depends(get_db)):
     return {
         "picture": team["Picture"]
     }
+
+
+# =============================
+# CREATE TEAM (POST)
+# =============================
+@router.post("/create")
+def create_team(
+    request: Request,
+    Name: str = Form(...),
+    Description: str = Form(None),
+    NationalityName: str = Form(None),
+    Season: int = Form(None),
+    TopScorer: str = Form(None),
+    Picture: str = Form(None),
+    FinalResult: str = Form(None),
+    TrophyWin: str = Form(None),
+    TrophyModelId: int = Form(None),
+    db = Depends(get_db)
+):
+
+    if not Name.strip():
+        raise HTTPException(status_code=400, detail="Team name cannot be empty")
+
+    try:
+        cursor = db.cursor()
+        cursor.execute(
+            """
+            INSERT INTO Teams
+            (Name, Description, NationalityName, Season, TopScorer,
+             Picture, FinalResult, TrophyWin, TrophyModelId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                Name,
+                Description,
+                NationalityName,
+                Season,
+                TopScorer,
+                Picture,
+                FinalResult,
+                TrophyWin,
+                TrophyModelId
+            )
+        )
+
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        db.close()
+
+    return RedirectResponse(url="/teams", status_code=HTTP_303_SEE_OTHER)
+
+
+# =============================
+# DELETE TEAM
+# =============================
+@router.post("/{team_id}/delete")
+def delete_team(team_id: int, db = Depends(get_db)):
+    try:
+        cursor = db.cursor()
+
+        # Sprawdzenie, czy drużyna istnieje
+        team = cursor.execute(
+            "SELECT * FROM Teams WHERE Id = ?",
+            (team_id,)
+        ).fetchone()
+
+        if not team:
+            db.close()
+            raise HTTPException(status_code=404, detail="Team not found")
+
+        # Usunięcie drużyny
+        cursor.execute(
+            "DELETE FROM Teams WHERE Id = ?",
+            (team_id,)
+        )
+        db.commit()
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        db.close()
+
+    return RedirectResponse(url="/teams", status_code=HTTP_303_SEE_OTHER)
