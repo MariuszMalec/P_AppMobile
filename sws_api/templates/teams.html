@@ -97,24 +97,32 @@
         {% endif %}
       </td>
 
-    <td class="text-center">
-      <!-- Trophy button -->
-      <button type="button"
-              class="btn btn-outline-warning btn-sm"
-              title="Show trophies by season"
-              onclick="event.stopPropagation(); window.location.href='/teams/{{ t.Id }}/trophies_by_season/'">
-        <i class="bi bi-trophy-fill"></i>
-      </button>
+      <td class="text-center">
+        <!-- Trophy button -->
+        <button type="button"
+                class="btn btn-outline-warning btn-sm"
+                title="Show trophies by season"
+                onclick="event.stopPropagation(); window.location.href='/teams/{{ t.Id }}/trophies_by_season/'">
+          <i class="bi bi-trophy-fill"></i>
+        </button>
 
-      <!-- Delete button -->
-      <button type="button"
-              class="btn btn-outline-danger btn-sm ms-1 delete-team-btn"
-              data-team-id="{{ t.Id }}"
-              data-team-name="{{ t['Name'] }}"
-              title="Delete team">
-        <i class="bi bi-trash-fill"></i>
-      </button>
-    </td>
+        <!-- Edit button -->
+        <button type="button"
+                class="btn btn-outline-info btn-sm ms-1"
+                title="Edit team"
+                onclick="event.stopPropagation(); window.location.href='/teams/{{ t.Id }}/edit'">
+          <i class="bi bi-pencil-fill"></i>
+        </button>
+
+        <!-- Delete button -->
+        <button type="button"
+                class="btn btn-outline-danger btn-sm ms-1 delete-team-btn"
+                data-team-id="{{ t.Id }}"
+                data-team-name="{{ t['Name'] }}"
+                title="Delete team">
+          <i class="bi bi-trash-fill"></i>
+        </button>
+      </td>
 
 
     </tr>
