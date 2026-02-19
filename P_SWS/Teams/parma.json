@@ -59,4 +59,41 @@
   "TeamModelId": 0,
   "TrophyModelId": 10
 }
+,
+{
+  "Name": "Parma",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2003,
+  "TopScorer": "Wojciech Kowalczyk",
+  "Picture": "http://127.0.0.1:8001/static/images/Parma_2003.png",
+  "FinalResult": "Parma:Juventus 3:0",
+  "TrophyWin":"CwcCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 5
+},
+{
+  "Name": "Parma",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2003,
+  "TopScorer": "Milan Rapajic",
+  "Picture": "http://127.0.0.1:8001/static/images/Parma_2003.png",
+  "FinalResult": "Parma:Roma 4:1",
+  "TrophyWin":"ItalyCup",
+  "TeamModelId": 0,
+  "TrophyModelId": 3
+},
+{
+  "Name": "Parma",
+  "Description": "Example Football Club",
+  "NationalityName": "Italy",
+  "Season": 2003,
+  "TopScorer": "Wojciech Kowalczyk",
+  "Picture": "http://127.0.0.1:8001/static/images/Parma_2003.png",
+  "FinalResult": "ChampionLague",
+  "TrophyWin":"2rd",
+  "TeamModelId": 0,
+  "TrophyModelId": 4
+}
 ]
