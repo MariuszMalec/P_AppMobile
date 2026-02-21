@@ -9,6 +9,11 @@
     <h1>Edit Team</h1>
 
     <form method="post" action="/teams/{{ team.Id }}/edit">
+
+    <input type="hidden" name="filter_name" value="{{ filter_name or '' }}">
+    <input type="hidden" name="sort" value="{{ sort or '' }}">
+
+
       <div class="mb-3">
         <label class="form-label">Name *</label>
         <input name="Name" class="form-control" value="{{ team.Name }}" required>

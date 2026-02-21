@@ -1,12 +1,9 @@
 from fastapi import APIRouter, Request, Form, Depends, HTTPException, Body, Query
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from starlette.status import HTTP_303_SEE_OTHER
-import sqlite3
 from typing import List, Dict
 from templates import templates
-
 from db import get_db
-
 
 
 router = APIRouter(
@@ -18,9 +15,9 @@ router = APIRouter(
 @router.get("", response_class=HTMLResponse)
 def teams_page(
     request: Request,
-    filter_name: str = Query(None),  # parametr filtrowania po nazwie
-    sort: str = Query(None),         # parametr sortowania (np. "name_asc" lub "name_desc")
-    db = Depends(get_db)
+    filter_name: str = Query(None),
+    sort: str = Query(None),
+    db=Depends(get_db)
 ):
     cursor = db.cursor()
 
@@ -34,18 +31,16 @@ def teams_page(
             ON Trophies.Id = Teams.TrophyModelId
     """
 
-    # Filtry
     filters = []
     params = []
 
-    if filter_name:
+    if filter_name and filter_name.strip():
         filters.append("Teams.Name LIKE ?")
-        params.append(f"%{filter_name}%")
+        params.append(f"%{filter_name.strip()}%")
 
     if filters:
         base_query += " WHERE " + " AND ".join(filters)
 
-    # Sortowanie po nazwie
     if sort == "name_asc":
         base_query += " ORDER BY Teams.Name ASC"
     elif sort == "name_desc":
@@ -64,18 +59,19 @@ def teams_page(
         }
     )
 
-@router.post("/bulk", response_class=HTMLResponse)
-def create_teams_bulk(teams: List[Dict] = Body(...),db = Depends(get_db)):
+
+@router.post("/bulk")
+def create_teams_bulk(teams: List[Dict] = Body(...), db=Depends(get_db)):
 
     if not teams:
-        raise HTTPException(status_code=400, detail="Empty teams list")   
+        raise HTTPException(status_code=400, detail="Empty teams list")
 
     try:
+        cursor = db.cursor()
+
         for t in teams:
             if not t.get("Name") or not str(t["Name"]).strip():
                 raise HTTPException(status_code=400, detail="Team name cannot be empty")
-
-            cursor = db.cursor()
 
             cursor.execute(
                 """
@@ -108,20 +104,14 @@ def create_teams_bulk(teams: List[Dict] = Body(...),db = Depends(get_db)):
     finally:
         db.close()
 
-    return {
-        "inserted": len(teams),
-        "status": "ok"
-    }
+    return {"inserted": len(teams), "status": "ok"}
 
 
-# =============================
-# GET TEAM TROPHIES BY SEASON
-# =============================
-@router.get("/{team_id}/trophies_by_season/")
+@router.get("/{team_id}/trophies_by_season/", response_class=HTMLResponse)
 def get_team_trophies_by_season(
     team_id: int,
     request: Request,
-    db = Depends(get_db)
+    db=Depends(get_db)
 ):
     cursor = db.cursor()
 
@@ -146,7 +136,6 @@ def get_team_trophies_by_season(
     ).fetchall()
 
     season_map: Dict[int, List[dict]] = {}
-
     for r in records:
         season_map.setdefault(r["Season"], [])
 
@@ -168,28 +157,37 @@ def get_team_trophies_by_season(
     db.close()
 
     seasons = [
-        {
-            "Season": season,
-            "Trophies": trophies
-        }
+        {"Season": season, "Trophies": trophies}
         for season, trophies in sorted(season_map.items())
     ]
+
+    # Pobranie parametrów filtr/sort z query
+    filter_name = request.query_params.get("filter_name")
+    sort = request.query_params.get("sort")
+
+    query_params = []
+    if filter_name:
+        query_params.append(f"filter_name={filter_name}")
+    if sort:
+        query_params.append(f"sort={sort}")
+
+    query_string = "?" + "&".join(query_params) if query_params else ""
 
     return templates.TemplateResponse(
         "trophies_by_season.html",
         {
             "request": request,
             "team_name": team_name,
-            "seasons": seasons
+            "seasons": seasons,
+            "query_string": query_string
         }
     )
 
 
-# =============================
-# GET TEAM PICTURE
-# =============================
+
+
 @router.get("/{team_id}/picture", response_class=JSONResponse)
-def get_team_picture(team_id: int, db = Depends(get_db)):
+def get_team_picture(team_id: int, db=Depends(get_db)):
     cursor = db.cursor()
 
     team = cursor.execute(
@@ -202,14 +200,9 @@ def get_team_picture(team_id: int, db = Depends(get_db)):
     if not team or not team["Picture"]:
         raise HTTPException(status_code=404, detail="Picture not found")
 
-    return {
-        "picture": team["Picture"]
-    }
+    return {"picture": team["Picture"]}
 
 
-# =============================
-# CREATE TEAM (POST)
-# =============================
 @router.post("/create")
 def create_team(
     request: Request,
@@ -222,9 +215,10 @@ def create_team(
     FinalResult: str = Form(None),
     TrophyWin: str = Form(None),
     TrophyModelId: int = Form(None),
-    db = Depends(get_db)
+    filter_name: str = Form(None),
+    sort: str = Form(None),
+    db=Depends(get_db)
 ):
-
     if not Name.strip():
         raise HTTPException(status_code=400, detail="Team name cannot be empty")
 
@@ -249,7 +243,6 @@ def create_team(
                 TrophyModelId
             )
         )
-
         db.commit()
 
     except Exception as e:
@@ -258,18 +251,31 @@ def create_team(
     finally:
         db.close()
 
-    return RedirectResponse(url="/teams", status_code=HTTP_303_SEE_OTHER)
+    redirect_url = "/teams"
+    params = []
+
+    if filter_name:
+        params.append(f"filter_name={filter_name}")
+    if sort:
+        params.append(f"sort={sort}")
+
+    if params:
+        redirect_url += "?" + "&".join(params)
+
+    return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
 
 
-# =============================
-# DELETE TEAM
-# =============================
 @router.post("/{team_id}/delete")
-def delete_team(team_id: int, db = Depends(get_db)):
+def delete_team(
+    team_id: int,
+    request: Request,
+    filter_name: str = Form(None),
+    sort: str = Form(None),
+    db=Depends(get_db)
+):
     try:
         cursor = db.cursor()
 
-        # Sprawdzenie, czy drużyna istnieje
         team = cursor.execute(
             "SELECT * FROM Teams WHERE Id = ?",
             (team_id,)
@@ -279,23 +285,34 @@ def delete_team(team_id: int, db = Depends(get_db)):
             db.close()
             raise HTTPException(status_code=404, detail="Team not found")
 
-        # Usunięcie drużyny
         cursor.execute(
             "DELETE FROM Teams WHERE Id = ?",
             (team_id,)
         )
         db.commit()
+
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         db.close()
 
-    return RedirectResponse(url="/teams", status_code=HTTP_303_SEE_OTHER)
+    redirect_url = "/teams"
+    params = []
+
+    if filter_name:
+        params.append(f"filter_name={filter_name}")
+    if sort:
+        params.append(f"sort={sort}")
+
+    if params:
+        redirect_url += "?" + "&".join(params)
+
+    return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
 
 
 @router.get("/{team_id}/edit", response_class=HTMLResponse)
-def edit_team_form(team_id: int, request: Request, db = Depends(get_db)):
+def edit_team_form(team_id: int, request: Request, db=Depends(get_db)):
     cursor = db.cursor()
 
     team = cursor.execute(
@@ -313,7 +330,9 @@ def edit_team_form(team_id: int, request: Request, db = Depends(get_db)):
         "edit_team.html",
         {
             "request": request,
-            "team": team
+            "team": team,
+            "filter_name": request.query_params.get("filter_name"),
+            "sort": request.query_params.get("sort")
         }
     )
 
@@ -321,6 +340,7 @@ def edit_team_form(team_id: int, request: Request, db = Depends(get_db)):
 @router.post("/{team_id}/edit")
 def edit_team(
     team_id: int,
+    request: Request,
     Name: str = Form(...),
     Description: str = Form(None),
     NationalityName: str = Form(None),
@@ -330,15 +350,21 @@ def edit_team(
     FinalResult: str = Form(None),
     TrophyWin: str = Form(None),
     TrophyModelId: int = Form(None),
-    db = Depends(get_db)
+    filter_name: str = Form(None),
+    sort: str = Form(None),
+    db=Depends(get_db)
 ):
     if not Name.strip():
         raise HTTPException(status_code=400, detail="Team name cannot be empty")
 
     try:
         cursor = db.cursor()
-        # Sprawdzenie czy drużyna istnieje
-        existing = cursor.execute("SELECT * FROM Teams WHERE Id = ?", (team_id,)).fetchone()
+
+        existing = cursor.execute(
+            "SELECT * FROM Teams WHERE Id = ?",
+            (team_id,)
+        ).fetchone()
+
         if not existing:
             db.close()
             raise HTTPException(status_code=404, detail="Team not found")
@@ -372,4 +398,15 @@ def edit_team(
     finally:
         db.close()
 
-    return RedirectResponse(url="/teams", status_code=HTTP_303_SEE_OTHER)
+    redirect_url = "/teams"
+    params = []
+
+    if filter_name:
+        params.append(f"filter_name={filter_name}")
+    if sort:
+        params.append(f"sort={sort}")
+
+    if params:
+        redirect_url += "?" + "&".join(params)
+
+    return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)

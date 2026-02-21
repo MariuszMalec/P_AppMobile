@@ -5,16 +5,9 @@
     <title>Teams</title>
 
     <!-- Bootstrap CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    >
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    >
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
     <style>
       .trophy-link i {
@@ -53,7 +46,6 @@
     <a href="/home" class="btn btn-secondary">Back to home</a>
   </div>
 
-
   <form id="filterNameForm" class="d-inline ms-3" onsubmit="return false;">
     <input
       type="text"
@@ -67,14 +59,10 @@
     <button type="submit" class="btn btn-sm btn-primary ms-1">Filter</button>
   </form>
 
-  <button class="btn btn-primary"
-          data-bs-toggle="modal"
-          data-bs-target="#createTeamModal">
+  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTeamModal">
     <i class="bi bi-plus-circle"></i> Create Team
   </button>
-
 </div>
-
 
 <!-- TABLE -->
 <table class="table table-striped table-bordered">
@@ -88,7 +76,6 @@
       <th style="width:120px;">Actions</th>
     </tr>
   </thead>
-
   <tbody>
     {% for t in teams %}
     <tr class="team-row" data-id="{{ t.Id }}">
@@ -96,178 +83,109 @@
       <td>{{ t["Season"] }}</td>
       <td>{{ t["FinalResult"] }}</td>
       <td>{{ t["TrophyWin"] or "—" }}</td>
-
-      <!-- TROPHY IMAGE -->
       <td class="text-center">
         {% if t["TrophyPicture"] %}
-          <img
-            src="{{ t['TrophyPicture'] }}"
-            alt="{{ t['TrophyName'] }}"
-            title="{{ t['TrophyName'] }}"
-            style="height:60px;"
-          >
+          <img src="{{ t['TrophyPicture'] }}" alt="{{ t['TrophyName'] }}" title="{{ t['TrophyName'] }}" style="height:60px;">
         {% else %}
           —
         {% endif %}
       </td>
-
       <td class="text-center">
         <!-- Trophy button -->
-        <button type="button"
-                class="btn btn-outline-warning btn-sm"
-                title="Show trophies by season"
-                onclick="event.stopPropagation(); window.location.href='/teams/{{ t.Id }}/trophies_by_season/'">
+        <button type="button" class="btn btn-outline-warning btn-sm" title="Show trophies by season"
+                onclick="event.stopPropagation();
+                        window.location.href='/teams/{{ t.Id }}/trophies_by_season/?{% if filter_name %}filter_name={{ filter_name }}&{% endif %}{% if sort %}sort={{ sort }}{% endif %}'">
           <i class="bi bi-trophy-fill"></i>
         </button>
 
+
         <!-- Edit button -->
-        <button type="button"
-                class="btn btn-outline-info btn-sm ms-1"
-                title="Edit team"
-                onclick="event.stopPropagation(); window.location.href='/teams/{{ t.Id }}/edit'">
+        <button type="button" class="btn btn-outline-info btn-sm ms-1" title="Edit team"
+                onclick="event.stopPropagation(); window.location.href='/teams/{{ t.Id }}/edit?filter_name={{ filter_name or '' }}&sort={{ sort or '' }}'">
           <i class="bi bi-pencil-fill"></i>
         </button>
 
         <!-- Delete button -->
-        <button type="button"
-                class="btn btn-outline-danger btn-sm ms-1 delete-team-btn"
-                data-team-id="{{ t.Id }}"
-                data-team-name="{{ t['Name'] }}"
-                title="Delete team">
+        <button type="button" class="btn btn-outline-danger btn-sm ms-1 delete-team-btn"
+                data-team-id="{{ t.Id }}" data-team-name="{{ t['Name'] }}" title="Delete team">
           <i class="bi bi-trash-fill"></i>
         </button>
       </td>
-
-
     </tr>
     {% endfor %}
   </tbody>
 </table>
 
-<!-- 🖼️ FULLSCREEN IMAGE MODAL -->
+<!-- IMAGE MODAL -->
 <div class="modal fade" id="teamImageModal" tabindex="-1">
   <div class="modal-dialog modal-fullscreen">
     <div class="modal-content bg-dark">
-
       <div class="modal-header border-0">
         <h5 class="modal-title text-white">Team picture</h5>
-        <button type="button"
-                class="btn-close btn-close-white"
-                data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-
       <div class="modal-body d-flex justify-content-center align-items-center p-0">
-        <img
-          id="team-image-modal"
-          style="max-width:100%; max-height:100%; object-fit:contain;"
-          alt="Team picture"
-        >
+        <img id="team-image-modal" style="max-width:100%; max-height:100%; object-fit:contain;" alt="Team picture">
       </div>
-
     </div>
   </div>
 </div>
-
 
 <!-- CREATE TEAM MODAL -->
 <div class="modal fade" id="createTeamModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-
       <form method="post" action="/teams/create">
+        <input type="hidden" name="filter_name" value="{{ filter_name or '' }}">
+        <input type="hidden" name="sort" value="{{ sort or '' }}">
+
         <div class="modal-header">
           <h5 class="modal-title">Create Team</h5>
-          <button type="button"
-                  class="btn-close"
-                  data-bs-dismiss="modal"></button>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-
         <div class="modal-body">
-
           <div class="mb-3">
             <label class="form-label">Name *</label>
-            <input name="Name"
-                   class="form-control"
-                   value="FC Example"
-                   required>
+            <input name="Name" class="form-control" value="FC Example" required>
           </div>
-
           <div class="mb-3">
             <label class="form-label">Description</label>
-            <input name="Description"
-                   class="form-control"
-                   value="Example description">
+            <input name="Description" class="form-control" value="Example description">
           </div>
-
           <div class="mb-3">
             <label class="form-label">Nationality *</label>
-            <input name="NationalityName"
-                   class="form-control"
-                   value="Unknown"
-                   required>
+            <input name="NationalityName" class="form-control" value="Unknown" required>
           </div>
-
           <div class="mb-3">
             <label class="form-label">Season</label>
-            <input name="Season"
-                   type="number"
-                   class="form-control"
-                   value="2026">
+            <input name="Season" type="number" class="form-control" value="2026">
           </div>
-
           <div class="mb-3">
             <label class="form-label">Top Scorer</label>
-            <input name="TopScorer"
-                   class="form-control"
-                   value="John Doe">
+            <input name="TopScorer" class="form-control" value="John Doe">
           </div>
-
           <div class="mb-3">
             <label class="form-label">Final Result</label>
-            <input name="FinalResult"
-                   class="form-control"
-                   value="2nd place">
+            <input name="FinalResult" class="form-control" value="2nd place">
           </div>
-
           <div class="mb-3">
             <label class="form-label">Trophy Win</label>
-            <input name="TrophyWin"
-                   class="form-control"
-                   value="No">
+            <input name="TrophyWin" class="form-control" value="No">
           </div>
-
           <div class="mb-3">
             <label class="form-label">Picture (URL or filename)</label>
-            <input name="Picture"
-                   class="form-control"
-                   value="http://127.0.0.1:8001/static/images/Team_2026.png">
+            <input name="Picture" class="form-control" value="http://127.0.0.1:8001/static/images/Team_2026.png">
           </div>
-
           <div class="mb-3">
             <label class="form-label">Trophy Model ID</label>
-            <input name="TrophyModelId"
-                   type="number"
-                   class="form-control"
-                   value="10">
+            <input name="TrophyModelId" type="number" class="form-control" value="10">
           </div>
-
         </div>
-
         <div class="modal-footer">
-          <button type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal">
-            Cancel
-          </button>
-
-          <button type="submit"
-                  class="btn btn-primary">
-            Create
-          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Create</button>
         </div>
-
       </form>
-
     </div>
   </div>
 </div>
@@ -276,67 +194,51 @@
 <div class="modal fade" id="deleteTeamModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-
       <form id="deleteTeamForm" method="post">
+        <input type="hidden" name="filter_name" value="{{ filter_name or '' }}">
+        <input type="hidden" name="sort" value="{{ sort or '' }}">
         <div class="modal-header">
           <h5 class="modal-title">Delete Team</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-
         <div class="modal-body">
           <p>Are you sure you want to delete <strong id="deleteTeamName">this team</strong>?</p>
         </div>
-
         <div class="modal-footer">
-          <button type="button"
-                  class="btn btn-secondary"
-                  data-bs-dismiss="modal">
-            Cancel
-          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-danger">Delete</button>
         </div>
-
       </form>
-
     </div>
   </div>
 </div>
 
-
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-<!-- JS LOGIC -->
 <script>
+// Klikalność wiersza tylko poza przyciskami
 document.querySelectorAll(".team-row").forEach(row => {
-    row.addEventListener("click", async () => {
+    row.addEventListener("click", async (e) => {
+        if (e.target.closest("button")) return;  // ignoruj kliknięcia w buttony
         const teamId = row.dataset.id;
-
         try {
             const res = await fetch(`/teams/${teamId}/picture`);
             if (!res.ok) return;
-
             const data = await res.json();
             if (!data.picture) return;
 
             const img = document.getElementById("team-image-modal");
+            img.src = data.picture.startsWith("http") ? data.picture : "/static/" + data.picture;
 
-            img.src = data.picture.startsWith("http")
-                ? data.picture
-                : "/static/" + data.picture;
-
-            const modal = new bootstrap.Modal(
-                document.getElementById("teamImageModal")
-            );
-            modal.show();
-
+            new bootstrap.Modal(document.getElementById("teamImageModal")).show();
         } catch (err) {
             console.error("Image load failed", err);
         }
     });
 });
 
-
+// Delete modal
 const deleteTeamModal = new bootstrap.Modal(document.getElementById('deleteTeamModal'));
 const deleteTeamNameElem = document.getElementById('deleteTeamName');
 const deleteTeamForm = document.getElementById('deleteTeamForm');
@@ -345,40 +247,23 @@ document.querySelectorAll(".delete-team-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
         const teamId = btn.dataset.teamId;
         const teamName = btn.dataset.teamName;
-
-        // Ustaw nazwę w modalu
         deleteTeamNameElem.textContent = teamName;
-
-        // Ustaw action formularza
         deleteTeamForm.action = `/teams/${teamId}/delete`;
-
-        // Pokaż modal
         deleteTeamModal.show();
     });
 });
 
+// Filter
 const filterNameForm = document.getElementById("filterNameForm");
 const filterNameInput = document.getElementById("filterNameInput");
-
 filterNameForm.addEventListener("submit", () => {
-  const filterValue = filterNameInput.value.trim();
-
-  const urlParams = new URLSearchParams(window.location.search);
-
-  if (filterValue) {
-    urlParams.set("filter_name", filterValue);
-  } else {
-    urlParams.delete("filter_name");
-  }
-
-  // Resetujemy stronę do pierwszej (jeśli masz paginację)
-  urlParams.delete("page");
-
-  window.location.search = urlParams.toString();
+    const filterValue = filterNameInput.value.trim();
+    const urlParams = new URLSearchParams(window.location.search);
+    if (filterValue) urlParams.set("filter_name", filterValue);
+    else urlParams.delete("filter_name");
+    urlParams.delete("page");
+    window.location.search = urlParams.toString();
 });
-
-
-
 </script>
 
 </body>
