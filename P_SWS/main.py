@@ -224,6 +224,7 @@ def get_team_trophies_by_season(team_id: int):
 
     return [
         {
+            "TeamName": team_name,
             "Season": season,
             "Trophies": trophies
         }
