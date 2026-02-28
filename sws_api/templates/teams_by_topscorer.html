@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Drużyny według strzelca</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        img {
+            max-height: 60px;
+        }
+        .form-box {
+            margin-bottom: 20px;
+        }
+        .btn {
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Wyszukaj drużyny według najlepszego strzelca</h1>
+
+<div class="form-box">
+    <form method="get" action="/teams/topscorer">
+        <input type="text" name="topscorer" placeholder="Wpisz nazwisko strzelca"
+               value="{{ topscorer or '' }}">
+        <button type="submit" class="btn">Szukaj</button>
+    </form>
+</div>
+
+{% if topscorer %}
+    <h2>Wyniki dla: "{{ topscorer }}"</h2>
+{% endif %}
+
+{% if teams and teams|length > 0 %}
+<table>
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Kraj</th>
+            <th>Sezon</th>
+            <th>Najlepszy strzelec</th>
+            <th>Wynik końcowy</th>
+            <th>Trofeum</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in teams %}
+        <tr>
+            <td>{{ team.Name }}</td>
+            <td>{{ team.NationalityName }}</td>
+            <td>{{ team.Season }}</td>
+            <td>{{ team.TopScorer }}</td>
+            <td>{{ team.FinalResult }}</td>
+            <td>
+                {% if team.Picture %}
+                    <img src="{{ team.TrophyPicture }}" alt="Trofeum">
+                {% else %}
+                    Brak
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% elif topscorer %}
+    <p>Brak drużyn dla podanego strzelca.</p>
+{% endif %}
+
+<br>
+<a href="/teams">← Powrót do wszystkich drużyn</a>
+
+</body>
+</html>

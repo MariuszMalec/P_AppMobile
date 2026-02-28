@@ -410,3 +410,46 @@ def edit_team(
         redirect_url += "?" + "&".join(params)
 
     return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
+
+
+@router.get("/topscorer", response_class=HTMLResponse)
+def teams_by_topscorer_page(
+    request: Request,
+    topscorer: str = Query(None),
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    query = """
+        SELECT
+            Teams.*,
+            Trophies.Picture AS TrophyPicture,
+            Trophies.Name AS TrophyName
+        FROM Teams
+        LEFT JOIN Trophies
+            ON Trophies.Id = Teams.TrophyModelId
+    """
+
+    filters = []
+    params = []
+
+    if topscorer and topscorer.strip():
+        filters.append("Teams.TopScorer LIKE ?")
+        params.append(f"%{topscorer.strip()}%")
+
+    if filters:
+        query += " WHERE " + " AND ".join(filters)
+
+    query += " ORDER BY Teams.Name ASC"
+
+    teams = cursor.execute(query, params).fetchall()
+    db.close()
+
+    return templates.TemplateResponse(
+        "teams_by_topscorer.html",
+        {
+            "request": request,
+            "teams": teams,
+            "topscorer": topscorer
+        }
+    )
