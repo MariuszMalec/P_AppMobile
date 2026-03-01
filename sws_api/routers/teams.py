@@ -203,7 +203,7 @@ def get_team_picture(team_id: int, db=Depends(get_db)):
     return {"picture": team["Picture"]}
 
 
-@router.post("/create")
+@router.post("/create", response_class=HTMLResponse)
 def create_team(
     request: Request,
     Name: str = Form(...),
@@ -220,10 +220,48 @@ def create_team(
     db=Depends(get_db)
 ):
     if not Name.strip():
-        raise HTTPException(status_code=400, detail="Team name cannot be empty")
+        return templates.TemplateResponse(
+            "teams.html",
+            {
+                "request": request,
+                "error": "Team name cannot be empty"
+            }
+        )
 
     try:
         cursor = db.cursor()
+
+        # 🔎 SPRAWDZENIE DUPLIKATU
+        existing = cursor.execute(
+            """
+            SELECT Id FROM Teams
+            WHERE Name = ? AND Season = ? AND TrophyWin = ?
+            """,
+            (Name, Season, TrophyWin)
+        ).fetchone()
+
+        if existing:
+            teams = cursor.execute("""
+                SELECT Teams.*, Trophies.Picture AS TrophyPicture,
+                       Trophies.Name AS TrophyName
+                FROM Teams
+                LEFT JOIN Trophies
+                    ON Trophies.Id = Teams.TrophyModelId
+                ORDER BY Teams.Name ASC
+            """).fetchall()
+
+            db.close()
+
+            return templates.TemplateResponse(
+                "teams.html",
+                {
+                    "request": request,
+                    "teams": teams,
+                    "error": "Team with this Name + Season + Trophy already exists!"
+                }
+            )
+
+        # ✅ INSERT jeśli nie ma duplikatu
         cursor.execute(
             """
             INSERT INTO Teams
@@ -243,26 +281,17 @@ def create_team(
                 TrophyModelId
             )
         )
+
         db.commit()
 
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
-    finally:
         db.close()
+        raise HTTPException(status_code=500, detail=str(e))
 
-    redirect_url = "/teams"
-    params = []
+    db.close()
 
-    if filter_name:
-        params.append(f"filter_name={filter_name}")
-    if sort:
-        params.append(f"sort={sort}")
-
-    if params:
-        redirect_url += "?" + "&".join(params)
-
-    return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
+    return RedirectResponse(url="/teams", status_code=HTTP_303_SEE_OTHER)
 
 
 @router.post("/{team_id}/delete")

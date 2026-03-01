@@ -41,6 +41,31 @@ def init_db_if_not_exists(conn):
     );
     """)
 
+    # DELETE DUPLICATE TEAMS
+    # =============================
+    cur.execute("""
+    DELETE FROM Teams
+    WHERE Id NOT IN (
+        SELECT MIN(Id)
+        FROM Teams
+        GROUP BY 
+            Name,
+            Description,
+            NationalityName,
+            Season,
+            TopScorer,
+            Picture,
+            FinalResult,
+            TrophyWin,
+            TrophyModelId
+    );
+    """)
+
+    cur.execute("""
+    CREATE UNIQUE INDEX IF NOT EXISTS unique_team_name_season_trophy
+    ON Teams (Name, Season, TrophyWin);
+    """)
+
     # =============================
     # TROPHIES
     # =============================

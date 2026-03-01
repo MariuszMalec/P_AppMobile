@@ -39,6 +39,12 @@
 
 <h1 class="mb-4">🏟️ Teams</h1>
 
+{% if error %}
+    <div style="color: red; margin-bottom: 15px;">
+        {{ error }}
+    </div>
+{% endif %}
+
 <!-- NAV -->
 <div class="d-flex justify-content-between mb-3">
 
