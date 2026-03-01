@@ -49,9 +49,12 @@ def teams_page(
         base_query += " WHERE " + " AND ".join(filters)
 
     if sort == "name_asc":
-        base_query += " ORDER BY Teams.Name ASC"
+        base_query += " ORDER BY Teams.Name ASC, Teams.Season ASC"
     elif sort == "name_desc":
-        base_query += " ORDER BY Teams.Name DESC"
+        base_query += " ORDER BY Teams.Name DESC, Teams.Season DESC"
+    else:
+        # domyślne sortowanie
+        base_query += " ORDER BY Teams.Name ASC, Teams.Season ASC"
 
     teams = cursor.execute(base_query, params).fetchall()
     db.close()
