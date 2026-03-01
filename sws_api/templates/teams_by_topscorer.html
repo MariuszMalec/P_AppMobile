@@ -30,19 +30,32 @@
         .btn {
             padding: 6px 12px;
             cursor: pointer;
+            border: 1px solid #999;
+            background-color: #eee;
+            text-decoration: none;
+            color: black;
         }
+
+        .btn:hover {
+            background-color: #ddd;
+        }
+
     </style>
 </head>
 <body>
 
 <h1>Wyszukaj drużyny według najlepszego strzelca</h1>
 
-<div class="form-box">
-    <form method="get" action="/teams/topscorer">
+<div class="form-box" style="display: flex; align-items: center; gap: 10px;">
+    <form method="get" action="/teams/topscorer" style="display: flex; gap: 10px;">
         <input type="text" name="topscorer" placeholder="Wpisz nazwisko strzelca"
                value="{{ topscorer or '' }}">
         <button type="submit" class="btn">Szukaj</button>
     </form>
+
+    <a href="/teams" class="btn" style="text-decoration: none; background-color: #ddd;">
+        Back to teams
+    </a>
 </div>
 
 {% if topscorer %}
