@@ -58,18 +58,39 @@
     <a href="/home" class="btn btn-secondary ms-1">Back to home</a>
   </div>
 
-  <form id="filterNameForm" class="d-inline ms-3" onsubmit="return false;">
-    <input
-      type="text"
-      id="filterNameInput"
-      name="filter_name"
-      placeholder="Filter by name"
-      style="width: 130px;"
-      class="form-control form-control-sm d-inline-block"
-      value="{{ request.query_params.get('filter_name') or '' }}"
-    >
-    <button type="submit" class="btn btn-sm btn-primary ms-1">Filter</button>
-  </form>
+<form id="filterForm" class="d-flex align-items-center gap-2 ms-3" onsubmit="return false;">
+
+  <!-- Filter by name -->
+  <input
+    type="text"
+    id="filterNameInput"
+    name="filter_name"
+    placeholder="Filter by name"
+    style="width: 130px;"
+    class="form-control form-control-sm"
+    value="{{ request.query_params.get('filter_name') or '' }}"
+  >
+
+  <!-- 🏆 Filter by TrophyWin -->
+  <input
+    type="text"
+    id="filterTrophyInput"
+    name="filter_trophy"
+    placeholder="Filter by trophy"
+    style="width: 130px;"
+    class="form-control form-control-sm"
+    value="{{ request.query_params.get('filter_trophy') or '' }}"
+  >
+
+  <button type="submit" class="btn btn-sm btn-primary">
+    <i class="bi bi-funnel-fill"></i> Filter
+  </button>
+
+  <button type="button" id="clearFiltersBtn" class="btn btn-sm btn-outline-secondary">
+    <i class="bi bi-x-circle"></i> Clear
+  </button>
+
+</form>
 
   <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTeamModal">
     <i class="bi bi-plus-circle"></i> Create Team
@@ -265,17 +286,40 @@ document.querySelectorAll(".delete-team-btn").forEach(btn => {
     });
 });
 
-// Filter
-const filterNameForm = document.getElementById("filterNameForm");
+
+// Filter (name + trophy)
+const filterForm = document.getElementById("filterForm");
 const filterNameInput = document.getElementById("filterNameInput");
-filterNameForm.addEventListener("submit", () => {
-    const filterValue = filterNameInput.value.trim();
+const filterTrophyInput = document.getElementById("filterTrophyInput");
+
+filterForm.addEventListener("submit", () => {
+    const nameValue = filterNameInput.value.trim();
+    const trophyValue = filterTrophyInput.value.trim();
+
     const urlParams = new URLSearchParams(window.location.search);
-    if (filterValue) urlParams.set("filter_name", filterValue);
+
+    if (nameValue) urlParams.set("filter_name", nameValue);
     else urlParams.delete("filter_name");
+
+    if (trophyValue) urlParams.set("filter_trophy", trophyValue);
+    else urlParams.delete("filter_trophy");
+
     urlParams.delete("page");
+
     window.location.search = urlParams.toString();
 });
+
+// Clear filters
+const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+clearFiltersBtn.addEventListener("click", () => {
+    const url = new URL(window.location.href);
+    url.searchParams.delete("filter_name");
+    url.searchParams.delete("filter_trophy");
+    url.searchParams.delete("sort");
+    window.location.href = url.pathname; // czysta strona bez parametrów
+});
+
 </script>
 
 </body>

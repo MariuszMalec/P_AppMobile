@@ -16,6 +16,7 @@ router = APIRouter(
 def teams_page(
     request: Request,
     filter_name: str = Query(None),
+    filter_trophy: str = Query(None),   # ✅ NOWY FILTER
     sort: str = Query(None),
     db=Depends(get_db)
 ):
@@ -34,9 +35,15 @@ def teams_page(
     filters = []
     params = []
 
+    # 🔎 Filter by name
     if filter_name and filter_name.strip():
         filters.append("Teams.Name LIKE ?")
         params.append(f"%{filter_name.strip()}%")
+
+    # 🏆 Filter by TrophyWin
+    if filter_trophy and filter_trophy.strip():
+        filters.append("Teams.TrophyWin LIKE ?")
+        params.append(f"%{filter_trophy.strip()}%")
 
     if filters:
         base_query += " WHERE " + " AND ".join(filters)
@@ -55,6 +62,7 @@ def teams_page(
             "request": request,
             "teams": teams,
             "filter_name": filter_name,
+            "filter_trophy": filter_trophy,  # ✅ przekaż do widoku
             "sort": sort
         }
     )
