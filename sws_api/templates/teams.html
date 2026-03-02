@@ -114,7 +114,51 @@
     <tr class="team-row" data-id="{{ t.Id }}">
       <td>{{ t["Name"] }}</td>
       <td>{{ t["Season"] }}</td>
-      <td>{{ t["FinalResult"] }}</td>
+      <td>
+      {% set result = t["FinalResult"] %}
+      {% set team_name = t["Name"] %}
+
+      {% if result and ":" in result %}
+
+          {% set lose = false %}
+
+          {# --- 1️⃣ Pobierz część z nazwami drużyn --- #}
+          {% set teams_part = result.split(" ")[0] %}
+          {% set teamA = teams_part.split(":")[0] %}
+          {% set teamB = teams_part.split(":")[1] %}
+
+          {# --- 2️⃣ Sprawdź czy są karne --- #}
+          {% if "PEN" in result %}
+              {% set pen_part = result.split("PEN")[1] %}
+              {% set pen_score = pen_part.replace("(", "").replace(")", "").strip() %}
+              {% set goals = pen_score.split(":") %}
+              {% set goalsA = goals[0]|int %}
+              {% set goalsB = goals[1]|int %}
+          {% else %}
+              {# normalny wynik #}
+              {% set score_part = result.split(" ")[1] %}
+              {% set goals = score_part.split(":") %}
+              {% set goalsA = goals[0]|int %}
+              {% set goalsB = goals[1]|int %}
+          {% endif %}
+
+          {# --- 3️⃣ Sprawdź czy to porażka --- #}
+          {% if team_name == teamA and goalsA < goalsB %}
+              {% set lose = true %}
+          {% elif team_name == teamB and goalsB < goalsA %}
+              {% set lose = true %}
+          {% endif %}
+
+          {% if lose %}
+              <span class="text-danger fw-bold">{{ result }}</span>
+          {% else %}
+              {{ result }}
+          {% endif %}
+
+      {% else %}
+          {{ result }}
+      {% endif %}
+      </td>
       <td>{{ t["TrophyWin"] or "—" }}</td>
       <td class="text-center">
         {% if t["TrophyPicture"] %}
