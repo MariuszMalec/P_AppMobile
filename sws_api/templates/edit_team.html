@@ -5,63 +5,94 @@
     <title>Edit Team</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
-<body class="container mt-4">
-    <h1>Edit Team</h1>
 
-    <form method="post" action="/teams/{{ team.Id }}/edit">
+<body class="bg-light">
 
-    <input type="hidden" name="filter_name" value="{{ filter_name or '' }}">
-    <input type="hidden" name="sort" value="{{ sort or '' }}">
+<div class="container py-5">
 
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
 
-      <div class="mb-3">
-        <label class="form-label">Name *</label>
-        <input name="Name" class="form-control" value="{{ team.Name }}" required>
-      </div>
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Edit Team</h3>
+                </div>
 
-      <div class="mb-3">
-        <label class="form-label">Description</label>
-        <input name="Description" class="form-control" value="{{ team.Description or '' }}">
-      </div>
+                <div class="card-body">
 
-      <div class="mb-3">
-        <label class="form-label">Nationality *</label>
-        <input name="NationalityName" class="form-control" value="{{ team.NationalityName or '' }}" required>
-      </div>
+                    <form method="post" action="/teams/{{ team.Id }}/edit">
 
-      <div class="mb-3">
-        <label class="form-label">Season</label>
-        <input name="Season" type="number" class="form-control" value="{{ team.Season or '' }}">
-      </div>
+                        <input type="hidden" name="filter_name" value="{{ filter_name or '' }}">
+                        <input type="hidden" name="sort" value="{{ sort or '' }}">
 
-      <div class="mb-3">
-        <label class="form-label">Top Scorer</label>
-        <input name="TopScorer" class="form-control" value="{{ team.TopScorer or '' }}">
-      </div>
+                        <div class="row">
 
-      <div class="mb-3">
-        <label class="form-label">Final Result</label>
-        <input name="FinalResult" class="form-control" value="{{ team.FinalResult or '' }}">
-      </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Name *</label>
+                                <input name="Name" class="form-control" value="{{ team.Name }}" required>
+                            </div>
 
-      <div class="mb-3">
-        <label class="form-label">Trophy Win</label>
-        <input name="TrophyWin" class="form-control" value="{{ team.TrophyWin or '' }}">
-      </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Nationality *</label>
+                                <input name="NationalityName" class="form-control" value="{{ team.NationalityName or '' }}" required>
+                            </div>
 
-      <div class="mb-3">
-        <label class="form-label">Picture (URL or filename)</label>
-        <input name="Picture" class="form-control" value="{{ team.Picture or '' }}">
-      </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Season</label>
+                                <input name="Season" type="number" class="form-control" value="{{ team.Season or '' }}">
+                            </div>
 
-      <div class="mb-3">
-        <label class="form-label">Trophy Model ID</label>
-        <input name="TrophyModelId" type="number" class="form-control" value="{{ team.TrophyModelId or '' }}">
-      </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Top Scorer</label>
+                                <input name="TopScorer" class="form-control" value="{{ team.TopScorer or '' }}">
+                            </div>
 
-      <button type="submit" class="btn btn-primary">Save Changes</button>
-      <a href="/teams" class="btn btn-secondary">Cancel</a>
-    </form>
+                            <div class="col-md-12 mb-3">
+                                <label class="form-label fw-semibold">Description</label>
+                                <input name="Description" class="form-control" value="{{ team.Description or '' }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Final Result</label>
+                                <input name="FinalResult" class="form-control" value="{{ team.FinalResult or '' }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Trophy Win</label>
+                                <input name="TrophyWin" class="form-control" value="{{ team.TrophyWin or '' }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Picture (URL or filename)</label>
+                                <input name="Picture" class="form-control" value="{{ team.Picture or '' }}">
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-semibold">Trophy Model ID</label>
+                                <input name="TrophyModelId" type="number" class="form-control" value="{{ team.TrophyModelId or '' }}">
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="/teams" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+
+                            <button type="submit" class="btn btn-primary px-4">
+                                Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
 
 </body>
 </html>
