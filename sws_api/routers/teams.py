@@ -302,7 +302,18 @@ def create_team(
 
     db.close()
 
-    return RedirectResponse(url="/teams", status_code=HTTP_303_SEE_OTHER)
+    redirect_url = "/teams"
+    params = []
+
+    if filter_name:
+        params.append(f"filter_name={filter_name}")
+    if sort:
+        params.append(f"sort={sort}")
+
+    if params:
+        redirect_url += "?" + "&".join(params)
+
+    return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
 
 
 @router.post("/{team_id}/delete")
