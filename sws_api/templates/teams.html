@@ -212,7 +212,7 @@
 <div class="modal fade" id="createTeamModal" tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
-      <form method="post" action="/teams/create">
+      <form id="createTeamForm" method="post" action="/teams/create">
         <input type="hidden" name="filter_name" value="{{ filter_name or '' }}">
         <input type="hidden" name="sort" value="{{ sort or '' }}">
 
@@ -363,6 +363,37 @@ clearFiltersBtn.addEventListener("click", () => {
     url.searchParams.delete("sort");
     window.location.href = url.pathname; // czysta strona bez parametrów
 });
+
+// ===== SAVE CREATE TEAM FORM VALUES =====
+const createForm = document.getElementById("createTeamForm");
+const createModal = document.getElementById("createTeamModal");
+
+if (createForm) {
+
+    const inputs = createForm.querySelectorAll("input");
+
+    // wczytaj zapisane wartości
+    inputs.forEach(input => {
+        const saved = localStorage.getItem("createTeam_" + input.name);
+        if (saved !== null) {
+            input.value = saved;
+        }
+    });
+
+    // zapisuj przy zmianie
+    inputs.forEach(input => {
+        input.addEventListener("input", () => {
+            localStorage.setItem("createTeam_" + input.name, input.value);
+        });
+    });
+
+    // wyczyść po wysłaniu
+    createForm.addEventListener("submit", () => {
+        inputs.forEach(input => {
+            localStorage.removeItem("createTeam_" + input.name);
+        });
+    });
+}
 
 </script>
 
