@@ -223,7 +223,7 @@
         <div class="modal-body">
           <div class="mb-3">
             <label class="form-label">Name *</label>
-            <input name="Name" class="form-control" value="FC Example" required>
+            <input name="Name" class="form-control" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Description</label>
@@ -231,11 +231,11 @@
           </div>
           <div class="mb-3">
             <label class="form-label">Nationality *</label>
-            <input name="NationalityName" class="form-control" value="Unknown" required>
+            <input name="NationalityName" class="form-control" value="Unknown">
           </div>
           <div class="mb-3">
             <label class="form-label">Season</label>
-            <input name="Season" type="number" class="form-control" value="2026">
+            <input name="Season" type="number" class="form-control" value="2026" required>
           </div>
           <div class="mb-3">
             <label class="form-label">Top Scorer</label>
@@ -368,31 +368,25 @@ clearFiltersBtn.addEventListener("click", () => {
 const createForm = document.getElementById("createTeamForm");
 const createModal = document.getElementById("createTeamModal");
 
-if (createForm) {
+if (createForm && createModal) {
 
-    const inputs = createForm.querySelectorAll("input");
+    const inputs = createForm.querySelectorAll("input:not([type='hidden'])");
 
-    // wczytaj zapisane wartości
-    inputs.forEach(input => {
-        const saved = localStorage.getItem("createTeam_" + input.name);
-        if (saved !== null) {
-            input.value = saved;
-        }
-    });
-
-    // zapisuj przy zmianie
     inputs.forEach(input => {
         input.addEventListener("input", () => {
             localStorage.setItem("createTeam_" + input.name, input.value);
         });
     });
 
-    // wyczyść po wysłaniu
-    createForm.addEventListener("submit", () => {
+    createModal.addEventListener("shown.bs.modal", () => {
         inputs.forEach(input => {
-            localStorage.removeItem("createTeam_" + input.name);
+            const saved = localStorage.getItem("createTeam_" + input.name);
+            if (saved !== null) {
+                input.value = saved;
+            }
         });
     });
+
 }
 
 </script>
