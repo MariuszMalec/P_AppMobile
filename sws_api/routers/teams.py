@@ -118,12 +118,89 @@ def create_teams_bulk(teams: List[Dict] = Body(...), db=Depends(get_db)):
     return {"inserted": len(teams), "status": "ok"}
 
 
-@router.get("/{team_id}/trophies_by_season/", response_class=HTMLResponse)
-def get_team_trophies_by_season(
-    team_id: int,
-    request: Request,
-    db=Depends(get_db)
-):
+# @router.get("/{team_id}/trophies_by_season/", response_class=HTMLResponse)
+# def get_team_trophies_by_season(
+#     team_id: int,
+#     request: Request,
+#     db=Depends(get_db)
+# ):
+#     cursor = db.cursor()
+
+#     team = cursor.execute(
+#         "SELECT * FROM Teams WHERE Id = ?",
+#         (team_id,)
+#     ).fetchone()
+
+#     if not team:
+#         db.close()
+#         raise HTTPException(404, "Team not found")
+
+#     team_name = team["Name"]
+
+#     records = cursor.execute(
+#         """
+#         SELECT DISTINCT Season, TrophyModelId
+#         FROM Teams
+#         WHERE Name = ?
+#         """,
+#         (team_name,)
+#     ).fetchall()
+
+#     season_map: Dict[int, List[dict]] = {}
+#     for r in records:
+#         season_map.setdefault(r["Season"], [])
+
+#     for r in records:
+#         if r["TrophyModelId"]:
+#             trophy = cursor.execute(
+#                 "SELECT * FROM Trophies WHERE Id = ?",
+#                 (r["TrophyModelId"],)
+#             ).fetchone()
+
+#             if trophy:
+#                 season_map[r["Season"]].append({
+#                     "Id": trophy["Id"],
+#                     "Name": trophy["Name"],
+#                     "Picture": trophy["Picture"],
+#                     "Description": trophy["Description"]
+#                 })
+
+#     db.close()
+
+#     seasons = [
+#         {"Season": season, "Trophies": trophies}
+#         for season, trophies in sorted(season_map.items())
+#     ]
+
+#     # Pobranie parametrów filtr/sort z query
+#     filter_name = request.query_params.get("filter_name")
+#     sort = request.query_params.get("sort")
+
+#     query_params = []
+#     if filter_name:
+#         query_params.append(f"filter_name={filter_name}")
+#     if sort:
+#         query_params.append(f"sort={sort}")
+
+#     query_string = "?" + "&".join(query_params) if query_params else ""
+
+#     return templates.TemplateResponse(
+#         "trophies_by_season.html",
+#         {
+#             "request": request,
+#             "team_name": team_name,
+#             "seasons": seasons,
+#             "query_string": query_string
+#         }
+#     )
+
+
+# =============================
+# GET TEAM TROPHIES BY SEASON
+# =============================
+@router.get("/{team_id}/trophies_by_season")
+def get_team_trophies_by_season(team_id: int, db=Depends(get_db)):
+    
     cursor = db.cursor()
 
     team = cursor.execute(
@@ -137,19 +214,18 @@ def get_team_trophies_by_season(
 
     team_name = team["Name"]
 
-    records = cursor.execute(
-        """
-        SELECT DISTINCT Season, TrophyModelId
-        FROM Teams
-        WHERE Name = ?
-        """,
+    records = db.execute(
+        "SELECT Season, TrophyModelId FROM Teams WHERE Name = ?",
         (team_name,)
     ).fetchall()
 
     season_map: Dict[int, List[dict]] = {}
+
+    # najpierw tworzymy wszystkie sezony
     for r in records:
         season_map.setdefault(r["Season"], [])
 
+    # potem uzupełniamy trofea
     for r in records:
         if r["TrophyModelId"]:
             trophy = cursor.execute(
@@ -159,6 +235,7 @@ def get_team_trophies_by_season(
 
             if trophy:
                 season_map[r["Season"]].append({
+                    "TeamName": team_name,
                     "Id": trophy["Id"],
                     "Name": trophy["Name"],
                     "Picture": trophy["Picture"],
@@ -167,35 +244,14 @@ def get_team_trophies_by_season(
 
     db.close()
 
-    seasons = [
-        {"Season": season, "Trophies": trophies}
+    return [
+        {
+            "TeamName": team_name,
+            "Season": season,
+            "Trophies": trophies
+        }
         for season, trophies in sorted(season_map.items())
     ]
-
-    # Pobranie parametrów filtr/sort z query
-    filter_name = request.query_params.get("filter_name")
-    sort = request.query_params.get("sort")
-
-    query_params = []
-    if filter_name:
-        query_params.append(f"filter_name={filter_name}")
-    if sort:
-        query_params.append(f"sort={sort}")
-
-    query_string = "?" + "&".join(query_params) if query_params else ""
-
-    return templates.TemplateResponse(
-        "trophies_by_season.html",
-        {
-            "request": request,
-            "team_name": team_name,
-            "seasons": seasons,
-            "query_string": query_string
-        }
-    )
-
-
-
 
 @router.get("/{team_id}/picture", response_class=JSONResponse)
 def get_team_picture(team_id: int, db=Depends(get_db)):
