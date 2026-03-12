@@ -99,7 +99,8 @@ def insert_trophies(conn):
         (7, "SpanishCup", "",'https://media.istockphoto.com/id/1313122279/photo/championship-concept-star-shaped-confetti-falling-onto-a-gold-cup-sitting-over-spanish-flag.webp?a=1&b=1&s=612x612&w=0&k=20&c=cWnhUezftqUvwUTHsOK8fh3tY9BN81jPaEjWzG4WHUk=',0),
         (8, "GermanCup", "",'https://media.istockphoto.com/id/1446014501/photo/germany-championship-concept-star-shaped-confetti-falling-onto-a-gold-trophy-cup-with-german.webp?a=1&b=1&s=612x612&w=0&k=20&c=uP6hIYy7uy-d4uIGDTRINKeMXRTKvJZtIfHX3Rv4_n4=',0),
         (9, "EnglandCup", "",'https://media.istockphoto.com/id/1420090069/photo/golden-cup-in-football-stadium.webp?a=1&b=1&s=612x612&w=0&k=20&c=xjBWYI1R6n6mq5vv8dCKH0OStAt_PF845yZL7ZXZDzU=',0),
-        (10, "Loser", "",'https://images.unsplash.com/photo-1612436395449-279ee9a6afd0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bG9zZXJ8ZW58MHx8MHx8fDA%3D',0);
+        (10, "Loser", "",'https://images.unsplash.com/photo-1612436395449-279ee9a6afd0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bG9zZXJ8ZW58MHx8MHx8fDA%3D',0),                
+        (11, "Promoted", "",'https://media.istockphoto.com/id/531347379/photo/soccer-team-celebrating.webp?a=1&b=1&s=612x612&w=0&k=20&c=PVNt9QCBMxv-lQ8MwwRlZx7qNUjMZfDhSyGkv71owNg=',0);
     """)
 
     conn.commit()
