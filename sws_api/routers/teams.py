@@ -214,18 +214,22 @@ def get_team_trophies_by_season(team_id: int, db=Depends(get_db)):
 
     team_name = team["Name"]
 
-    records = db.execute(
-        "SELECT Season, TrophyModelId FROM Teams WHERE Name = ?",
+    records = cursor.execute(
+        """
+        SELECT Season, TrophyModelId, TrophyWin
+        FROM Teams
+        WHERE Name = ?
+        """,
         (team_name,)
     ).fetchall()
 
     season_map: Dict[int, List[dict]] = {}
 
-    # najpierw tworzymy wszystkie sezony
+    # tworzymy sezony
     for r in records:
         season_map.setdefault(r["Season"], [])
 
-    # potem uzupełniamy trofea
+    # uzupełniamy trofea
     for r in records:
         if r["TrophyModelId"]:
             trophy = cursor.execute(
@@ -239,7 +243,8 @@ def get_team_trophies_by_season(team_id: int, db=Depends(get_db)):
                     "Id": trophy["Id"],
                     "Name": trophy["Name"],
                     "Picture": trophy["Picture"],
-                    "Description": trophy["Description"]
+                    "Description": trophy["Description"],
+                    "TrophyWin": r["TrophyWin"]   # ⭐ dodane
                 })
 
     db.close()
