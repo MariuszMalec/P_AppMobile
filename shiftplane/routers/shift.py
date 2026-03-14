@@ -300,6 +300,7 @@ def auto_fill_shifts(db=Depends(get_db)):
         })
 
 
+
 # =====================================================
 # AKTUALIZACJA ZMIANY (UPDATE)
 # =====================================================
@@ -308,40 +309,45 @@ def update_shift(
     data: dict = Body(...),
     db=Depends(get_db)
 ):
-    """
-    data = {
-        "EmployeeId": 1,
-        "WorkShiftId": 2,
-        "ShiftDate": "2026-02-14"
-    }
-    """
 
     try:
         cursor = db.cursor()
 
         employee_id = int(data["EmployeeId"])
         workshift_id = int(data["WorkShiftId"])
-        shift_date = data["ShiftDate"]
+        start_date = datetime.strptime(data["ShiftDate"], "%Y-%m-%d")
+        days = int(data.get("Days", 1))
 
-        # Sprawdź czy istnieje
-        exists = cursor.execute("""
-            SELECT 1 FROM EmployeeShifts
-            WHERE EmployeeId = ? AND ShiftDate = ?
-        """, (employee_id, shift_date)).fetchone()
+        added_days = 0
+        current_date = start_date
 
-        if exists:
-            # UPDATE
-            cursor.execute("""
-                UPDATE EmployeeShifts
-                SET WorkShiftId = ?
-                WHERE EmployeeId = ? AND ShiftDate = ?
-            """, (workshift_id, employee_id, shift_date))
-        else:
-            # INSERT jeśli nie istnieje
-            cursor.execute("""
-                INSERT INTO EmployeeShifts (EmployeeId, WorkShiftId, ShiftDate)
-                VALUES (?, ?, ?)
-            """, (employee_id, workshift_id, shift_date))
+        while added_days < days:
+
+            # pomiń weekend
+            if current_date.weekday() < 5:
+
+                shift_date_str = current_date.strftime("%Y-%m-%d")
+
+                exists = cursor.execute("""
+                    SELECT 1 FROM EmployeeShifts
+                    WHERE EmployeeId = ? AND ShiftDate = ?
+                """, (employee_id, shift_date_str)).fetchone()
+
+                if exists:
+                    cursor.execute("""
+                        UPDATE EmployeeShifts
+                        SET WorkShiftId = ?
+                        WHERE EmployeeId = ? AND ShiftDate = ?
+                    """, (workshift_id, employee_id, shift_date_str))
+                else:
+                    cursor.execute("""
+                        INSERT INTO EmployeeShifts (EmployeeId, WorkShiftId, ShiftDate)
+                        VALUES (?, ?, ?)
+                    """, (employee_id, workshift_id, shift_date_str))
+
+                added_days += 1
+
+            current_date += timedelta(days=1)
 
         db.commit()
 
