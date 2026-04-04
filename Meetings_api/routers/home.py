@@ -103,6 +103,7 @@ def edit_session(
     start: str = Form(...),
     end: str = Form(...),
     description: str = Form(...),
+    day_of_week: int = Form(...),   # NOWE: dzień tygodnia 1-7
     db=Depends(get_db)
 ):
     cursor = db.cursor()
@@ -116,8 +117,12 @@ def edit_session(
 
     # Aktualizacja w bazie
     cursor.execute(
-        "UPDATE Session SET StartTime = ?, EndTime = ?, Description = ? WHERE Id = ?",
-        (start, end, description, session_id)
+        """
+        UPDATE Session
+        SET StartTime = ?, EndTime = ?, Description = ?, DayOfWeek = ?
+        WHERE Id = ?
+        """,
+        (start, end, description, day_of_week, session_id)
     )
     db.commit()
     db.close()

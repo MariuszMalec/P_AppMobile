@@ -101,7 +101,8 @@ td {
     width: 320px;
 }
 
-.preview-card input {
+.preview-card input,
+.preview-card select {
     width: 100%;
     margin-bottom: 8px;
 }
@@ -141,6 +142,7 @@ td {
             data-desc="{{ cell.description }}"
             data-start="{{ cell.start }}"
             data-end="{{ cell.end }}"
+            data-day="{{ d }}"
             onclick="openPreview(this)"
             {% endif %}
         >
@@ -171,6 +173,17 @@ td {
         <label>Opis</label>
         <input type="text" id="p-desc">
 
+        <label>Dzień tygodnia</label>
+        <select id="p-day">
+            <option value="1">Poniedziałek</option>
+            <option value="2">Wtorek</option>
+            <option value="3">Środa</option>
+            <option value="4">Czwartek</option>
+            <option value="5">Piątek</option>
+            <option value="6">Sobota</option>
+            <option value="7">Niedziela</option>
+        </select>
+
         <button onclick="saveEdit()">💾 Zapisz</button>
         <button onclick="deleteSession()">🗑 Usuń</button>
     </div>
@@ -184,6 +197,7 @@ function openPreview(el) {
     document.getElementById('p-start').value = el.dataset.start;
     document.getElementById('p-end').value = el.dataset.end;
     document.getElementById('p-desc').value = el.dataset.desc;
+    document.getElementById('p-day').value = el.dataset.day;
     document.getElementById('preview').classList.add('active');
 }
 
@@ -198,6 +212,7 @@ function saveEdit() {
     formData.append("start", document.getElementById('p-start').value);
     formData.append("end", document.getElementById('p-end').value);
     formData.append("description", document.getElementById('p-desc').value);
+    formData.append("day_of_week", document.getElementById('p-day').value);
 
     fetch(`/home/session/edit/${id}`, {
         method: "PUT",
