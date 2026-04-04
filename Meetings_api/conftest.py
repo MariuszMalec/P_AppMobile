@@ -7,9 +7,9 @@ from main import app
 from db import (
     get_db,
     init_db_if_not_exists,
-    insert_person_families,
-    insert_picture_activities,
-    insert_activities_days
+    insert_clients,
+    insert_sessions
+
 )
 
 TEST_DB = Path(__file__).parent / "test.db"
@@ -25,9 +25,8 @@ def client():
     conn.row_factory = sqlite3.Row
 
     init_db_if_not_exists(conn)
-    insert_person_families(conn)
-    insert_picture_activities(conn)
-    insert_activities_days(conn)
+    insert_clients(conn)
+    insert_sessions(conn)
 
     conn.close()
 
@@ -52,9 +51,8 @@ def empty_db():
     conn = sqlite3.connect(TEST_DB, check_same_thread=False)
     cursor = conn.cursor()
 
-    cursor.execute("DELETE FROM ActiviesDays")
-    cursor.execute("DELETE FROM PersonFamilies")
-    cursor.execute("DELETE FROM PictureActivities")
+    cursor.execute("DELETE FROM Client")
+    cursor.execute("DELETE FROM Session")
 
     conn.commit()
     conn.close()

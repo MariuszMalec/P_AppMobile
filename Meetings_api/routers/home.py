@@ -20,187 +20,101 @@ router = APIRouter(
 # ==============================
 # HOME
 # ==============================
-@router.get("", response_class=HTMLResponse)
-def home_page(
-    request: Request,
-    db = Depends(get_db)
-):
+@router.get("/", response_class=HTMLResponse)
+def home_page(request: Request, db=Depends(get_db)):
+
     cursor = db.cursor()
 
-    try:
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        iso_day = now.isoweekday()
-        current_day = system_day_to_db_day(iso_day)
-        current_day_name = now.strftime("%A")
+    now = datetime.now()
+    current_time = now.strftime("%H:%M")
+    current_day = now.isoweekday()
 
-        rows = cursor.execute("""
-            SELECT
-                ad.StartTime,
-                ad.EndTime,
-                ad.Description,
-                pf.PersonName,
-                pf.PersonPicture,
-                pa.Picture
-            FROM ActiviesDays ad
-            LEFT JOIN PersonFamilies pf
-                ON ad.ModelPersonFamilyId = pf.Id
-            LEFT JOIN PictureActivities pa
-                ON ad.ModelPictureActivityId = pa.Id
-            WHERE ad.DayOfWeek = ?
-            ORDER BY ad.StartTime
-        """, (current_day,)).fetchall()
+    # 🔥 POBIERAMY CAŁY TYDZIEŃ
+    rows = cursor.execute("""
+        SELECT
+            s.Id,
+            s.StartTime,
+            s.EndTime,
+            s.Description,
+            s.DayOfWeek,
+            c.Id AS ClientId,
+            c.FirstName,
+            c.LastName
+        FROM Session s
+        LEFT JOIN Client c
+            ON s.ClientId = c.Id
+        ORDER BY s.DayOfWeek, s.StartTime
+    """).fetchall()
 
-        current_items = []
-        next_items = []
+    # 👇 klienci (kolumny)
+    clients_raw = cursor.execute("""
+        SELECT Id, FirstName, LastName
+        FROM Client
+        WHERE IsActive = 1
+    """).fetchall()
 
-        for r in rows:
-            item = {
+    clients = [
+        {
+            "id": c["Id"],
+            "name": f'{c["FirstName"]} {c["LastName"]}'
+        }
+        for c in clients_raw
+    ]
+
+    # 👇 dni tygodnia
+    days = {
+        1: "Poniedziałek",
+        2: "Wtorek",
+        3: "Środa",
+        4: "Czwartek",
+        5: "Piątek",
+        6: "Sobota",
+        7: "Niedziela"
+    }
+
+    db.close()
+
+    # =========================
+    # 🔥 BUDOWANIE TABELI
+    # =========================
+    table = {}
+
+    for r in rows:
+
+        day = r["DayOfWeek"]
+        time_key = f'{r["StartTime"]} – {r["EndTime"]}'
+
+        if day not in table:
+            table[day] = {}
+
+        if time_key not in table[day]:
+            table[day][time_key] = {c["id"]: None for c in clients}
+
+        client_id = r["ClientId"]
+
+        if client_id in table[day][time_key]:
+            table[day][time_key][client_id] = {
+                "session_id": r["Id"],
+                "description": r["Description"],
                 "start": r["StartTime"],
                 "end": r["EndTime"],
-                "description": r["Description"],
-                "person": r["PersonName"],
-                "personPicture": r["PersonPicture"],
-                "picture": r["Picture"],
+                "is_live": (
+                    day == current_day and
+                    r["StartTime"] <= current_time <= r["EndTime"]
+                )
             }
 
-            if r["StartTime"] <= current_time <= r["EndTime"]:
-                current_items.append(item)
-            elif r["StartTime"] > current_time:
-                next_items.append(item)
-
-        return templates.TemplateResponse(
-            request,
-            "home.html",
-            {
-                "now": current_time,
-                "current": current_items,
-                "next": next_items,
-                "current_day_name": current_day_name,
-                "no_data": False,
-            },
-            status_code=200
-        )
-
-    except Exception:
-        # brak bazy / tabel / inny błąd → pokaż stronę z komunikatem
-        return templates.TemplateResponse(
-            request,
-            "home.html",
-            {
-                "now": "",
-                "current": [],
-                "next": [],
-                "current_day_name": "",
-                "no_data": True,
-            },
-            status_code=400
-        )
-
-    finally:
-        db.close()
-
-
-@router.get("/homebyperson", response_class=HTMLResponse)    
-def home_page_by_person(
-        request: Request,
-        person: str = Query(default="MAMA"),
-        db = Depends(get_db)
-    ):
-
-        cursor = db.cursor()
-
-        now = datetime.now()
-        current_time = now.strftime("%H:%M:%S")
-        iso_day = now.isoweekday()
-        current_day = system_day_to_db_day(iso_day)
-        current_day_name = now.strftime("%A")
-
-        # 👉 MAPY (STRING <-> ID)
-        PERSON_NAME_MAP = {
-            1: "TATA",
-            2: "MAMA",
-            3: "GOSIA",
-            4: "EMILKA",
-            5: "RODZINA",
+    # =========================
+    # 🔥 TEMPLATE RESPONSE
+    # =========================
+    return templates.TemplateResponse(
+        "statusall.html",
+        {
+            "request": request,   # 🔥 MUSI BYĆ
+            "table": table,       # tabela z sesjami
+            "clients": clients,   # lista klientów
+            "days": days,         # dni tygodnia
+            "current_day": current_day,
+            "current_time": current_time
         }
-
-        PERSON_STRING_TO_ID = {
-            "TATA": 1,
-            "MAMA": 2,
-            "GOSIA": 3,
-            "EMILKA": 4,
-            "RODZINA": 5,
-        }
-
-        persons = ["RODZINA", "TATA", "MAMA", "GOSIA", "EMILKA"]
-        selected_person = person if person in persons else "RODZINA"
-
-        person_id = PERSON_STRING_TO_ID[selected_person]
-
-        # 👉 SQL
-        sql = """
-            SELECT
-                ad.StartTime,
-                ad.EndTime,
-                ad.Description,
-                pf.PersonName,
-                pf.PersonPicture,
-                pa.Picture
-            FROM ActiviesDays ad
-            LEFT JOIN PersonFamilies pf
-                ON ad.ModelPersonFamilyId = pf.Id
-            LEFT JOIN PictureActivities pa
-                ON ad.ModelPictureActivityId = pa.Id
-            WHERE ad.DayOfWeek = ?
-        """
-        params = [current_day]
-
-        # 👉 FILTR OSOBY (jeśli nie ALL)
-        if person_id != 5:
-            sql += " AND ad.ModelPersonFamilyId = ?"
-            params.append(person_id)
-
-        sql += " ORDER BY ad.StartTime"
-
-        rows = cursor.execute(sql, params).fetchall()
-        db.close()
-
-        current_items = []
-        next_items = []
-
-        for r in rows:
-            item = {
-                "start": r["StartTime"],
-                "end": r["EndTime"],
-                "description": r["Description"],
-                "person": r["PersonName"],
-                "personPicture": r["PersonPicture"],
-                "picture": r["Picture"],
-            }
-
-            # 🔴 TERAZ
-            if r["StartTime"] <= current_time <= r["EndTime"]:
-                current_items.append(item)
-
-            # 🔵 NASTĘPNIE
-            elif r["StartTime"] > current_time:
-                next_items.append(item)
-
-        return templates.TemplateResponse(
-            request,
-            "statusbyperson.html",
-            {
-                "now": current_time,
-                "current": current_items,
-                "next": next_items,
-                "current_day_name": current_day_name,
-                "persons": persons,
-                "selected_person": selected_person,
-            }
-        )
-            
-@router.get("/activities", response_class=HTMLResponse)    
-def home_activities_redirect():
-        return RedirectResponse("/activities", status_code=302)       
-
+    )

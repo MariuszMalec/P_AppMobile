@@ -4,15 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<title>LIVE ALL</title>
+<title>TYDZIEŃ SESJI</title>
 
 <style>
-
-@keyframes slideDown {
-    from { opacity:0; transform:translate(-50%, -10px); }
-    to   { opacity:1; transform:translate(-50%, 0); }
-}
-
 :root {
     --panel: #0c0f2a;
     --border: rgba(255,255,255,.12);
@@ -27,30 +21,17 @@ body {
     font-family: system-ui, sans-serif;
 }
 
-/* POWRÓT */
-.back { padding: 12px 16px 0; }
-.back a {
-    color: #38bdf8;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-/* HEADER */
 .header {
     text-align: center;
-    padding: 8px 8px 16px;
-}
-.header h1 {
-    margin: 0;
-    font-size: 18px;
+    padding: 12px;
     font-weight: 600;
 }
 
-/* TABLE */
 .table-wrap {
     overflow-x: auto;
     padding: 8px;
 }
+
 table {
     width: 100%;
     table-layout: fixed;
@@ -58,303 +39,166 @@ table {
     background: var(--panel);
     border-radius: 14px;
 }
+
 th, td {
     border: 1px solid var(--border);
     text-align: center;
-    padding: 0;
 }
+
 th {
     height: 44px;
     font-size: 12px;
     color: var(--muted);
 }
+
 td {
-    height: 96px;
+    height: 80px;
     position: relative;
-    overflow: hidden;
     cursor: pointer;
 }
 
-/* TILE */
-.tile-img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+.day-row {
+    background: #020617;
+    font-weight: 700;
 }
+
 .tile-overlay {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 6px;
     font-size: 12px;
-    font-weight: 600;
-    background: linear-gradient(
-        to top,
-        rgba(0,0,0,.65),
-        rgba(0,0,0,.35),
-        rgba(0,0,0,.65)
-    );
+    padding: 6px;
+    background: rgba(0,0,0,.5);
 }
 
-/* LIVE */
+.empty {
+    color: #444;
+}
+
 @keyframes livePulse {
     0% { filter: brightness(1); }
     50% { filter: brightness(1.6); }
     100% { filter: brightness(1); }
 }
+
 .live {
-    animation: livePulse 1.8s infinite;
+    animation: livePulse 1.5s infinite;
 }
 
-/* EMPTY */
-.empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #444;
-    font-size: 20px;
-}
-
-/* ================= PREVIEW CARD ================= */
-
+/* PREVIEW */
 .preview-bg {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.55);
+    background: rgba(0,0,0,.6);
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 999;
 }
+
 .preview-bg.active {
     display: flex;
 }
 
 .preview-card {
-    width: min(92vw, 420px);
     background: var(--panel);
-    border-radius: 16px;
-    overflow: hidden;
-    box-shadow: 0 20px 60px rgba(0,0,0,.6);
-    animation: pop .18s ease-out;
-    position: relative;
+    padding: 16px;
+    border-radius: 14px;
+    width: 320px;
 }
 
-@keyframes pop {
-    from { transform: scale(.92); opacity: .5; }
-    to { transform: scale(1); opacity: 1; }
-}
-
-.preview-card img {
+.preview-card input {
     width: 100%;
-    max-height: 240px;
-    object-fit: cover;
+    margin-bottom: 8px;
 }
 
-.preview-desc {
-    padding: 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.preview-desc label {
-    font-size: 12px;
-    color: var(--muted);
-}
-
-.preview-desc input {
-    padding: 8px;
-    border-radius: 8px;
-    border: none;
-    font-size: 14px;
-}
-
-.preview-desc button {
-    margin-top: 10px;
+.preview-card button {
+    width: 100%;
     padding: 10px;
-    border-radius: 10px;
-    border: none;
-    background: #38bdf8;
-    color: #000;
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.preview-close {
-    position: absolute;
-    top: 10px;
-    right: 14px;
-    font-size: 22px;
-    cursor: pointer;
-}
-
-/* MOBILE */
-@media (max-width: 600px) {
-    td { height: 86px; }
+    margin-top: 6px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="back">
-    <a href="/home">⬅ Powrót</a>
-</div>
-
 <div class="header">
-    <div style="
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:14px;
-        font-size:18px;
-        font-weight:600;
-    ">
-        <span
-            style="cursor:pointer; user-select:none;"
-            onclick="changeDay(-1)"
-        >⬅</span>
-
-        <span>🟢 LIVE — {{ day_name }}</span> 
-
-        <span class="datetime" id="datetime"></span>
-
-        <span
-            style="cursor:pointer; user-select:none;"
-            onclick="changeDay(1)"
-        >➡</span>
-
-    </div>
+    🟢 LIVE — TYDZIEŃ
 </div>
-
 
 <div class="table-wrap">
 <table>
+
 <thead>
 <tr>
     <th>⏰</th>
-    {% for p in persons %}
-        <th>{{ p.name }}</th>
+    {% for c in clients %}
+        <th>{{ c.name }}</th>
     {% endfor %}
 </tr>
 </thead>
 
 <tbody>
-{% for time, row in table.items() %}
-<tr>
-    <td>{{ time }}</td>
+{% for day, times in table.items() %}
 
-    {% for p in persons %}
-        {% set cell = row[p.id] %}
-        <td class="{% if cell and cell.is_live %}live{% endif %}"
-            {% if cell %}
-            data-activity-id="{{ cell.activity_id }}"
-            data-desc="{{ cell.description }}"
-            data-img="{{ cell.picture }}"
-            data-start="{{ cell.start }}"
-            data-end="{{ cell.end }}"
-            data-activityname="{{ cell.activityname }}"
-            onclick="openPreview(this)"
-            {% endif %}
-        >
-            {% if cell %}
-                {% if cell.picture %}
-                    <img src="{{ cell.picture }}" class="tile-img">
-                {% endif %}
-                <div class="tile-overlay">
-                    {{ cell.description }}
-                </div>
-            {% else %}
-                <div class="empty">—</div>
-            {% endif %}
-        </td>
-    {% endfor %}
+<tr class="day-row">
+    <td colspan="{{ clients|length + 1 }}">
+        {{ days[day] }}
+    </td>
 </tr>
+
+    {% for time, row in times.items() %}
+    <tr>
+        <td>{{ time }}</td>
+
+        {% for c in clients %}
+            {% set cell = row[c.id] %}
+            <td class="{% if cell and cell.is_live %}live{% endif %}"
+                {% if cell %}
+                data-session-id="{{ cell.session_id }}"
+                data-desc="{{ cell.description }}"
+                data-start="{{ cell.start }}"
+                data-end="{{ cell.end }}"
+                onclick="openPreview(this)"
+                {% endif %}
+            >
+                {% if cell %}
+                    <div class="tile-overlay">
+                        {{ cell.description }}
+                    </div>
+                {% else %}
+                    <div class="empty">—</div>
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+
 {% endfor %}
 </tbody>
+
 </table>
 </div>
 
 <!-- PREVIEW -->
 <div class="preview-bg" id="preview" onclick="closePreview()">
     <div class="preview-card" onclick="event.stopPropagation()">
-        <div class="preview-close" onclick="closePreview()">✕</div>
 
-        <img id="p-img">
+        <label>Start</label>
+        <input type="time" id="p-start">
 
-        <div class="preview-desc">
-            <div id="p-name" style="font-weight:600; text-align:center;"></div>
+        <label>Koniec</label>
+        <input type="time" id="p-end">
 
-            <label>Start</label>
-            <input type="time" id="p-start">    
+        <label>Opis</label>
+        <input type="text" id="p-desc">
 
-            <label>Koniec</label>
-            <input type="time" id="p-end">
+        <button onclick="saveEdit()">💾 Zapisz</button>
+        <button onclick="deleteSession()">🗑 Usuń</button>
 
-            <label>Aktywność</label>
-            <select id="p-activity-select" name="activityname">
-                <option value="">— BRAK —</option>
-                {% for v in pictures %}
-                    <option
-                        value="{{ v.label }}"
-                        data-picture="{{ v.picture }}"
-                    >
-                        {{ v.label }}
-                    </option>
-                {% endfor %}
-            </select>
-
-
-            <label>Opis</label>
-            <input type="text" id="p-desc-input">
-
-            <button onclick="saveEdit()">💾 Zapisz</button>
-
-            <button
-                onclick="deleteActivity()"
-                style="
-                    margin-top:6px;
-                    background:#ef4444;
-                    color:#fff;
-                    font-weight:700;
-                "
-            >
-                🗑 Usuń aktywność
-            </button>
-
-
-        </div>
     </div>
 </div>
-
-<div id="toast"
-     style="
-        position:fixed;
-        top:24px;
-        left:50%;
-        transform:translateX(-50%);
-        background:#020617;
-        color:#fff;
-        padding:16px 20px;
-        border-radius:14px;
-        border:2px solid #ef4444;
-        box-shadow:0 10px 30px rgba(0,0,0,.5);
-        font-weight:600;
-        min-width:280px;
-        max-width:90%;
-        z-index:9999;
-        display:none;
-        animation:slideDown .3s ease;
-     ">
-    <span id="toast-text"></span>
-</div>
-
-
 
 <script>
 let currentCell = null;
@@ -362,87 +206,12 @@ let currentCell = null;
 function openPreview(el) {
     currentCell = el;
 
-    // 🔒 zapamiętaj stan przed edycją
-    originalState = {
-        img: el.dataset.img || '',
-        desc: el.dataset.desc || '',
-        activityname: el.dataset.activityname || '',
-        start: el.dataset.start || '',
-        end: el.dataset.end || ''
-    };
-
-    document.getElementById('p-img').src = originalState.img;
-    document.getElementById('p-start').value = originalState.start;
-    document.getElementById('p-end').value = originalState.end;
-    document.getElementById('p-desc-input').value = originalState.desc;
-
-    const select = document.getElementById('p-activity-select');
-    select.value = originalState.activityname;
+    document.getElementById('p-start').value = el.dataset.start;
+    document.getElementById('p-end').value = el.dataset.end;
+    document.getElementById('p-desc').value = el.dataset.desc;
 
     document.getElementById('preview').classList.add('active');
 }
-
-
-function closePreview() {
-    if (currentCell && originalState) {
-
-        // 🔙 cofnięcie dataset
-        currentCell.dataset.img = originalState.img;
-        currentCell.dataset.desc = originalState.desc;
-        currentCell.dataset.activityname = originalState.activityname;
-        currentCell.dataset.start = originalState.start;
-        currentCell.dataset.end = originalState.end;
-
-        // 🔙 cofnięcie obrazka
-        let tileImg = currentCell.querySelector('.tile-img');
-        if (originalState.img) {
-            if (!tileImg) {
-                tileImg = document.createElement('img');
-                tileImg.className = 'tile-img';
-                currentCell.prepend(tileImg);
-            }
-            tileImg.src = originalState.img;
-        } else if (tileImg) {
-            tileImg.remove();
-        }
-
-        // 🔙 cofnięcie opisu
-        const overlay = currentCell.querySelector('.tile-overlay');
-        if (overlay) overlay.textContent = originalState.desc;
-    }
-
-    document.getElementById('preview').classList.remove('active');
-
-    // 🧹 cleanup
-    currentCell = null;
-    originalState = null;
-}
-
-
-
-document.getElementById('p-activity-select').addEventListener('change', e => {
-    const selected = e.target.selectedOptions[0];
-    if (!selected) return;
-
-    const imgUrl = selected.dataset.picture || '';
-
-    // 🖼️ preview
-    const previewImg = document.getElementById('p-img');
-    previewImg.src = imgUrl;
-
-    // 🧠 zapamiętaj do zapisu
-    if (currentCell) {
-        currentCell.dataset.img = imgUrl;
-
-        let tileImg = currentCell.querySelector('.tile-img');
-        if (!tileImg) {
-            tileImg = document.createElement('img');
-            tileImg.className = 'tile-img';
-            currentCell.prepend(tileImg);
-        }
-        tileImg.src = imgUrl;
-    }
-});
 
 function closePreview() {
     document.getElementById('preview').classList.remove('active');
@@ -451,126 +220,40 @@ function closePreview() {
 function saveEdit() {
     if (!currentCell) return;
 
-    const activityId = currentCell.dataset.activityId;
+    const id = currentCell.dataset.sessionId;
 
     const formData = new FormData();
     formData.append("start", document.getElementById('p-start').value);
     formData.append("end", document.getElementById('p-end').value);
-    formData.append("description", document.getElementById('p-desc-input').value);
-    formData.append(
-        "activityname",
-        document.getElementById('p-activity-select').value
-    );
+    formData.append("description", document.getElementById('p-desc').value);
 
-    fetch(`/live/statusall/edit/${activityId}`, {
+    fetch(`/session/edit/${id}`, {
         method: "PUT",
         body: formData
     })
-    .then(async r => {
-        const text = await r.text();
-        if (!r.ok) {
-            console.error("STATUS:", r.status);
-            console.error("RESPONSE:", text);
-            throw new Error(text || "Błąd zapisu");
-        }
-        return text;
-    })
-    .then(() => {
-        closePreview();
-        location.reload(); // NA RAZIE – później zrobimy live update
-    })
-    .catch(err => {
-        showErrorToast(err.message);
-    });
-
-}
-
-/* AUTO REFRESH */
-setInterval(() => {
-    const previewOpen = document
-        .getElementById('preview')
-        .classList.contains('active');
-
-    if (!document.hidden && !previewOpen) {
+    .then(r => {
+        if (!r.ok) throw new Error("Błąd zapisu");
         location.reload();
-    }
-}, 30000);
-
-
-function showErrorToast(message) {
-    const toast = document.getElementById("toast");
-    const text  = document.getElementById("toast-text");
-
-    text.innerText = "❌ " + message;
-    toast.style.display = "block";
-
-    setTimeout(() => {
-        toast.style.opacity = "0";
-        setTimeout(() => {
-            toast.style.display = "none";
-            toast.style.opacity = "1";
-        }, 300);
-    }, 4500);
+    })
+    .catch(err => alert(err.message));
 }
 
-function deleteActivity() {
+function deleteSession() {
     if (!currentCell) return;
 
-    const activityId = currentCell.dataset.activityId;
-    if (!activityId) return;
+    const id = currentCell.dataset.sessionId;
 
-    if (!confirm("Czy na pewno usunąć tę aktywność?")) return;
+    if (!confirm("Usunąć sesję?")) return;
 
-    fetch(`/activities/delete/${activityId}`, {
+    fetch(`/session/delete/${id}`, {
         method: "POST"
     })
     .then(r => {
-        if (!r.ok) throw new Error("Nie udało się usunąć aktywności");
-        closePreview();
+        if (!r.ok) throw new Error("Błąd usuwania");
         location.reload();
     })
-    .catch(err => showErrorToast(err.message));
+    .catch(err => alert(err.message));
 }
-
-
-const currentDay = {{ day_index }};
-
-function changeDay(step) {
-    let newDay = currentDay + step;
-
-    if (newDay < 1) newDay = 7;
-    if (newDay > 7) newDay = 1;
-
-    // wariant URL /liveall/2
-    window.location.href = `/live/liveall/${newDay}`;
-
-    // JEŚLI masz querystring zamiast path – użyj tego:
-    // window.location.href = `/liveall?day=${newDay}`;
-}
-
-/* DATE TIME LIVE */
-function updateDateTime() {
-    const el = document.getElementById('datetime');
-    const now = new Date();
-
-    const days = [
-        'Niedziela','Poniedziałek','Wtorek',
-        'Środa','Czwartek','Piątek','Sobota'
-    ];
-
-    const day = days[now.getDay()];
-    const time = now.toLocaleTimeString('pl-PL', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
-
-    el.textContent = `${time}`;
-}
-
-updateDateTime();
-setInterval(updateDateTime, 1000);
-
 </script>
 
 </body>
