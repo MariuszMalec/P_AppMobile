@@ -3,9 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>TYDZIEŃ SESJI</title>
-
 <style>
 :root {
     --panel: #0c0f2a;
@@ -55,11 +53,6 @@ td {
     height: 80px;
     position: relative;
     cursor: pointer;
-}
-
-.day-row {
-    background: #020617;
-    font-weight: 700;
 }
 
 .tile-overlay {
@@ -120,7 +113,6 @@ td {
 }
 </style>
 </head>
-
 <body>
 
 <div class="header">
@@ -129,62 +121,47 @@ td {
 
 <div class="table-wrap">
 <table>
-
 <thead>
 <tr>
     <th>⏰</th>
-    {% for c in clients %}
-        <th>{{ c.name }}</th>
+    {% for d in range(1, 8) %}
+        <th>{{ days[d] }}</th>
     {% endfor %}
 </tr>
 </thead>
-
 <tbody>
-{% for day, times in table.items() %}
-
-<tr class="day-row">
-    <td colspan="{{ clients|length + 1 }}">
-        {{ days[day] }}
-    </td>
-</tr>
-
-    {% for time, row in times.items() %}
-    <tr>
-        <td>{{ time }}</td>
-
-        {% for c in clients %}
-            {% set cell = row[c.id] %}
-            <td class="{% if cell and cell.is_live %}live{% endif %}"
-                {% if cell %}
-                data-session-id="{{ cell.session_id }}"
-                data-desc="{{ cell.description }}"
-                data-start="{{ cell.start }}"
-                data-end="{{ cell.end }}"
-                onclick="openPreview(this)"
-                {% endif %}
-            >
-                {% if cell %}
-                    <div class="tile-overlay">
-                        {{ cell.description }}
-                    </div>
-                {% else %}
-                    <div class="empty">—</div>
-                {% endif %}
-            </td>
-        {% endfor %}
-    </tr>
+{% for time, day_rows in table.items() %}
+<tr>
+    <td>{{ time }}</td>
+    {% for d in range(1, 8) %}
+        {% set cell = day_rows[d] %}
+        <td class="{% if cell and cell.is_live %}live{% endif %}"
+            {% if cell %}
+            data-session-id="{{ cell.session_id }}"
+            data-desc="{{ cell.description }}"
+            data-start="{{ cell.start }}"
+            data-end="{{ cell.end }}"
+            onclick="openPreview(this)"
+            {% endif %}
+        >
+            {% if cell %}
+                <div class="tile-overlay">
+                    {{ cell.description }}
+                </div>
+            {% else %}
+                <div class="empty">—</div>
+            {% endif %}
+        </td>
     {% endfor %}
-
+</tr>
 {% endfor %}
 </tbody>
-
 </table>
 </div>
 
 <!-- PREVIEW -->
 <div class="preview-bg" id="preview" onclick="closePreview()">
     <div class="preview-card" onclick="event.stopPropagation()">
-
         <label>Start</label>
         <input type="time" id="p-start">
 
@@ -196,7 +173,6 @@ td {
 
         <button onclick="saveEdit()">💾 Zapisz</button>
         <button onclick="deleteSession()">🗑 Usuń</button>
-
     </div>
 </div>
 
@@ -205,11 +181,9 @@ let currentCell = null;
 
 function openPreview(el) {
     currentCell = el;
-
     document.getElementById('p-start').value = el.dataset.start;
     document.getElementById('p-end').value = el.dataset.end;
     document.getElementById('p-desc').value = el.dataset.desc;
-
     document.getElementById('preview').classList.add('active');
 }
 
@@ -219,15 +193,13 @@ function closePreview() {
 
 function saveEdit() {
     if (!currentCell) return;
-
     const id = currentCell.dataset.sessionId;
-
     const formData = new FormData();
     formData.append("start", document.getElementById('p-start').value);
     formData.append("end", document.getElementById('p-end').value);
     formData.append("description", document.getElementById('p-desc').value);
 
-    fetch(`/session/edit/${id}`, {
+    fetch(`/home/session/edit/${id}`, {
         method: "PUT",
         body: formData
     })
@@ -240,14 +212,10 @@ function saveEdit() {
 
 function deleteSession() {
     if (!currentCell) return;
-
     const id = currentCell.dataset.sessionId;
-
     if (!confirm("Usunąć sesję?")) return;
 
-    fetch(`/session/delete/${id}`, {
-        method: "POST"
-    })
+    fetch(`/home/session/delete/${id}`, { method: "POST" })
     .then(r => {
         if (!r.ok) throw new Error("Błąd usuwania");
         location.reload();

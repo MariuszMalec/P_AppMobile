@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Request, Form, Query, Depends
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi import APIRouter, Request, Form, Query, Depends, HTTPException
+from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
 from starlette.status import HTTP_303_SEE_OTHER
 import sqlite3
 from templates import templates
@@ -17,9 +17,7 @@ router = APIRouter(
 )
 
 
-# ==============================
-# HOME
-# ==============================
+
 @router.get("/", response_class=HTMLResponse)
 def home_page(request: Request, db=Depends(get_db)):
 
@@ -43,23 +41,8 @@ def home_page(request: Request, db=Depends(get_db)):
         FROM Session s
         LEFT JOIN Client c
             ON s.ClientId = c.Id
-        ORDER BY s.DayOfWeek, s.StartTime
+        ORDER BY s.StartTime, s.DayOfWeek
     """).fetchall()
-
-    # 👇 klienci (kolumny)
-    clients_raw = cursor.execute("""
-        SELECT Id, FirstName, LastName
-        FROM Client
-        WHERE IsActive = 1
-    """).fetchall()
-
-    clients = [
-        {
-            "id": c["Id"],
-            "name": f'{c["FirstName"]} {c["LastName"]}'
-        }
-        for c in clients_raw
-    ]
 
     # 👇 dni tygodnia
     days = {
@@ -72,37 +55,30 @@ def home_page(request: Request, db=Depends(get_db)):
         7: "Niedziela"
     }
 
-    db.close()
-
     # =========================
-    # 🔥 BUDOWANIE TABELI
+    # 🔥 BUDOWANIE TABELI (dni w kolumnach)
     # =========================
     table = {}
 
     for r in rows:
-
-        day = r["DayOfWeek"]
         time_key = f'{r["StartTime"]} – {r["EndTime"]}'
 
-        if day not in table:
-            table[day] = {}
+        if time_key not in table:
+            # dla każdego czasu tworzymy wiersz z dniami jako kolumny
+            table[time_key] = {day: None for day in range(1, 8)}
 
-        if time_key not in table[day]:
-            table[day][time_key] = {c["id"]: None for c in clients}
+        table[time_key][r["DayOfWeek"]] = {
+            "session_id": r["Id"],
+            "description": f'{r["FirstName"]} {r["LastName"]}',
+            "start": r["StartTime"],
+            "end": r["EndTime"],
+            "is_live": (
+                r["DayOfWeek"] == current_day and
+                r["StartTime"] <= current_time <= r["EndTime"]
+            )
+        }
 
-        client_id = r["ClientId"]
-
-        if client_id in table[day][time_key]:
-            table[day][time_key][client_id] = {
-                "session_id": r["Id"],
-                "description": r["Description"],
-                "start": r["StartTime"],
-                "end": r["EndTime"],
-                "is_live": (
-                    day == current_day and
-                    r["StartTime"] <= current_time <= r["EndTime"]
-                )
-            }
+    db.close()
 
     # =========================
     # 🔥 TEMPLATE RESPONSE
@@ -110,11 +86,62 @@ def home_page(request: Request, db=Depends(get_db)):
     return templates.TemplateResponse(
         "statusall.html",
         {
-            "request": request,   # 🔥 MUSI BYĆ
-            "table": table,       # tabela z sesjami
-            "clients": clients,   # lista klientów
-            "days": days,         # dni tygodnia
+            "request": request,
+            "table": table,
+            "days": days,
             "current_day": current_day,
             "current_time": current_time
         }
     )
+
+# =========================
+# EDIT SESSION
+# =========================
+@router.put("/session/edit/{session_id}")
+def edit_session(
+    session_id: int,
+    start: str = Form(...),
+    end: str = Form(...),
+    description: str = Form(...),
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    # Sprawdzenie, czy sesja istnieje
+    existing = cursor.execute(
+        "SELECT Id FROM Session WHERE Id = ?", (session_id,)
+    ).fetchone()
+    if not existing:
+        raise HTTPException(status_code=404, detail="Sesja nie istnieje")
+
+    # Aktualizacja w bazie
+    cursor.execute(
+        "UPDATE Session SET StartTime = ?, EndTime = ?, Description = ? WHERE Id = ?",
+        (start, end, description, session_id)
+    )
+    db.commit()
+    db.close()
+
+    return JSONResponse({"status": "ok", "message": "Sesja zaktualizowana"})
+
+
+# =========================
+# DELETE SESSION
+# =========================
+@router.post("/session/delete/{session_id}")
+def delete_session(session_id: int, db=Depends(get_db)):
+    cursor = db.cursor()
+
+    # Sprawdzenie, czy sesja istnieje
+    existing = cursor.execute(
+        "SELECT Id FROM Session WHERE Id = ?", (session_id,)
+    ).fetchone()
+    if not existing:
+        raise HTTPException(status_code=404, detail="Sesja nie istnieje")
+
+    # Usuwanie
+    cursor.execute("DELETE FROM Session WHERE Id = ?", (session_id,))
+    db.commit()
+    db.close()
+
+    return JSONResponse({"status": "ok", "message": "Sesja usunięta"})
