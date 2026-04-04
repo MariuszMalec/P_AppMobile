@@ -128,7 +128,8 @@ td {
 <body>
 
 <div class="header">
-    🟢 LIVE — TYDZIEŃ
+    🟢 LIVE — TYDZIEŃ 
+    <span id="current-day-date"></span>
     <span class="live-time" id="live-time">--:--:--</span>
 </div>
 
@@ -204,6 +205,7 @@ td {
 <script>
 let currentCell = null;
 
+// Wyświetlanie live czasu
 function updateLiveTime() {
     const now = new Date();
     const h = String(now.getHours()).padStart(2, '0');
@@ -211,8 +213,21 @@ function updateLiveTime() {
     const s = String(now.getSeconds()).padStart(2, '0');
     document.getElementById('live-time').textContent = `${h}:${m}:${s}`;
 }
+
+// Wyświetlanie aktualnego dnia tygodnia + data
+function updateCurrentDayDate() {
+    const now = new Date();
+    const days = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
+    const dayName = days[now.getDay()];
+    const dayNum = now.getDate();
+    const monthNames = ["stycznia","lutego","marca","kwietnia","maja","czerwca","lipca","sierpnia","września","października","listopada","grudnia"];
+    const monthName = monthNames[now.getMonth()];
+    document.getElementById('current-day-date').textContent = `(${dayName} ${dayNum} ${monthName})`;
+}
+
 setInterval(updateLiveTime, 1000);
 updateLiveTime();
+updateCurrentDayDate();
 
 function openPreview(el) {
     currentCell = el;
