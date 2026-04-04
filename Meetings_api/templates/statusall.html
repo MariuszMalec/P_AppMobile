@@ -139,7 +139,7 @@ td {
 <tr>
     <th>⏰</th>
     {% for d in range(1, 8) %}
-        <th>{{ days[d] }}</th>
+        <th class="day-header" data-day="{{ d }}">{{ days[d] }}</th>
     {% endfor %}
 </tr>
 </thead>
@@ -274,6 +274,25 @@ function deleteSession() {
     })
     .catch(err => alert(err.message));
 }
+
+// Funkcja uzupełniająca daty przy dniach tygodnia
+function updateWeekDates() {
+    const now = new Date();
+    const dayOfWeek = now.getDay(); // 0 = niedziela, 1 = poniedziałek...
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // offset do poniedziałku
+    const headers = document.querySelectorAll('.day-header');
+
+    headers.forEach((th, index) => {
+        const d = new Date(now);
+        d.setDate(now.getDate() + mondayOffset + index); // data dla konkretnego dnia tygodnia
+        const dayNum = d.getDate();
+        const monthNum = String(d.getMonth() + 1).padStart(2, '0'); // miesiąc 01-12
+        th.textContent = `${th.textContent} (${dayNum}.${monthNum})`;
+    });
+}
+
+updateWeekDates();
+
 </script>
 
 </body>
