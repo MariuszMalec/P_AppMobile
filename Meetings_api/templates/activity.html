@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Plan aktywności</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 0;
+            padding: 16px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 32px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #ccc;
+        }
+
+        .day {
+            margin-bottom: 24px;
+        }
+
+        /* --- TOP BUTTONS --- */
+        .top-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .top-buttons a {
+            flex: 1;
+            text-decoration: none;
+        }
+
+        .top-buttons button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 14px;
+            border: none;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-live {
+            background: #22c55e;
+            color: #022c22;
+        }
+
+        .btn-week {
+            background: #38bdf8;
+            color: #020617;
+        }
+
+        .btn-add {
+            background: #6366f1;
+            color: white;
+        }
+
+        /* --- ACTIVITY CARD --- */
+        .activity {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin-top: 12px;
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .activity img.activity-pic {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .time {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .description {
+            margin: 6px 0;
+        }
+
+        .person {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+            color: #555;
+        }
+
+        .person-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* --- ACTIONS --- */
+        .actions {
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .edit-btn {
+            text-decoration: none;
+            font-size: 1.1em;
+            padding: 8px 10px;
+            border-radius: 10px;
+            background: #eef2ff;
+            color: #3730a3;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .edit-btn:hover {
+            background: #c7d2fe;
+            transform: scale(1.05);
+        }
+
+        .delete-btn {
+            border: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .delete-btn:hover {
+            background: #fecaca;
+            transform: scale(1.05);
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 600px) {
+            .activity {
+                flex-direction: column;
+            }
+
+            .activity img.activity-pic {
+                width: 100%;
+                height: 160px;
+            }
+
+            .actions {
+                align-items: flex-end;
+            }
+        }
+
+        .btn-live-all {
+            background: #16a34a;
+            color: #ecfdf5;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+<h1>📅 Plan tygodnia</h1>
+
+<div class="top-buttons">
+
+    <a href="/mainmenu" style="flex:1">
+        <button style="
+            width:100%;
+            padding:12px;
+            border-radius:14px;
+            border:none;
+            font-weight:bold;
+            background:#e5e7eb;
+            cursor:pointer;
+        ">
+            ⬅ Main menu
+        </button>
+    </a>
+
+    <a href="/activities/add">
+        <button class="btn-add">➕ DODAJ</button>
+    </a>
+
+    <a href="/activities/week">
+        <button class="btn-week">📅 WEEK</button>
+    </a>
+
+</div>
+
+{% for day, data in days.items() %}
+<div class="day">
+    <h2>{{ data.dayName }}</h2>
+
+    {% if data["items"]|length == 0 %}
+        <p>Brak aktywności</p>
+    {% endif %}
+
+    {% for a in data["items"] %}
+    <div class="activity">
+
+        {% if a.picture %}
+            <img class="activity-pic" src="{{ a.picture }}" alt="Aktywność">
+        {% endif %}
+
+        <div class="content">
+            <div class="time">
+                ⏰ {{ a.start }} – {{ a.end }}
+            </div>
+
+            <div class="description">
+                {{ a.description }}
+            </div>
+
+            {% if a.person %}
+            <div class="person">
+                {% if a.personPicture %}
+                    <img class="person-pic" src="{{ a.personPicture }}">
+                {% endif %}
+                <span>{{ a.person }}</span>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="actions">
+
+            <a class="edit-btn" href="/activities/edit/{{ a.id }}" title="Edytuj">
+                ✏️
+            </a>
+
+                <form method="post"
+                    action="/activities/delete/{{ a.id }}"
+                    onsubmit="return confirm('Czy na pewno usunąć tę aktywność?');"
+                    style="margin-left:8px">
+
+                    <button type="submit" class="delete-btn" title="Usuń">
+                        🗑️
+                    </button>
+                </form>
+
+        </div>
+
+
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+</body>
+</html>

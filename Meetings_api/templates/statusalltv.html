@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>LIVE ALL — TV</title>
+
+<style>
+:root {
+    --bg: #020210;
+    --panel: #0c0f2a;
+    --border: rgba(255,255,255,.15);
+    --text: #ffffff;
+    --muted: #9aa0ff;
+    --live: #00ff6a;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    background: radial-gradient(circle at top, #0a0d3a, #020210);
+    color: var(--text);
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: hidden;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 20px 0 12px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+/* TABLE */
+.table-wrap {
+    height: calc(100vh - 80px);
+    padding: 16px;
+}
+
+table {
+    width: 100%;
+    height: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background: var(--panel);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+th, td {
+    border: 1px solid var(--border);
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+}
+
+/* HEADER CELLS */
+th {
+    height: 64px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--muted);
+    background: rgba(255,255,255,.05);
+}
+
+th.time {
+    width: 140px;
+}
+
+/* TIME COLUMN */
+td.time {
+    font-size: 18px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* TILE */
+td {
+    position: relative;
+    overflow: hidden;
+}
+
+/* IMAGE */
+.tile-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* TEXT OVERLAY */
+.tile-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 12px;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.2;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,.75),
+        rgba(0,0,0,.35),
+        rgba(0,0,0,.75)
+    );
+}
+
+/* LIVE EFFECT — TV SAFE (jasność + saturacja) */
+@keyframes liveGlow {
+    0%   { filter: brightness(1) saturate(1); }
+    50%  { filter: brightness(1.45) saturate(1.7); }
+    100% { filter: brightness(1) saturate(1); }
+}
+
+.live {
+    animation: liveGlow 1.8s ease-in-out infinite;
+}
+
+/* EMPTY */
+.empty {
+    font-size: 40px;
+    color: #444;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* RESPONSIVE TV SCALE */
+@media (max-width: 1280px) {
+    .tile-overlay { font-size: 18px; }
+    th { font-size: 16px; }
+    td.time { font-size: 16px; }
+}
+</style>
+</head>
+
+<body>
+
+<div class="back">
+    <a href="/home">⬅ Powrót</a>
+</div>
+
+<div class="header">
+    <h1>🟢 LIVE TV — {{ day_name }}</h1>
+</div>
+
+<div class="table-wrap">
+<table>
+    <thead>
+        <tr>
+            <th class="time">⏰ Czas</th>
+            {% for p in persons %}
+                <th>{{ p.name }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+    <tbody>
+    {% for time, row in table.items() %}
+        <tr>
+            <td class="time">{{ time }}</td>
+
+            {% for p in persons %}
+                {% set cell = row[p.id] %}
+                <td class="{% if cell and cell.is_live %}live{% endif %}">
+                    {% if cell %}
+                        {% if cell.picture %}
+                            <img src="{{ cell.picture }}" class="tile-img">
+                        {% endif %}
+                        <div class="tile-overlay">
+                            {{ cell.description }}
+                        </div>
+                    {% else %}
+                        <div class="empty">—</div>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</div>
+
+<script>
+(function () {
+    const REFRESH_MS = 30000; // 30s
+
+    setInterval(() => {
+        if (!document.hidden) {
+            location.reload();
+        }
+    }, REFRESH_MS);
+})();
+</script>
+
+</body>
+</html>
