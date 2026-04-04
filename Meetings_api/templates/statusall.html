@@ -23,6 +23,11 @@ body {
     text-align: center;
     padding: 12px;
     font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
 }
 
 .table-wrap {
@@ -112,12 +117,19 @@ td {
     padding: 10px;
     margin-top: 6px;
 }
+
+.live-time {
+    font-weight: 400;
+    font-size: 14px;
+    color: #8cff8c;
+}
 </style>
 </head>
 <body>
 
 <div class="header">
     🟢 LIVE — TYDZIEŃ
+    <span class="live-time" id="live-time">--:--:--</span>
 </div>
 
 <div class="table-wrap">
@@ -191,6 +203,16 @@ td {
 
 <script>
 let currentCell = null;
+
+function updateLiveTime() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('live-time').textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateLiveTime, 1000);
+updateLiveTime();
 
 function openPreview(el) {
     currentCell = el;
