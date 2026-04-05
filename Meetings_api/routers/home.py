@@ -69,7 +69,8 @@ def home_page(request: Request, db=Depends(get_db)):
 
         table[time_key][r["DayOfWeek"]] = {
             "session_id": r["Id"],
-            "description": f'{r["FirstName"]} {r["LastName"]}',
+            "client": f'{r["FirstName"]} {r["LastName"]}',
+            "description": f'{r["Description"]}',
             "start": r["StartTime"],
             "end": r["EndTime"],
             "is_live": (

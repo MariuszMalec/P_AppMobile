@@ -152,6 +152,7 @@ td {
         <td class="{% if cell and cell.is_live %}live{% endif %}"
             {% if cell %}
             data-session-id="{{ cell.session_id }}"
+            data-client="{{ cell.client }}"
             data-desc="{{ cell.description }}"
             data-start="{{ cell.start }}"
             data-end="{{ cell.end }}"
@@ -161,7 +162,7 @@ td {
         >
             {% if cell %}
                 <div class="tile-overlay">
-                    {{ cell.description }}
+                    {{ cell.client }}
                 </div>
             {% else %}
                 <div class="empty">—</div>
@@ -183,8 +184,11 @@ td {
         <label>Koniec</label>
         <input type="time" id="p-end">
 
+        <label>Klient</label>
+        <input type="text" id="p-client">
+
         <label>Opis</label>
-        <input type="text" id="p-desc">
+        <input type="text" id="p-desc">        
 
         <label>Dzień tygodnia</label>
         <select id="p-day">
@@ -233,6 +237,7 @@ function openPreview(el) {
     currentCell = el;
     document.getElementById('p-start').value = el.dataset.start;
     document.getElementById('p-end').value = el.dataset.end;
+    document.getElementById('p-client').value = el.dataset.client;
     document.getElementById('p-desc').value = el.dataset.desc;
     document.getElementById('p-day').value = el.dataset.day;
     document.getElementById('preview').classList.add('active');
@@ -248,6 +253,7 @@ function saveEdit() {
     const formData = new FormData();
     formData.append("start", document.getElementById('p-start').value);
     formData.append("end", document.getElementById('p-end').value);
+    formData.append("client", document.getElementById('p-client').value);
     formData.append("description", document.getElementById('p-desc').value);
     formData.append("day_of_week", document.getElementById('p-day').value);
 
