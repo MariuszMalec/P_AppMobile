@@ -199,8 +199,8 @@ td {
         <label>Klient</label>
         <select id="p-client">
             <option value="">— wybierz klienta —</option>
-            {% for client in clients %}
-                <option value="{{ client.Id }}">{{ client.FirstName }} {{ client.LastName }}</option>
+            {% for c in clients %}
+                <option value="{{ c.Id }}">{{ c.FirstName }} {{ c.LastName }}</option>
             {% endfor %}
         </select>
 
@@ -237,13 +237,13 @@ function updateLiveTime() {
     document.getElementById('live-time').textContent = `${h}:${m}:${s}`;
 }
 
-// Funkcje podglądu
+
 // Funkcje podglądu - EDIT
 function openPreview(el) {
     currentCell = el;
     document.getElementById('p-start').value = el.dataset.start;
     document.getElementById('p-end').value = el.dataset.end;
-    document.getElementById('p-client').value = el.dataset.client_id || ""; // używamy client_id z dataset
+    document.getElementById('p-client').value = el.dataset.client_id || ""; // ID klienta z dataset
     document.getElementById('p-desc').value = el.dataset.desc;
     document.getElementById('p-day').value = el.dataset.day;
     document.getElementById('preview').classList.add('active');
@@ -255,6 +255,9 @@ function openPreview(el) {
 
     // Pokaż przycisk Usuń
     document.querySelector('.preview-card button:last-of-type').style.display = "block";
+
+    // BLOKUJ pole klienta w edycji
+    document.getElementById('p-client').disabled = true;
 }
 
 // CREATE SESSION
@@ -274,6 +277,9 @@ function openCreateSession() {
 
     // Ukrywamy przycisk Usuń w trybie tworzenia
     document.querySelector('.preview-card button:last-of-type').style.display = "none";
+
+    // POZWALAMY wybrać klienta w trybie tworzenia
+    document.getElementById('p-client').disabled = false;
 }
 
 function closePreview() {
