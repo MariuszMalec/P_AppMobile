@@ -260,9 +260,31 @@ function openPreview(el) {
     document.getElementById('p-client').disabled = true;
 }
 
-// CREATE SESSION
+// Funkcja do załadowania listy klientów
+function loadClientList() {
+    fetch('/home/get_clients')
+        .then(response => response.json())
+        .then(clients => {
+            const clientSelect = document.getElementById('p-client');
+            clientSelect.innerHTML = '<option value="">— wybierz klienta —</option>';  // Resetujemy listę
+
+            // Tworzymy opcje na podstawie pobranych danych
+            clients.forEach(client => {
+                const option = document.createElement("option");
+                option.value = client.Id;
+                option.textContent = `${client.FirstName} ${client.LastName}`;
+                clientSelect.appendChild(option);
+            });
+        })
+        .catch(err => {
+            console.error("Błąd ładowania klientów: ", err);
+            alert("Nie udało się załadować listy klientów");
+        });
+}
+
+// Funkcja otwierająca formularz "Nowa sesja"
 function openCreateSession() {
-    currentCell = null; // brak wybranej sesji
+    currentCell = null; // Brak wybranej sesji
     document.getElementById('p-start').value = "";
     document.getElementById('p-end').value = "";
     document.getElementById('p-client').value = "";
@@ -278,8 +300,11 @@ function openCreateSession() {
     // Ukrywamy przycisk Usuń w trybie tworzenia
     document.querySelector('.preview-card button:last-of-type').style.display = "none";
 
-    // POZWALAMY wybrać klienta w trybie tworzenia
+    // Aktywujemy pole klienta
     document.getElementById('p-client').disabled = false;
+
+    // Załaduj listę klientów
+    loadClientList();
 }
 
 function closePreview() {

@@ -188,3 +188,13 @@ def create_session(
     db.close()
 
     return JSONResponse({"status":"ok", "message":"Sesja utworzona"})
+
+
+@router.get("/get_clients")
+def get_clients(db=Depends(get_db)):
+    cursor = db.cursor()
+
+    # Pobieranie wszystkich klientów
+    clients = cursor.execute("SELECT Id, FirstName, LastName FROM Client ORDER BY FirstName, LastName").fetchall()
+
+    return JSONResponse(content=clients)
