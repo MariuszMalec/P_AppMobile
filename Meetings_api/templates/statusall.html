@@ -167,6 +167,7 @@ td {
             data-start="{{ cell.start or '' }}"
             data-end="{{ cell.end or '' }}"
             data-day="{{ d }}"
+            data-session-date="{{ cell.session_date }}"
             onclick="openPreview(this)"
             {% endif %}
         >
@@ -308,15 +309,17 @@ function updateWeekDates() {
 
 // 🔥 Nie nadpisujemy HTML, tylko ukrywamy/odkrywamy komórki
 function filterSessionsByWeek(start, end) {
+    const startStr = start.toISOString().slice(0,10);
+    const endStr = end.toISOString().slice(0,10);
+
     document.querySelectorAll('td[data-session-id]').forEach(td => {
         const dateStr = td.dataset.sessionDate; // YYYY-MM-DD
         if (!dateStr) return;
 
-        const sessionDate = new Date(dateStr);
-        if (sessionDate < start || sessionDate > end) {
-            td.style.display = "none";  // ukrywamy
+        if (dateStr < startStr || dateStr > endStr) {
+            td.style.display = "none";
         } else {
-            td.style.display = "";       // pokazujemy
+            td.style.display = "";
         }
     });
 }
