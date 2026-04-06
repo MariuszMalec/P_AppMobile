@@ -30,6 +30,14 @@ body {
     font-size: 18px;
 }
 
+.header button {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+}
+
 .table-wrap {
     overflow-x: auto;
     padding: 8px;
@@ -128,9 +136,11 @@ td {
 <body>
 
 <div class="header">
+    <button onclick="changeWeek(-1)">⬅</button>
     🟢 LIVE — TYDZIEŃ 
     <span id="current-day-date"></span>
     <span class="live-time" id="live-time">--:--:--</span>
+    <button onclick="changeWeek(1)">➡</button>
 </div>
 
 <div class="table-wrap">
@@ -208,6 +218,7 @@ td {
 
 <script>
 let currentCell = null;
+let weekOffset = 0;
 
 // Wyświetlanie live czasu
 function updateLiveTime() {
@@ -218,21 +229,7 @@ function updateLiveTime() {
     document.getElementById('live-time').textContent = `${h}:${m}:${s}`;
 }
 
-// Wyświetlanie aktualnego dnia tygodnia + data
-function updateCurrentDayDate() {
-    const now = new Date();
-    const days = ["Niedziela", "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek", "Sobota"];
-    const dayName = days[now.getDay()];
-    const dayNum = now.getDate();
-    const monthNames = ["stycznia","lutego","marca","kwietnia","maja","czerwca","lipca","sierpnia","września","października","listopada","grudnia"];
-    const monthName = monthNames[now.getMonth()];
-    document.getElementById('current-day-date').textContent = `(${dayName} ${dayNum} ${monthName})`;
-}
-
-setInterval(updateLiveTime, 1000);
-updateLiveTime();
-updateCurrentDayDate();
-
+// Funkcje podglądu
 function openPreview(el) {
     currentCell = el;
     document.getElementById('p-start').value = el.dataset.start;
@@ -281,24 +278,39 @@ function deleteSession() {
     .catch(err => alert(err.message));
 }
 
-// Funkcja uzupełniająca daty przy dniach tygodnia
+// Funkcja uzupełniająca daty przy dniach tygodnia z przesunięciem
 function updateWeekDates() {
     const now = new Date();
-    const dayOfWeek = now.getDay(); // 0 = niedziela, 1 = poniedziałek...
-    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // offset do poniedziałku
-    const headers = document.querySelectorAll('.day-header');
+    const dayOfWeek = now.getDay();
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
 
+    const headers = document.querySelectorAll('.day-header');
     headers.forEach((th, index) => {
         const d = new Date(now);
-        d.setDate(now.getDate() + mondayOffset + index); // data dla konkretnego dnia tygodnia
+        d.setDate(now.getDate() + mondayOffset + index + weekOffset * 7);
         const dayNum = d.getDate();
-        const monthNum = String(d.getMonth() + 1).padStart(2, '0'); // miesiąc 01-12
-        th.textContent = `${th.textContent} (${dayNum}.${monthNum})`;
+        const monthNum = String(d.getMonth() + 1).padStart(2, '0');
+        const dayName = th.textContent.split(' ')[0];
+        th.textContent = `${dayName} (${dayNum}.${monthNum})`;
     });
+
+    const currentMonday = new Date(now);
+    currentMonday.setDate(now.getDate() + mondayOffset + weekOffset * 7);
+    const dayNum = currentMonday.getDate();
+    const monthNames = ["stycznia","lutego","marca","kwietnia","maja","czerwca","lipca","sierpnia","września","października","listopada","grudnia"];
+    const monthName = monthNames[currentMonday.getMonth()];
+    document.getElementById('current-day-date').textContent = `(Poniedziałek ${dayNum} ${monthName})`;
 }
 
-updateWeekDates();
+function changeWeek(delta) {
+    weekOffset += delta;
+    updateWeekDates();
+}
 
+// wywołania startowe
+setInterval(updateLiveTime, 1000);
+updateLiveTime();
+updateWeekDates();
 </script>
 
 </body>
