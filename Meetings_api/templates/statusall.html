@@ -162,17 +162,17 @@ td {
         <td class="{% if cell and cell.is_live %}live{% endif %}"
             {% if cell %}
             data-session-id="{{ cell.session_id }}"
-            data-client="{{ cell.client }}"
-            data-desc="{{ cell.description }}"
-            data-start="{{ cell.start }}"
-            data-end="{{ cell.end }}"
+            data-client="{{ cell.client or '' }}"
+            data-desc="{{ cell.description or '' }}"
+            data-start="{{ cell.start or '' }}"
+            data-end="{{ cell.end or '' }}"
             data-day="{{ d }}"
             onclick="openPreview(this)"
             {% endif %}
         >
             {% if cell %}
                 <div class="tile-overlay">
-                    {{ cell.client }}
+                    {{ cell.client or 'Brak klienta' }}
                 </div>
             {% else %}
                 <div class="empty">—</div>
@@ -216,6 +216,7 @@ td {
     </div>
 </div>
 
+<!-- Zmieniamy tylko JS -->
 <script>
 let currentCell = null;
 let weekOffset = 0;
@@ -285,21 +286,39 @@ function updateWeekDates() {
     const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
 
     const headers = document.querySelectorAll('.day-header');
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() + mondayOffset + weekOffset * 7);
+    const weekEnd = new Date(weekStart);
+    weekEnd.setDate(weekEnd.getDate() + 6);
+
     headers.forEach((th, index) => {
-        const d = new Date(now);
-        d.setDate(now.getDate() + mondayOffset + index + weekOffset * 7);
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + index);
         const dayNum = d.getDate();
         const monthNum = String(d.getMonth() + 1).padStart(2, '0');
         const dayName = th.textContent.split(' ')[0];
         th.textContent = `${dayName} (${dayNum}.${monthNum})`;
     });
 
-    const currentMonday = new Date(now);
-    currentMonday.setDate(now.getDate() + mondayOffset + weekOffset * 7);
-    const dayNum = currentMonday.getDate();
     const monthNames = ["stycznia","lutego","marca","kwietnia","maja","czerwca","lipca","sierpnia","września","października","listopada","grudnia"];
-    const monthName = monthNames[currentMonday.getMonth()];
-    document.getElementById('current-day-date').textContent = `(Poniedziałek ${dayNum} ${monthName})`;
+    document.getElementById('current-day-date').textContent = `(Poniedziałek ${weekStart.getDate()} ${monthNames[weekStart.getMonth()]})`;
+
+    filterSessionsByWeek(weekStart, weekEnd);
+}
+
+// 🔥 Nie nadpisujemy HTML, tylko ukrywamy/odkrywamy komórki
+function filterSessionsByWeek(start, end) {
+    document.querySelectorAll('td[data-session-id]').forEach(td => {
+        const dateStr = td.dataset.sessionDate; // YYYY-MM-DD
+        if (!dateStr) return;
+
+        const sessionDate = new Date(dateStr);
+        if (sessionDate < start || sessionDate > end) {
+            td.style.display = "none";  // ukrywamy
+        } else {
+            td.style.display = "";       // pokazujemy
+        }
+    });
 }
 
 function changeWeek(delta) {

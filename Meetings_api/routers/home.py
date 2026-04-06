@@ -18,6 +18,8 @@ router = APIRouter(
 
 
 
+from datetime import datetime
+
 @router.get("/", response_class=HTMLResponse)
 def home_page(request: Request, db=Depends(get_db)):
 
@@ -27,7 +29,7 @@ def home_page(request: Request, db=Depends(get_db)):
     current_time = now.strftime("%H:%M")
     current_day = now.isoweekday()
 
-    # 🔥 POBIERAMY CAŁY TYDZIEŃ
+    # 🔥 POBIERAMY CAŁY TYDZIEŃ Z DATABESE
     rows = cursor.execute("""
         SELECT
             s.Id,
@@ -35,6 +37,7 @@ def home_page(request: Request, db=Depends(get_db)):
             s.EndTime,
             s.Description,
             s.DayOfWeek,
+            s.SessionDate,  -- ✅ dodajemy datę sesji
             c.Id AS ClientId,
             c.FirstName,
             c.LastName
@@ -69,10 +72,10 @@ def home_page(request: Request, db=Depends(get_db)):
 
         table[time_key][r["DayOfWeek"]] = {
             "session_id": r["Id"],
-            "client": f'{r["FirstName"]} {r["LastName"]}',
-            "description": f'{r["Description"]}',
-            "start": r["StartTime"],
-            "end": r["EndTime"],
+            "client": f'{r["FirstName"] or ""} {r["LastName"] or ""}'.strip(),
+            "description": r["Description"] or "",
+            "start": r["StartTime"] or "",
+            "end": r["EndTime"] or "",
             "is_live": (
                 r["DayOfWeek"] == current_day and
                 r["StartTime"] <= current_time <= r["EndTime"]
