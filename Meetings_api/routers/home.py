@@ -18,10 +18,10 @@ router = APIRouter(
 
 
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 @router.get("/", response_class=HTMLResponse)
-def home_page(request: Request, db=Depends(get_db)):
+def home_page(request: Request, db=Depends(get_db), week_offset: int = 0):
 
     cursor = db.cursor()
 
@@ -29,7 +29,13 @@ def home_page(request: Request, db=Depends(get_db)):
     current_time = now.strftime("%H:%M")
     current_day = now.isoweekday()
 
-    # 🔥 POBIERAMY CAŁY TYDZIEŃ Z DATABESE
+    # Wylicz datę poniedziałku tygodnia z uwzględnieniem przesunięcia
+    monday = now - timedelta(days=now.weekday()) + timedelta(weeks=week_offset)
+    sunday = monday + timedelta(days=6)
+    week_start = monday.date().isoformat()
+    week_end = sunday.date().isoformat()
+
+    # POBIERAMY SESJE Z DANEGO TYGODNIA
     rows = cursor.execute("""
         SELECT
             s.Id,
@@ -37,17 +43,17 @@ def home_page(request: Request, db=Depends(get_db)):
             s.EndTime,
             s.Description,
             s.DayOfWeek,
-            s.SessionDate,  -- ✅ dodajemy datę sesji
+            s.SessionDate,
             c.Id AS ClientId,
             c.FirstName,
             c.LastName
         FROM Session s
         LEFT JOIN Client c
             ON s.ClientId = c.Id
+        WHERE s.SessionDate BETWEEN ? AND ?
         ORDER BY s.StartTime, s.DayOfWeek
-    """).fetchall()
+    """, (week_start, week_end)).fetchall()
 
-    # 👇 dni tygodnia
     days = {
         1: "Poniedziałek",
         2: "Wtorek",
@@ -58,16 +64,12 @@ def home_page(request: Request, db=Depends(get_db)):
         7: "Niedziela"
     }
 
-    # =========================
-    # 🔥 BUDOWANIE TABELI (dni w kolumnach)
-    # =========================
     table = {}
 
     for r in rows:
         time_key = f'{r["StartTime"]} – {r["EndTime"]}'
 
         if time_key not in table:
-            # dla każdego czasu tworzymy wiersz z dniami jako kolumny
             table[time_key] = {day: None for day in range(1, 8)}
 
         table[time_key][r["DayOfWeek"]] = {
@@ -76,17 +78,18 @@ def home_page(request: Request, db=Depends(get_db)):
             "description": r["Description"] or "",
             "start": r["StartTime"] or "",
             "end": r["EndTime"] or "",
+            "session_date": r["SessionDate"],        # <-- dodaj to
             "is_live": (
                 r["DayOfWeek"] == current_day and
                 r["StartTime"] <= current_time <= r["EndTime"]
             )
         }
 
+    
+    clients = cursor.execute("SELECT Id, FirstName, LastName FROM Client ORDER BY FirstName, LastName").fetchall()
+
     db.close()
 
-    # =========================
-    # 🔥 TEMPLATE RESPONSE
-    # =========================
     return templates.TemplateResponse(
         "statusall.html",
         {
@@ -94,10 +97,10 @@ def home_page(request: Request, db=Depends(get_db)):
             "table": table,
             "days": days,
             "current_day": current_day,
-            "current_time": current_time
+            "current_time": current_time,
+            "clients": clients  # <-- dodane
         }
     )
-
 # =========================
 # EDIT SESSION
 # =========================
@@ -154,3 +157,34 @@ def delete_session(session_id: int, db=Depends(get_db)):
     db.close()
 
     return JSONResponse({"status": "ok", "message": "Sesja usunięta"})
+
+
+# =========================
+# CREATE SESSION
+# =========================
+@router.post("/session/create")
+def create_session(
+    start: str = Form(...),
+    end: str = Form(...),
+    client_id: int = Form(...),
+    description: str = Form(""),
+    day_of_week: int = Form(...),
+    session_date: str = Form(...),
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    # weryfikacja klienta
+    client = cursor.execute("SELECT Id FROM Client WHERE Id = ?", (client_id,)).fetchone()
+    if not client:
+        raise HTTPException(status_code=404, detail="Nie ma takiego klienta")
+
+    # INSERT
+    cursor.execute("""
+        INSERT INTO Session (StartTime, EndTime, ClientId, Description, DayOfWeek, SessionDate)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (start, end, client_id, description, day_of_week, session_date))
+    db.commit()
+    db.close()
+
+    return JSONResponse({"status":"ok", "message":"Sesja utworzona"})

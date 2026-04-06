@@ -141,6 +141,7 @@ td {
     <span id="current-day-date"></span>
     <span class="live-time" id="live-time">--:--:--</span>
     <button onclick="changeWeek(1)">➡</button>
+    <button onclick="openCreateSession()" style="margin-left:10px;font-size:16px;">➕ Nowa sesja</button>
 </div>
 
 <div class="table-wrap">
@@ -196,7 +197,12 @@ td {
         <input type="time" id="p-end">
 
         <label>Klient</label>
-        <input type="text" id="p-client">
+        <select id="p-client">
+            <option value="">— wybierz klienta —</option>
+            {% for client in clients %}
+                <option value="{{ client.Id }}">{{ client.FirstName }} {{ client.LastName }}</option>
+            {% endfor %}
+        </select>
 
         <label>Opis</label>
         <input type="text" id="p-desc">        
@@ -232,14 +238,42 @@ function updateLiveTime() {
 }
 
 // Funkcje podglądu
+// Funkcje podglądu - EDIT
 function openPreview(el) {
     currentCell = el;
     document.getElementById('p-start').value = el.dataset.start;
     document.getElementById('p-end').value = el.dataset.end;
-    document.getElementById('p-client').value = el.dataset.client;
+    document.getElementById('p-client').value = el.dataset.client_id || ""; // używamy client_id z dataset
     document.getElementById('p-desc').value = el.dataset.desc;
     document.getElementById('p-day').value = el.dataset.day;
     document.getElementById('preview').classList.add('active');
+
+    // Przywracamy przycisk Save dla edycji
+    const saveBtn = document.querySelector('.preview-card button:first-of-type');
+    saveBtn.textContent = "💾 Zapisz";
+    saveBtn.onclick = saveEdit;
+
+    // Pokaż przycisk Usuń
+    document.querySelector('.preview-card button:last-of-type').style.display = "block";
+}
+
+// CREATE SESSION
+function openCreateSession() {
+    currentCell = null; // brak wybranej sesji
+    document.getElementById('p-start').value = "";
+    document.getElementById('p-end').value = "";
+    document.getElementById('p-client').value = "";
+    document.getElementById('p-desc').value = "";
+    document.getElementById('p-day').value = "1";
+    document.getElementById('preview').classList.add('active');
+
+    // Zmieniamy przycisk save na create
+    const saveBtn = document.querySelector('.preview-card button:first-of-type');
+    saveBtn.textContent = "💾 Utwórz";
+    saveBtn.onclick = createSession;
+
+    // Ukrywamy przycisk Usuń w trybie tworzenia
+    document.querySelector('.preview-card button:last-of-type').style.display = "none";
 }
 
 function closePreview() {
@@ -328,6 +362,51 @@ function changeWeek(delta) {
     weekOffset += delta;
     updateWeekDates();
 }
+
+// NEW: otwieramy popup w trybie create
+function openCreateSession() {
+    currentCell = null; // brak wybranej sesji
+    document.getElementById('p-start').value = "";
+    document.getElementById('p-end').value = "";
+    document.getElementById('p-client').value = "";
+    document.getElementById('p-desc').value = "";
+    document.getElementById('p-day').value = "1";
+    document.getElementById('preview').classList.add('active');
+
+    // Zmieniamy przycisk save na create
+    const saveBtn = document.querySelector('.preview-card button:first-of-type');
+    saveBtn.textContent = "💾 Utwórz";
+    saveBtn.onclick = createSession;
+}
+
+// NEW: funkcja tworzenia sesji
+function createSession() {
+    const formData = new FormData();
+    formData.append("start", document.getElementById('p-start').value);
+    formData.append("end", document.getElementById('p-end').value);
+    formData.append("client_id", document.getElementById('p-client').value); // podaj ID klienta
+    formData.append("description", document.getElementById('p-desc').value);
+    formData.append("day_of_week", document.getElementById('p-day').value);
+    // automatycznie ustawiamy SessionDate na datę wybranego dnia w bieżącym tygodniu
+    const dayOffset = parseInt(document.getElementById('p-day').value) - 1;
+    const monday = new Date();
+    monday.setDate(monday.getDate() - (monday.getDay() === 0 ? 6 : monday.getDay() - 1)); // start tygodnia
+    const sessionDate = new Date(monday);
+    sessionDate.setDate(sessionDate.getDate() + dayOffset);
+    formData.append("session_date", sessionDate.toISOString().slice(0,10));
+
+    fetch("/home/session/create", {
+        method: "POST",
+        body: formData
+    })
+    .then(r => {
+        if (!r.ok) throw new Error("Błąd tworzenia sesji");
+        location.reload();
+    })
+    .catch(err => alert(err.message));
+}
+
+
 
 // wywołania startowe
 setInterval(updateLiveTime, 1000);
