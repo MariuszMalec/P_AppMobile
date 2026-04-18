@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Request, Form, Query, Depends, HTTPException
 from fastapi.responses import RedirectResponse, HTMLResponse, JSONResponse
+from fastapi import Query
 from starlette.status import HTTP_303_SEE_OTHER
 import sqlite3
 from templates import templates
@@ -21,7 +22,11 @@ router = APIRouter(
 from datetime import datetime, timedelta
 
 @router.get("/", response_class=HTMLResponse)
-def home_page(request: Request, db=Depends(get_db), week_offset: int = 0):
+def home_page(
+    request: Request,
+    db=Depends(get_db),
+    week_offset: int = Query(0)
+):
 
     cursor = db.cursor()
 
@@ -98,9 +103,12 @@ def home_page(request: Request, db=Depends(get_db), week_offset: int = 0):
             "days": days,
             "current_day": current_day,
             "current_time": current_time,
-            "clients": clients  # <-- dodane
+            "clients": clients,
+            "week_offset": week_offset,   # ✔️ TUTAJ
+            "week_start": week_start      # (opcjonalnie ale potrzebne)
         }
     )
+
 # =========================
 # EDIT SESSION
 # =========================

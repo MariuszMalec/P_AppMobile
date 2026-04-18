@@ -437,35 +437,45 @@ function deleteSession() {
 
 // Funkcja uzupełniająca daty przy dniach tygodnia z przesunięciem
 function updateWeekDates() {
+    const params = new URLSearchParams(window.location.search);
+    const offset = parseInt(params.get("week_offset") || "0");
+
     const now = new Date();
     const dayOfWeek = now.getDay();
     const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
 
-    const headers = document.querySelectorAll('.day-header');
     const weekStart = new Date(now);
-    weekStart.setDate(now.getDate() + mondayOffset + weekOffset * 7);
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekEnd.getDate() + 6);
+    weekStart.setDate(now.getDate() + mondayOffset + offset * 7);
+
+    const headers = document.querySelectorAll('.day-header');
 
     headers.forEach((th, index) => {
         const d = new Date(weekStart);
         d.setDate(d.getDate() + index);
-        const dayNum = d.getDate();
+
+        const dayNum = String(d.getDate()).padStart(2, '0');
         const monthNum = String(d.getMonth() + 1).padStart(2, '0');
-        const dayName = th.textContent.split(' ')[0];
-        th.textContent = `${dayName} (${dayNum}.${monthNum})`;
+
+        const baseName = th.textContent.split(' ')[0];
+        th.textContent = `${baseName} (${dayNum}.${monthNum})`;
     });
 
-    const monthNames = ["stycznia","lutego","marca","kwietnia","maja","czerwca","lipca","sierpnia","września","października","listopada","grudnia"];
-    document.getElementById('current-day-date').textContent = `(Poniedziałek ${weekStart.getDate()} ${monthNames[weekStart.getMonth()]})`;
-
-    filterSessionsByWeek(weekStart, weekEnd);
+    document.getElementById('current-day-date').textContent =
+        weekStart.toLocaleDateString('pl-PL');
 }
 
 // 🔥 Nie nadpisujemy HTML, tylko ukrywamy/odkrywamy komórki
 function filterSessionsByWeek(start, end) {
-    const startStr = start.toISOString().slice(0,10);
-    const endStr = end.toISOString().slice(0,10);
+
+    function toLocalDateStr(d) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    const startStr = toLocalDateStr(start);
+    const endStr = toLocalDateStr(end);
 
     document.querySelectorAll("tbody tr").forEach(tr => {
         let hasVisibleSession = false;
@@ -483,19 +493,25 @@ function filterSessionsByWeek(start, end) {
             }
         });
 
-        // 🔥 KLUCZOWE: ukryj cały wiersz jeśli brak sesji
-        if (!hasVisibleSession) {
-            tr.style.display = "none";
-        } else {
-            tr.style.display = "";
-        }
+        tr.style.display = hasVisibleSession ? "" : "none";
     });
 }
 
+// function changeWeek(delta) {
+//     weekOffset += delta;
+//     updateWeekDates();
+// }
+
 function changeWeek(delta) {
-    weekOffset += delta;
-    updateWeekDates();
+    const params = new URLSearchParams(window.location.search);
+
+    let offset = parseInt(params.get("week_offset") || "0");
+    offset += delta;
+
+    const url = `/home/?week_offset=${offset}`;
+    window.location.assign(url);
 }
+
 
 // NEW: otwieramy popup w trybie create
 function openCreateSession() {
