@@ -531,29 +531,54 @@ function openCreateSession() {
 
 // NEW: funkcja tworzenia sesji
 function createSession() {
-    const formData = new FormData();
-    formData.append("start", document.getElementById('p-start').value);
-    formData.append("end", document.getElementById('p-end').value);
-    formData.append("client_id", document.getElementById('p-client').value); // podaj ID klienta
-    formData.append("description", document.getElementById('p-desc').value);
-    formData.append("day_of_week", document.getElementById('p-day').value);
-    // automatycznie ustawiamy SessionDate na datę wybranego dnia w bieżącym tygodniu
-    const dayOffset = parseInt(document.getElementById('p-day').value) - 1;
-    const monday = new Date();
-    monday.setDate(monday.getDate() - (monday.getDay() === 0 ? 6 : monday.getDay() - 1)); // start tygodnia
-    const sessionDate = new Date(monday);
-    sessionDate.setDate(sessionDate.getDate() + dayOffset);
-    formData.append("session_date", sessionDate.toISOString().slice(0,10));
+    const startTime = document.getElementById('p-start').value;
+    const endTime = document.getElementById('p-end').value;
+    const clientId = document.getElementById('p-client').value;
+    const description = document.getElementById('p-desc').value;
+    const dayOfWeek = document.getElementById('p-day').value;
 
+    // Pobieramy aktualny offset tygodnia z URL
+    const params = new URLSearchParams(window.location.search);
+    const weekOffset = parseInt(params.get("week_offset") || "0"); // Przesunięcie tygodnia
+
+    // Tworzymy datę początkową (poniedziałek w bieżącym tygodniu z uwzględnieniem przesunięcia)
+    const today = new Date();
+    const currentDay = today.getDay();  // Dzień tygodnia (0 = Niedziela, 1 = Poniedziałek, ..., 6 = Sobota)
+    
+    // Obliczamy datę poniedziałku w bieżącym tygodniu
+    const mondayOffset = (currentDay === 0 ? -6 : 1 - currentDay);  // Jeśli niedziela, cofamy się o 6 dni
+    const monday = new Date(today);
+    monday.setDate(today.getDate() + mondayOffset);  // Ustalamy datę poniedziałku
+    
+    // Zastosowanie przesunięcia tygodnia
+    monday.setDate(monday.getDate() + (weekOffset * 7)); // Przesuwamy o odpowiednią liczbę dni dla wybranego tygodnia
+
+    // Dodajemy odpowiedni offset dla wybranego dnia tygodnia (od 1 = poniedziałek do 7 = niedziela)
+    const sessionDate = new Date(monday);
+    sessionDate.setDate(sessionDate.getDate() + (parseInt(dayOfWeek) - 1)); // -1, bo 1 = poniedziałek
+
+    // Tworzymy formularz do wysłania
+    const formData = new FormData();
+    formData.append("start", startTime);
+    formData.append("end", endTime);
+    formData.append("client_id", clientId); // ID klienta
+    formData.append("description", description);
+    formData.append("day_of_week", dayOfWeek);
+    formData.append("session_date", sessionDate.toISOString().slice(0, 10)); // Datę sesji w formacie YYYY-MM-DD
+
+    // Wysłanie zapytania do serwera
     fetch("/home/session/create", {
         method: "POST",
         body: formData
     })
-    .then(r => {
-        if (!r.ok) throw new Error("Błąd tworzenia sesji");
-        location.reload();
+    .then(response => {
+        if (!response.ok) throw new Error("Błąd tworzenia sesji");
+        return response.json(); // Możesz zwrócić JSON, jeśli API odpowiada
     })
-    .catch(err => alert(err.message));
+    .then(() => {
+        location.reload(); // Po udanej sesji przeładuj stronę
+    })
+    .catch(err => alert("Błąd: " + err.message));
 }
 
 function openCreateClient() {
