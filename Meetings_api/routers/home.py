@@ -198,3 +198,48 @@ def get_clients(db=Depends(get_db)):
     clients = cursor.execute("SELECT Id, FirstName, LastName FROM Client ORDER BY FirstName, LastName").fetchall()
 
     return JSONResponse(content=clients)
+
+
+# =========================
+# CREATE CLIENT
+# =========================
+@router.post("/client/create")
+def create_client(
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    age: int = Form(None),
+    description: str = Form(""),
+    phone: str = Form(""),
+    gender: str = Form(""),
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    first_name = first_name.strip()
+    last_name = last_name.strip()
+
+    if not first_name or not last_name:
+        raise HTTPException(status_code=400, detail="Imię i nazwisko są wymagane")
+
+    # 🔒 BLOKADA DUPLIKATU
+    existing = cursor.execute("""
+        SELECT Id FROM Client
+        WHERE LOWER(FirstName) = LOWER(?) 
+          AND LOWER(LastName) = LOWER(?)
+    """, (first_name, last_name)).fetchone()
+
+    if existing:
+        raise HTTPException(status_code=400, detail="Klient już istnieje")
+
+    cursor.execute("""
+        INSERT INTO Client (FirstName, LastName, Age, Description, Phone, Gender)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (first_name, last_name, age, description, phone, gender))
+
+    db.commit()
+    db.close()
+
+    return JSONResponse({
+        "status": "ok",
+        "message": "Klient utworzony"
+    })

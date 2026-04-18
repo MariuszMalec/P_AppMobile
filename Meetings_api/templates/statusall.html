@@ -131,6 +131,63 @@ td {
     font-size: 14px;
     color: #8cff8c;
 }
+
+.create-client-btn {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-client-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,114,255,.4);
+}
+
+.create-client-btn:active {
+    transform: scale(0.96);
+}
+
+.create-session-btn {
+    background: linear-gradient(135deg, #00ff9f, #00cfff);
+    border: none;
+    color: #001;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-session-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,255,200,.35);
+}
+
+.create-session-btn:active {
+    transform: scale(0.96);
+}
+
+.create-session-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.create-session-btn:hover::before {
+    opacity: 1;
+}
+
+
 </style>
 </head>
 <body>
@@ -141,7 +198,10 @@ td {
     <span id="current-day-date"></span>
     <span class="live-time" id="live-time">--:--:--</span>
     <button onclick="changeWeek(1)">➡</button>
-    <button onclick="openCreateSession()" style="margin-left:10px;font-size:16px;">➕ Nowa sesja</button>
+    <button class="create-session-btn" onclick="openCreateSession()">
+        ➕ Nowa sesja
+    </button>
+    <button class="create-client-btn" onclick="openCreateClient()">👤 Nowy klient</button>
 </div>
 
 <div class="table-wrap">
@@ -220,6 +280,36 @@ td {
 
         <button onclick="saveEdit()">💾 Zapisz</button>
         <button onclick="deleteSession()">🗑 Usuń</button>
+    </div>
+</div>
+
+<!-- CLIENT PREVIEW -->
+<div class="preview-bg" id="client-preview" onclick="closeClientPreview()">
+    <div class="preview-card" onclick="event.stopPropagation()">
+
+        <label>Imię</label>
+        <input type="text" id="c-first">
+
+        <label>Nazwisko</label>
+        <input type="text" id="c-last">
+
+        <label>Wiek</label>
+        <input type="number" id="c-age">
+
+        <label>Telefon</label>
+        <input type="text" id="c-phone">
+
+        <label>Płeć</label>
+        <select id="c-gender">
+            <option value="">— wybierz —</option>
+            <option value="male">Mężczyzna</option>
+            <option value="female">Kobieta</option>
+        </select>
+
+        <label>Opis</label>
+        <input type="text" id="c-desc">
+
+        <button onclick="createClient()">💾 Utwórz klienta</button>
     </div>
 </div>
 
@@ -437,7 +527,34 @@ function createSession() {
     .catch(err => alert(err.message));
 }
 
+function openCreateClient() {
+    document.getElementById('client-preview').classList.add('active');
+}
 
+function createClient() {
+    const formData = new FormData();
+    formData.append("first_name", document.getElementById('c-first').value);
+    formData.append("last_name", document.getElementById('c-last').value);
+    formData.append("age", document.getElementById('c-age').value);
+    formData.append("phone", document.getElementById('c-phone').value);
+    formData.append("description", document.getElementById('c-desc').value);
+    formData.append("gender", document.getElementById('c-gender').value);
+
+    fetch("/home/client/create", {
+        method: "POST",
+        body: formData
+    })
+    .then(r => {
+        if (!r.ok) throw new Error("Błąd tworzenia klienta");
+        return r.json();
+    })
+    .then(() => location.reload())
+    .catch(err => alert(err.message));
+}
+
+function closeClientPreview() {
+    document.getElementById('client-preview').classList.remove('active');
+}
 
 // wywołania startowe
 setInterval(updateLiveTime, 1000);
