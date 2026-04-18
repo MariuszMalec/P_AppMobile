@@ -467,14 +467,27 @@ function filterSessionsByWeek(start, end) {
     const startStr = start.toISOString().slice(0,10);
     const endStr = end.toISOString().slice(0,10);
 
-    document.querySelectorAll('td[data-session-id]').forEach(td => {
-        const dateStr = td.dataset.sessionDate; // YYYY-MM-DD
-        if (!dateStr) return;
+    document.querySelectorAll("tbody tr").forEach(tr => {
+        let hasVisibleSession = false;
 
-        if (dateStr < startStr || dateStr > endStr) {
-            td.style.display = "none";
+        tr.querySelectorAll('td[data-session-id]').forEach(td => {
+            const dateStr = td.dataset.sessionDate;
+
+            if (!dateStr) return;
+
+            if (dateStr < startStr || dateStr > endStr) {
+                td.style.display = "none";
+            } else {
+                td.style.display = "";
+                hasVisibleSession = true;
+            }
+        });
+
+        // 🔥 KLUCZOWE: ukryj cały wiersz jeśli brak sesji
+        if (!hasVisibleSession) {
+            tr.style.display = "none";
         } else {
-            td.style.display = "";
+            tr.style.display = "";
         }
     });
 }
@@ -560,6 +573,7 @@ function closeClientPreview() {
 setInterval(updateLiveTime, 1000);
 updateLiveTime();
 updateWeekDates();
+
 </script>
 
 </body>
