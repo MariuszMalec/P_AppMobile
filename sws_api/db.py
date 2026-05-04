@@ -101,7 +101,8 @@ def insert_trophies(conn):
         (9, "EnglandCup", "",'https://media.istockphoto.com/id/1420090069/photo/golden-cup-in-football-stadium.webp?a=1&b=1&s=612x612&w=0&k=20&c=xjBWYI1R6n6mq5vv8dCKH0OStAt_PF845yZL7ZXZDzU=',0),
         (10, "Loser", "",'https://images.unsplash.com/photo-1612436395449-279ee9a6afd0?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8bG9zZXJ8ZW58MHx8MHx8fDA%3D',0),                
         (11, "Promoted", "",'https://media.istockphoto.com/id/531347379/photo/soccer-team-celebrating.webp?a=1&b=1&s=612x612&w=0&k=20&c=PVNt9QCBMxv-lQ8MwwRlZx7qNUjMZfDhSyGkv71owNg=',0),
-        (12, "LeagueCup", "",'https://images.unsplash.com/photo-1637203727317-3cc1a557cdbf?q=80&w=1112&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',0);
+        (12, "LeagueCup", "EnglishCup2",'https://images.unsplash.com/photo-1637203727317-3cc1a557cdbf?q=80&w=1112&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',0),
+        (13, "HollandCup", "",'https://plus.unsplash.com/premium_photo-1675865395254-4bafc967c813?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8c29jY2VyJTIwZm9vdGJhbGwlMjBvZiUyMGhvbGxhbmR8ZW58MHx8MHx8fDA%3D',0);
     """)
 
     conn.commit()
