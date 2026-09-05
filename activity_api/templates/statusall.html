@@ -29,6 +29,7 @@ body {
 
 /* POWRÓT */
 .back { padding: 12px 16px 0; }
+
 .back a {
     color: #38bdf8;
     text-decoration: none;
@@ -40,6 +41,7 @@ body {
     text-align: center;
     padding: 8px 8px 16px;
 }
+
 .header h1 {
     margin: 0;
     font-size: 18px;
@@ -51,6 +53,7 @@ body {
     overflow-x: auto;
     padding: 8px;
 }
+
 table {
     width: 100%;
     table-layout: fixed;
@@ -58,16 +61,19 @@ table {
     background: var(--panel);
     border-radius: 14px;
 }
+
 th, td {
     border: 1px solid var(--border);
     text-align: center;
     padding: 0;
 }
+
 th {
     height: 44px;
     font-size: 12px;
     color: var(--muted);
 }
+
 td {
     height: 96px;
     position: relative;
@@ -83,6 +89,7 @@ td {
     height: 100%;
     object-fit: cover;
 }
+
 .tile-overlay {
     position: absolute;
     inset: 0;
@@ -106,6 +113,7 @@ td {
     50% { filter: brightness(1.6); }
     100% { filter: brightness(1); }
 }
+
 .live {
     animation: livePulse 1.8s infinite;
 }
@@ -130,6 +138,7 @@ td {
     justify-content: center;
     z-index: 999;
 }
+
 .preview-bg.active {
     display: flex;
 }
@@ -146,7 +155,7 @@ td {
 
 @keyframes pop {
     from { transform: scale(.92); opacity: .5; }
-    to { transform: scale(1); opacity: 1; }
+    to   { transform: scale(1); opacity: 1; }
 }
 
 .preview-card img {
@@ -167,7 +176,8 @@ td {
     color: var(--muted);
 }
 
-.preview-desc input {
+.preview-desc input,
+.preview-desc select {
     padding: 8px;
     border-radius: 8px;
     border: none;
@@ -195,8 +205,11 @@ td {
 
 /* MOBILE */
 @media (max-width: 600px) {
-    td { height: 86px; }
+    td {
+        height: 86px;
+    }
 }
+
 </style>
 </head>
 
@@ -206,7 +219,9 @@ td {
     <a href="/home">⬅ Powrót</a>
 </div>
 
+
 <div class="header">
+
     <div style="
         display:flex;
         align-items:center;
@@ -215,14 +230,20 @@ td {
         font-size:18px;
         font-weight:600;
     ">
+
         <span
             style="cursor:pointer; user-select:none;"
             onclick="changeDay(-1)"
         >⬅</span>
 
-        <span>🟢 LIVE — {{ day_name }}</span> 
+        <span>
+            🟢 LIVE — {{ day_name }}
+        </span>
 
-        <span class="datetime" id="datetime"></span>
+        <span
+            class="datetime"
+            id="datetime"
+        ></span>
 
         <span
             style="cursor:pointer; user-select:none;"
@@ -230,90 +251,195 @@ td {
         >➡</span>
 
     </div>
+
 </div>
 
 
 <div class="table-wrap">
+
 <table>
+
 <thead>
+
 <tr>
+
     <th>⏰</th>
+
     {% for p in persons %}
         <th>{{ p.name }}</th>
     {% endfor %}
+
 </tr>
+
 </thead>
 
+
 <tbody>
+
 {% for time, row in table.items() %}
+
 <tr>
+
     <td>{{ time }}</td>
 
     {% for p in persons %}
+
         {% set cell = row[p.id] %}
-        <td class="{% if cell and cell.is_live %}live{% endif %}"
+
+        <td
+            class="{% if cell and cell.is_live %}live{% endif %}"
+
             {% if cell %}
+
             data-activity-id="{{ cell.activity_id }}"
             data-desc="{{ cell.description }}"
             data-img="{{ cell.picture }}"
             data-start="{{ cell.start }}"
             data-end="{{ cell.end }}"
             data-activityname="{{ cell.activityname }}"
+            data-day="{{ day_index }}"
             onclick="openPreview(this)"
+
             {% endif %}
         >
+
             {% if cell %}
+
                 {% if cell.picture %}
-                    <img src="{{ cell.picture }}" class="tile-img">
+
+                    <img
+                        src="{{ cell.picture }}"
+                        class="tile-img"
+                    >
+
                 {% endif %}
+
                 <div class="tile-overlay">
                     {{ cell.description }}
                 </div>
+
             {% else %}
-                <div class="empty">—</div>
+
+                <div class="empty">
+                    —
+                </div>
+
             {% endif %}
+
         </td>
+
     {% endfor %}
+
 </tr>
+
 {% endfor %}
+
 </tbody>
+
 </table>
+
 </div>
 
-<!-- PREVIEW -->
-<div class="preview-bg" id="preview" onclick="closePreview()">
-    <div class="preview-card" onclick="event.stopPropagation()">
-        <div class="preview-close" onclick="closePreview()">✕</div>
+
+<!-- ================= PREVIEW ================= -->
+
+<div
+    class="preview-bg"
+    id="preview"
+    onclick="closePreview()"
+>
+
+    <div
+        class="preview-card"
+        onclick="event.stopPropagation()"
+    >
+
+        <div
+            class="preview-close"
+            onclick="closePreview()"
+        >
+            ✕
+        </div>
+
 
         <img id="p-img">
 
+
         <div class="preview-desc">
-            <div id="p-name" style="font-weight:600; text-align:center;"></div>
+
+            <div
+                id="p-name"
+                style="font-weight:600; text-align:center;"
+            ></div>
+
 
             <label>Start</label>
-            <input type="time" id="p-start">    
+
+            <input
+                type="time"
+                id="p-start"
+            >
+
 
             <label>Koniec</label>
-            <input type="time" id="p-end">
+
+            <input
+                type="time"
+                id="p-end"
+            >
+
+
+            <!-- ================= DZIEŃ TYGODNIA ================= -->
+
+            <label>Dzień tygodnia</label>
+
+                <select id="p-day">
+                    <option value="1">Niedziela</option>
+                    <option value="2">Poniedziałek</option>
+                    <option value="3">Wtorek</option>
+                    <option value="4">Środa</option>
+                    <option value="5">Czwartek</option>
+                    <option value="6">Piątek</option>
+                    <option value="7">Sobota</option>
+                </select>
 
             <label>Aktywność</label>
-            <select id="p-activity-select" name="activityname">
-                <option value="">— BRAK —</option>
+
+            <select
+                id="p-activity-select"
+                name="activityname"
+            >
+
+                <option value="">
+                    — BRAK —
+                </option>
+
                 {% for v in pictures %}
+
                     <option
                         value="{{ v.label }}"
                         data-picture="{{ v.picture }}"
                     >
                         {{ v.label }}
                     </option>
+
                 {% endfor %}
+
             </select>
 
 
             <label>Opis</label>
-            <input type="text" id="p-desc-input">
 
-            <button onclick="saveEdit()">💾 Zapisz</button>
+            <input
+                type="text"
+                id="p-desc-input"
+            >
+
+
+            <button onclick="saveEdit()">
+                💾 Zapisz
+            </button>
+
 
             <button
                 onclick="deleteActivity()"
@@ -327,13 +453,18 @@ td {
                 🗑 Usuń aktywność
             </button>
 
-
         </div>
+
     </div>
+
 </div>
 
-<div id="toast"
-     style="
+
+<!-- ================= TOAST ================= -->
+
+<div
+    id="toast"
+    style="
         position:fixed;
         top:24px;
         left:50%;
@@ -350,226 +481,595 @@ td {
         z-index:9999;
         display:none;
         animation:slideDown .3s ease;
-     ">
+    "
+>
+
     <span id="toast-text"></span>
+
 </div>
 
 
-
 <script>
+
 let currentCell = null;
+let originalState = null;
+
+
+/* ================= OPEN PREVIEW ================= */
 
 function openPreview(el) {
+
     currentCell = el;
 
     // 🔒 zapamiętaj stan przed edycją
+
     originalState = {
+
         img: el.dataset.img || '',
+
         desc: el.dataset.desc || '',
-        activityname: el.dataset.activityname || '',
-        start: el.dataset.start || '',
-        end: el.dataset.end || ''
+
+        activityname:
+            el.dataset.activityname || '',
+
+        start:
+            el.dataset.start || '',
+
+        end:
+            el.dataset.end || '',
+
+        day:
+            el.dataset.day || ''
+
     };
 
-    document.getElementById('p-img').src = originalState.img;
-    document.getElementById('p-start').value = originalState.start;
-    document.getElementById('p-end').value = originalState.end;
-    document.getElementById('p-desc-input').value = originalState.desc;
 
-    const select = document.getElementById('p-activity-select');
-    select.value = originalState.activityname;
+    document.getElementById('p-img').src =
+        originalState.img;
 
-    document.getElementById('preview').classList.add('active');
+    document.getElementById('p-start').value =
+        originalState.start;
+
+    document.getElementById('p-end').value =
+        originalState.end;
+
+    document.getElementById('p-desc-input').value =
+        originalState.desc;
+
+
+    // 📅 ustaw aktualny dzień
+
+    document.getElementById('p-day').value =
+        originalState.day;
+
+
+    // 🖼️ ustaw aktywność
+
+    const select =
+        document.getElementById(
+            'p-activity-select'
+        );
+
+    select.value =
+        originalState.activityname;
+
+
+    document
+        .getElementById('preview')
+        .classList.add('active');
 }
 
 
+/* ================= CLOSE PREVIEW ================= */
+
 function closePreview() {
+
     if (currentCell && originalState) {
 
-        // 🔙 cofnięcie dataset
-        currentCell.dataset.img = originalState.img;
-        currentCell.dataset.desc = originalState.desc;
-        currentCell.dataset.activityname = originalState.activityname;
-        currentCell.dataset.start = originalState.start;
-        currentCell.dataset.end = originalState.end;
+        // 🔙 przywróć dataset
 
-        // 🔙 cofnięcie obrazka
-        let tileImg = currentCell.querySelector('.tile-img');
+        currentCell.dataset.img =
+            originalState.img;
+
+        currentCell.dataset.desc =
+            originalState.desc;
+
+        currentCell.dataset.activityname =
+            originalState.activityname;
+
+        currentCell.dataset.start =
+            originalState.start;
+
+        currentCell.dataset.end =
+            originalState.end;
+
+        currentCell.dataset.day =
+            originalState.day;
+
+
+        // 🔙 przywróć obrazek
+
+        let tileImg =
+            currentCell.querySelector(
+                '.tile-img'
+            );
+
+
         if (originalState.img) {
+
             if (!tileImg) {
-                tileImg = document.createElement('img');
-                tileImg.className = 'tile-img';
-                currentCell.prepend(tileImg);
+
+                tileImg =
+                    document.createElement(
+                        'img'
+                    );
+
+                tileImg.className =
+                    'tile-img';
+
+                currentCell.prepend(
+                    tileImg
+                );
             }
-            tileImg.src = originalState.img;
+
+            tileImg.src =
+                originalState.img;
+
         } else if (tileImg) {
+
             tileImg.remove();
+
         }
 
-        // 🔙 cofnięcie opisu
-        const overlay = currentCell.querySelector('.tile-overlay');
-        if (overlay) overlay.textContent = originalState.desc;
+
+        // 🔙 przywróć opis
+
+        const overlay =
+            currentCell.querySelector(
+                '.tile-overlay'
+            );
+
+        if (overlay) {
+
+            overlay.textContent =
+                originalState.desc;
+
+        }
+
     }
 
-    document.getElementById('preview').classList.remove('active');
 
-    // 🧹 cleanup
+    document
+        .getElementById('preview')
+        .classList.remove('active');
+
+
     currentCell = null;
     originalState = null;
 }
 
 
+/* ================= ACTIVITY CHANGE ================= */
 
-document.getElementById('p-activity-select').addEventListener('change', e => {
-    const selected = e.target.selectedOptions[0];
-    if (!selected) return;
+document
+    .getElementById(
+        'p-activity-select'
+    )
+    .addEventListener(
+        'change',
+        e => {
 
-    const imgUrl = selected.dataset.picture || '';
+            const selected =
+                e.target.selectedOptions[0];
 
-    // 🖼️ preview
-    const previewImg = document.getElementById('p-img');
-    previewImg.src = imgUrl;
+            if (!selected) return;
 
-    // 🧠 zapamiętaj do zapisu
-    if (currentCell) {
-        currentCell.dataset.img = imgUrl;
 
-        let tileImg = currentCell.querySelector('.tile-img');
-        if (!tileImg) {
-            tileImg = document.createElement('img');
-            tileImg.className = 'tile-img';
-            currentCell.prepend(tileImg);
+            const imgUrl =
+                selected.dataset.picture || '';
+
+
+            // 🖼️ preview
+
+            const previewImg =
+                document.getElementById(
+                    'p-img'
+                );
+
+            previewImg.src =
+                imgUrl;
+
+
+            // 🧠 zapamiętaj do zapisu
+
+            if (currentCell) {
+
+                currentCell.dataset.img =
+                    imgUrl;
+
+
+                let tileImg =
+                    currentCell.querySelector(
+                        '.tile-img'
+                    );
+
+
+                if (!tileImg) {
+
+                    tileImg =
+                        document.createElement(
+                            'img'
+                        );
+
+                    tileImg.className =
+                        'tile-img';
+
+                    currentCell.prepend(
+                        tileImg
+                    );
+
+                }
+
+                tileImg.src =
+                    imgUrl;
+
+            }
+
         }
-        tileImg.src = imgUrl;
-    }
-});
-
-function closePreview() {
-    document.getElementById('preview').classList.remove('active');
-}
-
-function saveEdit() {
-    if (!currentCell) return;
-
-    const activityId = currentCell.dataset.activityId;
-
-    const formData = new FormData();
-    formData.append("start", document.getElementById('p-start').value);
-    formData.append("end", document.getElementById('p-end').value);
-    formData.append("description", document.getElementById('p-desc-input').value);
-    formData.append(
-        "activityname",
-        document.getElementById('p-activity-select').value
     );
 
-    fetch(`/live/statusall/edit/${activityId}`, {
-        method: "PUT",
-        body: formData
-    })
-    .then(async r => {
-        const text = await r.text();
-        if (!r.ok) {
-            console.error("STATUS:", r.status);
-            console.error("RESPONSE:", text);
-            throw new Error(text || "Błąd zapisu");
+
+/* ================= SAVE ================= */
+
+function saveEdit() {
+
+    if (!currentCell) return;
+
+
+    const activityId =
+        currentCell.dataset.activityId;
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "start",
+        document.getElementById(
+            'p-start'
+        ).value
+    );
+
+
+    formData.append(
+        "end",
+        document.getElementById(
+            'p-end'
+        ).value
+    );
+
+
+    formData.append(
+        "description",
+        document.getElementById(
+            'p-desc-input'
+        ).value
+    );
+
+
+    formData.append(
+        "activityname",
+        document
+            .getElementById(
+                'p-activity-select'
+            )
+            .value
+    );
+
+
+    // 📅 NOWY DZIEŃ
+
+    formData.append(
+        "day",
+        document.getElementById(
+            'p-day'
+        ).value
+    );
+
+
+    fetch(
+        `/live/statusall/edit/${activityId}`,
+        {
+            method: "PUT",
+            body: formData
         }
+    )
+
+    .then(async r => {
+
+        const text =
+            await r.text();
+
+
+        if (!r.ok) {
+
+            console.error(
+                "STATUS:",
+                r.status
+            );
+
+            console.error(
+                "RESPONSE:",
+                text
+            );
+
+
+            let message = text;
+
+
+            // Próba odczytania JSON
+            try {
+
+                const data =
+                    JSON.parse(text);
+
+                if (
+                    data.errors &&
+                    Array.isArray(data.errors)
+                ) {
+
+                    message =
+                        data.errors.join("\n");
+
+                } else if (
+                    data.detail
+                ) {
+
+                    message =
+                        data.detail;
+
+                }
+
+            } catch (e) {
+                // odpowiedź nie była JSON
+            }
+
+
+            throw new Error(
+                message ||
+                "Błąd zapisu"
+            );
+        }
+
+
         return text;
+
     })
+
     .then(() => {
+
         closePreview();
-        location.reload(); // NA RAZIE – później zrobimy live update
+
+        location.reload();
+
     })
+
     .catch(err => {
-        showErrorToast(err.message);
+
+        showErrorToast(
+            err.message
+        );
+
     });
 
 }
 
-/* AUTO REFRESH */
-setInterval(() => {
-    const previewOpen = document
-        .getElementById('preview')
-        .classList.contains('active');
 
-    if (!document.hidden && !previewOpen) {
+/* ================= AUTO REFRESH ================= */
+
+setInterval(() => {
+
+    const previewOpen =
+        document
+            .getElementById('preview')
+            .classList
+            .contains('active');
+
+
+    if (
+        !document.hidden &&
+        !previewOpen
+    ) {
+
         location.reload();
+
     }
+
 }, 30000);
 
 
-function showErrorToast(message) {
-    const toast = document.getElementById("toast");
-    const text  = document.getElementById("toast-text");
+/* ================= ERROR TOAST ================= */
 
-    text.innerText = "❌ " + message;
-    toast.style.display = "block";
+function showErrorToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    const text =
+        document.getElementById(
+            "toast-text"
+        );
+
+
+    text.innerText =
+        "❌ " + message;
+
+
+    toast.style.display =
+        "block";
+
 
     setTimeout(() => {
-        toast.style.opacity = "0";
+
+        toast.style.opacity =
+            "0";
+
+
         setTimeout(() => {
-            toast.style.display = "none";
-            toast.style.opacity = "1";
+
+            toast.style.display =
+                "none";
+
+            toast.style.opacity =
+                "1";
+
         }, 300);
+
     }, 4500);
+
 }
+
+
+/* ================= DELETE ================= */
 
 function deleteActivity() {
+
     if (!currentCell) return;
 
-    const activityId = currentCell.dataset.activityId;
+
+    const activityId =
+        currentCell.dataset.activityId;
+
+
     if (!activityId) return;
 
-    if (!confirm("Czy na pewno usunąć tę aktywność?")) return;
 
-    fetch(`/activities/delete/${activityId}`, {
-        method: "POST"
-    })
+    if (
+        !confirm(
+            "Czy na pewno usunąć aktywność?"
+        )
+    ) return;
+
+
+    fetch(
+        `/activities/delete/${activityId}`,
+        {
+            method: "POST"
+        }
+    )
+
     .then(r => {
-        if (!r.ok) throw new Error("Nie udało się usunąć aktywności");
+
+        if (!r.ok) {
+
+            throw new Error(
+                "Nie udało się usunąć aktywności"
+            );
+
+        }
+
+
         closePreview();
+
         location.reload();
+
     })
-    .catch(err => showErrorToast(err.message));
+
+    .catch(err =>
+
+        showErrorToast(
+            err.message
+        )
+
+    );
+
 }
 
 
-const currentDay = {{ day_index }};
+/* ================= CHANGE DAY ================= */
+
+const currentDay =
+    {{ day_index }};
+
 
 function changeDay(step) {
-    let newDay = currentDay + step;
 
-    if (newDay < 1) newDay = 7;
-    if (newDay > 7) newDay = 1;
+    let newDay =
+        currentDay + step;
 
-    // wariant URL /liveall/2
-    window.location.href = `/live/liveall/${newDay}`;
 
-    // JEŚLI masz querystring zamiast path – użyj tego:
-    // window.location.href = `/liveall?day=${newDay}`;
+    if (newDay < 1)
+        newDay = 7;
+
+
+    if (newDay > 7)
+        newDay = 1;
+
+
+    window.location.href =
+        `/live/liveall/${newDay}`;
+
 }
 
-/* DATE TIME LIVE */
+
+/* ================= DATE TIME LIVE ================= */
+
 function updateDateTime() {
-    const el = document.getElementById('datetime');
-    const now = new Date();
+
+    const el =
+        document.getElementById(
+            'datetime'
+        );
+
+
+    const now =
+        new Date();
+
 
     const days = [
-        'Niedziela','Poniedziałek','Wtorek',
-        'Środa','Czwartek','Piątek','Sobota'
+
+        'Niedziela',
+        'Poniedziałek',
+        'Wtorek',
+        'Środa',
+        'Czwartek',
+        'Piątek',
+        'Sobota'
+
     ];
 
-    const day = days[now.getDay()];
-    const time = now.toLocaleTimeString('pl-PL', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit'
-    });
 
-    el.textContent = `${time}`;
+    const day =
+        days[now.getDay()];
+
+
+    const time =
+        now.toLocaleTimeString(
+            'pl-PL',
+            {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }
+        );
+
+
+    el.textContent =
+        `${time}`;
+
 }
 
+
 updateDateTime();
-setInterval(updateDateTime, 1000);
+
+
+setInterval(
+    updateDateTime,
+    1000
+);
 
 </script>
 

@@ -446,12 +446,16 @@ def edit_activity_put(
         end: str = Form(...),
         description: str = Form(""),
         activityname: str = Form(""),
+        day: int = Form(...),
         db = Depends(get_db)
     ):
 
     cursor = db.cursor()
 
+    # ===============================
     # 🔎 ŹRÓDŁO PRAWDY
+    # ===============================
+
     activity = cursor.execute("""
         SELECT
             DayOfWeek,
@@ -462,21 +466,51 @@ def edit_activity_put(
 
     if not activity:
         db.close()
-        raise HTTPException(status_code=404, detail="Aktywność nie istnieje")
+        raise HTTPException(
+            status_code=404,
+            detail="Aktywność nie istnieje"
+        )
 
-    day_of_week = activity["DayOfWeek"]
+    old_day_of_week = activity["DayOfWeek"]
     person_id = activity["ModelPersonFamilyId"]
 
-    start = hhmm(start)
-    end   = hhmm(end)
+    # ===============================
+    # 📅 WALIDACJA DNIA
+    # ===============================
+
+    if day < 1 or day > 7:
+        db.close()
+
+        return JSONResponse(
+            {
+                "status": "error",
+                "errors": [
+                    "Nieprawidłowy dzień tygodnia"
+                ]
+            },
+            status_code=400
+        )
 
     # ===============================
-    # 🧠 WALIDACJA (WSZYSTKO W JEDNYM MIEJSCU)
+    # ⏰ CZASY
     # ===============================
+
+    start = hhmm(start)
+    end = hhmm(end)
+
+    # ===============================
+    # 🧠 WALIDACJA
+    # ===============================
+    # Używamy NOWEGO dnia.
+    #
+    # Dzięki temu jeśli przenosimy aktywność np.
+    # z poniedziałku na wtorek, sprawdzane są
+    # kolizje we WTOREK.
+
     errors = validate_activity_edit_form(
         start=start,
         end=end,
-        day_of_week=day_of_week,
+        day_of_week=day,
         person_id=person_id,
         activity_id=activity_id,
         db=db,
@@ -484,35 +518,47 @@ def edit_activity_put(
 
     if errors:
         db.close()
+
         return JSONResponse(
-            {"status": "error", "errors": errors},
+            {
+                "status": "error",
+                "errors": errors
+            },
             status_code=400
         )
 
     # ===============================
     # 🖼️ AKTYWNOŚĆ → ID OBRAZKA
     # ===============================
+
     picture_id = None
+
     if activityname:
+
         pic = cursor.execute("""
-            SELECT Id FROM PictureActivities
+            SELECT Id
+            FROM PictureActivities
             WHERE Name = ?
         """, (activityname,)).fetchone()
+
         if pic:
             picture_id = pic["Id"]
 
     # ===============================
     # ✅ UPDATE
     # ===============================
+
     cursor.execute("""
         UPDATE ActiviesDays
         SET
+            DayOfWeek = ?,
             StartTime = ?,
             EndTime = ?,
             Description = ?,
             ModelPictureActivityId = ?
         WHERE Id = ?
     """, (
+        day,
         start,
         end,
         description.strip() or None,
@@ -523,5 +569,6 @@ def edit_activity_put(
     db.commit()
     db.close()
 
-    return JSONResponse({"status": "ok"})
-
+    return JSONResponse({
+        "status": "ok"
+    })
