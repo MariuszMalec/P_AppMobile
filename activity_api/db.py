@@ -150,7 +150,8 @@ def insert_picture_activities(conn):
         (21, 21, 'Czas_z_mama',        'https://images.unsplash.com/photo-1623249288685-835abe0123b4?auto=format&fit=crop&w=871'),
         (22, 22, 'Czas_z_tata',        'https://images.unsplash.com/photo-1437943085269-6da5dd4295bf?auto=format&fit=crop&w=1170'),
         (23, 23, 'Tance',              'https://images.unsplash.com/photo-1504609813442-a8924e83f76e?auto=format&fit=crop&w=1170'),
-        (24, 24, 'Test',               'https://images.unsplash.com/photo-1606326608690-4e0281b1e588?w=500&auto=format&fit=crop&q=60');
+        (24, 24, 'Wyjscie_z_psem',     'https://images.unsplash.com/photo-1548199973-03cce0bbc87b?q=80&w=1169&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'),
+        (25, 25, 'Test',               'https://images.unsplash.com/photo-1606326608690-4e0281b1e588?w=500&auto=format&fit=crop&q=60');
     """)
 
     conn.commit()

@@ -125,68 +125,142 @@ def add_picture_activity_form(request: Request, db = Depends(get_db)):
             }
         )
 
-
 @router.post("/add", response_class=HTMLResponse)
 def add_picture_activity_save(
         request: Request,
         activityName: int = Form(...),
         name: str = Form(...),
-        picture: str = Form(""), 
+        picture: str = Form(""),
         db = Depends(get_db)
     ):
-        errors = []
+    errors = []
 
-        if not name.strip():
-            errors.append("Nazwa jest wymagana")
+    name = name.strip()
+    picture = picture.strip()
 
-        if errors:
-            return templates.TemplateResponse(
-                request,
-                "pictureactivity_add.html",
-                {
-                    "activities": ACTIVITY_ENUM_MAP,
-                    "errors": errors,
-                    "form": {
-                        "activityName": activityName,
-                        "name": name,
-                        "picture": picture,
-                    }
+    # -------------------------
+    # WALIDACJA NAME
+    # -------------------------
+
+    if not name:
+        errors.append("Nazwa jest wymagana")
+
+    elif len(name) > 15:
+        errors.append("Nazwa może mieć maksymalnie 15 znaków")
+
+    # -------------------------
+    # JEŚLI SĄ BŁĘDY
+    # -------------------------
+
+    if errors:
+        return templates.TemplateResponse(
+            request,
+            "pictureactivity_add.html",
+            {
+                "activities": ACTIVITY_ENUM_MAP,
+                "errors": errors,
+                "form": {
+                    "activityName": activityName,
+                    "name": name,
+                    "picture": picture,
                 }
-            )
+            }
+        )
 
-        cursor = db.cursor()
+    cursor = db.cursor()
 
-        try:
-            cursor.execute("""
-                INSERT INTO PictureActivities (ActivityName, Name, Picture)
-                VALUES (?, ?, ?)
-            """, (
-                activityName,
-                name.strip(),
-                picture.strip() or None
-            ))
+    # -------------------------
+    # SPRAWDZENIE CZY NAME JUŻ ISTNIEJE
+    # -------------------------
 
-            db.commit()
+    cursor.execute("""
+        SELECT Id
+        FROM PictureActivities
+        WHERE Name = ?
+        LIMIT 1
+    """, (name,))
 
-        except sqlite3.IntegrityError:
-            db.close()
-            return templates.TemplateResponse(
-                request,
-                "pictureactivity_add.html",
-                {
-                    "activities": ACTIVITY_ENUM_MAP,
-                    "errors": ["Ta aktywność MA JUŻ przypisany obrazek"],
-                    "form": {
-                        "activityName": activityName,
-                        "name": name,
-                        "picture": picture,
-                    }
-                }
-            )
-
+    if cursor.fetchone():
         db.close()
 
-        return RedirectResponse(
-            url="/pictureactivities",
-            status_code=303
+        return templates.TemplateResponse(
+            request,
+            "pictureactivity_add.html",
+            {
+                "activities": ACTIVITY_ENUM_MAP,
+                "errors": [
+                    "Taka nazwa aktywności już istnieje"
+                ],
+                "form": {
+                    "activityName": activityName,
+                    "name": name,
+                    "picture": picture,
+                }
+            }
         )
+
+    # -------------------------
+    # OBSŁUGA "INNE"
+    # -------------------------
+
+    # Szukamy ID pozycji "Inne" w ACTIVITY_ENUM_MAP
+    other_activity_id = next(
+        (
+            k for k, v in ACTIVITY_ENUM_MAP.items()
+            if str(v.value).strip().lower() == "inne"
+        ),
+        None
+    )
+
+    # Jeżeli wybrano "Inne" -> nadajemy kolejne ID
+    if other_activity_id is not None and activityName == other_activity_id:
+
+        cursor.execute("""
+            SELECT COALESCE(MAX(ActivityName), 0) + 1
+            FROM PictureActivities
+        """)
+
+        activityName = cursor.fetchone()[0]
+
+    # -------------------------
+    # ZAPIS
+    # -------------------------
+
+    try:
+        cursor.execute("""
+            INSERT INTO PictureActivities
+                (ActivityName, Name, Picture)
+            VALUES (?, ?, ?)
+        """, (
+            activityName,
+            name,
+            picture or None
+        ))
+
+        db.commit()
+
+    except sqlite3.IntegrityError:
+        db.close()
+
+        return templates.TemplateResponse(
+            request,
+            "pictureactivity_add.html",
+            {
+                "activities": ACTIVITY_ENUM_MAP,
+                "errors": [
+                    "Ta aktywność MA JUŻ przypisany obrazek"
+                ],
+                "form": {
+                    "activityName": activityName,
+                    "name": name,
+                    "picture": picture,
+                }
+            }
+        )
+
+    db.close()
+
+    return RedirectResponse(
+        url="/pictureactivities",
+        status_code=303
+    )

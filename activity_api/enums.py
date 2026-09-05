@@ -33,6 +33,7 @@ class ActivityNameEnum(str, enum.Enum):
     Czas_z_tata = "Czas_z_tata"
     Tance = "Tance"
     Test = "Test"
+    Inne = "Inne"
 
 
 PERSON_ENUM_MAP = {
@@ -81,4 +82,5 @@ ACTIVITY_ENUM_MAP = {
                                                                                                 22: ActivityNameEnum.Czas_z_tata,
                                                                                                     23: ActivityNameEnum.Tance,
                                                                                                     24: ActivityNameEnum.Test,
+                                                                                                    25: ActivityNameEnum.Inne,
                                                                                                     }
