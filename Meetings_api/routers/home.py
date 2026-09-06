@@ -5,10 +5,14 @@ from starlette.status import HTTP_303_SEE_OTHER
 import sqlite3
 from templates import templates
 from enums import PERSON_ENUM_MAP
-from validators import (    
-    time_to_minutes,
-    ranges_overlap
+
+from validators import (
+    validate_session_data,
+    find_time_conflict,
+    validate_client_id,
+    validate_client_data
 )
+
 from db import get_db
 from datetime import datetime
 
@@ -147,23 +151,10 @@ def edit_session(
     old_session_date = session["SessionDate"]
 
     # ---------------------------------
-    # 2. Walidacja dnia tygodnia
-    # ---------------------------------
-    if day_of_week < 1 or day_of_week > 7:
-        raise HTTPException(
-            status_code=400,
-            detail="Nieprawidłowy dzień tygodnia"
-        )
-
-    # ---------------------------------
-    # 3. Wylicz NOWĄ SessionDate
+    # 2. Wylicz nową SessionDate
     #
     # Bierzemy tydzień starej sesji
     # i zmieniamy tylko dzień tygodnia.
-    #
-    # Python:
-    # Monday = 0
-    # Sunday = 6
     # ---------------------------------
     try:
         old_date = datetime.strptime(
@@ -175,11 +166,9 @@ def edit_session(
             days=old_date.weekday()
         )
 
-        new_session_date = monday + timedelta(
-            days=day_of_week - 1
-        )
-
-        new_session_date = new_session_date.isoformat()
+        new_session_date = (
+            monday + timedelta(days=day_of_week - 1)
+        ).isoformat()
 
     except (ValueError, TypeError):
         raise HTTPException(
@@ -188,40 +177,24 @@ def edit_session(
         )
 
     # ---------------------------------
-    # 4. Walidacja godzin
+    # 3. Walidacja danych
     # ---------------------------------
-    if not start or not end:
-        raise HTTPException(
-            status_code=400,
-            detail="Godzina rozpoczęcia i zakończenia są wymagane"
-        )
-
     try:
-        start_minutes = (
-            int(start[:2]) * 60
-            + int(start[3:5])
+        start, end, day_of_week, new_session_date = validate_session_data(
+            start,
+            end,
+            day_of_week,
+            new_session_date
         )
 
-        end_minutes = (
-            int(end[:2]) * 60
-            + int(end[3:5])
-        )
-
-    except (ValueError, IndexError):
+    except ValueError as e:
         raise HTTPException(
             status_code=400,
-            detail="Nieprawidłowy format godziny"
-        )
-
-    if start_minutes >= end_minutes:
-        raise HTTPException(
-            status_code=400,
-            detail="Godzina zakończenia musi być późniejsza niż rozpoczęcia"
+            detail=str(e)
         )
 
     # ---------------------------------
-    # 5. Pobierz INNE sesje
-    #    z NOWEGO dnia
+    # 4. Pobierz inne sesje z nowego dnia
     # ---------------------------------
     other_sessions = cursor.execute(
         """
@@ -238,42 +211,26 @@ def edit_session(
     ).fetchall()
 
     # ---------------------------------
-    # 6. Sprawdź konflikt godzin
+    # 5. Sprawdź konflikt czasowy
     # ---------------------------------
-    for other in other_sessions:
+    conflict = find_time_conflict(
+        start,
+        end,
+        other_sessions
+    )
 
-        other_start = other["StartTime"]
-        other_end = other["EndTime"]
-
-        try:
-            other_start_minutes = (
-                int(other_start[:2]) * 60
-                + int(other_start[3:5])
+    if conflict:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Konflikt z sesją {conflict['Id']} "
+                f"({conflict['StartTime']}-{conflict['EndTime']}) "
+                f"w dniu {new_session_date}"
             )
-
-            other_end_minutes = (
-                int(other_end[:2]) * 60
-                + int(other_end[3:5])
-            )
-
-        except (ValueError, IndexError, TypeError):
-            continue
-
-        if (
-            start_minutes < other_end_minutes
-            and end_minutes > other_start_minutes
-        ):
-            raise HTTPException(
-                status_code=400,
-                detail=(
-                    f"Konflikt z sesją {other['Id']} "
-                    f"({other_start}-{other_end}) "
-                    f"w dniu {new_session_date}"
-                )
-            )
+        )
 
     # ---------------------------------
-    # 7. Aktualizacja
+    # 6. Aktualizacja
     # ---------------------------------
     cursor.execute(
         """
@@ -303,7 +260,6 @@ def edit_session(
         "message": "Sesja zaktualizowana"
     })
 
-
 # =========================
 # DELETE SESSION
 # =========================
@@ -326,7 +282,6 @@ def delete_session(session_id: int, db=Depends(get_db)):
     return JSONResponse({"status": "ok", "message": "Sesja usunięta"})
 
 
-
 # =========================
 # CREATE SESSION
 # =========================
@@ -342,9 +297,34 @@ def create_session(
 ):
     cursor = db.cursor()
 
-    # weryfikacja klienta
+    # ---------------------------------
+    # 1. Walidacja danych sesji
+    # ---------------------------------
+    try:
+        start, end, day_of_week, session_date = validate_session_data(
+            start,
+            end,
+            day_of_week,
+            session_date
+        )
+
+        client_id = validate_client_id(client_id)
+
+    except ValueError as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e)
+        )
+
+    # ---------------------------------
+    # 2. Sprawdzenie klienta
+    # ---------------------------------
     client = cursor.execute(
-        "SELECT Id FROM Client WHERE Id = ?",
+        """
+        SELECT Id
+        FROM Client
+        WHERE Id = ?
+        """,
         (client_id,)
     ).fetchone()
 
@@ -354,9 +334,9 @@ def create_session(
             detail="Nie ma takiego klienta"
         )
 
-    # =========================
-    # SPRAWDZENIE KONFLIKTU
-    # =========================
+    # ---------------------------------
+    # 3. Pobierz sesje z tego dnia
+    # ---------------------------------
     other_sessions = cursor.execute(
         """
         SELECT Id, StartTime, EndTime
@@ -367,51 +347,28 @@ def create_session(
         (session_date,)
     ).fetchall()
 
-    try:
-        start_minutes = int(start[:2]) * 60 + int(start[3:5])
-        end_minutes = int(end[:2]) * 60 + int(end[3:5])
-    except (ValueError, IndexError, TypeError):
+    # ---------------------------------
+    # 4. Sprawdzenie konfliktu
+    # ---------------------------------
+    conflict = find_time_conflict(
+        start,
+        end,
+        other_sessions
+    )
+
+    if conflict:
         raise HTTPException(
             status_code=400,
-            detail="Nieprawidłowy format godziny"
+            detail=(
+                f"Konflikt — sesja już istnieje "
+                f"({conflict['StartTime']}-{conflict['EndTime']}) "
+                f"w dniu {session_date}"
+            )
         )
 
-    if start_minutes >= end_minutes:
-        raise HTTPException(
-            status_code=400,
-            detail="Godzina zakończenia musi być późniejsza niż rozpoczęcia"
-        )
-
-    for other in other_sessions:
-        try:
-            other_start_minutes = (
-                int(other["StartTime"][:2]) * 60
-                + int(other["StartTime"][3:5])
-            )
-            other_end_minutes = (
-                int(other["EndTime"][:2]) * 60
-                + int(other["EndTime"][3:5])
-            )
-        except (ValueError, IndexError, TypeError):
-            continue
-
-        # konflikt czasowy
-        if (
-            start_minutes < other_end_minutes
-            and end_minutes > other_start_minutes
-        ):
-            raise HTTPException(
-                status_code=400,
-                detail=(
-                    f"Konflikt — sesja już istnieje "
-                    f"({other['StartTime']}-{other['EndTime']}) "
-                    f"w dniu {session_date}"
-                )
-            )
-
-    # =========================
-    # INSERT
-    # =========================
+    # ---------------------------------
+    # 5. INSERT
+    # ---------------------------------
     cursor.execute(
         """
         INSERT INTO Session (
