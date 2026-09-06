@@ -250,6 +250,24 @@ td {
             onclick="changeDay(1)"
         >➡</span>
 
+        <button
+            type="button"
+            onclick="createActivity()"
+            style="
+                padding:8px 14px;
+                border:none;
+                border-radius:10px;
+                background:#22c55e;
+                color:#fff;
+                font-size:13px;
+                font-weight:700;
+                cursor:pointer;
+                box-shadow:0 4px 12px rgba(34,197,94,.25);
+            "
+        >
+            ➕ Utwórz aktywność
+        </button>
+
     </div>
 
 </div>
@@ -471,6 +489,166 @@ td {
     </div>
 
 </div>
+
+
+
+<!-- ================= CREATE ACTIVITY ================= -->
+
+<div
+    class="preview-bg"
+    id="create-preview"
+    onclick="closeCreatePreview()"
+>
+
+    <div
+        class="preview-card"
+        onclick="event.stopPropagation()"
+    >
+
+        <div
+            class="preview-close"
+            onclick="closeCreatePreview()"
+        >
+            ✕
+        </div>
+
+        <div class="preview-desc">
+
+            <div
+                style="
+                    font-weight:700;
+                    text-align:center;
+                    font-size:18px;
+                    margin-bottom:8px;
+                "
+            >
+                ➕ Utwórz aktywność
+            </div>
+
+
+            <label>Start</label>
+
+            <input
+                type="time"
+                id="c-start"
+            >
+
+
+            <label>Koniec</label>
+
+            <input
+                type="time"
+                id="c-end"
+            >
+
+
+            <label>Dzień tygodnia</label>
+
+            <select id="c-day">
+
+                <option value="1">Niedziela</option>
+                <option value="2">Poniedziałek</option>
+                <option value="3">Wtorek</option>
+                <option value="4">Środa</option>
+                <option value="5">Czwartek</option>
+                <option value="6">Piątek</option>
+                <option value="7">Sobota</option>
+
+            </select>
+
+
+            <label>Osoba</label>
+
+            <select id="c-person">
+
+                <option value="">— WYBIERZ OSOBĘ —</option>
+
+                {% for p in persons %}
+
+                    <option value="{{ p.id }}">
+                        {{ p.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <label>Aktywność</label>
+
+            <select
+                id="c-activity"
+            >
+
+                <option value="">
+                    — WYBIERZ AKTYWNOŚĆ —
+                </option>
+
+                {% for v in pictures %}
+
+                    <option
+                        value="{{ v.label }}"
+                        data-picture="{{ v.picture }}"
+                    >
+                        {{ v.label }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <!-- PODGLĄD OBRAZKA -->
+
+            <img
+                id="c-img"
+                style="
+                    width:100%;
+                    max-height:200px;
+                    object-fit:cover;
+                    border-radius:10px;
+                    display:none;
+                    margin-top:4px;
+                "
+            >
+
+
+            <label>Opis</label>
+
+            <input
+                type="text"
+                id="c-desc"
+                placeholder="Opis aktywności..."
+            >
+
+
+            <button
+                type="button"
+                onclick="saveCreateActivity()"
+            >
+                💾 Utwórz aktywność
+            </button>
+
+
+            <button
+                type="button"
+                onclick="closeCreatePreview()"
+                style="
+                    margin-top:6px;
+                    background:#475569;
+                    color:#fff;
+                    font-weight:700;
+                "
+            >
+                Anuluj
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
 
 
 <!-- ================= TOAST ================= -->
@@ -1085,6 +1263,250 @@ function updateDateTime() {
         `${time}`;
 
 }
+
+
+/* ================= CREATE ACTIVITY ================= */
+
+function createActivity() {
+
+    // Domyślnie ustaw aktualnie oglądany dzień
+    document.getElementById('c-day').value =
+        currentDay.toString();
+
+    // Wyczyść formularz
+    document.getElementById('c-start').value = '';
+    document.getElementById('c-end').value = '';
+    document.getElementById('c-person').value = '';
+    document.getElementById('c-activity').value = '';
+    document.getElementById('c-desc').value = '';
+
+    // Wyczyść obrazek
+    const img = document.getElementById('c-img');
+
+    img.src = '';
+    img.style.display = 'none';
+
+    // Pokaż popup
+    document
+        .getElementById('create-preview')
+        .classList.add('active');
+}
+
+
+/* ================= CLOSE CREATE ================= */
+
+function closeCreatePreview() {
+
+    document
+        .getElementById('create-preview')
+        .classList.remove('active');
+}
+
+
+/* ================= CREATE ACTIVITY IMAGE ================= */
+
+document
+    .getElementById('c-activity')
+    .addEventListener('change', function () {
+
+        const selected =
+            this.selectedOptions[0];
+
+        const img =
+            document.getElementById('c-img');
+
+        const imgUrl =
+            selected?.dataset.picture || '';
+
+        if (imgUrl) {
+
+            img.src = imgUrl;
+            img.style.display = 'block';
+
+        } else {
+
+            img.src = '';
+            img.style.display = 'none';
+
+        }
+
+    });
+
+
+/* ================= SAVE NEW ACTIVITY ================= */
+
+function saveCreateActivity() {
+
+    const start =
+        document.getElementById('c-start').value;
+
+    const end =
+        document.getElementById('c-end').value;
+
+    const day =
+        document.getElementById('c-day').value;
+
+    const person =
+        document.getElementById('c-person').value;
+
+    const activity =
+        document.getElementById('c-activity').value;
+
+    const description =
+        document.getElementById('c-desc').value;
+
+
+    // Podstawowa walidacja po stronie przeglądarki
+
+    if (!start) {
+
+        showErrorToast(
+            'Podaj godzinę rozpoczęcia.'
+        );
+
+        return;
+
+    }
+
+
+    if (!end) {
+
+        showErrorToast(
+            'Podaj godzinę zakończenia.'
+        );
+
+        return;
+
+    }
+
+
+    if (!person) {
+
+        showErrorToast(
+            'Wybierz osobę.'
+        );
+
+        return;
+
+    }
+
+
+    if (!activity) {
+
+        showErrorToast(
+            'Wybierz aktywność.'
+        );
+
+        return;
+
+    }
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        'start',
+        start
+    );
+
+
+    formData.append(
+        'end',
+        end
+    );
+
+
+    formData.append(
+        'day_of_week',
+        day
+    );
+
+
+    formData.append(
+        'description',
+        description
+    );
+
+
+    formData.append(
+        'person_id',
+        person
+    );
+
+
+    formData.append(
+        'activity_name',
+        activity
+    );
+
+
+    fetch(
+        '/activities/add',
+        {
+            method: 'POST',
+            body: formData
+        }
+    )
+
+    .then(async response => {
+
+        /*
+         * Endpoint przy sukcesie zwraca
+         * RedirectResponse /activities.
+         *
+         * Przy błędach FastAPI zwróci
+         * stronę activity_add.html.
+         */
+
+        if (response.redirected) {
+
+            window.location.href =
+                response.url;
+
+            return;
+
+        }
+
+
+        const text =
+            await response.text();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                'Nie udało się utworzyć aktywności.'
+            );
+
+        }
+
+
+        /*
+         * Jeżeli backend zwrócił formularz
+         * z błędami walidacji, pokazujemy
+         * komunikat zamiast przeładowywać.
+         */
+
+        throw new Error(
+            'Nie udało się utworzyć aktywności. Sprawdź dane formularza.'
+        );
+
+    })
+
+    .catch(error => {
+
+        showErrorToast(
+            error.message
+        );
+
+    });
+
+}
+
+
+
 
 
 updateDateTime();

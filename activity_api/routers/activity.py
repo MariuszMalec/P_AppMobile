@@ -256,7 +256,12 @@ def add_activity_post(
     ))
 
     db.commit()
-    return RedirectResponse("/activities", status_code=303)
+    #return RedirectResponse("/activities", status_code=303)
+
+    return RedirectResponse(
+        f"/live/liveall/{day_of_week}",
+        status_code=303
+    )
 
 
 
