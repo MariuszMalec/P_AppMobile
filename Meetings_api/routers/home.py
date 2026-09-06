@@ -326,6 +326,7 @@ def delete_session(session_id: int, db=Depends(get_db)):
     return JSONResponse({"status": "ok", "message": "Sesja usunięta"})
 
 
+
 # =========================
 # CREATE SESSION
 # =========================
@@ -342,19 +343,104 @@ def create_session(
     cursor = db.cursor()
 
     # weryfikacja klienta
-    client = cursor.execute("SELECT Id FROM Client WHERE Id = ?", (client_id,)).fetchone()
-    if not client:
-        raise HTTPException(status_code=404, detail="Nie ma takiego klienta")
+    client = cursor.execute(
+        "SELECT Id FROM Client WHERE Id = ?",
+        (client_id,)
+    ).fetchone()
 
+    if not client:
+        raise HTTPException(
+            status_code=404,
+            detail="Nie ma takiego klienta"
+        )
+
+    # =========================
+    # SPRAWDZENIE KONFLIKTU
+    # =========================
+    other_sessions = cursor.execute(
+        """
+        SELECT Id, StartTime, EndTime
+        FROM Session
+        WHERE SessionDate = ?
+        ORDER BY StartTime
+        """,
+        (session_date,)
+    ).fetchall()
+
+    try:
+        start_minutes = int(start[:2]) * 60 + int(start[3:5])
+        end_minutes = int(end[:2]) * 60 + int(end[3:5])
+    except (ValueError, IndexError, TypeError):
+        raise HTTPException(
+            status_code=400,
+            detail="Nieprawidłowy format godziny"
+        )
+
+    if start_minutes >= end_minutes:
+        raise HTTPException(
+            status_code=400,
+            detail="Godzina zakończenia musi być późniejsza niż rozpoczęcia"
+        )
+
+    for other in other_sessions:
+        try:
+            other_start_minutes = (
+                int(other["StartTime"][:2]) * 60
+                + int(other["StartTime"][3:5])
+            )
+            other_end_minutes = (
+                int(other["EndTime"][:2]) * 60
+                + int(other["EndTime"][3:5])
+            )
+        except (ValueError, IndexError, TypeError):
+            continue
+
+        # konflikt czasowy
+        if (
+            start_minutes < other_end_minutes
+            and end_minutes > other_start_minutes
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Konflikt — sesja już istnieje "
+                    f"({other['StartTime']}-{other['EndTime']}) "
+                    f"w dniu {session_date}"
+                )
+            )
+
+    # =========================
     # INSERT
-    cursor.execute("""
-        INSERT INTO Session (StartTime, EndTime, ClientId, Description, DayOfWeek, SessionDate)
+    # =========================
+    cursor.execute(
+        """
+        INSERT INTO Session (
+            StartTime,
+            EndTime,
+            ClientId,
+            Description,
+            DayOfWeek,
+            SessionDate
+        )
         VALUES (?, ?, ?, ?, ?, ?)
-    """, (start, end, client_id, description, day_of_week, session_date))
+        """,
+        (
+            start,
+            end,
+            client_id,
+            description,
+            day_of_week,
+            session_date
+        )
+    )
+
     db.commit()
     db.close()
 
-    return JSONResponse({"status":"ok", "message":"Sesja utworzona"})
+    return JSONResponse({
+        "status": "ok",
+        "message": "Sesja utworzona"
+    })
 
 
 @router.get("/get_clients")
