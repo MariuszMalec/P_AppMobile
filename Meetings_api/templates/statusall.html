@@ -207,6 +207,7 @@ td {
 <div class="table-wrap">
 <table>
 <thead>
+
 <tr>
     <th>⏰</th>
     {% for d in range(1, 8) %}
@@ -214,12 +215,16 @@ td {
     {% endfor %}
 </tr>
 </thead>
+
 <tbody>
 {% for time, day_rows in table.items() %}
 <tr>
+
     <td>{{ time }}</td>
+
     {% for d in range(1, 8) %}
         {% set cell = day_rows[d] %}
+
         <td class="{% if cell and cell.is_live %}live{% endif %}"
             {% if cell %}
             data-session-id="{{ cell.session_id }}"
@@ -230,6 +235,9 @@ td {
             data-day="{{ d }}"
             data-session-date="{{ cell.session_date }}"
             onclick="openPreview(this)"
+            {% else %}
+            data-day="{{ d }}"
+            onclick="openCreateSessionForDay({{ d }})"
             {% endif %}
         >
             {% if cell %}
@@ -240,7 +248,9 @@ td {
                 <div class="empty">—</div>
             {% endif %}
         </td>
+
     {% endfor %}
+
 </tr>
 {% endfor %}
 </tbody>
@@ -250,6 +260,8 @@ td {
 <!-- PREVIEW -->
 <div class="preview-bg" id="preview" onclick="closePreview()">
     <div class="preview-card" onclick="event.stopPropagation()">
+
+
         <label>Start</label>
         <input type="time" id="p-start">
 
@@ -376,26 +388,52 @@ function closePreview() {
     document.getElementById('preview').classList.remove('active');
 }
 
+
 function saveEdit() {
     if (!currentCell) return;
+
     const id = currentCell.dataset.sessionId;
+
     const formData = new FormData();
+
     formData.append("start", document.getElementById('p-start').value);
     formData.append("end", document.getElementById('p-end').value);
-    formData.append("client", document.getElementById('p-client').value);
     formData.append("description", document.getElementById('p-desc').value);
     formData.append("day_of_week", document.getElementById('p-day').value);
+
+    // WAŻNE: dokładna data edytowanej sesji
+    formData.append("session_date", currentCell.dataset.sessionDate);
+
+    console.log("FORMULARZ EDYCJI:");
+
+    for (const [key, value] of formData.entries()) {
+        console.log(key, "=", value);
+    }
 
     fetch(`/home/session/edit/${id}`, {
         method: "PUT",
         body: formData
     })
-    .then(r => {
-        if (!r.ok) throw new Error("Błąd zapisu");
+    .then(async response => {
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("BŁĄD SERWERA:", data);
+            throw new Error(JSON.stringify(data));
+        }
+
+        return data;
+    })
+    .then(() => {
         location.reload();
     })
-    .catch(err => alert(err.message));
+    .catch(err => {
+        console.error(err);
+        alert("Błąd zapisu:\n" + err.message);
+    });
 }
+
+
 
 function deleteSession() {
     if (!currentCell) return;
@@ -489,22 +527,56 @@ function changeWeek(delta) {
 
 
 // NEW: otwieramy popup w trybie create
+
 function openCreateSession() {
-    currentCell = null; // brak wybranej sesji
+    currentCell = null;
+
+    const params = new URLSearchParams(window.location.search);
+    const weekOffset = parseInt(params.get("week_offset") || "0");
+
+    const today = new Date();
+    const currentDay = today.getDay();
+
+    const mondayOffset =
+        currentDay === 0
+            ? -6
+            : 1 - currentDay;
+
+    const monday = new Date(today);
+    monday.setHours(12, 0, 0, 0);
+    monday.setDate(today.getDate() + mondayOffset);
+    monday.setDate(monday.getDate() + weekOffset * 7);
+
+    // Domyślnie poniedziałek wyświetlanego tygodnia
+    const year = monday.getFullYear();
+    const month = String(monday.getMonth() + 1).padStart(2, "0");
+    const day = String(monday.getDate()).padStart(2, "0");
+
+    const sessionDate = `${year}-${month}-${day}`;
+
     document.getElementById('p-start').value = "";
     document.getElementById('p-end').value = "";
     document.getElementById('p-client').value = "";
     document.getElementById('p-desc').value = "";
     document.getElementById('p-day').value = "1";
+
+    document.getElementById('preview').dataset.sessionDate = sessionDate;
+
     document.getElementById('preview').classList.add('active');
 
-    // Zmieniamy przycisk save na create
     const saveBtn = document.querySelector('.preview-card button:first-of-type');
     saveBtn.textContent = "💾 Utwórz";
     saveBtn.onclick = createSession;
+
+    document.querySelector('.preview-card button:last-of-type').style.display = "none";
+
+    document.getElementById('p-client').disabled = false;
 }
 
+
+
 // NEW: funkcja tworzenia sesji
+
 function createSession() {
     const startTime = document.getElementById('p-start').value;
     const endTime = document.getElementById('p-end').value;
@@ -512,49 +584,56 @@ function createSession() {
     const description = document.getElementById('p-desc').value;
     const dayOfWeek = document.getElementById('p-day').value;
 
-    // Pobieramy aktualny offset tygodnia z URL
-    const params = new URLSearchParams(window.location.search);
-    const weekOffset = parseInt(params.get("week_offset") || "0"); // Przesunięcie tygodnia
+    // Data została ustalona podczas kliknięcia konkretnej kratki
+    const sessionDate =
+        document.getElementById('preview').dataset.sessionDate;
 
-    // Tworzymy datę początkową (poniedziałek w bieżącym tygodniu z uwzględnieniem przesunięcia)
-    const today = new Date();
-    const currentDay = today.getDay();  // Dzień tygodnia (0 = Niedziela, 1 = Poniedziałek, ..., 6 = Sobota)
-    
-    // Obliczamy datę poniedziałku w bieżącym tygodniu
-    const mondayOffset = (currentDay === 0 ? -6 : 1 - currentDay);  // Jeśli niedziela, cofamy się o 6 dni
-    const monday = new Date(today);
-    monday.setDate(today.getDate() + mondayOffset);  // Ustalamy datę poniedziałku
-    
-    // Zastosowanie przesunięcia tygodnia
-    monday.setDate(monday.getDate() + (weekOffset * 7)); // Przesuwamy o odpowiednią liczbę dni dla wybranego tygodnia
+    if (!sessionDate) {
+        alert("Nie wybrano dnia sesji");
+        return;
+    }
 
-    // Dodajemy odpowiedni offset dla wybranego dnia tygodnia (od 1 = poniedziałek do 7 = niedziela)
-    const sessionDate = new Date(monday);
-    sessionDate.setDate(sessionDate.getDate() + (parseInt(dayOfWeek) - 1)); // -1, bo 1 = poniedziałek
-
-    // Tworzymy formularz do wysłania
     const formData = new FormData();
+
     formData.append("start", startTime);
     formData.append("end", endTime);
-    formData.append("client_id", clientId); // ID klienta
+    formData.append("client_id", clientId);
     formData.append("description", description);
     formData.append("day_of_week", dayOfWeek);
-    formData.append("session_date", sessionDate.toISOString().slice(0, 10)); // Datę sesji w formacie YYYY-MM-DD
+    formData.append("session_date", sessionDate);
 
-    // Wysłanie zapytania do serwera
+    console.log("TWORZENIE SESJI:");
+    console.log("start =", startTime);
+    console.log("end =", endTime);
+    console.log("day_of_week =", dayOfWeek);
+    console.log("session_date =", sessionDate);
+
     fetch("/home/session/create", {
         method: "POST",
         body: formData
     })
-    .then(response => {
-        if (!response.ok) throw new Error("Błąd tworzenia sesji");
-        return response.json(); // Możesz zwrócić JSON, jeśli API odpowiada
+    .then(async response => {
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("BŁĄD TWORZENIA:", data);
+            throw new Error(
+                data.detail || "Błąd tworzenia sesji"
+            );
+        }
+
+        return data;
     })
     .then(() => {
-        location.reload(); // Po udanej sesji przeładuj stronę
+        location.reload();
     })
-    .catch(err => alert("Błąd: " + err.message));
+    .catch(err => {
+        console.error(err);
+        alert("Błąd: " + err.message);
+    });
 }
+
+
 
 function openCreateClient() {
     document.getElementById('client-preview').classList.add('active');
@@ -584,6 +663,74 @@ function createClient() {
 function closeClientPreview() {
     document.getElementById('client-preview').classList.remove('active');
 }
+
+
+function openCreateSessionForDay(dayOfWeek) {
+    currentCell = null;
+
+    // Aktualny week_offset z URL
+    const params = new URLSearchParams(window.location.search);
+    const weekOffset = parseInt(params.get("week_offset") || "0");
+
+    // Dzisiejsza data
+    const today = new Date();
+
+    // Ustalamy poniedziałek bieżącego tygodnia
+    const currentDay = today.getDay();
+
+    const mondayOffset =
+        currentDay === 0
+            ? -6
+            : 1 - currentDay;
+
+    const monday = new Date(today);
+    monday.setHours(12, 0, 0, 0);
+    monday.setDate(today.getDate() + mondayOffset);
+
+    // Przesuwamy do tygodnia wyświetlanego na ekranie
+    monday.setDate(monday.getDate() + weekOffset * 7);
+
+    // Ustalamy konkretną datę klikniętego dnia
+    const sessionDate = new Date(monday);
+    sessionDate.setDate(
+        monday.getDate() + (dayOfWeek - 1)
+    );
+
+    // YYYY-MM-DD bez problemów ze strefą czasową
+    const year = sessionDate.getFullYear();
+    const month = String(sessionDate.getMonth() + 1).padStart(2, "0");
+    const day = String(sessionDate.getDate()).padStart(2, "0");
+
+    const dateString = `${year}-${month}-${day}`;
+
+    console.log("NOWA SESJA:");
+    console.log("day_of_week =", dayOfWeek);
+    console.log("session_date =", dateString);
+
+    // Otwieramy popup
+    document.getElementById('p-start').value = "";
+    document.getElementById('p-end').value = "";
+    document.getElementById('p-client').value = "";
+    document.getElementById('p-desc').value = "";
+    document.getElementById('p-day').value = dayOfWeek;
+
+    // Zapamiętujemy wybraną datę
+    document.getElementById('preview').dataset.sessionDate = dateString;
+
+    document.getElementById('preview').classList.add('active');
+
+    // Przycisk Zapisz -> Utwórz
+    const saveBtn = document.querySelector('.preview-card button:first-of-type');
+    saveBtn.textContent = "💾 Utwórz";
+    saveBtn.onclick = createSession;
+
+    // Pokaż/ukryj Usuń
+    document.querySelector('.preview-card button:last-of-type').style.display = "none";
+
+    // Przy tworzeniu klient może być wybrany
+    document.getElementById('p-client').disabled = false;
+}
+
 
 // wywołania startowe
 setInterval(updateLiveTime, 1000);

@@ -6,7 +6,8 @@ import sqlite3
 from templates import templates
 from enums import PERSON_ENUM_MAP
 from validators import (    
-    system_day_to_db_day,
+    time_to_minutes,
+    ranges_overlap
 )
 from db import get_db
 from datetime import datetime
@@ -109,6 +110,7 @@ def home_page(
         }
     )
 
+
 # =========================
 # EDIT SESSION
 # =========================
@@ -118,32 +120,148 @@ def edit_session(
     start: str = Form(...),
     end: str = Form(...),
     description: str = Form(...),
-    day_of_week: int = Form(...),   # NOWE: dzień tygodnia 1-7
+    day_of_week: int = Form(...),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
 
-    # Sprawdzenie, czy sesja istnieje
-    existing = cursor.execute(
-        "SELECT Id FROM Session WHERE Id = ?", (session_id,)
+    # ---------------------------------
+    # 1. Pobierz edytowaną sesję
+    # ---------------------------------
+    session = cursor.execute(
+        """
+        SELECT Id, StartTime, EndTime, DayOfWeek, SessionDate
+        FROM Session
+        WHERE Id = ?
+        """,
+        (session_id,)
     ).fetchone()
-    if not existing:
-        raise HTTPException(status_code=404, detail="Sesja nie istnieje")
 
-    # Aktualizacja w bazie
+    if not session:
+        raise HTTPException(
+            status_code=404,
+            detail="Sesja nie istnieje"
+        )
+
+    # Data KONKRETNEJ edytowanej sesji z bazy
+    session_date = session["SessionDate"]
+
+    # ---------------------------------
+    # 2. Walidacja godzin
+    # ---------------------------------
+    if not start or not end:
+        raise HTTPException(
+            status_code=400,
+            detail="Godzina rozpoczęcia i zakończenia są wymagane"
+        )
+
+    try:
+        start_minutes = int(start[:2]) * 60 + int(start[3:5])
+        end_minutes = int(end[:2]) * 60 + int(end[3:5])
+    except (ValueError, IndexError):
+        raise HTTPException(
+            status_code=400,
+            detail="Nieprawidłowy format godziny"
+        )
+
+    if start_minutes >= end_minutes:
+        raise HTTPException(
+            status_code=400,
+            detail="Godzina zakończenia musi być późniejsza niż rozpoczęcia"
+        )
+
+    # ---------------------------------
+    # 3. Pobierz wszystkie INNE sesje
+    #    z dokładnie tego samego dnia
+    # ---------------------------------
+    other_sessions = cursor.execute(
+        """
+        SELECT Id, StartTime, EndTime, SessionDate
+        FROM Session
+        WHERE SessionDate = ?
+          AND Id != ?
+        ORDER BY StartTime
+        """,
+        (
+            session_date,
+            session_id
+        )
+    ).fetchall()
+
+    # ---------------------------------
+    # 4. Sprawdź nakładanie godzin
+    # ---------------------------------
+    for other in other_sessions:
+
+        other_start = other["StartTime"]
+        other_end = other["EndTime"]
+
+        try:
+            other_start_minutes = (
+                int(other_start[:2]) * 60
+                + int(other_start[3:5])
+            )
+
+            other_end_minutes = (
+                int(other_end[:2]) * 60
+                + int(other_end[3:5])
+            )
+        except (ValueError, IndexError, TypeError):
+            continue
+
+        # ---------------------------------
+        # KONFLIKT:
+        #
+        # nowa:    |------|
+        # inna:       |------|
+        #
+        # albo:
+        #
+        # nowa:       |------|
+        # inna:    |------|
+        #
+        # ---------------------------------
+        if (
+            start_minutes < other_end_minutes
+            and end_minutes > other_start_minutes
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Konflikt z sesją {other['Id']} "
+                    f"({other_start}-{other_end}) "
+                    f"w dniu {session_date}"
+                )
+            )
+
+    # ---------------------------------
+    # 5. Aktualizacja
+    # ---------------------------------
     cursor.execute(
         """
         UPDATE Session
-        SET StartTime = ?, EndTime = ?, Description = ?, DayOfWeek = ?
+        SET StartTime = ?,
+            EndTime = ?,
+            Description = ?,
+            DayOfWeek = ?
         WHERE Id = ?
         """,
-        (start, end, description, day_of_week, session_id)
+        (
+            start,
+            end,
+            description,
+            day_of_week,
+            session_id
+        )
     )
+
     db.commit()
     db.close()
 
-    return JSONResponse({"status": "ok", "message": "Sesja zaktualizowana"})
-
+    return JSONResponse({
+        "status": "ok",
+        "message": "Sesja zaktualizowana"
+    })
 
 # =========================
 # DELETE SESSION
