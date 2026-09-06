@@ -153,6 +153,7 @@ td {
 }
 
 .create-session-btn {
+    position: relative;
     background: linear-gradient(135deg, #00ff9f, #00cfff);
     border: none;
     color: #001;
@@ -187,17 +188,65 @@ td {
     opacity: 1;
 }
 
+.week-arrow {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: 700;
+    cursor: pointer;
+
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid rgba(255,255,255,.5);
+    border-radius: 12px;
+    background: rgba(255,255,255,.06);
+
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.week-arrow:hover {
+    background: rgba(255,255,255,.15);
+    border-color: rgba(255,255,255,.9);
+    transform: scale(1.05);
+}
+
+.week-arrow:active {
+    transform: scale(0.95);
+}
+
+
 
 </style>
 </head>
 <body>
 
 <div class="header">
-    <button type="button" onclick="changeWeek(-1)">⬅</button>
-    🟢 LIVE — TYDZIEŃ 
+
+
+    <a href="?week_offset={{ week_offset - 1 }}"
+    class="week-arrow"
+    onclick="console.log('KLIK LEWO', new Date().toISOString(), this.href);">
+        ⬅
+    </a>
+
+    🟢 LIVE — TYDZIEŃ
     <span id="current-day-date"></span>
     <span class="live-time" id="live-time">--:--:--</span>
-    <button type="button" onclick="changeWeek(1)">➡</button>
+
+    <a href="?week_offset={{ week_offset + 1 }}"
+    class="week-arrow"
+    onclick="console.log('KLIK PRAWO', new Date().toISOString(), this.href);">
+        ➡
+    </a>
+
+
+
+
     <button class="create-session-btn" onclick="openCreateSession()">
         ➕ Nowa sesja
     </button>
@@ -508,21 +557,6 @@ function filterSessionsByWeek(start, end) {
 
         tr.style.display = hasVisibleSession ? "" : "none";
     });
-}
-
-// function changeWeek(delta) {
-//     weekOffset += delta;
-//     updateWeekDates();
-// }
-
-function changeWeek(delta) {
-    const params = new URLSearchParams(window.location.search);
-
-    let offset = parseInt(params.get("week_offset") || "0");
-    offset += delta;
-
-    const url = `/home/?week_offset=${offset}`;
-    window.location.assign(url);
 }
 
 
