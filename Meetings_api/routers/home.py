@@ -4,7 +4,6 @@ from fastapi import Query
 from starlette.status import HTTP_303_SEE_OTHER
 import sqlite3
 from templates import templates
-from enums import PERSON_ENUM_MAP
 
 from validators import (
     validate_session_data,

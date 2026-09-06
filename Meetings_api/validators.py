@@ -1,9 +1,6 @@
 from datetime import datetime
 import re
 
-from enums import DAY_NAMES, PERSON_ENUM_MAP
-
-
 TIME_RE = re.compile(r"^\d{2}:\d{2}$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
