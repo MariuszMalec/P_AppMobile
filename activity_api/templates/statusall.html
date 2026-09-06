@@ -203,6 +203,39 @@ td {
     cursor: pointer;
 }
 
+
+.week-arrow {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: 700;
+    cursor: pointer;
+
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid rgba(255,255,255,.5);
+    border-radius: 12px;
+    background: rgba(255,255,255,.06);
+
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.week-arrow:hover {
+    background: rgba(255,255,255,.15);
+    border-color: rgba(255,255,255,.9);
+    transform: scale(1.05);
+}
+
+.week-arrow:active {
+    transform: scale(0.95);
+}
+
+
 /* MOBILE */
 @media (max-width: 600px) {
     td {
@@ -234,6 +267,7 @@ td {
         <span
             style="cursor:pointer; user-select:none;"
             onclick="changeDay(-1)"
+            class="week-arrow"
         >⬅</span>
 
         <span>
@@ -248,6 +282,7 @@ td {
         <span
             style="cursor:pointer; user-select:none;"
             onclick="changeDay(1)"
+            class="week-arrow"
         >➡</span>
 
         <button
