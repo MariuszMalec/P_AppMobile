@@ -101,7 +101,7 @@ def home_page(
     db.close()
 
     return templates.TemplateResponse(
-        "statusall.html",
+        "home.html",
         {
             "request": request,
             "table": table,

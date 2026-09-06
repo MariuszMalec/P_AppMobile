@@ -1,183 +1,822 @@
-{% extends "base.html" %}
-
-{% block title %}Status LIVE{% endblock %}
-
-{% block content %}
-
-<meta http-equiv="refresh" content="30">
-
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TYDZIEŃ SESJI</title>
 <style>
+:root {
+    --panel: #0c0f2a;
+    --border: rgba(255,255,255,.12);
+    --text: #ffffff;
+    --muted: #8c8cb8;
+}
 
-.no-data {
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, #0a0d3a, #020210);
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+}
+
+.header {
+    text-align: center;
     padding: 12px;
-    background: #331;
-    color: #ffcc00;
-    border-radius: 8px;
+    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.header button {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.table-wrap {
+    overflow-x: auto;
+    padding: 8px;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background: var(--panel);
+    border-radius: 14px;
+}
+
+th, td {
+    border: 1px solid var(--border);
     text-align: center;
 }
 
+th {
+    height: 44px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+td {
+    height: 80px;
+    position: relative;
+    cursor: pointer;
+}
+
+.tile-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    padding: 6px;
+    background: rgba(0,0,0,.5);
+}
+
+.empty {
+    color: #444;
+}
+
+@keyframes livePulse {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.6); }
+    100% { filter: brightness(1); }
+}
+
+.live {
+    animation: livePulse 1.5s infinite;
+}
+
+/* PREVIEW */
+.preview-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.preview-bg.active {
+    display: flex;
+}
+
+.preview-card {
+    background: var(--panel);
+    padding: 16px;
+    border-radius: 14px;
+    width: 320px;
+}
+
+.preview-card input,
+.preview-card select {
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+.preview-card button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+}
+
+.live-time {
+    font-weight: 400;
+    font-size: 14px;
+    color: #8cff8c;
+}
+
+.create-client-btn {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    border: none;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-client-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,114,255,.4);
+}
+
+.create-client-btn:active {
+    transform: scale(0.96);
+}
+
+.create-session-btn {
+    position: relative;
+    background: linear-gradient(135deg, #00ff9f, #00cfff);
+    border: none;
+    color: #001;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.create-session-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,255,200,.35);
+}
+
+.create-session-btn:active {
+    transform: scale(0.96);
+}
+
+.create-session-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.create-session-btn:hover::before {
+    opacity: 1;
+}
+
+.week-arrow {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: 700;
+    cursor: pointer;
+
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid rgba(255,255,255,.5);
+    border-radius: 12px;
+    background: rgba(255,255,255,.06);
+
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.week-arrow:hover {
+    background: rgba(255,255,255,.15);
+    border-color: rgba(255,255,255,.9);
+    transform: scale(1.05);
+}
+
+.week-arrow:active {
+    transform: scale(0.95);
+}
+
+
+
 </style>
+</head>
+<body>
 
-<!-- 🔝 TOP BAR -->
-<div style="
-    display:flex;
-    gap:12px;
-    margin-bottom:20px;
-">
+<div class="header">
 
-{% if not no_data %}
-    <a href="/mainmenu" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#e5e7eb;
-            cursor:pointer;
-        ">
-            ⬅ Main menu
-        </button>
+
+    <a href="?week_offset={{ week_offset - 1 }}"
+    class="week-arrow"
+    onclick="console.log('KLIK LEWO', new Date().toISOString(), this.href);">
+        ⬅
     </a>
 
-    <a href="/live/now" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#22c55e;
-            color:#022c22;
-            cursor:pointer;
-        ">
-            ⏱ LIVE NOW  
-        </button>
+    🟢 LIVE — TYDZIEŃ
+    <span id="current-day-date"></span>
+    <span class="live-time" id="live-time">--:--:--</span>
+
+    <a href="?week_offset={{ week_offset + 1 }}"
+    class="week-arrow"
+    onclick="console.log('KLIK PRAWO', new Date().toISOString(), this.href);">
+        ➡
     </a>
 
-    <a href="/live/statusall" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#38bdf8;
-            color:#020617;
-            cursor:pointer;
-        ">
-            🟢 LIVE ALL
-        </button>
-    </a>
 
-    <a href="/live/statusalltv" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#38bdf8;
-            color:#020617;
-            cursor:pointer;
-        ">
-            🔴 LIVE TV
-        </button>
-    </a>    
 
-{% endif %}
 
+    <button class="create-session-btn" onclick="openCreateSession()">
+        ➕ Nowa sesja
+    </button>
+    <button class="create-client-btn" onclick="openCreateClient()">👤 Nowy klient</button>
 </div>
 
-<h2 style="text-align:center; margin-bottom:12px;">
-    Teraz: {{ now }} {{ current_day_name }}
-</h2>
+<div class="table-wrap">
+<table>
+<thead>
 
-<!-- ================= CURRENT ================= -->
-{% if current and current|length > 0 %}
-    {% for item in current %}
-    <div style="
-        background:#020617;
-        border:2px solid #22c55e;
-        border-radius:16px;
-        padding:16px;
-        margin-bottom:16px;
-        box-shadow:0 10px 30px rgba(0,0,0,0.4);
-    ">
-
-        {% if item.picture %}
-            <img src="{{ item.picture }}"
-                 style="width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
-        {% endif %}
-
-        <div style="font-size:1.4em; font-weight:bold;">
-            {{ item.start }} – {{ item.end }}
-        </div>
-
-        <div style="margin:10px 0; font-size:1.2em;">
-            {{ item.description }}
-        </div>
-
-        {% if item.person %}
-        <div style="display:flex; align-items:center; gap:12px;">
-            {% if item.personPicture %}
-                <img src="{{ item.personPicture }}"
-                     style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
-            {% endif %}
-            <div>{{ item.person }}</div>
-        </div>
-        {% endif %}
-    </div>
+<tr>
+    <th>⏰</th>
+    {% for d in range(1, 8) %}
+        <th class="day-header" data-day="{{ d }}">{{ days[d] }}</th>
     {% endfor %}
-{% else %}
-<p style="text-align:center; opacity:0.6;">
-    Brak aktualnej aktywności
-</p>
+</tr>
+</thead>
 
-{% if no_data %}
-    <div class="no-data">
-        Brak danych – baza lub tabele nie istnieją.
-    </div>
-{% endif %}
+<tbody>
+{% for time, day_rows in table.items() %}
+<tr>
 
+    <td>{{ time }}</td>
 
-{% endif %}
+    {% for d in range(1, 8) %}
+        {% set cell = day_rows[d] %}
 
-<!-- ================= NEXT ================= -->
-{% if next and next|length > 0 %}
-<h3 style="margin-top:28px; opacity:0.7;">Następnie</h3>
-
-    {% for item in next %}
-    <div style="
-        margin-top:16px;
-        background:#020617;
-        border:2px dashed #38bdf8;
-        border-radius:16px;
-        padding:16px;
-    ">
-
-        {% if item.picture %}
-            <img src="{{ item.picture }}"
-                 style="width:50%; max-height:90px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
-        {% endif %}
-
-        <div style="font-weight:bold;">
-            {{ item.start }} – {{ item.end }}
-        </div>
-
-        <div>{{ item.description }}</div>
-
-        {% if item.person %}
-        <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
-            {% if item.personPicture %}
-                <img src="{{ item.personPicture }}"
-                     style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+        <td class="{% if cell and cell.is_live %}live{% endif %}"
+            {% if cell %}
+            data-session-id="{{ cell.session_id }}"
+            data-client="{{ cell.client or '' }}"
+            data-desc="{{ cell.description or '' }}"
+            data-start="{{ cell.start or '' }}"
+            data-end="{{ cell.end or '' }}"
+            data-day="{{ d }}"
+            data-session-date="{{ cell.session_date }}"
+            onclick="openPreview(this)"
+            {% else %}
+            data-day="{{ d }}"
+            onclick="openCreateSessionForDay({{ d }})"
             {% endif %}
-            <div>{{ item.person }}</div>
-        </div>
-        {% endif %}
-    </div>
-    {% endfor %}
-{% endif %}
+        >
+            {% if cell %}
+                <div class="tile-overlay">
+                    {{ cell.client or 'Brak klienta' }}
+                </div>
+            {% else %}
+                <div class="empty">—</div>
+            {% endif %}
+        </td>
 
-{% endblock %}
+    {% endfor %}
+
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<!-- PREVIEW -->
+<div class="preview-bg" id="preview" onclick="closePreview()">
+    <div class="preview-card" onclick="event.stopPropagation()">
+
+
+        <label>Start</label>
+        <input type="time" id="p-start">
+
+        <label>Koniec</label>
+        <input type="time" id="p-end">
+
+        <label>Klient</label>
+        <select id="p-client">
+            <option value="">— wybierz klienta —</option>
+            {% for c in clients %}
+                <option value="{{ c.Id }}">{{ c.FirstName }} {{ c.LastName }}</option>
+            {% endfor %}
+        </select>
+
+        <label>Opis</label>
+        <input type="text" id="p-desc">        
+
+        <label>Dzień tygodnia</label>
+        <select id="p-day">
+            <option value="1">Poniedziałek</option>
+            <option value="2">Wtorek</option>
+            <option value="3">Środa</option>
+            <option value="4">Czwartek</option>
+            <option value="5">Piątek</option>
+            <option value="6">Sobota</option>
+            <option value="7">Niedziela</option>
+        </select>
+
+        <button onclick="saveEdit()">💾 Zapisz</button>
+        <button onclick="deleteSession()">🗑 Usuń</button>
+    </div>
+</div>
+
+<!-- CLIENT PREVIEW -->
+<div class="preview-bg" id="client-preview" onclick="closeClientPreview()">
+    <div class="preview-card" onclick="event.stopPropagation()">
+
+        <label>Imię</label>
+        <input type="text" id="c-first">
+
+        <label>Nazwisko</label>
+        <input type="text" id="c-last">
+
+        <label>Wiek</label>
+        <input type="number" id="c-age">
+
+        <label>Telefon</label>
+        <input type="text" id="c-phone">
+
+        <label>Płeć</label>
+        <select id="c-gender">
+            <option value="">— wybierz —</option>
+            <option value="male">Mężczyzna</option>
+            <option value="female">Kobieta</option>
+        </select>
+
+        <label>Opis</label>
+        <input type="text" id="c-desc">
+
+        <button onclick="createClient()">💾 Utwórz klienta</button>
+    </div>
+</div>
+
+<!-- Zmieniamy tylko JS -->
+<script>
+let currentCell = null;
+let weekOffset = 0;
+
+// Wyświetlanie live czasu
+function updateLiveTime() {
+    const now = new Date();
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+    document.getElementById('live-time').textContent = `${h}:${m}:${s}`;
+}
+
+
+// Funkcje podglądu - EDIT
+function openPreview(el) {
+    currentCell = el;
+    document.getElementById('p-start').value = el.dataset.start;
+    document.getElementById('p-end').value = el.dataset.end;
+    document.getElementById('p-client').value = el.dataset.client_id || ""; // ID klienta z dataset
+    document.getElementById('p-desc').value = el.dataset.desc;
+    document.getElementById('p-day').value = el.dataset.day;
+    document.getElementById('preview').classList.add('active');
+
+    // Przywracamy przycisk Save dla edycji
+    const saveBtn = document.querySelector('.preview-card button:first-of-type');
+    saveBtn.textContent = "💾 Zapisz";
+    saveBtn.onclick = saveEdit;
+
+    // Pokaż przycisk Usuń
+    document.querySelector('.preview-card button:last-of-type').style.display = "block";
+
+    // BLOKUJ pole klienta w edycji
+    document.getElementById('p-client').disabled = true;
+}
+
+// Funkcja do załadowania listy klientów
+function loadClientList() {
+    fetch('/home/get_clients')
+        .then(response => response.json())
+        .then(clients => {
+            const clientSelect = document.getElementById('p-client');
+            clientSelect.innerHTML = '<option value="">— wybierz klienta —</option>';  // Resetujemy listę
+
+            // Tworzymy opcje na podstawie pobranych danych
+            clients.forEach(client => {
+                const option = document.createElement("option");
+                option.value = client.Id;
+                option.textContent = `${client.FirstName} ${client.LastName}`;
+                clientSelect.appendChild(option);
+            });
+        })
+        .catch(err => {
+            console.error("Błąd ładowania klientów: ", err);
+            alert("Nie udało się załadować listy klientów");
+        });
+}
+
+function closePreview() {
+    document.getElementById('preview').classList.remove('active');
+}
+
+
+function saveEdit() {
+    if (!currentCell) return;
+
+    const id = currentCell.dataset.sessionId;
+
+    const formData = new FormData();
+
+    formData.append("start", document.getElementById('p-start').value);
+    formData.append("end", document.getElementById('p-end').value);
+    formData.append("description", document.getElementById('p-desc').value);
+    formData.append("day_of_week", document.getElementById('p-day').value);
+
+    // WAŻNE: dokładna data edytowanej sesji
+    formData.append("session_date", currentCell.dataset.sessionDate);
+
+    console.log("FORMULARZ EDYCJI:");
+
+    for (const [key, value] of formData.entries()) {
+        console.log(key, "=", value);
+    }
+
+    fetch(`/home/session/edit/${id}`, {
+        method: "PUT",
+        body: formData
+    })
+    .then(async response => {
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("BŁĄD SERWERA:", data);
+            throw new Error(JSON.stringify(data));
+        }
+
+        return data;
+    })
+    .then(() => {
+        location.reload();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Błąd zapisu:\n" + err.message);
+    });
+}
+
+
+
+function deleteSession() {
+    if (!currentCell) return;
+    const id = currentCell.dataset.sessionId;
+    if (!confirm("Usunąć sesję?")) return;
+
+    fetch(`/home/session/delete/${id}`, { method: "POST" })
+    .then(r => {
+        if (!r.ok) throw new Error("Błąd usuwania");
+        location.reload();
+    })
+    .catch(err => alert(err.message));
+}
+
+// Funkcja uzupełniająca daty przy dniach tygodnia z przesunięciem
+function updateWeekDates() {
+    const params = new URLSearchParams(window.location.search);
+    const offset = parseInt(params.get("week_offset") || "0");
+
+    const now = new Date();
+    const dayOfWeek = now.getDay();
+    const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+    const weekStart = new Date(now);
+    weekStart.setDate(now.getDate() + mondayOffset + offset * 7);
+
+    const headers = document.querySelectorAll('.day-header');
+
+    headers.forEach((th, index) => {
+        const d = new Date(weekStart);
+        d.setDate(d.getDate() + index);
+
+        const dayNum = String(d.getDate()).padStart(2, '0');
+        const monthNum = String(d.getMonth() + 1).padStart(2, '0');
+
+        const baseName = th.textContent.split(' ')[0];
+        th.textContent = `${baseName} (${dayNum}.${monthNum})`;
+    });
+
+    document.getElementById('current-day-date').textContent =
+        weekStart.toLocaleDateString('pl-PL');
+}
+
+// 🔥 Nie nadpisujemy HTML, tylko ukrywamy/odkrywamy komórki
+function filterSessionsByWeek(start, end) {
+
+    function toLocalDateStr(d) {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    const startStr = toLocalDateStr(start);
+    const endStr = toLocalDateStr(end);
+
+    document.querySelectorAll("tbody tr").forEach(tr => {
+        let hasVisibleSession = false;
+
+        tr.querySelectorAll('td[data-session-id]').forEach(td => {
+            const dateStr = td.dataset.sessionDate;
+
+            if (!dateStr) return;
+
+            if (dateStr < startStr || dateStr > endStr) {
+                td.style.display = "none";
+            } else {
+                td.style.display = "";
+                hasVisibleSession = true;
+            }
+        });
+
+        tr.style.display = hasVisibleSession ? "" : "none";
+    });
+}
+
+
+// NEW: otwieramy popup w trybie create
+
+function openCreateSession() {
+    currentCell = null;
+
+    const params = new URLSearchParams(window.location.search);
+    const weekOffset = parseInt(params.get("week_offset") || "0");
+
+    const today = new Date();
+    const currentDay = today.getDay();
+
+    const mondayOffset =
+        currentDay === 0
+            ? -6
+            : 1 - currentDay;
+
+    const monday = new Date(today);
+    monday.setHours(12, 0, 0, 0);
+    monday.setDate(today.getDate() + mondayOffset);
+    monday.setDate(monday.getDate() + weekOffset * 7);
+
+    // Domyślnie poniedziałek wyświetlanego tygodnia
+    const year = monday.getFullYear();
+    const month = String(monday.getMonth() + 1).padStart(2, "0");
+    const day = String(monday.getDate()).padStart(2, "0");
+
+    const sessionDate = `${year}-${month}-${day}`;
+
+    document.getElementById('p-start').value = "16:00";
+    document.getElementById('p-end').value = "17:00";
+    document.getElementById('p-client').value = "1";
+    document.getElementById('p-desc').value = "Terapia";
+    document.getElementById('p-day').value = "1";
+
+    document.getElementById('preview').dataset.sessionDate = sessionDate;
+
+    document.getElementById('preview').classList.add('active');
+
+    const saveBtn = document.querySelector('.preview-card button:first-of-type');
+    saveBtn.textContent = "💾 Utwórz";
+    saveBtn.onclick = createSession;
+
+    document.querySelector('.preview-card button:last-of-type').style.display = "none";
+
+    document.getElementById('p-client').disabled = false;
+}
+
+
+
+// NEW: funkcja tworzenia sesji
+
+function createSession() {
+    const startTime = document.getElementById('p-start').value;
+    const endTime = document.getElementById('p-end').value;
+    const clientId = document.getElementById('p-client').value;
+    const description = document.getElementById('p-desc').value;
+    const dayOfWeek = parseInt(
+        document.getElementById('p-day').value,
+        10
+    );
+
+    // Data bazowa ustalona podczas otwarcia formularza.
+    // Dla "Nowa sesja" z nagłówka jest to poniedziałek
+    // wyświetlanego tygodnia.
+    const baseDate =
+        document.getElementById('preview').dataset.sessionDate;
+
+    if (!baseDate) {
+        alert("Nie wybrano dnia sesji");
+        return;
+    }
+
+    if (!dayOfWeek || dayOfWeek < 1 || dayOfWeek > 7) {
+        alert("Nieprawidłowy dzień tygodnia");
+        return;
+    }
+
+    // ==========================================
+    // WYLICZ SessionDate NA PODSTAWIE p-day
+    // ==========================================
+
+    const date = new Date(baseDate + "T12:00:00");
+
+    // Ustal poniedziałek tygodnia bazowej daty
+    const jsDay = date.getDay(); // 0 = niedziela, 1 = poniedziałek
+
+    const mondayOffset =
+        jsDay === 0
+            ? -6
+            : 1 - jsDay;
+
+    date.setDate(
+        date.getDate() + mondayOffset + (dayOfWeek - 1)
+    );
+
+    const year = date.getFullYear();
+    const month = String(
+        date.getMonth() + 1
+    ).padStart(2, "0");
+
+    const day = String(
+        date.getDate()
+    ).padStart(2, "0");
+
+    const sessionDate =
+        `${year}-${month}-${day}`;
+
+    // ==========================================
+    // FORM DATA
+    // ==========================================
+
+    const formData = new FormData();
+
+    formData.append("start", startTime);
+    formData.append("end", endTime);
+    formData.append("client_id", clientId);
+    formData.append("description", description);
+    formData.append("day_of_week", dayOfWeek);
+    formData.append("session_date", sessionDate);
+
+    console.log("TWORZENIE SESJI:");
+    console.log("start =", startTime);
+    console.log("end =", endTime);
+    console.log("day_of_week =", dayOfWeek);
+    console.log("session_date =", sessionDate);
+
+    fetch("/home/session/create", {
+        method: "POST",
+        body: formData
+    })
+    .then(async response => {
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("BŁĄD TWORZENIA:", data);
+
+            throw new Error(
+                data.detail || "Błąd tworzenia sesji"
+            );
+        }
+
+        return data;
+    })
+    .then(() => {
+        location.reload();
+    })
+    .catch(err => {
+        console.error(err);
+        alert("Błąd: " + err.message);
+    });
+}
+
+
+
+function openCreateClient() {
+    document.getElementById('client-preview').classList.add('active');
+}
+
+function createClient() {
+    const formData = new FormData();
+    formData.append("first_name", document.getElementById('c-first').value);
+    formData.append("last_name", document.getElementById('c-last').value);
+    formData.append("age", document.getElementById('c-age').value);
+    formData.append("phone", document.getElementById('c-phone').value);
+    formData.append("description", document.getElementById('c-desc').value);
+    formData.append("gender", document.getElementById('c-gender').value);
+
+    fetch("/home/client/create", {
+        method: "POST",
+        body: formData
+    })
+    .then(r => {
+        if (!r.ok) throw new Error("Błąd tworzenia klienta");
+        return r.json();
+    })
+    .then(() => location.reload())
+    .catch(err => alert(err.message));
+}
+
+function closeClientPreview() {
+    document.getElementById('client-preview').classList.remove('active');
+}
+
+
+function openCreateSessionForDay(dayOfWeek) {
+    currentCell = null;
+
+    // Aktualny week_offset z URL
+    const params = new URLSearchParams(window.location.search);
+    const weekOffset = parseInt(params.get("week_offset") || "0");
+
+    // Dzisiejsza data
+    const today = new Date();
+
+    // Ustalamy poniedziałek bieżącego tygodnia
+    const currentDay = today.getDay();
+
+    const mondayOffset =
+        currentDay === 0
+            ? -6
+            : 1 - currentDay;
+
+    const monday = new Date(today);
+    monday.setHours(12, 0, 0, 0);
+    monday.setDate(today.getDate() + mondayOffset);
+
+    // Przesuwamy do tygodnia wyświetlanego na ekranie
+    monday.setDate(monday.getDate() + weekOffset * 7);
+
+    // Ustalamy konkretną datę klikniętego dnia
+    const sessionDate = new Date(monday);
+    sessionDate.setDate(
+        monday.getDate() + (dayOfWeek - 1)
+    );
+
+    // YYYY-MM-DD bez problemów ze strefą czasową
+    const year = sessionDate.getFullYear();
+    const month = String(sessionDate.getMonth() + 1).padStart(2, "0");
+    const day = String(sessionDate.getDate()).padStart(2, "0");
+
+    const dateString = `${year}-${month}-${day}`;
+
+    console.log("NOWA SESJA:");
+    console.log("day_of_week =", dayOfWeek);
+    console.log("session_date =", dateString);
+
+    // Otwieramy popup
+    document.getElementById('p-start').value = "";
+    document.getElementById('p-end').value = "";
+    document.getElementById('p-client').value = "";
+    document.getElementById('p-desc').value = "";
+    document.getElementById('p-day').value = dayOfWeek;
+
+    // Zapamiętujemy wybraną datę
+    document.getElementById('preview').dataset.sessionDate = dateString;
+
+    document.getElementById('preview').classList.add('active');
+
+    // Przycisk Zapisz -> Utwórz
+    const saveBtn = document.querySelector('.preview-card button:first-of-type');
+    saveBtn.textContent = "💾 Utwórz";
+    saveBtn.onclick = createSession;
+
+    // Pokaż/ukryj Usuń
+    document.querySelector('.preview-card button:last-of-type').style.display = "none";
+
+    // Przy tworzeniu klient może być wybrany
+    document.getElementById('p-client').disabled = false;
+}
+
+
+// wywołania startowe
+setInterval(updateLiveTime, 1000);
+updateLiveTime();
+updateWeekDates();
+
+</script>
+
+</body>
+</html>
