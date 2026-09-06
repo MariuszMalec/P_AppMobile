@@ -406,6 +406,8 @@ def get_clients(db=Depends(get_db)):
     # Pobieranie wszystkich klientów
     clients = cursor.execute("SELECT Id, FirstName, LastName FROM Client ORDER BY FirstName, LastName").fetchall()
 
+    clients = [dict(client) for client in clients]
+
     return JSONResponse(content=clients)
 
 
