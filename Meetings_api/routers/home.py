@@ -111,6 +111,7 @@ def home_page(
     )
 
 
+
 # =========================
 # EDIT SESSION
 # =========================
@@ -143,11 +144,51 @@ def edit_session(
             detail="Sesja nie istnieje"
         )
 
-    # Data KONKRETNEJ edytowanej sesji z bazy
-    session_date = session["SessionDate"]
+    old_session_date = session["SessionDate"]
 
     # ---------------------------------
-    # 2. Walidacja godzin
+    # 2. Walidacja dnia tygodnia
+    # ---------------------------------
+    if day_of_week < 1 or day_of_week > 7:
+        raise HTTPException(
+            status_code=400,
+            detail="Nieprawidłowy dzień tygodnia"
+        )
+
+    # ---------------------------------
+    # 3. Wylicz NOWĄ SessionDate
+    #
+    # Bierzemy tydzień starej sesji
+    # i zmieniamy tylko dzień tygodnia.
+    #
+    # Python:
+    # Monday = 0
+    # Sunday = 6
+    # ---------------------------------
+    try:
+        old_date = datetime.strptime(
+            old_session_date,
+            "%Y-%m-%d"
+        ).date()
+
+        monday = old_date - timedelta(
+            days=old_date.weekday()
+        )
+
+        new_session_date = monday + timedelta(
+            days=day_of_week - 1
+        )
+
+        new_session_date = new_session_date.isoformat()
+
+    except (ValueError, TypeError):
+        raise HTTPException(
+            status_code=400,
+            detail="Nieprawidłowa data sesji"
+        )
+
+    # ---------------------------------
+    # 4. Walidacja godzin
     # ---------------------------------
     if not start or not end:
         raise HTTPException(
@@ -156,8 +197,16 @@ def edit_session(
         )
 
     try:
-        start_minutes = int(start[:2]) * 60 + int(start[3:5])
-        end_minutes = int(end[:2]) * 60 + int(end[3:5])
+        start_minutes = (
+            int(start[:2]) * 60
+            + int(start[3:5])
+        )
+
+        end_minutes = (
+            int(end[:2]) * 60
+            + int(end[3:5])
+        )
+
     except (ValueError, IndexError):
         raise HTTPException(
             status_code=400,
@@ -171,8 +220,8 @@ def edit_session(
         )
 
     # ---------------------------------
-    # 3. Pobierz wszystkie INNE sesje
-    #    z dokładnie tego samego dnia
+    # 5. Pobierz INNE sesje
+    #    z NOWEGO dnia
     # ---------------------------------
     other_sessions = cursor.execute(
         """
@@ -183,13 +232,13 @@ def edit_session(
         ORDER BY StartTime
         """,
         (
-            session_date,
+            new_session_date,
             session_id
         )
     ).fetchall()
 
     # ---------------------------------
-    # 4. Sprawdź nakładanie godzin
+    # 6. Sprawdź konflikt godzin
     # ---------------------------------
     for other in other_sessions:
 
@@ -206,21 +255,10 @@ def edit_session(
                 int(other_end[:2]) * 60
                 + int(other_end[3:5])
             )
+
         except (ValueError, IndexError, TypeError):
             continue
 
-        # ---------------------------------
-        # KONFLIKT:
-        #
-        # nowa:    |------|
-        # inna:       |------|
-        #
-        # albo:
-        #
-        # nowa:       |------|
-        # inna:    |------|
-        #
-        # ---------------------------------
         if (
             start_minutes < other_end_minutes
             and end_minutes > other_start_minutes
@@ -230,12 +268,12 @@ def edit_session(
                 detail=(
                     f"Konflikt z sesją {other['Id']} "
                     f"({other_start}-{other_end}) "
-                    f"w dniu {session_date}"
+                    f"w dniu {new_session_date}"
                 )
             )
 
     # ---------------------------------
-    # 5. Aktualizacja
+    # 7. Aktualizacja
     # ---------------------------------
     cursor.execute(
         """
@@ -243,7 +281,8 @@ def edit_session(
         SET StartTime = ?,
             EndTime = ?,
             Description = ?,
-            DayOfWeek = ?
+            DayOfWeek = ?,
+            SessionDate = ?
         WHERE Id = ?
         """,
         (
@@ -251,6 +290,7 @@ def edit_session(
             end,
             description,
             day_of_week,
+            new_session_date,
             session_id
         )
     )
@@ -262,6 +302,7 @@ def edit_session(
         "status": "ok",
         "message": "Sesja zaktualizowana"
     })
+
 
 # =========================
 # DELETE SESSION
