@@ -188,23 +188,6 @@ def validate_activity_form_old(
         if not errors and start_min == end_min:
             errors.append("Godzina startu musi być inna niż zakończenia")
 
-    # if TIME_RE.match(start) and TIME_RE.match(end):
-
-    #     try:
-    #         start_min = time_to_minutes(start)
-    #         end_min = time_to_minutes(end)
-    #     except ValueError as e:
-    #         errors.append(str(e))
-
-
-    #     print(start_min)
-    #     print(end_min)
-
-    #     # ✅ TU JEST WŁAŚCIWA WALIDACJA
-    #     if not errors and start_min >= end_min:
-    #         errors.append("Godzina startu musi być wcześniejsza niż zakończenia")
-
-
     # --- dzień ---
     if day_of_week not in DAY_NAMES or day_of_week == 0:
         errors.append("Nieprawidłowy dzień tygodnia")
