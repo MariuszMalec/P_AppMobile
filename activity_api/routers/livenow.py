@@ -245,6 +245,7 @@ def statusall_page(request: Request, db = Depends(get_db)):
                     "description": r["Description"],
                     "picture": r["Picture"],
                     "activityname": r["ActivityName"],
+                    "person_id": r["PersonId"],
                     "start": r["StartTime"],
                     "end": r["EndTime"],
                     "is_live": r["StartTime"] <= current_time <= r["EndTime"]
@@ -351,6 +352,7 @@ def statusall_by_day(request: Request, day: int, db = Depends(get_db)):
                     "description": r["Description"],
                     "picture": r["Picture"],
                     "activityname": r["ActivityName"],
+                    "person_id": r["PersonId"],
                     "start": r["StartTime"],
                     "end": r["EndTime"],
                     "is_live": r["StartTime"] <= current_time <= r["EndTime"]
@@ -447,6 +449,7 @@ def edit_activity_put(
         description: str = Form(""),
         activityname: str = Form(""),
         day: int = Form(...),
+        person_id: int = Form(...),
         db = Depends(get_db)
     ):
 
@@ -472,7 +475,7 @@ def edit_activity_put(
         )
 
     old_day_of_week = activity["DayOfWeek"]
-    person_id = activity["ModelPersonFamilyId"]
+    old_person_id = activity["ModelPersonFamilyId"]
 
     # ===============================
     # 📅 WALIDACJA DNIA
@@ -498,6 +501,9 @@ def edit_activity_put(
     start = hhmm(start)
     end = hhmm(end)
 
+    # 👤 NOWA OSOBA WYBRANA W FORMULARZU
+    new_person_id = person_id
+
     # ===============================
     # 🧠 WALIDACJA
     # ===============================
@@ -511,7 +517,7 @@ def edit_activity_put(
         start=start,
         end=end,
         day_of_week=day,
-        person_id=person_id,
+        person_id=new_person_id,
         activity_id=activity_id,
         db=db,
     )
@@ -555,6 +561,7 @@ def edit_activity_put(
             StartTime = ?,
             EndTime = ?,
             Description = ?,
+            ModelPersonFamilyId = ?,
             ModelPictureActivityId = ?
         WHERE Id = ?
     """, (
@@ -562,6 +569,7 @@ def edit_activity_put(
         start,
         end,
         description.strip() or None,
+        person_id,
         picture_id,
         activity_id
     ))

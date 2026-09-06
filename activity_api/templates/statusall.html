@@ -297,6 +297,7 @@ td {
             data-start="{{ cell.start }}"
             data-end="{{ cell.end }}"
             data-activityname="{{ cell.activityname }}"
+            data-person-id="{{ cell.person_id }}"
             data-day="{{ day_index }}"
             onclick="openPreview(this)"
 
@@ -401,6 +402,18 @@ td {
                     <option value="5">Czwartek</option>
                     <option value="6">Piątek</option>
                     <option value="7">Sobota</option>
+                </select>
+
+                <label>Osoba</label>
+
+                <select id="p-person">
+                    <option value="">— BRAK —</option>
+
+                    {% for p in persons %}
+                        <option value="{{ p.id }}">
+                            {{ p.name }}
+                        </option>
+                    {% endfor %}
                 </select>
 
             <label>Aktywność</label>
@@ -519,7 +532,9 @@ function openPreview(el) {
             el.dataset.end || '',
 
         day:
-            el.dataset.day || ''
+            el.dataset.day || '',
+
+        personId: el.dataset.personId || ''
 
     };
 
@@ -542,6 +557,10 @@ function openPreview(el) {
     document.getElementById('p-day').value =
         originalState.day;
 
+    // 👤 ustaw aktualną osobę
+
+    document.getElementById('p-person').value =
+        el.dataset.personId || '';
 
     // 🖼️ ustaw aktywność
 
@@ -765,6 +784,11 @@ function saveEdit() {
                 'p-activity-select'
             )
             .value
+    );
+
+    formData.append(
+        "person_id",
+        document.getElementById('p-person').value
     );
 
 
