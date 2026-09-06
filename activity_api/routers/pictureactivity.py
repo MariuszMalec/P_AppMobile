@@ -89,30 +89,26 @@ def edit_picture_activity_form(item_id: int, request: Request, db = Depends(get_
 
 @router.post("/edit/{item_id}", response_class=HTMLResponse)
 def edit_picture_activity_save(
-        item_id: int,
-        name: str = Form(...),      # ✅ STRING
-        picture: str = Form(""), 
-        db = Depends(get_db)
-        
-    ):
+    item_id: int,
+    picture: str = Form(""),
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
 
-        cursor = db.cursor()
+    cursor.execute("""
+        UPDATE PictureActivities
+        SET Picture = ?
+        WHERE Id = ?
+    """, (picture, item_id))
 
-        cursor.execute("""
-            UPDATE PictureActivities
-            SET Name = ?, Picture = ?
-            WHERE Id = ?
-        """, (name, picture, item_id))
+    db.commit()
 
-        db.commit()
-        db.close()
+    return RedirectResponse(
+        url="/pictureactivities",
+        status_code=303
+    )
 
-        return RedirectResponse(
-            url="/pictureactivities",
-            status_code=303
-        )
-
-    # ---------- ADD PICTURE ACTIVITY ----------
+# ---------- ADD PICTURE ACTIVITY ----------
     
     
 @router.get("/add", response_class=HTMLResponse)
@@ -259,6 +255,27 @@ def add_picture_activity_save(
         )
 
     db.close()
+
+    return RedirectResponse(
+        url="/pictureactivities",
+        status_code=303
+    )
+
+# ---------- DELETE PICTURE ACTIVITY ----------
+
+@router.post("/delete/{item_id}")
+def delete_picture_activity(
+    item_id: int,
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    cursor.execute("""
+        DELETE FROM PictureActivities
+        WHERE Id = ?
+    """, (item_id,))
+
+    db.commit()
 
     return RedirectResponse(
         url="/pictureactivities",
