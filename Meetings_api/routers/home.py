@@ -79,6 +79,11 @@ def home_page(
     table = {}
 
     for r in rows:
+        session_day = datetime.strptime(
+            r["SessionDate"],
+            "%Y-%m-%d"
+        ).isoweekday()
+
         time_key = f'{r["StartTime"]} – {r["EndTime"]}'
 
         if time_key not in table:
@@ -86,7 +91,7 @@ def home_page(
                 day: None for day in range(1, 8)
             }
 
-        table[time_key][r["DayOfWeek"]] = {
+        table[time_key][session_day] = {
             "session_id": r["Id"],
             "client_id": r["ClientId"],
 
@@ -276,7 +281,10 @@ def edit_session(
                 SessionDate
             FROM Session
             WHERE SessionDate = ?
-              AND Id != ?
+            AND (
+                RecurringGroupId IS NULL
+                OR RecurringGroupId != ?
+            )
             ORDER BY StartTime
             """,
             (

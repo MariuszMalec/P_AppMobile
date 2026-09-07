@@ -385,6 +385,52 @@ tbody tr:last-child td {
     box-shadow: 0 15px 50px rgba(0,0,0,.5);
 }
 
+.preview-card {
+    position: relative;
+    padding-top: 52px;
+}
+
+.preview-close {
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+
+    width: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+
+    height: 32px !important;
+    min-height: 32px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 1px solid rgba(255,255,255,.2) !important;
+    border-radius: 50% !important;
+
+    background: rgba(255,255,255,.08) !important;
+
+    color: white !important;
+    font-size: 22px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    z-index: 10;
+}
+
+.preview-close:hover {
+    background: rgba(255,255,255,.16) !important;
+}
+
+.preview-close:active {
+    transform: scale(.92);
+}
+
 /* =========================================================
    POLA FORMULARZA
    ========================================================= */
@@ -802,6 +848,13 @@ tbody tr:last-child td {
     <div class="preview-card"
          onclick="event.stopPropagation()">
 
+        <button type="button"
+                class="preview-close"
+                onclick="closePreview()"
+                aria-label="Zamknij">
+            ×
+        </button>
+
         <label>Start</label>
         <input type="time" id="p-start">
 
@@ -895,11 +948,11 @@ tbody tr:last-child td {
 
         </div>
 
-        <button onclick="saveEdit()">
+        <button class="save-edit-btn" onclick="saveEdit()">
             💾 Zapisz
         </button>
 
-        <button onclick="deleteSession()">
+        <button class="delete-session-btn" onclick="deleteSession()">
             🗑 Usuń
         </button>
 
@@ -1021,14 +1074,14 @@ function openPreview(el) {
 
     const saveBtn =
         document.querySelector(
-            '#preview .preview-card button:first-of-type'
+            '#preview .save-edit-btn'
         );
 
     saveBtn.textContent = "💾 Zapisz";
     saveBtn.onclick = saveEdit;
 
     document.querySelector(
-        '#preview .preview-card button:last-of-type'
+        '#preview .delete-session-btn'
     ).style.display = "block";
 
     document.getElementById('p-client').disabled = true;
@@ -1618,7 +1671,7 @@ function openCreateSession() {
 
     const saveBtn =
         document.querySelector(
-            '.preview-card button:first-of-type'
+            '#preview .save-edit-btn'
         );
 
 
@@ -1628,9 +1681,8 @@ function openCreateSession() {
     saveBtn.onclick =
         createSession;
 
-
     document.querySelector(
-        '.preview-card button:last-of-type'
+        '#preview .delete-session-btn'
     ).style.display =
         "none";
 
@@ -2172,7 +2224,7 @@ function openCreateSessionForDay(dayOfWeek) {
 
     const saveBtn =
         document.querySelector(
-            '.preview-card button:first-of-type'
+            '#preview .save-edit-btn'
         );
 
 
@@ -2187,7 +2239,7 @@ function openCreateSessionForDay(dayOfWeek) {
     // Pokaż/ukryj Usuń
 
     document.querySelector(
-        '.preview-card button:last-of-type'
+        '#preview .delete-session-btn'
     ).style.display =
         "none";
 
