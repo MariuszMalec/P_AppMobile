@@ -1113,10 +1113,27 @@ setInterval(() => {
             .classList
             .contains('active');
 
+    const createPreviewOpen =
+        document
+            .getElementById('create-preview')
+            .classList
+            .contains('active');
+
+
+    /*
+     * NIE odświeżaj strony, jeżeli:
+     * - otwarte jest okno edycji
+     * LUB
+     * - otwarte jest okno tworzenia aktywności
+     *
+     * Dzięki temu wpisywane dane nie znikną
+     * po 30 sekundach.
+     */
 
     if (
         !document.hidden &&
-        !previewOpen
+        !previewOpen &&
+        !createPreviewOpen
     ) {
 
         location.reload();
