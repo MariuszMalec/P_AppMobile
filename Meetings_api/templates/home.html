@@ -745,12 +745,13 @@ tbody tr:last-child td {
             {% if cell %}
 
             data-session-id="{{ cell.session_id }}"
-            data-client="{{ cell.client or '' }}"
+            data-client-id="{{ cell.client_id or '' }}"
             data-desc="{{ cell.description or '' }}"
             data-start="{{ cell.start or '' }}"
             data-end="{{ cell.end or '' }}"
             data-day="{{ d }}"
             data-session-date="{{ cell.session_date }}"
+            data-recurring-group-id="{{ cell.recurring_group_id or '' }}"
 
             onclick="openPreview(this)"
 
@@ -829,6 +830,40 @@ tbody tr:last-child td {
         <label>Opis</label>
         <input type="text" id="p-desc">
 
+        <!-- NOWE: SESJA CYKLICZNA -->
+
+        <label>Sesja cykliczna</label>
+
+        <div style="display:flex; align-items:center; gap:10px; margin:8px 0 12px;">
+            <input
+                type="checkbox"
+                id="p-recurring"
+                style="width:20px; height:20px; margin:0;"
+                onchange="toggleRecurringWeeks()"
+            >
+
+            <span style="font-size:14px;">
+                Kopiuj na kolejne tygodnie
+            </span>
+        </div>
+
+        <div id="recurring-weeks-wrap" style="display:none;">
+
+            <label for="p-recurring-weeks">
+                Ile kolejnych tygodni?
+            </label>
+
+            <input
+                type="number"
+                id="p-recurring-weeks"
+                min="1"
+                max="52"
+                value="1"
+            >
+
+        </div>
+
+
 
         <label>Dzień tygodnia</label>
 
@@ -844,6 +879,21 @@ tbody tr:last-child td {
 
         </select>
 
+        <div id="edit-scope-wrap" style="display:none; margin-top:12px;">
+
+            <label>Zakres edycji</label>
+
+            <select id="edit-scope">
+                <option value="single">
+                    Tylko tę sesję
+                </option>
+
+                <option value="series">
+                    Całą serię cykliczną
+                </option>
+            </select>
+
+        </div>
 
         <button onclick="saveEdit()">
             💾 Zapisz
@@ -947,53 +997,126 @@ function updateLiveTime() {
 // =========================================================
 // FUNKCJE PODGLĄDU - EDIT
 // =========================================================
-
 function openPreview(el) {
 
     currentCell = el;
 
     document.getElementById('p-start').value =
-        el.dataset.start;
+        el.dataset.start || "";
 
     document.getElementById('p-end').value =
-        el.dataset.end;
+        el.dataset.end || "";
 
     document.getElementById('p-client').value =
-        el.dataset.client_id || "";
+        el.dataset.clientId || "";
 
     document.getElementById('p-desc').value =
-        el.dataset.desc;
+        el.dataset.desc || "";
 
     document.getElementById('p-day').value =
-        el.dataset.day;
+        el.dataset.day || "";
 
     document.getElementById('preview')
         .classList.add('active');
 
-
-    // Przywracamy przycisk Save dla edycji
-
     const saveBtn =
         document.querySelector(
-            '.preview-card button:first-of-type'
+            '#preview .preview-card button:first-of-type'
         );
 
     saveBtn.textContent = "💾 Zapisz";
     saveBtn.onclick = saveEdit;
 
-
-    // Pokaż przycisk Usuń
-
     document.querySelector(
-        '.preview-card button:last-of-type'
+        '#preview .preview-card button:last-of-type'
     ).style.display = "block";
 
-
-    // BLOKUJ pole klienta w edycji
-
     document.getElementById('p-client').disabled = true;
-}
 
+    const editScopeWrap =
+        document.getElementById('edit-scope-wrap');
+
+    const editScope =
+        document.getElementById('edit-scope');
+
+    const recurringCheckbox =
+        document.getElementById('p-recurring');
+
+    const recurringWeeks =
+        document.getElementById('p-recurring-weeks');
+
+    const recurringWeeksWrap =
+        document.getElementById('recurring-weeks-wrap');
+
+    const recurringGroupId =
+        el.dataset.recurringGroupId;
+
+    if (recurringGroupId) {
+
+        // To jest sesja należąca do serii
+        editScopeWrap.style.display = "block";
+
+        editScope.value = "single";
+
+        // Zaznaczamy cykliczność
+        recurringCheckbox.checked = true;
+
+        // Pole liczby tygodni pokazujemy
+        recurringWeeksWrap.style.display = "block";
+
+        /*
+         * Pobieramy liczbę wystąpień całej serii
+         * i ustawiamy liczbę KOLEJNYCH tygodni.
+         */
+        fetch(
+            `/home/session/recurring-count/${recurringGroupId}`
+        )
+        .then(async response => {
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail || "Nie udało się pobrać liczby tygodni"
+                );
+            }
+
+            return data;
+        })
+        .then(data => {
+
+            // np. 6 wystąpień = 5 kolejnych tygodni
+            const weeks = Math.max(
+                1,
+                data.count - 1
+            );
+
+            recurringWeeks.value = weeks;
+
+        })
+        .catch(err => {
+
+            console.error(
+                "Błąd pobierania liczby tygodni:",
+                err
+            );
+
+        });
+
+    } else {
+
+        // Zwykła, pojedyncza sesja
+        editScopeWrap.style.display = "none";
+
+        editScope.value = "single";
+
+        recurringCheckbox.checked = false;
+
+        recurringWeeks.value = 1;
+
+        recurringWeeksWrap.style.display = "none";
+    }
+}
 
 // =========================================================
 // FUNKCJA DO ZAŁADOWANIA LISTY KLIENTÓW
@@ -1061,14 +1184,17 @@ function closePreview() {
 
 function saveEdit() {
 
-    if (!currentCell) return;
+    if (!currentCell) {
+        alert("Brak wybranej sesji");
+        return;
+    }
 
-    const id =
-        currentCell.dataset.sessionId;
+    const id = currentCell.dataset.sessionId;
 
-    const formData =
-        new FormData();
+    const editScope =
+        document.getElementById('edit-scope').value;
 
+    const formData = new FormData();
 
     formData.append(
         "start",
@@ -1090,74 +1216,49 @@ function saveEdit() {
         document.getElementById('p-day').value
     );
 
-
-    // WAŻNE: dokładna data edytowanej sesji
-
     formData.append(
         "session_date",
         currentCell.dataset.sessionDate
     );
 
-
-    console.log("FORMULARZ EDYCJI:");
-
-    for (const [key, value]
-         of formData.entries()) {
-
-        console.log(
-            key,
-            "=",
-            value
-        );
-    }
-
+    formData.append(
+        "edit_scope",
+        editScope
+    );
 
     fetch(`/home/session/edit/${id}`, {
-
         method: "PUT",
         body: formData
-
     })
-
     .then(async response => {
 
-        const data =
-            await response.json();
+        const data = await response.json();
 
         if (!response.ok) {
-
-            console.error(
-                "BŁĄD SERWERA:",
-                data
-            );
-
             throw new Error(
-                JSON.stringify(data)
+                data.detail || "Błąd zapisu sesji"
             );
         }
 
         return data;
-
     })
+    .then(data => {
 
-    .then(() => {
+        console.log("Edycja OK:", data);
 
         location.reload();
 
     })
-
     .catch(err => {
 
-        console.error(err);
+        console.error("Błąd:", err);
 
         alert(
             "Błąd zapisu:\n" +
             err.message
         );
-
     });
 }
-
 
 // =========================================================
 // USUWANIE SESJI
@@ -1165,38 +1266,72 @@ function saveEdit() {
 
 function deleteSession() {
 
-    if (!currentCell) return;
-
-    const id =
-        currentCell.dataset.sessionId;
-
-    if (!confirm("Usunąć sesję?"))
+    if (!currentCell) {
+        alert("Brak wybranej sesji");
         return;
+    }
 
+    const id = currentCell.dataset.sessionId;
 
-    fetch(
-        `/home/session/delete/${id}`,
-        {
-            method: "POST"
-        }
-    )
+    const recurringGroupId =
+        currentCell.dataset.recurringGroupId;
 
-    .then(r => {
+    let deleteScope = "single";
 
-        if (!r.ok)
-            throw new Error(
-                "Błąd usuwania"
+    if (recurringGroupId) {
+
+        const deleteSeries =
+            confirm(
+                "Ta sesja należy do serii cyklicznej.\n\n" +
+                "OK — usuń CAŁĄ serię\n" +
+                "Anuluj — usuń tylko tę sesję"
             );
+
+        if (deleteSeries) {
+            deleteScope = "series";
+        }
+    }
+
+    const formData = new FormData();
+
+    formData.append(
+        "delete_scope",
+        deleteScope
+    );
+
+    fetch(`/home/session/delete/${id}`, {
+        method: "POST",
+        body: formData
+    })
+    .then(async response => {
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail || "Błąd usuwania sesji"
+            );
+        }
+
+        return data;
+    })
+    .then(data => {
+
+        console.log("Usuwanie OK:", data);
 
         location.reload();
 
     })
+    .catch(err => {
 
-    .catch(err =>
-        alert(err.message)
-    );
+        console.error("Błąd usuwania:", err);
+
+        alert(
+            "Błąd usuwania:\n" +
+            err.message
+        );
+    });
 }
-
 
 // =========================================================
 // UZUPEŁNIANIE DAT PRZY DNIACH TYGODNIA
@@ -1532,6 +1667,16 @@ function createSession() {
         ).value;
 
 
+    const recurring =
+        document.getElementById('p-recurring').checked;
+
+    const recurringWeeks =
+        parseInt(
+            document.getElementById('p-recurring-weeks').value || '1',
+            10
+        );
+
+
     const dayOfWeek =
         parseInt(
             document.getElementById(
@@ -1539,7 +1684,6 @@ function createSession() {
             ).value,
             10
         );
-
 
     // Data bazowa ustalona podczas otwarcia formularza.
 
@@ -1664,6 +1808,15 @@ function createSession() {
         sessionDate
     );
 
+    formData.append(
+        "recurring",
+        recurring ? "true" : "false"
+    );
+
+    formData.append(
+        "recurring_weeks",
+        recurringWeeks
+    );
 
     console.log(
         "TWORZENIE SESJI:"
@@ -2040,6 +2193,23 @@ function openCreateSessionForDay(dayOfWeek) {
         'p-client'
     ).disabled =
         false;
+}
+
+// =========================================================
+// SESJA CYKLICZNA
+// =========================================================
+
+function toggleRecurringWeeks() {
+
+    const checkbox =
+        document.getElementById('p-recurring');
+
+    const weeksWrap =
+        document.getElementById('recurring-weeks-wrap');
+
+    weeksWrap.style.display =
+        checkbox.checked ? 'block' : 'none';
+
 }
 
 
