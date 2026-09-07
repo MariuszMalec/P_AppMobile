@@ -479,17 +479,37 @@ def delete_team(
 
 
 @router.get("/{team_id}/edit", response_class=HTMLResponse)
-def edit_team_form(team_id: int, request: Request, db=Depends(get_db)):
+def edit_team_form(
+    team_id: int,
+    request: Request,
+    db=Depends(get_db)
+):
     cursor = db.cursor()
 
     team = cursor.execute(
-        "SELECT * FROM Teams WHERE Id = ?",
+        """
+        SELECT *
+        FROM Teams
+        WHERE Id = ?
+        """,
         (team_id,)
     ).fetchone()
 
     if not team:
         db.close()
-        raise HTTPException(status_code=404, detail="Team not found")
+        raise HTTPException(
+            status_code=404,
+            detail="Team not found"
+        )
+
+    # Pobierz trofea do listy wyboru
+    trophies = cursor.execute(
+        """
+        SELECT Id, Name
+        FROM Trophies
+        ORDER BY Name ASC
+        """
+    ).fetchall()
 
     db.close()
 
@@ -498,6 +518,7 @@ def edit_team_form(team_id: int, request: Request, db=Depends(get_db)):
         {
             "request": request,
             "team": team,
+            "trophies": trophies,
             "filter_name": request.query_params.get("filter_name"),
             "sort": request.query_params.get("sort")
         }
@@ -522,25 +543,73 @@ def edit_team(
     db=Depends(get_db)
 ):
     if not Name.strip():
-        raise HTTPException(status_code=400, detail="Team name cannot be empty")
+        raise HTTPException(
+            status_code=400,
+            detail="Team name cannot be empty"
+        )
 
     try:
         cursor = db.cursor()
 
         existing = cursor.execute(
-            "SELECT * FROM Teams WHERE Id = ?",
+            """
+            SELECT *
+            FROM Teams
+            WHERE Id = ?
+            """,
             (team_id,)
         ).fetchone()
 
         if not existing:
-            db.close()
-            raise HTTPException(status_code=404, detail="Team not found")
+            raise HTTPException(
+                status_code=404,
+                detail="Team not found"
+            )
+
+        # ============================================================
+        # TROPHY - ID USTALAMY NA PODSTAWIE WYBRANEGO TROPHY WIN
+        # ============================================================
+
+        if TrophyWin and TrophyWin != "No":
+
+            trophy = cursor.execute(
+                """
+                SELECT Id, Name
+                FROM Trophies
+                WHERE Name = ?
+                """,
+                (TrophyWin,)
+            ).fetchone()
+
+            if not trophy:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Selected trophy does not exist"
+                )
+
+            TrophyWin = trophy["Name"]
+            TrophyModelId = trophy["Id"]
+
+        else:
+            TrophyWin = "No"
+            TrophyModelId = None
+
+        # ============================================================
+        # UPDATE
+        # ============================================================
 
         cursor.execute(
             """
             UPDATE Teams
-            SET Name = ?, Description = ?, NationalityName = ?, Season = ?, TopScorer = ?,
-                Picture = ?, FinalResult = ?, TrophyWin = ?, TrophyModelId = ?
+            SET Name = ?,
+                Description = ?,
+                NationalityName = ?,
+                Season = ?,
+                TopScorer = ?,
+                Picture = ?,
+                FinalResult = ?,
+                TrophyWin = ?,
+                TrophyModelId = ?
             WHERE Id = ?
             """,
             (
@@ -559,9 +628,17 @@ def edit_team(
 
         db.commit()
 
+    except HTTPException:
+        db.rollback()
+        raise
+
     except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
     finally:
         db.close()
 
@@ -570,13 +647,17 @@ def edit_team(
 
     if filter_name:
         params.append(f"filter_name={filter_name}")
+
     if sort:
         params.append(f"sort={sort}")
 
     if params:
         redirect_url += "?" + "&".join(params)
 
-    return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
+    return RedirectResponse(
+        url=redirect_url,
+        status_code=HTTP_303_SEE_OTHER
+    )
 
 
 @router.get("/topscorer", response_class=HTMLResponse)
