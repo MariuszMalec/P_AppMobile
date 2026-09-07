@@ -333,7 +333,7 @@ document.querySelectorAll(".team-row").forEach(row => {
             if (!data.picture) return;
 
             const img = document.getElementById("team-image-modal");
-            img.src = data.picture.startsWith("http") ? data.picture : "/static/" + data.picture;
+            img.src = data.picture;
 
             new bootstrap.Modal(document.getElementById("teamImageModal")).show();
         } catch (err) {
