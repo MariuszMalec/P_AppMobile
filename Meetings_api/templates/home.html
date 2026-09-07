@@ -431,6 +431,47 @@ tbody tr:last-child td {
     transform: scale(.92);
 }
 
+.client-preview-close {
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+
+    width: 32px !important;
+    min-width: 32px !important;
+    max-width: 32px !important;
+
+    height: 32px !important;
+    min-height: 32px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+
+    border: 1px solid rgba(255,255,255,.2) !important;
+    border-radius: 50% !important;
+
+    background: rgba(255,255,255,.08) !important;
+
+    color: white !important;
+    font-size: 22px !important;
+    font-weight: 400 !important;
+    line-height: 1 !important;
+
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    z-index: 10;
+}
+
+.client-preview-close:hover {
+    background: rgba(255,255,255,.16) !important;
+}
+
+.client-preview-close:active {
+    transform: scale(.92);
+}
+
 /* =========================================================
    POLA FORMULARZA
    ========================================================= */
@@ -705,6 +746,19 @@ tbody tr:last-child td {
         touch-action: manipulation;
     }
 }
+
+@media (max-width: 700px) {
+    #client-preview .preview-card {
+        padding-top: 52px;
+    }
+}
+
+@media (max-width: 390px) {
+    #client-preview .preview-card {
+        padding-top: 52px;
+    }
+}
+
 </style>
 </head>
 
@@ -971,6 +1025,13 @@ tbody tr:last-child td {
 
     <div class="preview-card"
          onclick="event.stopPropagation()">
+
+        <button type="button"
+                class="client-preview-close"
+                onclick="closeClientPreview()"
+                aria-label="Zamknij">
+            ×
+        </button>
 
         <label>Imię</label>
         <input type="text" id="c-first">
