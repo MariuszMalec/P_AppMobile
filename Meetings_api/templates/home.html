@@ -1226,6 +1226,11 @@ function saveEdit() {
         editScope
     );
 
+    formData.append(
+    "recurring_weeks",
+    document.getElementById('p-recurring-weeks').value
+    );
+
     fetch(`/home/session/edit/${id}`, {
         method: "PUT",
         body: formData

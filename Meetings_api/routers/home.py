@@ -169,13 +169,15 @@ def edit_session(
     day_of_week: int = Form(...),
     session_date: str = Form(...),
     edit_scope: str = Form("single"),
+    recurring_weeks: int = Form(1),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
 
-    # ---------------------------------
-    # 1. Pobierz edytowaną sesję
-    # ---------------------------------
+    # ---------------------------------------------------------
+    # POBIERAMY SESJĘ
+    # ---------------------------------------------------------
+
     session = cursor.execute(
         """
         SELECT
@@ -184,6 +186,7 @@ def edit_session(
             EndTime,
             DayOfWeek,
             SessionDate,
+            ClientId,
             RecurringGroupId
         FROM Session
         WHERE Id = ?
@@ -193,40 +196,35 @@ def edit_session(
 
     if not session:
         db.close()
-
         raise HTTPException(
             status_code=404,
             detail="Sesja nie istnieje"
         )
 
-    # ---------------------------------
-    # 2. Sprawdź zakres edycji
-    # ---------------------------------
+    # ---------------------------------------------------------
+    # SPRAWDZAMY ZAKRES EDYCJI
+    # ---------------------------------------------------------
+
     if edit_scope not in ("single", "series"):
         db.close()
-
         raise HTTPException(
             status_code=400,
             detail="Nieprawidłowy zakres edycji"
         )
 
-    # ---------------------------------
-    # 3. Jeśli wybrano serię,
-    #    sesja musi należeć do serii
-    # ---------------------------------
     recurring_group_id = session["RecurringGroupId"]
 
     if edit_scope == "series" and recurring_group_id is None:
         db.close()
-
         raise HTTPException(
             status_code=400,
             detail="Ta sesja nie należy do serii cyklicznej"
         )
 
-    # ---------------------------------
-    # 4. Walidacja danych
-    # ---------------------------------
+    # ---------------------------------------------------------
+    # WALIDACJA DANYCH
+    # ---------------------------------------------------------
+
     try:
         start, end, day_of_week, session_date = validate_session_data(
             start,
@@ -237,10 +235,30 @@ def edit_session(
 
     except ValueError as e:
         db.close()
-
         raise HTTPException(
             status_code=400,
             detail=str(e)
+        )
+
+    # ---------------------------------------------------------
+    # WALIDACJA LICZBY TYGODNI
+    # ---------------------------------------------------------
+
+    try:
+        recurring_weeks = int(recurring_weeks)
+
+    except (TypeError, ValueError):
+        db.close()
+        raise HTTPException(
+            status_code=400,
+            detail="Nieprawidłowa liczba tygodni"
+        )
+
+    if recurring_weeks < 1 or recurring_weeks > 52:
+        db.close()
+        raise HTTPException(
+            status_code=400,
+            detail="Liczba kolejnych tygodni musi być od 1 do 52"
         )
 
     # =========================================================
@@ -249,9 +267,6 @@ def edit_session(
 
     if edit_scope == "single":
 
-        # ---------------------------------
-        # 5A. Pobierz inne sesje z tego dnia
-        # ---------------------------------
         other_sessions = cursor.execute(
             """
             SELECT
@@ -270,9 +285,6 @@ def edit_session(
             )
         ).fetchall()
 
-        # ---------------------------------
-        # 6A. Sprawdź konflikt
-        # ---------------------------------
         conflict = find_time_conflict(
             start,
             end,
@@ -291,9 +303,6 @@ def edit_session(
                 )
             )
 
-        # ---------------------------------
-        # 7A. Aktualizuj tylko jedną sesję
-        # ---------------------------------
         try:
             cursor.execute(
                 """
@@ -340,167 +349,310 @@ def edit_session(
     # EDYCJA CAŁEJ SERII
     # =========================================================
 
-    if edit_scope == "series":
+    series_sessions = cursor.execute(
+        """
+        SELECT
+            Id,
+            StartTime,
+            EndTime,
+            DayOfWeek,
+            SessionDate,
+            ClientId
+        FROM Session
+        WHERE RecurringGroupId = ?
+        ORDER BY SessionDate
+        """,
+        (recurring_group_id,)
+    ).fetchall()
 
-        # ---------------------------------
-        # 5B. Pobierz wszystkie sesje serii
-        # ---------------------------------
-        series_sessions = cursor.execute(
+    if not series_sessions:
+        db.close()
+
+        raise HTTPException(
+            status_code=404,
+            detail="Nie znaleziono sesji serii"
+        )
+
+    # ---------------------------------------------------------
+    # ILE SESJI MA BYĆ DOCELOWO?
+    #
+    # 3 kolejne tygodnie = 4 sesje
+    # 5 kolejnych tygodni = 6 sesji
+    # ---------------------------------------------------------
+
+    target_count = recurring_weeks + 1
+    current_count = len(series_sessions)
+
+    # ---------------------------------------------------------
+    # PRZESUNIĘCIE DATY SERII
+    # ---------------------------------------------------------
+
+    old_date = datetime.strptime(
+        session["SessionDate"],
+        "%Y-%m-%d"
+    ).date()
+
+    new_date = datetime.strptime(
+        session_date,
+        "%Y-%m-%d"
+    ).date()
+
+    date_difference = new_date - old_date
+
+    # ---------------------------------------------------------
+    # WYLICZAMY DATY ISTNIEJĄCYCH SESJI
+    # ---------------------------------------------------------
+
+    dates_to_update = []
+
+    for series_session in series_sessions:
+
+        old_series_date = datetime.strptime(
+            series_session["SessionDate"],
+            "%Y-%m-%d"
+        ).date()
+
+        new_series_date = (
+            old_series_date + date_difference
+        ).isoformat()
+
+        dates_to_update.append(
+            (
+                series_session["Id"],
+                new_series_date
+            )
+        )
+
+    # ---------------------------------------------------------
+    # SKRACANIE SERII
+    #
+    # np. 5 -> 3
+    #
+    # usuwamy najpóźniejsze sesje
+    # ---------------------------------------------------------
+
+    deleted_count = 0
+
+    if target_count < current_count:
+
+        sessions_to_delete = series_sessions[target_count:]
+
+        for series_session in sessions_to_delete:
+
+            cursor.execute(
+                """
+                DELETE FROM Session
+                WHERE Id = ?
+                """,
+                (series_session["Id"],)
+            )
+
+            deleted_count += 1
+
+        series_sessions = series_sessions[:target_count]
+        dates_to_update = dates_to_update[:target_count]
+
+    # ---------------------------------------------------------
+    # SPRAWDZAMY KONFLIKTY ISTNIEJĄCYCH SESJI
+    # ---------------------------------------------------------
+
+    for series_session_id, new_series_date in dates_to_update:
+
+        other_sessions = cursor.execute(
             """
             SELECT
                 Id,
                 StartTime,
                 EndTime,
-                DayOfWeek,
                 SessionDate
             FROM Session
-            WHERE RecurringGroupId = ?
-            ORDER BY SessionDate
+            WHERE SessionDate = ?
+              AND RecurringGroupId != ?
+            ORDER BY StartTime
             """,
-            (recurring_group_id,)
+            (
+                new_series_date,
+                recurring_group_id
+            )
         ).fetchall()
 
-        if not series_sessions:
-            db.close()
+        conflict = find_time_conflict(
+            start,
+            end,
+            other_sessions
+        )
 
-            raise HTTPException(
-                status_code=404,
-                detail="Nie znaleziono sesji serii"
-            )
+        if conflict:
 
-        # ---------------------------------
-        # 6B. Wylicz przesunięcie dnia
-        # ---------------------------------
-        old_date = datetime.strptime(
-            session["SessionDate"],
-            "%Y-%m-%d"
-        ).date()
-
-        new_date = datetime.strptime(
-            session_date,
-            "%Y-%m-%d"
-        ).date()
-
-        date_difference = new_date - old_date
-
-        # ---------------------------------
-        # 7B. Sprawdź wszystkie nowe daty
-        # ---------------------------------
-        dates_to_update = []
-
-        for series_session in series_sessions:
-
-            old_series_date = datetime.strptime(
-                series_session["SessionDate"],
-                "%Y-%m-%d"
-            ).date()
-
-            new_series_date = (
-                old_series_date + date_difference
-            ).isoformat()
-
-            dates_to_update.append(
-                (
-                    series_session["Id"],
-                    new_series_date
-                )
-            )
-
-        # ---------------------------------
-        # 8B. Sprawdź konflikty
-        #    przed wykonaniem zmian
-        # ---------------------------------
-        for series_session_id, new_series_date in dates_to_update:
-
-            other_sessions = cursor.execute(
-                """
-                SELECT
-                    Id,
-                    StartTime,
-                    EndTime,
-                    SessionDate
-                FROM Session
-                WHERE SessionDate = ?
-                  AND Id NOT IN (
-                      SELECT Id
-                      FROM Session
-                      WHERE RecurringGroupId = ?
-                  )
-                ORDER BY StartTime
-                """,
-                (
-                    new_series_date,
-                    recurring_group_id
-                )
-            ).fetchall()
-
-            conflict = find_time_conflict(
-                start,
-                end,
-                other_sessions
-            )
-
-            if conflict:
-                db.close()
-
-                raise HTTPException(
-                    status_code=400,
-                    detail=(
-                        f"Konflikt z sesją {conflict['Id']} "
-                        f"({conflict['StartTime']}-{conflict['EndTime']}) "
-                        f"w dniu {new_series_date}"
-                    )
-                )
-
-        # ---------------------------------
-        # 9B. Aktualizacja całej serii
-        # ---------------------------------
-        try:
-
-            for series_session_id, new_series_date in dates_to_update:
-
-                cursor.execute(
-                    """
-                    UPDATE Session
-                    SET
-                        StartTime = ?,
-                        EndTime = ?,
-                        Description = ?,
-                        DayOfWeek = ?,
-                        SessionDate = ?
-                    WHERE Id = ?
-                    """,
-                    (
-                        start,
-                        end,
-                        description,
-                        day_of_week,
-                        new_series_date,
-                        series_session_id
-                    )
-                )
-
-            db.commit()
-
-        except Exception as e:
             db.rollback()
             db.close()
 
             raise HTTPException(
-                status_code=500,
-                detail=f"Błąd aktualizacji serii: {str(e)}"
+                status_code=400,
+                detail=(
+                    f"Konflikt z sesją {conflict['Id']} "
+                    f"({conflict['StartTime']}-{conflict['EndTime']}) "
+                    f"w dniu {new_series_date}"
+                )
             )
 
+    # ---------------------------------------------------------
+    # WYDŁUŻANIE SERII
+    #
+    # np. 3 -> 5
+    #
+    # dodajemy brakujące tygodnie
+    # ---------------------------------------------------------
+
+    new_dates = []
+
+    if target_count > current_count:
+
+        last_date = datetime.strptime(
+            dates_to_update[-1][1],
+            "%Y-%m-%d"
+        ).date()
+
+        missing_count = target_count - current_count
+
+        for i in range(1, missing_count + 1):
+
+            next_date = (
+                last_date +
+                timedelta(days=i * 7)
+            )
+
+            new_dates.append(next_date)
+
+    # ---------------------------------------------------------
+    # SPRAWDZAMY KONFLIKTY NOWYCH SESJI
+    # ---------------------------------------------------------
+
+    for new_date_obj in new_dates:
+
+        new_date_str = new_date_obj.isoformat()
+
+        other_sessions = cursor.execute(
+            """
+            SELECT
+                Id,
+                StartTime,
+                EndTime,
+                SessionDate
+            FROM Session
+            WHERE SessionDate = ?
+            ORDER BY StartTime
+            """,
+            (new_date_str,)
+        ).fetchall()
+
+        conflict = find_time_conflict(
+            start,
+            end,
+            other_sessions
+        )
+
+        if conflict:
+
+            db.rollback()
+            db.close()
+
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Konflikt z sesją {conflict['Id']} "
+                    f"({conflict['StartTime']}-{conflict['EndTime']}) "
+                    f"w dniu {new_date_str}"
+                )
+            )
+
+    # ---------------------------------------------------------
+    # ZAPISUJEMY ZMIANY
+    # ---------------------------------------------------------
+
+    created_count = 0
+
+    try:
+
+        # Aktualizacja istniejących sesji
+        for series_session_id, new_series_date in dates_to_update:
+
+            cursor.execute(
+                """
+                UPDATE Session
+                SET
+                    StartTime = ?,
+                    EndTime = ?,
+                    Description = ?,
+                    DayOfWeek = ?,
+                    SessionDate = ?
+                WHERE Id = ?
+                """,
+                (
+                    start,
+                    end,
+                    description,
+                    day_of_week,
+                    new_series_date,
+                    series_session_id
+                )
+            )
+
+        # Dodawanie nowych sesji
+        for new_date_obj in new_dates:
+
+            cursor.execute(
+                """
+                INSERT INTO Session (
+                    StartTime,
+                    EndTime,
+                    ClientId,
+                    Description,
+                    DayOfWeek,
+                    SessionDate,
+                    RecurringGroupId
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    start,
+                    end,
+                    session["ClientId"],
+                    description,
+                    day_of_week,
+                    new_date_obj.isoformat(),
+                    recurring_group_id
+                )
+            )
+
+            created_count += 1
+
+        db.commit()
+
+    except Exception as e:
+
+        db.rollback()
         db.close()
 
-        return JSONResponse({
-            "status": "ok",
-            "message": "Cała seria została zaktualizowana",
-            "session_id": session_id,
-            "recurring_group_id": recurring_group_id,
-            "edit_scope": "series",
-            "updated_count": len(dates_to_update)
-        })
+        raise HTTPException(
+            status_code=500,
+            detail=f"Błąd aktualizacji serii: {str(e)}"
+        )
+
+    db.close()
+
+    return JSONResponse({
+        "status": "ok",
+        "message": "Cała seria została zaktualizowana",
+        "session_id": session_id,
+        "recurring_group_id": recurring_group_id,
+        "edit_scope": "series",
+        "recurring_weeks": recurring_weeks,
+        "total_count": target_count,
+        "created_count": created_count,
+        "deleted_count": deleted_count
+    })
+
 
 # =========================
 # DELETE SESSION
