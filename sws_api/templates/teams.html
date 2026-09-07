@@ -253,19 +253,38 @@
             <label class="form-label">Final Result</label>
             <input name="FinalResult" class="form-control" value="2nd place">
           </div>
+
           <div class="mb-3">
             <label class="form-label">Trophy Win</label>
-            <input name="TrophyWin" class="form-control" value="No">
+
+            <select
+              name="TrophyWin"
+              id="trophyWinSelect"
+              class="form-select"
+            >
+              <option value="">Loading trophies...</option>
+            </select>
           </div>
+
+          <div class="mb-3">
+            <label class="form-label">Trophy Model ID</label>
+            <input
+              name="TrophyModelId"
+              id="trophyModelIdInput"
+              type="number"
+              class="form-control bg-light text-secondary"
+              readonly
+              tabindex="-1"
+            >
+          </div>
+
           <div class="mb-3">
             <label class="form-label">Picture (URL or filename)</label>
             <input name="Picture" class="form-control" value="http://127.0.0.1:8001/static/images/Team_2026.png">
           </div>
-          <div class="mb-3">
-            <label class="form-label">Trophy Model ID</label>
-            <input name="TrophyModelId" type="number" class="form-control" value="10">
-          </div>
+
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
           <button type="submit" class="btn btn-primary">Create</button>
@@ -458,6 +477,92 @@ if (createForm && createModal) {
                 });
         });
     });
+
+
+// ============================================================
+// TROPHY SELECT + DYNAMIC TROPHY MODEL ID
+// ============================================================
+
+const trophyWinSelect = document.getElementById("trophyWinSelect");
+const trophyModelIdInput = document.getElementById("trophyModelIdInput");
+
+async function loadTrophies() {
+    if (!trophyWinSelect) return;
+
+    try {
+        const response = await fetch("/teams/trophies/options");
+
+        if (!response.ok) {
+            throw new Error("Failed to load trophies");
+        }
+
+        const trophies = await response.json();
+
+        trophyWinSelect.innerHTML = "";
+
+        // Opcja braku pucharu
+        const noTrophyOption = document.createElement("option");
+        noTrophyOption.value = "";
+        noTrophyOption.textContent = "No trophy";
+        noTrophyOption.dataset.trophyId = "";
+        trophyWinSelect.appendChild(noTrophyOption);
+
+        // Trofea z bazy
+        trophies.forEach(trophy => {
+            const option = document.createElement("option");
+
+            option.value = trophy.Name;
+            option.textContent = trophy.Name;
+            option.dataset.trophyId = trophy.Id;
+
+            trophyWinSelect.appendChild(option);
+        });
+
+        updateTrophyModelId();
+
+    } catch (error) {
+        console.error("Error loading trophies:", error);
+
+        trophyWinSelect.innerHTML = "";
+
+        const errorOption = document.createElement("option");
+        errorOption.value = "";
+        errorOption.textContent = "Error loading trophies";
+        trophyWinSelect.appendChild(errorOption);
+
+        trophyModelIdInput.value = "";
+    }
+}
+
+
+// Ustawienie TrophyModelId po wyborze TrophyWin
+function updateTrophyModelId() {
+    const selectedOption =
+        trophyWinSelect.options[trophyWinSelect.selectedIndex];
+
+    if (!selectedOption) {
+        trophyModelIdInput.value = "";
+        return;
+    }
+
+    const trophyId = selectedOption.dataset.trophyId || "";
+
+    trophyModelIdInput.value = trophyId;
+}
+
+
+// Reakcja na zmianę trofeum
+if (trophyWinSelect) {
+    trophyWinSelect.addEventListener("change", updateTrophyModelId);
+}
+
+
+// Załaduj trofea po otwarciu formularza
+if (createModal) {
+    createModal.addEventListener("shown.bs.modal", () => {
+        loadTrophies();
+    });
+}
 
 </script>
 

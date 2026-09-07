@@ -274,6 +274,25 @@ def get_team_picture(team_id: int, db=Depends(get_db)):
 
     return {"picture": team["Picture"]}
 
+@router.get("/trophies/options")
+def get_trophy_options(db=Depends(get_db)):
+    try:
+        trophies = db.execute("""
+            SELECT Id, Name
+            FROM Trophies
+            ORDER BY Name ASC
+        """).fetchall()
+
+        return [
+            {
+                "Id": trophy["Id"],
+                "Name": trophy["Name"]
+            }
+            for trophy in trophies
+        ]
+
+    finally:
+        db.close()
 
 @router.post("/create", response_class=HTMLResponse)
 def create_team(
@@ -303,7 +322,35 @@ def create_team(
     try:
         cursor = db.cursor()
 
-        # 🔎 SPRAWDZENIE DUPLIKATU
+        # ============================================================
+        # SPRAWDZENIE TROFEUM
+        # ============================================================
+
+        if TrophyModelId:
+            trophy = cursor.execute(
+                """
+                SELECT Id, Name
+                FROM Trophies
+                WHERE Id = ?
+                """,
+                (TrophyModelId,)
+            ).fetchone()
+
+            if not trophy:
+                TrophyModelId = None
+            else:
+                # Nazwa TrophyWin zawsze odpowiada wybranemu trofeum
+                TrophyWin = trophy["Name"]
+
+        # Jeżeli nie wybrano trofeum
+        if not TrophyWin:
+            TrophyWin = "No"
+            TrophyModelId = None
+
+        # ============================================================
+        # SPRAWDZENIE DUPLIKATU
+        # ============================================================
+
         existing = cursor.execute(
             """
             SELECT Id FROM Teams
@@ -313,6 +360,7 @@ def create_team(
         ).fetchone()
 
         if existing:
+
             teams = cursor.execute("""
                 SELECT Teams.*, Trophies.Picture AS TrophyPicture,
                        Trophies.Name AS TrophyName
@@ -333,7 +381,10 @@ def create_team(
                 }
             )
 
-        # ✅ INSERT jeśli nie ma duplikatu
+        # ============================================================
+        # INSERT
+        # ============================================================
+
         cursor.execute(
             """
             INSERT INTO Teams
@@ -368,13 +419,17 @@ def create_team(
 
     if filter_name:
         params.append(f"filter_name={filter_name}")
+
     if sort:
         params.append(f"sort={sort}")
 
     if params:
         redirect_url += "?" + "&".join(params)
 
-    return RedirectResponse(url=redirect_url, status_code=HTTP_303_SEE_OTHER)
+    return RedirectResponse(
+        url=redirect_url,
+        status_code=HTTP_303_SEE_OTHER
+    )
 
 
 @router.post("/{team_id}/delete")
