@@ -1153,6 +1153,29 @@ body.light-mode .mobile-session-cell .empty {
     color: #999;
 }
 
+.clients-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 7px 10px;
+
+    border: 1px solid var(--border);
+    border-radius: 9px;
+
+    background: rgba(255,255,255,.08);
+
+    color: var(--text);
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.clients-button:active {
+    transform: scale(.97);
+}
+
 </style>
 </head>
 
@@ -1191,6 +1214,13 @@ body.light-mode .mobile-session-cell .empty {
             onclick="openCreateClient()">
         👤 Nowy klient
     </button>
+
+    <a
+        href="/clients/"
+        class="clients-button"
+    >
+        👥 Klienci
+    </a>
 
 </div>
 
