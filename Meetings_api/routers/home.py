@@ -281,22 +281,16 @@ def edit_session(
                 SessionDate
             FROM Session
             WHERE SessionDate = ?
-            AND (
-                RecurringGroupId IS NULL
-                OR RecurringGroupId != ?
-            )
             ORDER BY StartTime
             """,
-            (
-                session_date,
-                session_id
-            )
+            (session_date,)
         ).fetchall()
 
         conflict = find_time_conflict(
             start,
             end,
-            other_sessions
+            other_sessions,
+            exclude_session_id=session_id
         )
 
         if conflict:

@@ -331,7 +331,9 @@ def test_create_session_ok(client, empty_db):
     data = response.json()
 
     assert data["status"] == "ok"
-    assert data["message"] == "Sesja utworzona"
+
+    # Aktualny komunikat API
+    assert data["message"] == "Utworzono 1 sesję"
 
     db = get_db()
 
@@ -487,7 +489,10 @@ def test_create_session_conflict(client, empty_db):
     )
 
     assert response.status_code == 400
-    assert "Konflikt" in response.text
+
+    # Aktualny komunikat API:
+    # "Nie można utworzyć serii sesji. Wykryto konflikt: ..."
+    assert "konflikt" in response.text.lower()
 
 
 def test_create_session_adjacent_time_ok(client, empty_db):
@@ -551,7 +556,8 @@ def test_edit_session_ok(client, empty_db):
             "start": "12:00",
             "end": "13:00",
             "description": "Zmieniona sesja",
-            "day_of_week": 1
+            "day_of_week": 1,
+            "session_date": session_date
         }
     )
 
@@ -584,13 +590,18 @@ def test_edit_session_ok(client, empty_db):
 
 
 def test_edit_session_not_exists(client, empty_db):
+    today = datetime.now().date()
+    monday = today - timedelta(days=today.weekday())
+    session_date = monday.isoformat()
+
     response = client.put(
         "/home/session/edit/99999",
         data={
             "start": "12:00",
             "end": "13:00",
             "description": "Test",
-            "day_of_week": 1
+            "day_of_week": 1,
+            "session_date": session_date
         }
     )
 
@@ -603,13 +614,14 @@ def test_edit_session_invalid_time(client, empty_db):
 
     today = datetime.now().date()
     monday = today - timedelta(days=today.weekday())
+    session_date = monday.isoformat()
 
     session_id = insert_session(
         client_id=client_id,
         start="10:00",
         end="11:00",
         day_of_week=1,
-        session_date=monday.isoformat()
+        session_date=session_date
     )
 
     response = client.put(
@@ -618,7 +630,8 @@ def test_edit_session_invalid_time(client, empty_db):
             "start": "14:00",
             "end": "13:00",
             "description": "Test",
-            "day_of_week": 1
+            "day_of_week": 1,
+            "session_date": session_date
         }
     )
 
@@ -657,12 +670,13 @@ def test_edit_session_conflict(client, empty_db):
             "start": "10:30",
             "end": "11:30",
             "description": "Druga zmieniona",
-            "day_of_week": 1
+            "day_of_week": 1,
+            "session_date": session_date
         }
     )
 
     assert response.status_code == 400
-    assert "Konflikt" in response.text
+    assert "konflikt" in response.text.lower()
 
 
 def test_edit_session_same_session_not_conflict(client, empty_db):
@@ -687,7 +701,8 @@ def test_edit_session_same_session_not_conflict(client, empty_db):
             "start": "10:30",
             "end": "11:30",
             "description": "Sesja zmieniona",
-            "day_of_week": 1
+            "day_of_week": 1,
+            "session_date": session_date
         }
     )
 
