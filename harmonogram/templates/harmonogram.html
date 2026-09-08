@@ -1504,29 +1504,22 @@ daysInput.addEventListener(
         if (manualHours)
             return;
 
+        if (daysInput.value === "")
+            return;
 
-        let days =
-            parseInt(daysInput.value);
+        let days = parseInt(daysInput.value);
 
+        if (isNaN(days))
+            return;
 
-        if (
-            isNaN(days) ||
-            days < 1
-        )
+        if (days < 1)
             days = 1;
 
+        daysInput.value = days;
 
-        daysInput.value =
-            days;
-
-
-        hoursInput.value =
-            days * 24;
-
+        hoursInput.value = days * 24;
     }
 );
-
-
 
 /* Ręczna zmiana godzin */
 
