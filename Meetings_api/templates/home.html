@@ -3095,23 +3095,80 @@ if (toggleButton) {
 const themeButton =
     document.getElementById('toggle-theme');
 
+
+// =====================================================
+// ODCZYT ZAPISANEGO MOTYWU
+// =====================================================
+
+if (
+    localStorage.getItem('theme') === 'light'
+) {
+
+    document.body.classList.add('light-mode');
+
+}
+
+
+// =====================================================
+// AKTUALIZACJA NAPISU PRZYCISKU
+// =====================================================
+
+function updateThemeButton() {
+
+    if (!themeButton) {
+        return;
+    }
+
+    if (
+        document.body.classList.contains('light-mode')
+    ) {
+
+        themeButton.textContent = '🌙 Ciemny';
+
+    } else {
+
+        themeButton.textContent = '☀️ Jasny';
+
+    }
+
+}
+
+
+// Ustawiamy poprawny napis po załadowaniu
+updateThemeButton();
+
+
+// =====================================================
+// ZMIANA MOTYWU
+// =====================================================
+
 if (themeButton) {
 
     themeButton.addEventListener('click', function() {
 
         document.body.classList.toggle('light-mode');
 
+
         if (
             document.body.classList.contains('light-mode')
         ) {
 
-            themeButton.textContent = '🌙 Ciemny';
+            localStorage.setItem(
+                'theme',
+                'light'
+            );
 
         } else {
 
-            themeButton.textContent = '☀️ Jasny';
+            localStorage.setItem(
+                'theme',
+                'dark'
+            );
 
         }
+
+
+        updateThemeButton();
 
     });
 
