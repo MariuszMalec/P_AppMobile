@@ -51,6 +51,9 @@ body {
     grid-template-columns: 160px repeat({{ days|length }}, 100px);
     gap: 6px;
     margin-bottom: 8px;
+
+    width: max-content;
+    min-width: max-content;
 }
 
 .machine-cell {
@@ -65,7 +68,11 @@ body {
 
     position: sticky;
     left: 0;
-    z-index: 100;
+
+    width: 160px;
+    min-width: 160px;
+
+    z-index: 500;
 }
 
 .day {
