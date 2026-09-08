@@ -11,10 +11,8 @@ from db import (
 )
 
 from routers.home import router as home_router
-# from routers.activity import router as activity_router
-# from routers.mainmenu import router as mainmenu_router
-# from routers.livenow import router as livenow_router
-# from routers.pictureactivity import router as pictureactivity_router
+from routers.clients import router as clients_router
+
 
 
 # =========================
@@ -57,7 +55,5 @@ def root_redirect():
 
 # ---------- ROUTERS ----------
 app.include_router(home_router)
-# app.include_router(mainmenu_router)
-# app.include_router(activity_router)
-# app.include_router(livenow_router)
-# app.include_router(pictureactivity_router)
+app.include_router(clients_router)
+
