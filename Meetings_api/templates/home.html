@@ -319,6 +319,14 @@ tbody tr:last-child td {
     color: #444;
 }
 
+.mobile-no-session {
+    padding: 12px;
+    text-align: center;
+    opacity: .6;
+    font-size: 14px;
+    cursor: pointer;
+}
+
 /* =========================================================
    LIVE
    ========================================================= */
@@ -580,15 +588,17 @@ tbody tr:last-child td {
 @media (max-width: 700px) {
 
     .toggle-mobile-view {
-        display: block;
-        width: calc(100% - 16px);
-        margin: 5px 8px 10px;
-        padding: 10px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: auto;
+        margin: 5px 8px 8px;
+        padding: 6px 10px;
         border: 1px solid rgba(255,255,255,.15);
-        border-radius: 10px;
+        border-radius: 8px;
         background: rgba(255,255,255,.08);
         color: #fff;
-        font-size: 15px;
+        font-size: 13px;
         font-weight: 600;
         cursor: pointer;
     }
@@ -2602,6 +2612,7 @@ function toggleRecurringWeeks() {
 // Nie zmienia danych ani funkcji sesji.
 // =========================================================
 
+
 function buildMobileWeekView() {
 
     const mobileView =
@@ -2635,6 +2646,21 @@ function buildMobileWeekView() {
 
 
     // =====================================================
+    // NAZWY DNI
+    // =====================================================
+
+    const dayNames = [
+        "Poniedziałek",
+        "Wtorek",
+        "Środa",
+        "Czwartek",
+        "Piątek",
+        "Sobota",
+        "Niedziela"
+    ];
+
+
+    // =====================================================
     // TWORZYMY 7 KART DNI
     // =====================================================
 
@@ -2664,20 +2690,17 @@ function buildMobileWeekView() {
         dayTitle.className =
             'mobile-day-title';
 
-        const dayNames = [
-            "Poniedziałek",
-            "Wtorek",
-            "Środa",
-            "Czwartek",
-            "Piątek",
-            "Sobota",
-            "Niedziela"
-        ];
-
         dayTitle.textContent =
             `${dayNames[dayIndex]} ${dayHeader.textContent.trim()}`;
 
         dayCard.appendChild(dayTitle);
+
+
+        // =================================================
+        // SPRAWDZAMY, CZY DZIEŃ MA SESJE
+        // =================================================
+
+        let hasSession = false;
 
 
         // =================================================
@@ -2707,6 +2730,19 @@ function buildMobileWeekView() {
             if (!originalCell) {
                 return;
             }
+
+
+            // =================================================
+            // JEŻELI NIE MA SESJI - POMIJAMY
+            // =================================================
+
+            if (!originalCell.dataset.sessionId) {
+                return;
+            }
+
+
+            // Mamy przynajmniej jedną sesję
+            hasSession = true;
 
 
             // =================================================
@@ -2787,30 +2823,14 @@ function buildMobileWeekView() {
 
 
             // =================================================
-            // KLIKNIĘCIE
+            // KLIKNIĘCIE W SESJĘ
             // =================================================
 
-            if (
-                originalCell.dataset.sessionId
-            ) {
+            sessionCell.onclick = function() {
 
-                // Istniejąca sesja
-                sessionCell.onclick = function() {
+                openPreview(this);
 
-                    openPreview(this);
-
-                };
-
-            } else {
-
-                // Pusta komórka
-                sessionCell.onclick = function() {
-
-                    openCreateSessionForDay(dayNumber);
-
-                };
-
-            }
+            };
 
 
             timeRow.appendChild(sessionCell);
@@ -2820,11 +2840,43 @@ function buildMobileWeekView() {
         });
 
 
+        // =====================================================
+        // BRAK SESJI
+        // =====================================================
+
+        if (!hasSession) {
+
+            const emptyMessage =
+                document.createElement('div');
+
+            emptyMessage.className =
+                'mobile-no-session';
+
+            emptyMessage.textContent =
+                'Brak sesji';
+
+            // Kliknięcie nadal pozwala utworzyć sesję
+            emptyMessage.onclick = function() {
+
+                openCreateSessionForDay(dayNumber);
+
+            };
+
+            dayCard.appendChild(emptyMessage);
+
+        }
+
+
+        // =====================================================
+        // DODAJEMY KARTĘ
+        // =====================================================
+
         mobileView.appendChild(dayCard);
 
     });
 
 }
+
 
 
 function toggleMobileView() {
