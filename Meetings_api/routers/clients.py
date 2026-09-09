@@ -102,7 +102,9 @@ def get_client(
             IsActive
         FROM Client
         WHERE Id = ?
-    """, (client_id,)).fetchone()
+    """, (
+        client_id,
+    )).fetchone()
 
     if not client:
         raise HTTPException(
@@ -127,6 +129,7 @@ def create_client(
     description: str = Form(""),
     phone: str = Form(""),
     gender: str = Form(""),
+    is_active: int = Form(1),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
@@ -140,6 +143,9 @@ def create_client(
     description = description.strip()
     phone = phone.strip()
     gender = gender.strip()
+
+    # Checkbox może przesłać wartość "1" albo "0"
+    is_active = 1 if str(is_active) == "1" else 0
 
     # -----------------------------------------------------
     # PODSTAWOWA WALIDACJA
@@ -222,14 +228,15 @@ def create_client(
                 Gender,
                 IsActive
             )
-            VALUES (?, ?, ?, ?, ?, ?, 1)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         """, (
             first_name,
             last_name,
             age,
             description,
             phone,
-            gender
+            gender,
+            is_active
         ))
 
         client_id = cursor.lastrowid
@@ -265,6 +272,7 @@ def edit_client(
     description: str = Form(""),
     phone: str = Form(""),
     gender: str = Form(""),
+    is_active: int = Form(1),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
@@ -304,6 +312,9 @@ def edit_client(
     description = description.strip()
     phone = phone.strip()
     gender = gender.strip()
+
+    # Checkbox może przesłać wartość "1" albo "0"
+    is_active = 1 if str(is_active) == "1" else 0
 
     # -----------------------------------------------------
     # WALIDACJA
@@ -377,7 +388,8 @@ def edit_client(
                 Age = ?,
                 Description = ?,
                 Phone = ?,
-                Gender = ?
+                Gender = ?,
+                IsActive = ?
             WHERE Id = ?
         """, (
             first_name,
@@ -386,6 +398,7 @@ def edit_client(
             description,
             phone,
             gender,
+            is_active,
             client_id
         ))
 

@@ -1078,6 +1078,22 @@ body.light-mode {
                     Opis
                 </label>
 
+                <label
+                    class="form-label"
+                    style="display: flex; align-items: center; gap: 9px; cursor: pointer;"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="is-active"
+                        checked
+                        style="width: 18px; height: 18px;"
+                    >
+
+                    <span>Aktywny</span>
+
+                </label>
+
                 <textarea
                     id="description"
                     class="form-textarea"
@@ -1203,6 +1219,11 @@ const phoneInput =
 const descriptionInput =
     document.getElementById(
         'description'
+    );
+
+const isActiveInput =
+    document.getElementById(
+        'is-active'
     );
 
 const themeButton =
@@ -1607,6 +1628,8 @@ function openCreateModal() {
     descriptionInput.value =
         '';
 
+    isActiveInput.checked = true;
+
     modal.classList.add('show');
 
     setTimeout(function() {
@@ -1677,6 +1700,8 @@ function openEditModal(clientId) {
     descriptionInput.value =
         client.Description || '';
 
+    isActiveInput.checked =
+        Number(client.IsActive) === 1;
 
     modal.classList.add('show');
 
@@ -1789,6 +1814,10 @@ clientForm.addEventListener(
             genderInput.value
         );
 
+        formData.append(
+            'is_active',
+            isActiveInput.checked ? '1' : '0'
+        );
 
         try {
 
