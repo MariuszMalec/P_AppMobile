@@ -63,6 +63,7 @@ def home_page(
         LEFT JOIN Client c
             ON s.ClientId = c.Id
         WHERE s.SessionDate BETWEEN ? AND ?
+        AND c.IsActive = 1
         ORDER BY s.StartTime, s.DayOfWeek
     """, (week_start, week_end)).fetchall()
 
