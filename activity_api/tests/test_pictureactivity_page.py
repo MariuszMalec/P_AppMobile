@@ -205,7 +205,7 @@ def test_add_activity_success_redirect(monkeypatch):
     # sukces = redirect
     assert result.status_code == 303
 
-    assert result.headers["location"] == "/activities"
+    assert result.headers["location"] == "/live/liveall/2"
 
 
 def test_add_activity_invalid_time_range(monkeypatch):
