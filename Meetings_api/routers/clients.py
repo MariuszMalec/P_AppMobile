@@ -39,9 +39,9 @@ def clients_page(
     """).fetchall()
 
     return templates.TemplateResponse(
+        request,
         "clients.html",
         {
-            "request": request,
             "clients": clients
         }
     )
@@ -431,7 +431,7 @@ def delete_client(
         FROM Client
         WHERE Id = ?
     """, (
-        client_id
+        client_id,
     )).fetchone()
 
     if not client:
@@ -449,7 +449,7 @@ def delete_client(
         FROM Session
         WHERE ClientId = ?
     """, (
-        client_id
+        client_id,
     )).fetchone()["Count"]
 
     # -----------------------------------------------------
@@ -463,7 +463,7 @@ def delete_client(
             SET IsActive = 0
             WHERE Id = ?
         """, (
-            client_id
+            client_id,
         ))
 
         db.commit()
