@@ -358,26 +358,52 @@ document.querySelectorAll(".delete-team-btn").forEach(btn => {
 });
 
 
-// Filter (name + trophy)
+// Filter (name + trophy) — dynamicznie podczas pisania
 const filterForm = document.getElementById("filterForm");
 const filterNameInput = document.getElementById("filterNameInput");
 const filterTrophyInput = document.getElementById("filterTrophyInput");
 
-filterForm.addEventListener("submit", () => {
+let filterTimeout;
+
+function applyFilters() {
     const nameValue = filterNameInput.value.trim();
     const trophyValue = filterTrophyInput.value.trim();
 
     const urlParams = new URLSearchParams(window.location.search);
 
-    if (nameValue) urlParams.set("filter_name", nameValue);
-    else urlParams.delete("filter_name");
+    if (nameValue) {
+        urlParams.set("filter_name", nameValue);
+    } else {
+        urlParams.delete("filter_name");
+    }
 
-    if (trophyValue) urlParams.set("filter_trophy", trophyValue);
-    else urlParams.delete("filter_trophy");
+    if (trophyValue) {
+        urlParams.set("filter_trophy", trophyValue);
+    } else {
+        urlParams.delete("filter_trophy");
+    }
 
     urlParams.delete("page");
 
     window.location.search = urlParams.toString();
+}
+
+// 🔍 Filtruj automatycznie podczas pisania
+function dynamicFilter() {
+    clearTimeout(filterTimeout);
+
+    filterTimeout = setTimeout(() => {
+        applyFilters();
+    }, 300);
+}
+
+filterNameInput.addEventListener("input", dynamicFilter);
+filterTrophyInput.addEventListener("input", dynamicFilter);
+
+// Nadal działa również przy kliknięciu Filter
+filterForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+    applyFilters();
 });
 
 // Clear filters
