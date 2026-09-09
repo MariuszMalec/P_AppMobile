@@ -147,6 +147,14 @@ button {
     font-weight: 700;
 
     cursor: pointer;
+
+    text-decoration: none;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
 }
 
 
@@ -176,9 +184,67 @@ button {
 .add-button:active,
 .top-button:active,
 .edit-button:active,
-.delete-button:active {
+.delete-button:active,
+.restore-button:active {
 
     transform: scale(.97);
+}
+
+
+/* =========================================================
+   PRZEŁĄCZNIK AKTYWNI / NIEAKTYWNI
+   ========================================================= */
+
+.client-filter {
+
+    display: flex;
+
+    gap: 7px;
+
+    margin-bottom: 12px;
+
+    padding: 5px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+
+    background: rgba(255,255,255,.04);
+
+    box-sizing: border-box;
+}
+
+
+.client-filter-button {
+
+    flex: 1;
+
+    min-height: 38px;
+
+    border: 1px solid transparent;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.client-filter-button.active {
+
+    border-color: var(--border);
+
+    background: var(--button);
+
+    color: var(--text);
+
 }
 
 
@@ -254,6 +320,13 @@ button {
 }
 
 
+.client-card.inactive {
+
+    opacity: .88;
+
+}
+
+
 .client-top {
 
     display: flex;
@@ -285,6 +358,44 @@ button {
     color: var(--muted);
 
     font-size: 11px;
+}
+
+
+.client-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 4px 7px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.client-status.active {
+
+    background: rgba(34,197,94,.12);
+
+    color: #4ade80;
+
+    border: 1px solid rgba(34,197,94,.25);
+}
+
+
+.client-status.inactive {
+
+    background: rgba(148,163,184,.10);
+
+    color: #aeb8c7;
+
+    border: 1px solid rgba(148,163,184,.20);
 }
 
 
@@ -355,7 +466,8 @@ button {
 
 
 .edit-button,
-.delete-button {
+.delete-button,
+.restore-button {
 
     flex: 1;
 
@@ -388,6 +500,16 @@ button {
     background: rgba(239,68,68,.10);
 
     color: #ff8a8a;
+}
+
+
+.restore-button {
+
+    border: 1px solid rgba(34,197,94,.30);
+
+    background: rgba(34,197,94,.10);
+
+    color: #4ade80;
 }
 
 
@@ -761,6 +883,14 @@ body.light-mode {
     }
 
 
+    .client-filter-button {
+
+        font-size: 12px;
+
+        min-height: 36px;
+    }
+
+
     .client-card {
 
         padding: 12px;
@@ -852,32 +982,32 @@ body.light-mode {
          NAGŁÓWEK
          ===================================================== -->
 
-        <div class="header">
+    <div class="header">
 
-            <h1 class="title">
-                KLIENCI
-            </h1>
+        <h1 class="title">
+            KLIENCI
+        </h1>
 
-            <div class="header-buttons">
+        <div class="header-buttons">
 
-                <a
-                    href="/home/"
-                    class="top-button"
-                >
-                    ← Tydzień
-                </a>
+            <a
+                href="/home/"
+                class="top-button"
+            >
+                ← Tydzień
+            </a>
 
-                <button
-                    type="button"
-                    class="top-button"
-                    id="theme-button"
-                >
-                    ☀️ Jasny
-                </button>
-
-            </div>
+            <button
+                type="button"
+                class="top-button"
+                id="theme-button"
+            >
+                ☀️ Jasny
+            </button>
 
         </div>
+
+    </div>
 
 
     <!-- =====================================================
@@ -891,6 +1021,31 @@ body.light-mode {
     >
         ＋ DODAJ KLIENTA
     </button>
+
+
+    <!-- =====================================================
+         AKTYWNI / NIEAKTYWNI
+         ===================================================== -->
+
+    <div class="client-filter">
+
+        <button
+            type="button"
+            class="client-filter-button active"
+            id="active-clients-button"
+        >
+            🟢 AKTYWNI
+        </button>
+
+        <button
+            type="button"
+            class="client-filter-button"
+            id="inactive-clients-button"
+        >
+            ⚫ NIEAKTYWNI
+        </button>
+
+    </div>
 
 
     <!-- =====================================================
@@ -1161,6 +1316,16 @@ const addClientButton =
         'add-client-button'
     );
 
+const activeClientsButton =
+    document.getElementById(
+        'active-clients-button'
+    );
+
+const inactiveClientsButton =
+    document.getElementById(
+        'inactive-clients-button'
+    );
+
 const modal =
     document.getElementById(
         'client-modal'
@@ -1239,6 +1404,8 @@ const messageBox =
 
 let clients = [];
 
+let currentActiveFilter = 1;
+
 
 /* =========================================================
    KOMUNIKAT
@@ -1262,6 +1429,38 @@ function showMessage(text) {
 
 
 /* =========================================================
+   USTAWIENIE FILTRA
+   ========================================================= */
+
+function setClientFilter(active) {
+
+    currentActiveFilter =
+        Number(active) === 1
+        ? 1
+        : 0;
+
+
+    activeClientsButton.classList.toggle(
+        'active',
+        currentActiveFilter === 1
+    );
+
+
+    inactiveClientsButton.classList.toggle(
+        'active',
+        currentActiveFilter === 0
+    );
+
+
+    searchInput.value = '';
+
+
+    loadClients();
+
+}
+
+
+/* =========================================================
    POBIERANIE KLIENTÓW
    ========================================================= */
 
@@ -1270,7 +1469,9 @@ async function loadClients() {
     try {
 
         const response =
-            await fetch('/clients/list');
+            await fetch(
+                `/clients/list?active=${currentActiveFilter}`
+            );
 
         if (!response.ok) {
 
@@ -1346,7 +1547,10 @@ function renderClients() {
                 ${
                     search
                     ? 'Nie znaleziono klienta.'
-                    : 'Brak klientów.'
+                    :
+                    currentActiveFilter === 1
+                    ? 'Brak aktywnych klientów.'
+                    : 'Brak nieaktywnych klientów.'
                 }
             </div>
         `;
@@ -1362,8 +1566,20 @@ function renderClients() {
                 'div'
             );
 
+
         card.className =
             'client-card';
+
+
+        if (
+            Number(client.IsActive) !== 1
+        ) {
+
+            card.classList.add(
+                'inactive'
+            );
+
+        }
 
 
         const fullName =
@@ -1376,6 +1592,7 @@ function renderClients() {
 
         let genderText =
             '';
+
 
         if (client.Gender === 'male') {
 
@@ -1401,6 +1618,10 @@ function renderClients() {
         }
 
 
+        const isActive =
+            Number(client.IsActive) === 1;
+
+
         card.innerHTML = `
 
             <div class="client-top">
@@ -1415,6 +1636,21 @@ function renderClients() {
                         ID: ${client.Id}
                     </div>
 
+                </div>
+
+
+                <div
+                    class="client-status ${
+                        isActive
+                        ? 'active'
+                        : 'inactive'
+                    }"
+                >
+                    ${
+                        isActive
+                        ? 'AKTYWNY'
+                        : 'NIEAKTYWNY'
+                    }
                 </div>
 
             </div>
@@ -1520,13 +1756,29 @@ function renderClients() {
                     ✏️ EDYTUJ
                 </button>
 
-                <button
-                    type="button"
-                    class="delete-button"
-                    data-id="${client.Id}"
-                >
-                    🗑️ USUŃ
-                </button>
+                ${
+                    isActive
+                    ?
+                    `
+                    <button
+                        type="button"
+                        class="delete-button"
+                        data-id="${client.Id}"
+                    >
+                        🗑️ USUŃ
+                    </button>
+                    `
+                    :
+                    `
+                    <button
+                        type="button"
+                        class="restore-button"
+                        data-id="${client.Id}"
+                    >
+                        🟢 PRZYWRÓĆ
+                    </button>
+                    `
+                }
 
             </div>
 
@@ -1537,6 +1789,10 @@ function renderClients() {
 
     });
 
+
+    /* -----------------------------------------------------
+       EDYCJA
+       ----------------------------------------------------- */
 
     document
         .querySelectorAll('.edit-button')
@@ -1559,6 +1815,10 @@ function renderClients() {
         });
 
 
+    /* -----------------------------------------------------
+       USUWANIE
+       ----------------------------------------------------- */
+
     document
         .querySelectorAll('.delete-button')
         .forEach(function(button) {
@@ -1573,6 +1833,31 @@ function renderClients() {
                         );
 
                     deleteClient(id);
+
+                }
+            );
+
+        });
+
+
+    /* -----------------------------------------------------
+       PRZYWRACANIE
+       ----------------------------------------------------- */
+
+    document
+        .querySelectorAll('.restore-button')
+        .forEach(function(button) {
+
+            button.addEventListener(
+                'click',
+                function() {
+
+                    const id =
+                        Number(
+                            this.dataset.id
+                        );
+
+                    activateClient(id);
 
                 }
             );
@@ -1700,10 +1985,13 @@ function openEditModal(clientId) {
     descriptionInput.value =
         client.Description || '';
 
+
     isActiveInput.checked =
         Number(client.IsActive) === 1;
 
+
     modal.classList.add('show');
+
 
     setTimeout(function() {
 
@@ -1766,6 +2054,38 @@ addClientButton.addEventListener(
 
 
 /* =========================================================
+   PRZEŁĄCZANIE AKTYWNI / NIEAKTYWNI
+   ========================================================= */
+
+activeClientsButton.addEventListener(
+    'click',
+    function() {
+
+        if (currentActiveFilter !== 1) {
+
+            setClientFilter(1);
+
+        }
+
+    }
+);
+
+
+inactiveClientsButton.addEventListener(
+    'click',
+    function() {
+
+        if (currentActiveFilter !== 0) {
+
+            setClientFilter(0);
+
+        }
+
+    }
+);
+
+
+/* =========================================================
    ZAPIS FORMULARZA
    ========================================================= */
 
@@ -1819,6 +2139,7 @@ clientForm.addEventListener(
             isActiveInput.checked ? '1' : '0'
         );
 
+
         try {
 
             let response;
@@ -1866,11 +2187,18 @@ clientForm.addEventListener(
 
             closeModal();
 
+
             showMessage(
                 data.message ||
                 'Zapisano'
             );
 
+
+            /*
+             * Po edycji klient może zmienić
+             * aktywność, dlatego odświeżamy
+             * aktualny widok.
+             */
 
             await loadClients();
 
@@ -1976,6 +2304,104 @@ async function deleteClient(clientId) {
         showMessage(
             error.message ||
             'Nie udało się usunąć klienta'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRZYWRACANIE KLIENTA
+   ========================================================= */
+
+async function activateClient(clientId) {
+
+    const client =
+        clients.find(function(item) {
+
+            return (
+                Number(item.Id) ===
+                Number(clientId)
+            );
+
+        });
+
+
+    if (!client) {
+
+        return;
+
+    }
+
+
+    const fullName =
+        (
+            (client.FirstName || '') +
+            ' ' +
+            (client.LastName || '')
+        ).trim();
+
+
+    const confirmed =
+        confirm(
+            `Czy przywrócić klienta:\n\n${fullName}?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/clients/activate/${clientId}`,
+                {
+                    method: 'POST'
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                'Nie udało się przywrócić klienta'
+            );
+
+        }
+
+
+        showMessage(
+            data.message ||
+            'Klient przywrócony'
+        );
+
+
+        /*
+         * Po przywróceniu klient
+         * znika z widoku NIEAKTYWNYCH.
+         */
+
+        await loadClients();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message ||
+            'Nie udało się przywrócić klienta'
         );
 
     }

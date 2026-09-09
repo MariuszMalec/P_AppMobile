@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Form, Depends, HTTPException
+from fastapi import APIRouter, Request, Form, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 
 from templates import templates
@@ -18,9 +18,16 @@ router = APIRouter(
 @router.get("/", response_class=HTMLResponse)
 def clients_page(
     request: Request,
+    active: int = Query(1),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
+
+    # -----------------------------------------------------
+    # AKTYWNI / NIEAKTYWNI
+    # -----------------------------------------------------
+
+    active = 1 if str(active) == "1" else 0
 
     clients = cursor.execute("""
         SELECT
@@ -34,15 +41,18 @@ def clients_page(
             Gender,
             IsActive
         FROM Client
-        WHERE IsActive = 1
+        WHERE IsActive = ?
         ORDER BY FirstName, LastName
-    """).fetchall()
+    """, (
+        active,
+    )).fetchall()
 
     return templates.TemplateResponse(
         request,
         "clients.html",
         {
-            "clients": clients
+            "clients": clients,
+            "active": active
         }
     )
 
@@ -53,9 +63,17 @@ def clients_page(
 
 @router.get("/list")
 def get_clients(
+    active: int = Query(1),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
+
+    # -----------------------------------------------------
+    # 1 = AKTYWNI
+    # 0 = NIEAKTYWNI
+    # -----------------------------------------------------
+
+    active = 1 if str(active) == "1" else 0
 
     clients = cursor.execute("""
         SELECT
@@ -69,9 +87,11 @@ def get_clients(
             Gender,
             IsActive
         FROM Client
-        WHERE IsActive = 1
+        WHERE IsActive = ?
         ORDER BY FirstName, LastName
-    """).fetchall()
+    """, (
+        active,
+    )).fetchall()
 
     clients = [dict(client) for client in clients]
 
@@ -416,6 +436,94 @@ def edit_client(
     return JSONResponse({
         "status": "ok",
         "message": "Klient zaktualizowany",
+        "client_id": client_id
+    })
+
+
+# =========================================================
+# PRZYWRÓCENIE KLIENTA
+# =========================================================
+
+@router.post("/activate/{client_id}")
+def activate_client(
+    client_id: int,
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    # -----------------------------------------------------
+    # SPRAWDZAMY KLIENTA
+    # -----------------------------------------------------
+
+    client = cursor.execute("""
+        SELECT
+            Id,
+            FirstName,
+            LastName,
+            IsActive
+        FROM Client
+        WHERE Id = ?
+    """, (
+        client_id,
+    )).fetchone()
+
+    if not client:
+        raise HTTPException(
+            status_code=404,
+            detail="Klient nie istnieje"
+        )
+
+    # -----------------------------------------------------
+    # SPRAWDZAMY DUPLIKAT AKTYWNEGO KLIENTA
+    # -----------------------------------------------------
+
+    existing = cursor.execute("""
+        SELECT Id
+        FROM Client
+        WHERE LOWER(FirstName) = LOWER(?)
+          AND LOWER(LastName) = LOWER(?)
+          AND Id != ?
+          AND IsActive = 1
+    """, (
+        client["FirstName"],
+        client["LastName"],
+        client_id
+    )).fetchone()
+
+    if existing:
+        raise HTTPException(
+            status_code=400,
+            detail="Aktywny klient o takim imieniu i nazwisku już istnieje"
+        )
+
+    # -----------------------------------------------------
+    # PRZYWRÓCENIE
+    # -----------------------------------------------------
+
+    try:
+
+        cursor.execute("""
+            UPDATE Client
+            SET IsActive = 1
+            WHERE Id = ?
+        """, (
+            client_id,
+        ))
+
+        db.commit()
+
+    except Exception as e:
+
+        db.rollback()
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Błąd przywracania klienta: {str(e)}"
+        )
+
+    return JSONResponse({
+        "status": "ok",
+        "message": "Klient przywrócony",
         "client_id": client_id
     })
 
