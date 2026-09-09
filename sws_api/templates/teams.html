@@ -82,6 +82,17 @@
     value="{{ request.query_params.get('filter_trophy') or '' }}"
   >
 
+  <!-- ⚽ Filter by Final Result -->
+<input
+    type="text"
+    id="filterResultInput"
+    name="filter_result"
+    placeholder="Filter by result"
+    style="width: 130px;"
+    class="form-control form-control-sm"
+    value="{{ request.query_params.get('filter_result') or '' }}"
+>
+
   <button type="submit" class="btn btn-sm btn-primary">
     <i class="bi bi-funnel-fill"></i> Filter
   </button>
@@ -593,12 +604,14 @@ document.querySelectorAll(".delete-team-btn").forEach(btn => {
 const filterForm = document.getElementById("filterForm");
 const filterNameInput = document.getElementById("filterNameInput");
 const filterTrophyInput = document.getElementById("filterTrophyInput");
+const filterResultInput = document.getElementById("filterResultInput");
 
 let filterTimeout;
 
 function applyFilters() {
     const nameValue = filterNameInput.value.trim();
     const trophyValue = filterTrophyInput.value.trim();
+    const resultValue = filterResultInput.value.trim();
 
     const urlParams = new URLSearchParams(window.location.search);
 
@@ -612,6 +625,12 @@ function applyFilters() {
         urlParams.set("filter_trophy", trophyValue);
     } else {
         urlParams.delete("filter_trophy");
+    }
+
+    if (resultValue) {
+        urlParams.set("filter_result", resultValue);
+    } else {
+        urlParams.delete("filter_result");
     }
 
     urlParams.delete("page");
@@ -630,6 +649,7 @@ function dynamicFilter() {
 
 filterNameInput.addEventListener("input", dynamicFilter);
 filterTrophyInput.addEventListener("input", dynamicFilter);
+filterResultInput.addEventListener("input", dynamicFilter);
 
 // Nadal działa również przy kliknięciu Filter
 filterForm.addEventListener("submit", (e) => {
@@ -644,6 +664,7 @@ clearFiltersBtn.addEventListener("click", () => {
     const url = new URL(window.location.href);
     url.searchParams.delete("filter_name");
     url.searchParams.delete("filter_trophy");
+    url.searchParams.delete("filter_result");
     url.searchParams.delete("sort");
     window.location.href = url.pathname; // czysta strona bez parametrów
 });
