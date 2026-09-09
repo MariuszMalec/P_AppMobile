@@ -114,51 +114,282 @@
     <tr class="team-row" data-id="{{ t.Id }}">
       <td>{{ t["Name"] }}</td>
       <td>{{ t["Season"] }}</td>
-      <td>
-      {% set result = t["FinalResult"] %}
-      {% set team_name = t["Name"] %}
+<td>
+    {% set result = t["FinalResult"] or "" %}
+    {% set team_name = t["Name"] %}
+    {% set display_result = result %}
+    {% set lose = false %}
 
-      {% if result and ":" in result %}
+    {% if result %}
 
-          {% set lose = false %}
+        {# ============================================================
+           WYNIK Z KARNE
+           np. Gornik:SlaskWroclaw 1:1 (PEN 3:4)
+           ============================================================ #}
 
-          {# --- 1️⃣ Pobierz część z nazwami drużyn --- #}
-          {% set teams_part = result.split(" ")[0] %}
-          {% set teamA = teams_part.split(":")[0] %}
-          {% set teamB = teams_part.split(":")[1] %}
+        {% if "PEN" in result and ":" in result %}
 
-          {# --- 2️⃣ Sprawdź czy są karne --- #}
-          {% if "PEN" in result %}
-              {% set pen_part = result.split("PEN")[1] %}
-              {% set pen_score = pen_part.replace("(", "").replace(")", "").strip() %}
-              {% set goals = pen_score.split(":") %}
-              {% set goalsA = goals[0]|int %}
-              {% set goalsB = goals[1]|int %}
-          {% else %}
-              {# normalny wynik #}
-              {% set score_part = result.split(" ")[1] %}
-              {% set goals = score_part.split(":") %}
-              {% set goalsA = goals[0]|int %}
-              {% set goalsB = goals[1]|int %}
-          {% endif %}
+            {% set main_part = result.split("(", 1)[0]|trim %}
+            {% set pen_part = result.split("PEN", 1)[1]
+                .replace("(", "")
+                .replace(")", "")
+                .strip()
+            %}
 
-          {# --- 3️⃣ Sprawdź czy to porażka --- #}
-          {% if team_name == teamA and goalsA < goalsB %}
-              {% set lose = true %}
-          {% elif team_name == teamB and goalsB < goalsA %}
-              {% set lose = true %}
-          {% endif %}
+            {% set main_parts = main_part.split(" ", 1) %}
 
-          {% if lose %}
-              <span class="text-danger fw-bold">{{ result }}</span>
-          {% else %}
-              {{ result }}
-          {% endif %}
+            {% if main_parts|length == 2 %}
 
-      {% else %}
-          {{ result }}
-      {% endif %}
-      </td>
+                {% set teams_part = main_parts[0]|trim %}
+                {% set score_part = main_parts[1]|trim %}
+
+                {% set teams = teams_part.split(":", 1) %}
+                {% set scores = score_part.split(":", 1) %}
+                {% set pens = pen_part.split(":", 1) %}
+
+                {% if teams|length == 2 and scores|length == 2 and pens|length == 2 %}
+
+                    {% set teamA = teams[0]|trim %}
+                    {% set teamB = teams[1]|trim %}
+
+                    {% set goalsA_raw = scores[0]|trim %}
+                    {% set goalsB_raw = scores[1]|trim %}
+
+                    {% set penA_raw = pens[0]|trim %}
+                    {% set penB_raw = pens[1]|trim %}
+
+                    {% if goalsA_raw.isdigit()
+                          and goalsB_raw.isdigit()
+                          and penA_raw.isdigit()
+                          and penB_raw.isdigit() %}
+
+                        {% set goalsA = goalsA_raw|int %}
+                        {% set goalsB = goalsB_raw|int %}
+                        {% set penA = penA_raw|int %}
+                        {% set penB = penB_raw|int %}
+
+                        {% set display_result = result %}
+
+                        {# Przegrany według karnych #}
+
+                        {% if team_name == teamA and penA < penB %}
+                            {% set lose = true %}
+
+                        {% elif team_name == teamB and penB < penA %}
+                            {% set lose = true %}
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endif %}
+
+            {% endif %}
+
+
+        {# ============================================================
+           WYNIK PO DOGRYWCE
+           np. ACMilan:Lacio 2:3 (A.E.T 2:2)
+
+           WAŻNY:
+           Wynik przed nawiasem jest wynikiem KOŃCOWYM.
+           A.E.T pokazuje wynik po dogrywce.
+
+           Czyli:
+           ACMilan:Lacio 2:3 (A.E.T 2:2)
+           -> ACMilan przegrywa 2:3
+           -> Lacio wygrywa
+           ============================================================ #}
+
+        {% elif "A.E.T" in result and ":" in result %}
+
+            {% set main_part = result.split("(", 1)[0]|trim %}
+            {% set main_parts = main_part.split(" ", 1) %}
+
+            {% if main_parts|length == 2 %}
+
+                {% set teams_part = main_parts[0]|trim %}
+                {% set score_part = main_parts[1]|trim %}
+
+                {% set teams = teams_part.split(":", 1) %}
+                {% set scores = score_part.split(":", 1) %}
+
+                {% if teams|length == 2 and scores|length == 2 %}
+
+                    {% set teamA = teams[0]|trim %}
+                    {% set teamB = teams[1]|trim %}
+
+                    {% set goalsA_raw = scores[0]|trim %}
+                    {% set goalsB_raw = scores[1]|trim %}
+
+                    {% if goalsA_raw.isdigit() and goalsB_raw.isdigit() %}
+
+                        {% set goalsA = goalsA_raw|int %}
+                        {% set goalsB = goalsB_raw|int %}
+
+                        {% set display_result = result %}
+
+                        {# Przegrany według końcowego wyniku #}
+
+                        {% if team_name == teamA and goalsA < goalsB %}
+                            {% set lose = true %}
+
+                        {% elif team_name == teamB and goalsB < goalsA %}
+                            {% set lose = true %}
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endif %}
+
+            {% endif %}
+
+
+        {# ============================================================
+           NORMALNY WYNIK
+           np. Gornik:SlaskWroclaw 1:2
+           ============================================================ #}
+
+        {% elif " " in result and ":" in result %}
+
+            {% set result_parts = result.split(" ", 1) %}
+            {% set teams_part = result_parts[0]|trim %}
+            {% set score_part = result_parts[1]|trim %}
+
+            {% set teams = teams_part.split(":", 1) %}
+
+            {% if teams|length == 2 %}
+
+                {% set teamA = teams[0]|trim %}
+                {% set teamB = teams[1]|trim %}
+
+                {% set score_parts = score_part.split(":", 1) %}
+
+                {% if score_parts|length == 2 %}
+
+                    {% set goalsA_raw = score_parts[0]|trim %}
+                    {% set goalsB_raw = score_parts[1]|trim %}
+
+                    {% if goalsA_raw.isdigit() and goalsB_raw.isdigit() %}
+
+                        {% set goalsA = goalsA_raw|int %}
+                        {% set goalsB = goalsB_raw|int %}
+
+                        {% if team_name == teamA and goalsA < goalsB %}
+                            {% set lose = true %}
+
+                        {% elif team_name == teamB and goalsB < goalsA %}
+                            {% set lose = true %}
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endif %}
+
+            {% endif %}
+
+
+        {# ============================================================
+           STARY FORMAT
+           np. Parma:Ajax2:0
+           ============================================================ #}
+
+        {% elif ":" in result %}
+
+            {% set parts = result.split(":") %}
+
+            {% if parts|length == 3 %}
+
+                {% set possible_teamA = parts[0]|trim %}
+                {% set possible_teamB_with_score = parts[1]|trim %}
+                {% set goalsB_raw = parts[2]|trim %}
+
+                {% if goalsB_raw.isdigit() %}
+
+                    {% if team_name == possible_teamA %}
+
+                        {% set teamA = possible_teamA %}
+
+                        {% set goalsA_raw =
+                            possible_teamB_with_score[-1:]
+                        %}
+
+                        {% if goalsA_raw.isdigit() %}
+
+                            {% set goalsA = goalsA_raw|int %}
+                            {% set goalsB = goalsB_raw|int %}
+
+                            {% set teamB =
+                                possible_teamB_with_score[:-1]|trim
+                            %}
+
+                            {% set display_result =
+                                teamA ~ ":" ~ teamB ~ " " ~
+                                goalsA ~ ":" ~ goalsB
+                            %}
+
+                            {% if goalsA < goalsB %}
+                                {% set lose = true %}
+                            {% endif %}
+
+                        {% endif %}
+
+                    {% else %}
+
+                        {% if possible_teamB_with_score.endswith(team_name) %}
+
+                            {% set teamA = possible_teamA %}
+                            {% set teamB = team_name %}
+
+                            {% set score_text =
+                                possible_teamB_with_score[:-team_name|length]
+                                |trim
+                            %}
+
+                            {% if score_text.isdigit() %}
+
+                                {% set goalsA = score_text|int %}
+                                {% set goalsB = goalsB_raw|int %}
+
+                                {% set display_result =
+                                    teamA ~ ":" ~ teamB ~ " " ~
+                                    goalsA ~ ":" ~ goalsB
+                                %}
+
+                                {% if goalsB < goalsA %}
+                                    {% set lose = true %}
+                                {% endif %}
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    {% endif %}
+
+                {% endif %}
+
+            {% endif %}
+
+        {% endif %}
+
+
+        {# ============================================================
+           KOLOROWANIE PRZEGRANEGO
+           ============================================================ #}
+
+        {% if lose %}
+
+            <span class="text-danger fw-bold">
+                {{ display_result }}
+            </span>
+
+        {% else %}
+
+            {{ display_result }}
+
+        {% endif %}
+
+    {% endif %}
+</td>
       <td>{{ t["TrophyWin"] or "—" }}</td>
       <td class="text-center">
         {% if t["TrophyPicture"] %}
@@ -544,6 +775,18 @@ async function loadTrophies() {
             trophyWinSelect.appendChild(option);
         });
 
+        // ============================================================
+        // DOMYŚLNE TROFEUM = ChampionLeague
+        // ============================================================
+
+        const championLeagueOption = Array.from(
+            trophyWinSelect.options
+        ).find(option => option.value === "ChampionLeague");
+
+        if (championLeagueOption) {
+            championLeagueOption.selected = true;
+        }
+
         updateTrophyModelId();
 
     } catch (error) {
@@ -559,7 +802,6 @@ async function loadTrophies() {
         trophyModelIdInput.value = "";
     }
 }
-
 
 // Ustawienie TrophyModelId po wyborze TrophyWin
 function updateTrophyModelId() {

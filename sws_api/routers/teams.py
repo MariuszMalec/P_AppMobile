@@ -294,6 +294,7 @@ def get_trophy_options(db=Depends(get_db)):
     finally:
         db.close()
 
+
 @router.post("/create", response_class=HTMLResponse)
 def create_team(
     request: Request,
@@ -318,6 +319,39 @@ def create_team(
                 "error": "Team name cannot be empty"
             }
         )
+
+    # ============================================================
+    # POPRAWA FORMATU FINAL RESULT
+    # ============================================================
+
+    if FinalResult:
+        FinalResult = FinalResult.strip()
+
+        # Jeżeli wynik ma postać np. Parma:Ajax2:0
+        # poprawiamy go na Parma:Ajax 2:0
+        if ":" in FinalResult:
+            parts = FinalResult.rsplit(":", 2)
+
+            if len(parts) == 3:
+                team_part = parts[0].strip()
+                goals_a = parts[1].strip()
+                goals_b = parts[2].strip()
+
+                if (
+                    team_part
+                    and goals_a.isdigit()
+                    and goals_b.isdigit()
+                ):
+                    if not team_part.endswith(" "):
+                        FinalResult = (
+                            f"{team_part} "
+                            f"{goals_a}:{goals_b}"
+                        )
+
+    # Jeżeli FinalResult jest puste,
+    # zapisujemy pusty tekst zamiast NULL.
+    if not FinalResult:
+        FinalResult = ""
 
     try:
         cursor = db.cursor()
@@ -430,6 +464,7 @@ def create_team(
         url=redirect_url,
         status_code=HTTP_303_SEE_OTHER
     )
+
 
 
 @router.post("/{team_id}/delete")
@@ -565,6 +600,15 @@ def edit_team(
                 status_code=404,
                 detail="Team not found"
             )
+
+        # ============================================================
+        # SPRAWDZENIE FINAL RESULT
+        # ============================================================
+
+        # Jeżeli formularz nie przesłał FinalResult,
+        # zachowujemy wartość istniejącą w bazie.
+        if not FinalResult or not FinalResult.strip():
+            FinalResult = existing["FinalResult"]
 
         # ============================================================
         # TROPHY - ID USTALAMY NA PODSTAWIE WYBRANEGO TROPHY WIN
