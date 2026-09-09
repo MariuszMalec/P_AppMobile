@@ -600,7 +600,10 @@ document.querySelectorAll(".delete-team-btn").forEach(btn => {
 });
 
 
-// Filter (name + trophy) — dynamicznie podczas pisania
+// ============================================================
+// FILTER — DYNAMICZNIE PODCZAS PISANIA
+// ============================================================
+
 const filterForm = document.getElementById("filterForm");
 const filterNameInput = document.getElementById("filterNameInput");
 const filterTrophyInput = document.getElementById("filterTrophyInput");
@@ -608,65 +611,138 @@ const filterResultInput = document.getElementById("filterResultInput");
 
 let filterTimeout;
 
+// Zapamiętanie, które pole było aktywne
+let activeFilterId = null;
+
 function applyFilters() {
+
     const nameValue = filterNameInput.value.trim();
     const trophyValue = filterTrophyInput.value.trim();
     const resultValue = filterResultInput.value.trim();
 
-    const urlParams = new URLSearchParams(window.location.search);
+    const url = new URL(window.location.href);
 
     if (nameValue) {
-        urlParams.set("filter_name", nameValue);
+        url.searchParams.set("filter_name", nameValue);
     } else {
-        urlParams.delete("filter_name");
+        url.searchParams.delete("filter_name");
     }
 
     if (trophyValue) {
-        urlParams.set("filter_trophy", trophyValue);
+        url.searchParams.set("filter_trophy", trophyValue);
     } else {
-        urlParams.delete("filter_trophy");
+        url.searchParams.delete("filter_trophy");
     }
 
     if (resultValue) {
-        urlParams.set("filter_result", resultValue);
+        url.searchParams.set("filter_result", resultValue);
     } else {
-        urlParams.delete("filter_result");
+        url.searchParams.delete("filter_result");
     }
 
-    urlParams.delete("page");
+    url.searchParams.delete("page");
 
-    window.location.search = urlParams.toString();
+    // Zapamiętaj aktywne pole przed przeładowaniem
+    if (document.activeElement === filterNameInput) {
+        activeFilterId = "filterNameInput";
+    } else if (document.activeElement === filterTrophyInput) {
+        activeFilterId = "filterTrophyInput";
+    } else if (document.activeElement === filterResultInput) {
+        activeFilterId = "filterResultInput";
+    }
+
+    if (activeFilterId) {
+        sessionStorage.setItem("activeFilterId", activeFilterId);
+    }
+
+    window.location.href = url.toString();
 }
 
-// 🔍 Filtruj automatycznie podczas pisania
-function dynamicFilter() {
+
+// ============================================================
+// DYNAMICZNE FILTROWANIE
+// ============================================================
+
+function dynamicFilter(event) {
+
+    // Zapamiętaj aktualnie używane pole
+    activeFilterId = event.target.id;
+    sessionStorage.setItem("activeFilterId", activeFilterId);
+
     clearTimeout(filterTimeout);
 
+    // Czekamy 600 ms od ostatniego znaku
     filterTimeout = setTimeout(() => {
         applyFilters();
-    }, 300);
+    }, 600);
 }
 
+
+// Nasłuchiwanie wpisywania
 filterNameInput.addEventListener("input", dynamicFilter);
 filterTrophyInput.addEventListener("input", dynamicFilter);
 filterResultInput.addEventListener("input", dynamicFilter);
 
-// Nadal działa również przy kliknięciu Filter
+
+// ============================================================
+// PRZYWRÓCENIE FOCUSU PO PRZEŁADOWANIU STRONY
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    const savedFilterId = sessionStorage.getItem("activeFilterId");
+
+    if (!savedFilterId) {
+        return;
+    }
+
+    const input = document.getElementById(savedFilterId);
+
+    if (input) {
+
+        input.focus();
+
+        // Kursor na końcu tekstu
+        const length = input.value.length;
+        input.setSelectionRange(length, length);
+    }
+
+    sessionStorage.removeItem("activeFilterId");
+});
+
+
+// ============================================================
+// FILTRUJ PRZYCISKIEM
+// ============================================================
+
 filterForm.addEventListener("submit", (e) => {
+
     e.preventDefault();
+
+    clearTimeout(filterTimeout);
+
     applyFilters();
 });
 
-// Clear filters
+
+// ============================================================
+// CLEAR FILTERS
+// ============================================================
+
 const clearFiltersBtn = document.getElementById("clearFiltersBtn");
 
 clearFiltersBtn.addEventListener("click", () => {
+
+    sessionStorage.removeItem("activeFilterId");
+
     const url = new URL(window.location.href);
+
     url.searchParams.delete("filter_name");
     url.searchParams.delete("filter_trophy");
     url.searchParams.delete("filter_result");
     url.searchParams.delete("sort");
-    window.location.href = url.pathname; // czysta strona bez parametrów
+
+    window.location.href = url.pathname;
 });
 
 // ===== SAVE CREATE TEAM FORM VALUES =====
