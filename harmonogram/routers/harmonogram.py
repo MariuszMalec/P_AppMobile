@@ -100,10 +100,18 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
             "date_str": date_str
         })
 
+
     return templates.TemplateResponse(
+        request,
         "harmonogram.html",
-        {"request": request, "machines": machines, "days": days, "schedule": schedule}
+        {
+            "machines": machines,
+            "days": days,
+            "schedule": schedule,
+        }
     )
+
+
 
 
 
