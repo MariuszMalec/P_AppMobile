@@ -70,9 +70,9 @@ def home_page(
                 next_items.append(item)
 
         return templates.TemplateResponse(
+            request,
             "home.html",
             {
-                "request": request,
                 "now": current_time,
                 "current": current_items,
                 "next": next_items,
@@ -85,9 +85,9 @@ def home_page(
     except Exception:
         # brak bazy / tabel / inny błąd → pokaż stronę z komunikatem
         return templates.TemplateResponse(
+            request,
             "home.html",
             {
-                "request": request,
                 "now": "",
                 "current": [],
                 "next": [],
@@ -188,9 +188,9 @@ def home_page_by_person(
                 next_items.append(item)
 
         return templates.TemplateResponse(
+            request,
             "statusbyperson.html",
             {
-                "request": request,
                 "now": current_time,
                 "current": current_items,
                 "next": next_items,
