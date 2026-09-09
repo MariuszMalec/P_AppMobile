@@ -286,7 +286,7 @@ def edit_client(
         FROM Client
         WHERE Id = ?
     """, (
-        client_id
+        client_id,
     )).fetchone()
 
     if not client:
@@ -354,7 +354,7 @@ def edit_client(
     """, (
         first_name,
         last_name,
-        client_id
+        client_id,
     )).fetchone()
 
     if existing:

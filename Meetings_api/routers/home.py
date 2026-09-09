@@ -128,9 +128,9 @@ def home_page(
     db.close()
 
     return templates.TemplateResponse(
+        request,
         "home.html",
         {
-            "request": request,
             "table": table,
             "days": days,
             "current_day": current_day,
@@ -140,7 +140,6 @@ def home_page(
             "week_start": week_start
         }
     )
-
 
 @router.get("/session/recurring-count/{recurring_group_id}")
 def get_recurring_count(
