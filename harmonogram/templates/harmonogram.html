@@ -123,6 +123,8 @@ body {
 }
 
 
+
+
 /* =========================================================
    PRZYCISK DZISIAJ
    ========================================================= */
@@ -176,6 +178,162 @@ body {
 /* =========================================================
    MODAL - KOMPUTER
    ========================================================= */
+
+/* =====================================================
+   MODAL MASZYNY
+   ===================================================== */
+
+#machineModal {
+    z-index: 11000;
+}
+
+#machineModal > div {
+    position: relative;
+}
+
+@media (min-width: 769px) {
+
+    #machineModal {
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    #machineModal > div {
+        width: 450px !important;
+        max-width: 90vw;
+        max-height: 90vh;
+
+        padding: 24px !important;
+
+        border-radius: 10px;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+    }
+
+    #machineModal input[type="text"] {
+        padding: 8px 10px;
+        font-size: 14px;
+        border: 1px solid #bbb;
+        border-radius: 6px;
+        width: 100%;
+        margin-bottom: 12px;
+    }
+
+    #machineModal label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    #machineModal .button-row {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        margin-top: 15px;
+    }
+
+    #machineModal button {
+        padding: 9px 18px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    #machineModal .button-row button:first-child {
+        background: #4caf50;
+        color: white;
+    }
+
+    #machineModal .button-row button:nth-child(2) {
+        background: #ddd;
+        color: #222;
+    }
+
+    #machineModal #deleteMachineBtn {
+        margin-left: auto;
+        background: red;
+        color: white;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    #machineModal {
+        padding: 10px;
+        align-items: center;
+        justify-content: center;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #machineModal > div {
+        width: calc(100vw - 20px) !important;
+        max-width: 420px !important;
+        max-height: calc(100dvh - 20px) !important;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+
+        padding: 16px !important;
+        border-radius: 12px;
+
+        -webkit-overflow-scrolling: touch;
+    }
+
+    #machineModal h3 {
+        margin: 0 0 16px 0;
+        font-size: 20px;
+        line-height: 1.2;
+    }
+
+    #machineModal label {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    #machineModal input[type="text"] {
+        display: block;
+        width: 100%;
+        height: 42px;
+        padding: 7px 10px;
+        margin: 0 0 12px 0;
+        font-size: 16px;
+        border: 1px solid #bbb;
+        border-radius: 7px;
+        background: white;
+        color: #111;
+    }
+
+    #machineModal .button-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+    }
+
+    #machineModal button {
+        width: 100%;
+        min-height: 42px;
+        margin: 0;
+        padding: 9px 12px;
+        font-size: 15px;
+        border: none;
+        border-radius: 7px;
+        cursor: pointer;
+    }
+
+    #machineModal #deleteMachineBtn {
+        margin-top: 0;
+    }
+}
 
 @media (min-width: 769px) {
 
@@ -619,6 +777,10 @@ body {
         <div
             class="machine-cell"
             data-machine-id="{{ machine.Id }}"
+            data-machine-name="{{ machine.Name }}"
+            data-machine-description="{{ machine.Description }}"
+            data-machine-picture="{{ machine.Picture }}"
+            onclick="openMachineModal(this)"
         >
             {{ machine.Name }}
         </div>
@@ -1055,7 +1217,93 @@ body {
     📅 Dzisiaj
 </div>
 
+<!-- =====================================================
+     MODAL MASZYNY
+     ===================================================== -->
 
+<div
+    id="machineModal"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.4);
+        justify-content:center;
+        align-items:center;
+    "
+>
+
+    <div
+        style="
+            background:white;
+            padding:20px;
+            width:400px;
+            border-radius:8px;
+        "
+    >
+
+        <h3>
+            Edit Machine
+        </h3>
+
+        <input
+            type="hidden"
+            id="editMachineId"
+        >
+
+        <label>
+            Name
+        </label>
+
+        <input
+            type="text"
+            id="editMachineName"
+        >
+
+        <label>
+            Description
+        </label>
+
+        <input
+            type="text"
+            id="editMachineDescription"
+        >
+
+        <label>
+            Picture
+        </label>
+
+        <input
+            type="text"
+            id="editMachinePicture"
+        >
+
+        <div class="button-row">
+
+            <button
+                onclick="saveMachine()"
+            >
+                Save
+            </button>
+
+            <button
+                onclick="closeMachineModal()"
+            >
+                Cancel
+            </button>
+
+            <button
+                id="deleteMachineBtn"
+                onclick="deleteMachine()"
+            >
+                Delete
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 <script>
 
@@ -1546,6 +1794,139 @@ hoursInput.addEventListener(
 
     }
 );
+
+/* =========================================================
+   EDYCJA MASZYNY
+   ========================================================= */
+
+function openMachineModal(el) {
+
+    event.stopPropagation();
+
+    document.getElementById("editMachineId").value =
+        el.dataset.machineId;
+
+    document.getElementById("editMachineName").value =
+        el.dataset.machineName || "";
+
+    document.getElementById("editMachineDescription").value =
+        el.dataset.machineDescription || "";
+
+    document.getElementById("editMachinePicture").value =
+        el.dataset.machinePicture || "";
+
+    document.getElementById("machineModal").style.display =
+        "flex";
+}
+
+
+/* =========================================================
+   ZAMKNIĘCIE MODALA MASZYNY
+   ========================================================= */
+
+function closeMachineModal() {
+
+    document.getElementById("machineModal").style.display =
+        "none";
+}
+
+
+/* =========================================================
+   ZAPIS MASZYNY
+   ========================================================= */
+
+function saveMachine() {
+
+    const id =
+        document.getElementById("editMachineId").value;
+
+    const payload = {
+
+        Name:
+            document.getElementById("editMachineName").value,
+
+        Description:
+            document.getElementById("editMachineDescription").value,
+
+        Picture:
+            document.getElementById("editMachinePicture").value
+
+    };
+
+    fetch(`/machines/edit/${id}`, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(payload)
+
+    })
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        if (data.status === "error") {
+
+            alert(data.message);
+
+        } else {
+
+            location.reload();
+
+        }
+
+    });
+
+}
+
+
+/* =========================================================
+   USUWANIE MASZYNY
+   ========================================================= */
+
+function deleteMachine() {
+
+    if (
+        !confirm(
+            "Czy na pewno chcesz usunąć tę maszynę?"
+        )
+    )
+        return;
+
+    const id =
+        document.getElementById("editMachineId").value;
+
+    fetch(`/machines/delete/${id}`, {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        }
+
+    })
+
+    .then(res => res.json())
+
+    .then(data => {
+
+        if (data.status === "error") {
+
+            alert(data.message);
+
+        } else {
+
+            location.reload();
+
+        }
+
+    });
+
+}
 
 </script>
 

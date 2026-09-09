@@ -13,7 +13,7 @@ from db import (
 
 from routers.home import router as home_router
 from routers.harmonogram import router as harmonogram_router
-# from routers.teams import router as teams_router
+from routers import machines
 
 
 # =========================
@@ -66,4 +66,4 @@ def root_redirect():
 # ---------- ROUTERS ----------
 app.include_router(home_router)
 app.include_router(harmonogram_router)
-# app.include_router(teams_router)
+app.include_router(machines.router)
