@@ -2,6 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+
 <meta name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover">
 
@@ -18,22 +19,36 @@
     --live: #00ff6a;
 }
 
-* {
+
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
     box-sizing: border-box;
 }
 
+
 html,
 body {
+
     margin: 0;
     padding: 0;
 
     width: 100%;
     height: 100%;
 
+    min-width: 0;
+    max-width: 100%;
+
     overflow: hidden;
 }
 
+
 body {
+
     background: radial-gradient(
         circle at top,
         #0a0d3a,
@@ -61,6 +76,8 @@ body {
     position: relative;
 
     width: 100%;
+    max-width: 100vw;
+
     height: 48px;
 
     display: flex;
@@ -72,7 +89,10 @@ body {
     padding: 4px 8px;
 
     overflow: hidden;
+
+    min-width: 0;
 }
+
 
 .header h1 {
 
@@ -89,6 +109,10 @@ body {
     flex: 0 1 auto;
 
     min-width: 0;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
 }
 
 
@@ -102,7 +126,10 @@ body {
     align-items: center;
 
     flex-shrink: 0;
+
+    min-width: 0;
 }
+
 
 .back a {
 
@@ -140,6 +167,7 @@ body {
         border-color .2s ease;
 }
 
+
 .back a:hover {
 
     background: rgba(255,255,255,.16);
@@ -148,6 +176,7 @@ body {
 
     transform: translateX(1px);
 }
+
 
 .back a:active {
 
@@ -171,33 +200,32 @@ body {
     width: 100%;
     max-width: 100vw;
 
-    padding: 4px 4px 4px;
-
-    overflow: hidden;
-
     min-width: 0;
     min-height: 0;
 
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
+    padding: 4px;
+
+    overflow: hidden;
+
+    display: block;
 }
 
 
 /* =========================================================
-   TABELA
+   TABELA — KLUCZOWA CZĘŚĆ DLA TV
    ========================================================= */
 
 table {
 
+    display: table;
+
     width: 100%;
     max-width: 100%;
 
+    min-width: 0;
+
     height: 100%;
     max-height: 100%;
-
-    min-width: 0;
-    min-height: 0;
 
     table-layout: fixed;
 
@@ -218,12 +246,27 @@ table {
    ========================================================= */
 
 /*
-   colgroup daje TV jednoznaczną informację,
-   jak szeroka ma być kolumna czasu.
+   Mamy 6 kolumn:
+       Czas
+       GOSIA
+       MAMA
+       TATA
+       EMILKA
+       ALL
+
+   Pierwsza kolumna dostaje 12.5% całej tabeli.
+
+   Dzięki temu:
+   - nie ma stałych 105px,
+   - tabela zawsze mieści się w viewport,
+   - pierwsza kolumna nie może wypchnąć tabeli,
+   - 16:00 nie zostanie obcięte.
 */
 
 col.time-col {
-    width: 105px;
+
+    width: 12.5%;
+
 }
 
 
@@ -242,6 +285,7 @@ td {
     padding: 0;
 
     min-width: 0;
+    max-width: 100%;
 
     overflow: hidden;
 }
@@ -278,18 +322,32 @@ th {
 
 th.time {
 
-    width: 105px;
-    min-width: 105px;
+    /*
+       Nie ustawiamy już min-width.
+       Szerokość pochodzi wyłącznie z col.time-col.
+    */
+
+    width: 12.5%;
+
+    min-width: 0;
+    max-width: 12.5%;
 
     padding: 0 4px;
 
     white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: clip;
 }
+
 
 td.time {
 
-    width: 105px;
-    min-width: 105px;
+    width: 12.5%;
+
+    min-width: 0;
+    max-width: 12.5%;
 
     padding: 0 3px;
 
@@ -301,14 +359,15 @@ td.time {
     line-height: 1.1;
 
     /*
-       Pozwalamy przeglądarce zmieścić tekst,
-       zamiast wypychać całą tabelę poza ekran.
+       KLUCZOWE:
+       czas nigdy nie może zostać zawinięty.
     */
-    white-space: normal;
+
+    white-space: nowrap;
 
     overflow: hidden;
 
-    overflow-wrap: anywhere;
+    text-overflow: clip;
 }
 
 
@@ -400,6 +459,7 @@ td {
 
 }
 
+
 .live {
 
     animation:
@@ -445,10 +505,12 @@ td {
         padding: 3px 6px;
     }
 
+
     .header h1 {
 
         font-size: 21px;
     }
+
 
     .back a {
 
@@ -462,13 +524,18 @@ td {
 
         top: 44px;
 
-        padding: 3px 3px 3px;
+        padding: 3px;
     }
 
 
+    /*
+       Nadal procentowo.
+       NIE ustawiamy tutaj 105px.
+    */
+
     col.time-col {
 
-        width: 105px;
+        width: 12.5%;
     }
 
 
@@ -483,8 +550,10 @@ td {
     th.time,
     td.time {
 
-        width: 105px;
-        min-width: 105px;
+        width: 12.5%;
+
+        min-width: 0;
+        max-width: 12.5%;
     }
 
 
@@ -526,6 +595,7 @@ td {
         padding: 2px 5px;
     }
 
+
     .header h1 {
 
         font-size: 18px;
@@ -548,9 +618,15 @@ td {
     }
 
 
+    /*
+       Nadal 12.5%.
+       Pierwsza kolumna nie jest już wypychana
+       przez sztywne 100px.
+    */
+
     col.time-col {
 
-        width: 100px;
+        width: 12.5%;
     }
 
 
@@ -565,8 +641,10 @@ td {
     th.time,
     td.time {
 
-        width: 100px;
-        min-width: 100px;
+        width: 12.5%;
+
+        min-width: 0;
+        max-width: 12.5%;
     }
 
 
@@ -575,6 +653,15 @@ td {
         font-size: 11px;
 
         padding: 0 2px;
+
+        /*
+           Nigdy nie łamiemy:
+           16:00
+           17:30
+           18:00
+        */
+
+        white-space: nowrap;
     }
 
 
@@ -606,10 +693,12 @@ td {
         gap: 16px;
     }
 
+
     .header h1 {
 
         font-size: 25px;
     }
+
 
     .back a {
 
@@ -623,13 +712,13 @@ td {
 
         top: 52px;
 
-        padding: 5px 5px 5px;
+        padding: 5px;
     }
 
 
     col.time-col {
 
-        width: 110px;
+        width: 12.5%;
     }
 
 
@@ -644,14 +733,18 @@ td {
     th.time,
     td.time {
 
-        width: 110px;
-        min-width: 110px;
+        width: 12.5%;
+
+        min-width: 0;
+        max-width: 12.5%;
     }
 
 
     td.time {
 
         font-size: 14px;
+
+        white-space: nowrap;
     }
 
 
@@ -663,32 +756,45 @@ td {
 
 
 /* =========================================================
-   DODATKOWA OCHRONA PRZED WYPCHNIĘCIEM TABELI
+   MAŁY TELEFON
    ========================================================= */
 
 @media (max-width: 700px) {
+
+    /*
+       Na telefonie zostawiamy trochę więcej miejsca
+       na czytelny czas.
+    */
 
     col.time-col {
 
         width: 90px;
     }
 
+
     th.time,
     td.time {
 
         width: 90px;
+
         min-width: 90px;
+        max-width: 90px;
     }
+
 
     th {
 
         font-size: 11px;
     }
 
+
     td.time {
 
         font-size: 10px;
+
+        white-space: nowrap;
     }
+
 
     .tile-overlay {
 
@@ -712,6 +818,7 @@ td {
     <h1>
         🟢 LIVE TV — {{ day_name }}
     </h1>
+
 
     <div class="back">
 
@@ -865,131 +972,6 @@ td {
 
     }, REFRESH_MS);
 
-
-})();
-
-
-/* =========================================================
-   AUTOMATYCZNE DOPASOWANIE TABELI DO TV
-   ========================================================= */
-
-(function () {
-
-    function fitTableToScreen() {
-
-        const wrap = document.querySelector(".table-wrap");
-        const table = document.getElementById("liveTable");
-
-        if (!wrap || !table) {
-            return;
-        }
-
-
-        /*
-         * Najpierw zerujemy poprzednie dopasowanie.
-         */
-
-        table.style.transform = "none";
-        table.style.transformOrigin = "top left";
-
-
-        /*
-         * Pobieramy rzeczywisty rozmiar tabeli.
-         */
-
-        const tableRect = table.getBoundingClientRect();
-
-        const availableWidth = wrap.clientWidth;
-        const availableHeight = wrap.clientHeight;
-
-
-        if (
-            tableRect.width <= 0 ||
-            tableRect.height <= 0 ||
-            availableWidth <= 0 ||
-            availableHeight <= 0
-        ) {
-            return;
-        }
-
-
-        /*
-         * Liczymy skalę potrzebną do zmieszczenia
-         * całej tabeli w ekranie.
-         */
-
-        const scaleX =
-            availableWidth / tableRect.width;
-
-        const scaleY =
-            availableHeight / tableRect.height;
-
-
-        /*
-         * Nigdy nie powiększamy tabeli.
-         * Tylko zmniejszamy, jeżeli jest za duża.
-         */
-
-        const scale =
-            Math.min(1, scaleX, scaleY);
-
-
-        /*
-         * Jeżeli wszystko już się mieści,
-         * niczego nie zmieniamy.
-         */
-
-        if (scale >= 0.999) {
-            return;
-        }
-
-
-        /*
-         * Minimalne zmniejszenie.
-         * Dzięki temu TV nie obcina lewej,
-         * prawej ani dolnej części tabeli.
-         */
-
-        table.style.transform =
-            "scale(" + scale + ")";
-
-    }
-
-
-    /*
-     * Uruchom po załadowaniu strony.
-     */
-
-    window.addEventListener(
-        "load",
-        fitTableToScreen
-    );
-
-
-    /*
-     * Uruchom również po zmianie rozmiaru ekranu.
-     */
-
-    window.addEventListener(
-        "resize",
-        fitTableToScreen
-    );
-
-
-    /*
-     * TV czasami potrzebuje chwili,
-     * zanim prawidłowo policzy obrazki.
-     */
-
-    setTimeout(
-        fitTableToScreen,
-        300
-    );
-
-    setTimeout(
-        fitTableToScreen,
-        1000
-    );
 
 })();
 
