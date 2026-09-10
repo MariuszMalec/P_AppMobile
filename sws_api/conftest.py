@@ -8,6 +8,7 @@ from db import (
     get_db,
     init_db_if_not_exists,
     insert_trophies,
+    insert_teams,
 )
 
 TEST_DB = Path(__file__).parent / "test.db"
@@ -24,6 +25,7 @@ def client():
 
     init_db_if_not_exists(conn)
     insert_trophies(conn)
+    insert_teams(conn)
 
     conn.close()
 

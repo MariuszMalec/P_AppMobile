@@ -16,22 +16,38 @@ router = APIRouter(
 # ==============================
 
 @router.get("", response_class=HTMLResponse)
-def trophies_page(request: Request,
-    db = Depends(get_db)):
-
+def trophies_page(
+    request: Request,
+    db=Depends(get_db)
+):
     cursor = db.cursor()
 
-    trophies = cursor.execute("""
-        SELECT Trophies.*, Teams.Name AS TeamName
-        FROM Trophies
-        LEFT JOIN Teams ON Teams.Id = Trophies.TeamModelId
-    """).fetchall()
+    try:
+        trophies = cursor.execute("""
+            SELECT Trophies.*, Teams.Name AS TeamName
+            FROM Trophies
+            LEFT JOIN Teams ON Teams.Id = Trophies.TeamModelId
+        """).fetchall()
+
+    except sqlite3.OperationalError:
+        db.close()
+
+        return templates.TemplateResponse(
+            request,
+            "trophies.html",
+            {
+                "trophies": [],
+                "error": "Brak danych"
+            },
+            status_code=400
+        )
+
     db.close()
 
     return templates.TemplateResponse(
+        request,
         "trophies.html",
         {
-            "request": request,
             "trophies": trophies
         }
     )
@@ -59,9 +75,9 @@ def edit_trophy_page(
     db.close()
 
     return templates.TemplateResponse(
+        request,
         "trophy_edit.html",
         {
-            "request": request,
             "trophy": trophy,
             "teams": teams
         }

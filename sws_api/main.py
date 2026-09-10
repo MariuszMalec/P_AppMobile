@@ -8,6 +8,7 @@ from pathlib import Path
 from db import (
     init_db_if_not_exists,
     insert_trophies,
+    insert_teams,
 )
 
 from routers.home import router as home_router
@@ -37,6 +38,7 @@ async def lifespan(app: FastAPI):
 
         init_db_if_not_exists(conn)
         insert_trophies(conn)
+        insert_teams(conn)
 
         conn.commit()
         conn.close()

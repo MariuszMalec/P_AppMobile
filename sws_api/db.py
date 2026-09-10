@@ -110,3 +110,86 @@ def insert_trophies(conn):
     print("✅ DB ensured (tables PersonFamilies exist)")
 
 
+def insert_teams(conn):
+    cur = conn.cursor()
+
+    cur.execute("""
+        INSERT OR IGNORE INTO Teams
+        (
+            Id,
+            Name,
+            Description,
+            NationalityName,
+            Season,
+            TopScorer,
+            Picture,
+            FinalResult,
+            TrophyWin,
+            TrophyModelId
+        )
+        VALUES
+        (
+            1,
+            'FC Barcelona',
+            'Testowa drużyna Barcelona',
+            'Spain',
+            2024,
+            'Robert Lewandowski',
+            '/static/images/barcelona.png',
+            'Champion',
+            'ChampionsCup',
+            1
+        ),
+        (
+            2,
+            'Real Madrid',
+            'Testowa drużyna Real Madrid',
+            'Spain',
+            2024,
+            'Kylian Mbappe',
+            '/static/images/real_madrid.png',
+            'Runner-up',
+            'ChampionLeague',
+            4
+        ),
+        (
+            3,
+            'Bayern Munich',
+            'Testowa drużyna Bayern Munich',
+            'Germany',
+            2023,
+            'Harry Kane',
+            '/static/images/bayern.png',
+            'Champion',
+            'GermanCup',
+            8
+        ),
+        (
+            4,
+            'Manchester City',
+            'Testowa drużyna Manchester City',
+            'England',
+            2023,
+            'Erling Haaland',
+            '/static/images/manchester_city.png',
+            'Champion',
+            'EnglandCup',
+            9
+        ),
+        (
+            5,
+            'Juventus',
+            'Testowa drużyna Juventus',
+            'Italy',
+            2022,
+            'Dusan Vlahovic',
+            '/static/images/juventus.png',
+            'Semi-final',
+            'ItalyCup',
+            3
+        );
+    """)
+
+    conn.commit()
+
+    print("✅ Teams test data inserted")
