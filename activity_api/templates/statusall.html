@@ -435,7 +435,10 @@ td {
 
             {% else %}
 
-                <div class="empty">
+                <div
+                    class="empty"
+                    onclick="createActivityForPerson('{{ p.id }}')"
+                >
                     —
                 </div>
 
@@ -1375,6 +1378,37 @@ function updateDateTime() {
     el.textContent =
         `${time}`;
 
+}
+
+
+/* ================= CREATE ACTIVITY FOR EMPTY CELL ================= */
+
+function createActivityForPerson(personId) {
+
+    // Ustaw aktualnie oglądany dzień
+    document.getElementById('c-day').value =
+        currentDay.toString();
+
+    // Ustaw osobę z klikniętej kolumny
+    document.getElementById('c-person').value =
+        personId.toString();
+
+    // Wyczyść formularz
+    document.getElementById('c-start').value = '';
+    document.getElementById('c-end').value = '';
+    document.getElementById('c-activity').value = '';
+    document.getElementById('c-desc').value = '';
+
+    // Wyczyść obrazek
+    const img = document.getElementById('c-img');
+
+    img.src = '';
+    img.style.display = 'none';
+
+    // Pokaż modal
+    document
+        .getElementById('create-preview')
+        .classList.add('active');
 }
 
 
