@@ -55,3 +55,29 @@ def empty_db():
 
     conn.commit()
     conn.close()
+
+@pytest.fixture
+def missing_tables_client():
+    if TEST_DB.exists():
+        TEST_DB.unlink()
+
+    conn = sqlite3.connect(TEST_DB, check_same_thread=False)
+    conn.row_factory = sqlite3.Row
+    conn.close()
+
+    def override_get_db():
+        db = sqlite3.connect(TEST_DB, check_same_thread=False)
+        db.row_factory = sqlite3.Row
+        try:
+            yield db
+        finally:
+            db.close()
+
+    app.dependency_overrides[get_db] = override_get_db
+
+    yield TestClient(app)
+
+    app.dependency_overrides.clear()
+
+    if TEST_DB.exists():
+        TEST_DB.unlink()

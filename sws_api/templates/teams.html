@@ -122,6 +122,15 @@
   </thead>
 
   <tbody>
+
+    {% if not teams %}
+        <tr>
+            <td colspan="6" class="text-center text-muted no-data">
+                No data
+            </td>
+        </tr>
+    {% endif %}
+
     {% for t in teams %}
 
     <tr class="team-row" data-id="{{ t.Id }}">
