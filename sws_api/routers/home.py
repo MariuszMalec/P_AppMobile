@@ -16,8 +16,6 @@ def home_page(
     db=Depends(get_db)
 ):
     return templates.TemplateResponse(
-        "home.html",
-        {
-            "request": request
-        }
+        request,
+        "home.html"
     )
