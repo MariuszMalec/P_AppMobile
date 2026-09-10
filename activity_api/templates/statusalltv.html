@@ -29,6 +29,54 @@ body {
     overflow: hidden;
 }
 
+/* ==============================
+   PRZYCISK POWRÓT
+   ============================== */
+
+.back {
+    position: absolute;
+    top: 72px;
+    left: 28px;
+    z-index: 10;
+}
+
+.back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 18px;
+
+    color: #ffffff;
+    text-decoration: none;
+
+    font-size: 17px;
+    font-weight: 600;
+
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 12px;
+
+    box-shadow:
+        0 4px 14px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        border-color .2s ease;
+}
+
+.back a:hover {
+    background: rgba(255,255,255,.16);
+    border-color: rgba(255,255,255,.35);
+    transform: translateX(-2px);
+}
+
+.back a:active {
+    transform: scale(.97);
+}
+
 /* HEADER */
 .header {
     text-align: center;
@@ -145,6 +193,16 @@ td {
     .tile-overlay { font-size: 18px; }
     th { font-size: 16px; }
     td.time { font-size: 16px; }
+
+    .back {
+        top: 64px;
+        left: 20px;
+    }
+
+    .back a {
+        font-size: 15px;
+        padding: 8px 14px;
+    }
 }
 </style>
 </head>
@@ -152,7 +210,7 @@ td {
 <body>
 
 <div class="back">
-    <a href="/home">⬅ Powrót</a>
+    <a href="/home">⬅️ Powrót</a>
 </div>
 
 <div class="header">
@@ -182,6 +240,7 @@ td {
                         {% if cell.picture %}
                             <img src="{{ cell.picture }}" class="tile-img">
                         {% endif %}
+
                         <div class="tile-overlay">
                             {{ cell.description }}
                         </div>
