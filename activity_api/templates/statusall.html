@@ -197,7 +197,12 @@ td {
     display: none;
     align-items: center;
     justify-content: center;
-    z-index: 999;
+
+    /* MODAL ZAWSZE NAD STICKY HEADER */
+    z-index: 5000;
+
+    /* ważne na telefonach */
+    isolation: isolate;
 }
 
 .preview-bg.active {
