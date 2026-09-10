@@ -25,6 +25,9 @@ body {
     background: radial-gradient(circle at top, #0a0d3a, #020210);
     color: var(--text);
     font-family: system-ui, sans-serif;
+
+    /* WAŻNE */
+    overflow-x: hidden;
 }
 
 /* POWRÓT */
@@ -48,10 +51,17 @@ body {
     font-weight: 600;
 }
 
-/* TABLE */
+/* =========================================================
+   TABLE + STICKY HEADER
+   ========================================================= */
+
 .table-wrap {
-    overflow-x: auto;
     padding: 8px;
+
+    /* WAŻNE:
+       nie może być tutaj overflow-x:auto,
+       ponieważ blokuje sticky względem strony */
+    overflow: visible;
 }
 
 table {
@@ -62,17 +72,37 @@ table {
     border-radius: 14px;
 }
 
-th, td {
+/* CAŁY WIERSZ NAGŁÓWKA JEST STICKY */
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* KOMÓRKI Z IMIONAMI */
+thead th {
+    height: 44px;
+    font-size: 12px;
+    color: var(--muted);
+
+    background: #0c0f2a;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 1001;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,.5);
+}
+
+th,
+td {
     border: 1px solid var(--border);
     text-align: center;
     padding: 0;
 }
 
-th {
-    height: 44px;
-    font-size: 12px;
-    color: var(--muted);
-}
 
 td {
     height: 96px;
