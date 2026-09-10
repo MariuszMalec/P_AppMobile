@@ -36,22 +36,49 @@ body {
 }
 
 /* ==============================
+   HEADER
+   ============================== */
+
+.header {
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 18px;
+
+    padding: 4px 10px;
+}
+
+.header h1 {
+    margin: 0;
+
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    line-height: 1.2;
+
+    white-space: nowrap;
+}
+
+/* ==============================
    PRZYCISK POWRÓT
    ============================== */
 
 .back {
-    position: absolute;
-    top: 54px;
-    left: 14px;
-    z-index: 10;
+    display: flex;
+    align-items: center;
 }
 
 .back a {
     display: inline-flex;
     align-items: center;
+    justify-content: center;
+
     gap: 5px;
 
-    padding: 5px 10px;
+    padding: 6px 12px;
 
     color: #ffffff;
     text-decoration: none;
@@ -59,31 +86,32 @@ body {
     font-size: 13px;
     font-weight: 600;
 
-    background: rgba(255,255,255,.07);
-    border: 1px solid rgba(255,255,255,.18);
+    background: rgba(255,255,255,.08);
+
+    border: 1px solid rgba(255,255,255,.20);
+
     border-radius: 8px;
 
     box-shadow:
         0 2px 8px rgba(0,0,0,.35),
         inset 0 1px 0 rgba(255,255,255,.08);
+
+    white-space: nowrap;
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        border-color .2s ease;
 }
 
-/* ==============================
-   HEADER
-   ============================== */
-
-.header {
-    height: 48px;
-    text-align: center;
-    padding: 6px 0 4px;
+.back a:hover {
+    background: rgba(255,255,255,.16);
+    border-color: rgba(255,255,255,.35);
+    transform: translateX(1px);
 }
 
-.header h1 {
-    margin: 0;
-    font-size: 23px;
-    font-weight: 700;
-    letter-spacing: .5px;
-    line-height: 1.2;
+.back a:active {
+    transform: scale(.97);
 }
 
 /* ==============================
@@ -117,8 +145,10 @@ table {
 th,
 td {
     border: 1px solid var(--border);
+
     text-align: center;
     vertical-align: middle;
+
     padding: 0;
 }
 
@@ -133,13 +163,17 @@ th {
     font-weight: 600;
 
     color: var(--muted);
+
     background: rgba(255,255,255,.05);
 
     line-height: 1.1;
+
+    white-space: nowrap;
 }
 
+/* SZERSZA KOLUMNA CZAS */
 th.time {
-    width: 85px;
+    width: 105px;
 }
 
 /* ==============================
@@ -147,9 +181,16 @@ th.time {
    ============================== */
 
 td.time {
-    font-size: 12px;
+    width: 105px;
+
+    font-size: 13px;
+
     color: var(--muted);
+
     white-space: nowrap;
+    overflow: hidden;
+
+    padding: 0 5px;
 }
 
 /* ==============================
@@ -167,6 +208,7 @@ td {
 
 .tile-img {
     position: absolute;
+
     inset: 0;
 
     width: 100%;
@@ -181,6 +223,7 @@ td {
 
 .tile-overlay {
     position: absolute;
+
     inset: 0;
 
     display: flex;
@@ -209,6 +252,7 @@ td {
    ============================== */
 
 @keyframes liveGlow {
+
     0% {
         filter: brightness(1) saturate(1);
     }
@@ -220,6 +264,7 @@ td {
     100% {
         filter: brightness(1) saturate(1);
     }
+
 }
 
 .live {
@@ -232,6 +277,7 @@ td {
 
 .empty {
     font-size: 24px;
+
     color: #444;
 
     display: flex;
@@ -247,26 +293,23 @@ td {
 
     .header {
         height: 44px;
-        padding: 5px 0 3px;
+        gap: 12px;
+
+        padding: 3px 8px;
     }
 
     .header h1 {
         font-size: 21px;
     }
 
-    .back {
-        top: 48px;
-        left: 10px;
-    }
-
     .back a {
         font-size: 12px;
-        padding: 4px 8px;
-        border-radius: 7px;
+        padding: 5px 10px;
     }
 
     .table-wrap {
         top: 44px;
+
         padding: 5px 6px 6px;
     }
 
@@ -275,12 +318,15 @@ td {
         font-size: 13px;
     }
 
+    /* NIE ZMNIEJSZAJ CZASU ZA MOCNO */
     th.time {
-        width: 75px;
+        width: 100px;
     }
 
     td.time {
-        font-size: 11px;
+        width: 100px;
+        font-size: 12px;
+        padding: 0 4px;
     }
 
     .tile-overlay {
@@ -294,32 +340,30 @@ td {
 }
 
 /* ==============================
-   BARDZO MAŁE EKRANY
+   MAŁA WYSOKOŚĆ TV
    ============================== */
 
 @media (max-height: 720px) {
 
     .header {
         height: 38px;
-        padding: 3px 0 2px;
+        gap: 10px;
+
+        padding: 2px 6px;
     }
 
     .header h1 {
         font-size: 18px;
     }
 
-    .back {
-        top: 41px;
-        left: 8px;
-    }
-
     .back a {
         font-size: 11px;
-        padding: 3px 7px;
+        padding: 4px 8px;
     }
 
     .table-wrap {
         top: 38px;
+
         padding: 4px 5px 5px;
     }
 
@@ -328,12 +372,18 @@ td {
         font-size: 11px;
     }
 
+    /*
+       Nadal zostawiamy miejsce
+       na pełną godzinę
+    */
     th.time {
-        width: 65px;
+        width: 90px;
     }
 
     td.time {
+        width: 90px;
         font-size: 10px;
+        padding: 0 3px;
     }
 
     .tile-overlay {
@@ -354,20 +404,36 @@ td {
 
     .header {
         height: 52px;
+        gap: 18px;
     }
 
     .header h1 {
         font-size: 25px;
     }
 
+    .back a {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
     .table-wrap {
         top: 52px;
+
         padding: 7px 9px 9px;
     }
 
     th {
         height: 42px;
         font-size: 15px;
+    }
+
+    th.time {
+        width: 110px;
+    }
+
+    td.time {
+        width: 110px;
+        font-size: 14px;
     }
 
     .tile-overlay {
@@ -380,19 +446,33 @@ td {
 
 <body>
 
-<div class="back">
-    <a href="/home">⬅️ Powrót</a>
-</div>
+<!-- ==============================
+     HEADER
+     ============================== -->
 
 <div class="header">
-    <h1>🟢 LIVE TV — {{ day_name }}</h1>
+
+    <h1>
+        🟢 LIVE TV — {{ day_name }}
+    </h1>
+
+    <div class="back">
+        <a href="/home">⬅️ Powrót</a>
+    </div>
+
 </div>
+
+
+<!-- ==============================
+     TABLE
+     ============================== -->
 
 <div class="table-wrap">
 
 <table>
 
     <thead>
+
         <tr>
 
             <th class="time">
@@ -400,11 +480,17 @@ td {
             </th>
 
             {% for p in persons %}
-                <th>{{ p.name }}</th>
+
+                <th>
+                    {{ p.name }}
+                </th>
+
             {% endfor %}
 
         </tr>
+
     </thead>
+
 
     <tbody>
 
@@ -416,6 +502,7 @@ td {
                 {{ time }}
             </td>
 
+
             {% for p in persons %}
 
                 {% set cell = row[p.id] %}
@@ -425,15 +512,19 @@ td {
                     {% if cell %}
 
                         {% if cell.picture %}
+
                             <img
                                 src="{{ cell.picture }}"
                                 class="tile-img"
                             >
+
                         {% endif %}
+
 
                         <div class="tile-overlay">
                             {{ cell.description }}
                         </div>
+
 
                     {% else %}
 
@@ -456,6 +547,11 @@ td {
 </table>
 
 </div>
+
+
+<!-- ==============================
+     AUTO REFRESH
+     ============================== -->
 
 <script>
 
