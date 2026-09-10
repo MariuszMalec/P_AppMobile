@@ -2,7 +2,8 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
 
 <title>LIVE ALL — TV</title>
 
@@ -24,55 +25,89 @@
 html,
 body {
     margin: 0;
+    padding: 0;
+
     width: 100%;
     height: 100%;
-}
 
-body {
-    background: radial-gradient(circle at top, #0a0d3a, #020210);
-    color: var(--text);
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     overflow: hidden;
 }
 
-/* ==============================
+body {
+    background: radial-gradient(
+        circle at top,
+        #0a0d3a,
+        #020210
+    );
+
+    color: var(--text);
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
    HEADER
-   ============================== */
+   ========================================================= */
 
 .header {
+
+    position: relative;
+
+    width: 100%;
     height: 48px;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    gap: 18px;
+    gap: 14px;
 
-    padding: 4px 10px;
+    padding: 4px 8px;
+
+    overflow: hidden;
 }
 
 .header h1 {
+
     margin: 0;
 
     font-size: 23px;
     font-weight: 700;
+
     letter-spacing: .5px;
     line-height: 1.2;
 
     white-space: nowrap;
+
+    flex: 0 1 auto;
+
+    min-width: 0;
 }
 
-/* ==============================
+
+/* =========================================================
    PRZYCISK POWRÓT
-   ============================== */
+   ========================================================= */
 
 .back {
+
     display: flex;
     align-items: center;
+
+    flex-shrink: 0;
 }
 
 .back a {
+
     display: inline-flex;
+
     align-items: center;
     justify-content: center;
 
@@ -81,6 +116,7 @@ body {
     padding: 6px 12px;
 
     color: #ffffff;
+
     text-decoration: none;
 
     font-size: 13px;
@@ -105,20 +141,26 @@ body {
 }
 
 .back a:hover {
+
     background: rgba(255,255,255,.16);
+
     border-color: rgba(255,255,255,.35);
+
     transform: translateX(1px);
 }
 
 .back a:active {
+
     transform: scale(.97);
 }
 
-/* ==============================
-   TABLE
-   ============================== */
+
+/* =========================================================
+   OBSZAR TABELI
+   ========================================================= */
 
 .table-wrap {
+
     position: absolute;
 
     top: 48px;
@@ -126,38 +168,92 @@ body {
     right: 0;
     bottom: 0;
 
-    padding: 6px 8px 8px;
+    width: 100%;
+    max-width: 100vw;
+
+    padding: 4px 4px 4px;
+
+    overflow: hidden;
+
+    min-width: 0;
+    min-height: 0;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
 }
 
+
+/* =========================================================
+   TABELA
+   ========================================================= */
+
 table {
+
     width: 100%;
+    max-width: 100%;
+
     height: 100%;
+    max-height: 100%;
+
+    min-width: 0;
+    min-height: 0;
 
     table-layout: fixed;
+
     border-collapse: collapse;
 
     background: var(--panel);
 
-    border-radius: 10px;
+    border-radius: 8px;
+
     overflow: hidden;
+
+    margin: 0;
 }
+
+
+/* =========================================================
+   KOLUMNY
+   ========================================================= */
+
+/*
+   colgroup daje TV jednoznaczną informację,
+   jak szeroka ma być kolumna czasu.
+*/
+
+col.time-col {
+    width: 105px;
+}
+
+
+/* =========================================================
+   KOMÓRKI
+   ========================================================= */
 
 th,
 td {
+
     border: 1px solid var(--border);
 
     text-align: center;
     vertical-align: middle;
 
     padding: 0;
+
+    min-width: 0;
+
+    overflow: hidden;
 }
 
-/* ==============================
-   HEADER CELLS
-   ============================== */
+
+/* =========================================================
+   NAGŁÓWKI
+   ========================================================= */
 
 th {
-    height: 38px;
+
+    height: 36px;
 
     font-size: 14px;
     font-weight: 600;
@@ -169,44 +265,71 @@ th {
     line-height: 1.1;
 
     white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: clip;
 }
 
-/* SZERSZA KOLUMNA CZAS */
+
+/* =========================================================
+   CZAS
+   ========================================================= */
+
 th.time {
-    width: 105px;
-}
 
-/* ==============================
-   TIME COLUMN
-   ============================== */
+    width: 105px;
+    min-width: 105px;
+
+    padding: 0 4px;
+
+    white-space: nowrap;
+}
 
 td.time {
-    width: 105px;
 
-    font-size: 13px;
+    width: 105px;
+    min-width: 105px;
+
+    padding: 0 3px;
 
     color: var(--muted);
 
-    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 500;
+
+    line-height: 1.1;
+
+    /*
+       Pozwalamy przeglądarce zmieścić tekst,
+       zamiast wypychać całą tabelę poza ekran.
+    */
+    white-space: normal;
+
     overflow: hidden;
 
-    padding: 0 5px;
+    overflow-wrap: anywhere;
 }
 
-/* ==============================
+
+/* =========================================================
    TILE
-   ============================== */
+   ========================================================= */
 
 td {
+
     position: relative;
+
     overflow: hidden;
 }
 
-/* ==============================
-   IMAGE
-   ============================== */
+
+/* =========================================================
+   OBRAZ
+   ========================================================= */
 
 .tile-img {
+
     position: absolute;
 
     inset: 0;
@@ -215,18 +338,23 @@ td {
     height: 100%;
 
     object-fit: cover;
+
+    display: block;
 }
 
-/* ==============================
-   TEXT OVERLAY
-   ============================== */
+
+/* =========================================================
+   NAPIS NA OBRAZIE
+   ========================================================= */
 
 .tile-overlay {
+
     position: absolute;
 
     inset: 0;
 
     display: flex;
+
     align-items: center;
     justify-content: center;
 
@@ -239,6 +367,10 @@ td {
 
     line-height: 1.05;
 
+    overflow: hidden;
+
+    overflow-wrap: anywhere;
+
     background: linear-gradient(
         to top,
         rgba(0,0,0,.78),
@@ -247,9 +379,10 @@ td {
     );
 }
 
-/* ==============================
-   LIVE EFFECT
-   ============================== */
+
+/* =========================================================
+   LIVE
+   ========================================================= */
 
 @keyframes liveGlow {
 
@@ -268,187 +401,311 @@ td {
 }
 
 .live {
-    animation: liveGlow 1.8s ease-in-out infinite;
+
+    animation:
+        liveGlow
+        1.8s
+        ease-in-out
+        infinite;
 }
 
-/* ==============================
-   EMPTY
-   ============================== */
+
+/* =========================================================
+   PUSTA KOMÓRKA
+   ========================================================= */
 
 .empty {
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
     font-size: 24px;
 
     color: #444;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
-/* ==============================
-   TV 1280
-   ============================== */
+
+/* =========================================================
+   TV / MNIEJSZA SZEROKOŚĆ
+   ========================================================= */
 
 @media (max-width: 1280px) {
 
     .header {
-        height: 44px;
-        gap: 12px;
 
-        padding: 3px 8px;
+        height: 44px;
+
+        gap: 10px;
+
+        padding: 3px 6px;
     }
 
     .header h1 {
+
         font-size: 21px;
     }
 
     .back a {
+
         font-size: 12px;
-        padding: 5px 10px;
+
+        padding: 5px 9px;
     }
+
 
     .table-wrap {
+
         top: 44px;
 
-        padding: 5px 6px 6px;
+        padding: 3px 3px 3px;
     }
 
+
+    col.time-col {
+
+        width: 105px;
+    }
+
+
     th {
+
         height: 34px;
+
         font-size: 13px;
     }
 
-    /* NIE ZMNIEJSZAJ CZASU ZA MOCNO */
-    th.time {
-        width: 100px;
+
+    th.time,
+    td.time {
+
+        width: 105px;
+        min-width: 105px;
     }
+
 
     td.time {
-        width: 100px;
+
         font-size: 12px;
-        padding: 0 4px;
+
+        padding: 0 3px;
     }
 
+
     .tile-overlay {
+
         font-size: 14px;
+
         padding: 4px;
     }
 
+
     .empty {
+
         font-size: 22px;
     }
 }
 
-/* ==============================
-   MAŁA WYSOKOŚĆ TV
-   ============================== */
+
+/* =========================================================
+   TV 1280x720 / MAŁA WYSOKOŚĆ
+   ========================================================= */
 
 @media (max-height: 720px) {
 
     .header {
-        height: 38px;
-        gap: 10px;
 
-        padding: 2px 6px;
+        height: 40px;
+
+        gap: 9px;
+
+        padding: 2px 5px;
     }
 
     .header h1 {
+
         font-size: 18px;
     }
 
+
     .back a {
+
         font-size: 11px;
+
         padding: 4px 8px;
     }
 
-    .table-wrap {
-        top: 38px;
 
-        padding: 4px 5px 5px;
+    .table-wrap {
+
+        top: 40px;
+
+        padding: 2px 3px 3px;
     }
 
+
+    col.time-col {
+
+        width: 100px;
+    }
+
+
     th {
-        height: 29px;
+
+        height: 30px;
+
         font-size: 11px;
     }
 
-    /*
-       Nadal zostawiamy miejsce
-       na pełną godzinę
-    */
-    th.time {
-        width: 90px;
+
+    th.time,
+    td.time {
+
+        width: 100px;
+        min-width: 100px;
     }
+
 
     td.time {
-        width: 90px;
-        font-size: 10px;
-        padding: 0 3px;
+
+        font-size: 11px;
+
+        padding: 0 2px;
     }
 
+
     .tile-overlay {
+
         font-size: 12px;
+
         padding: 3px;
     }
 
+
     .empty {
+
         font-size: 18px;
     }
 }
 
-/* ==============================
-   WYSOKIE TV
-   ============================== */
+
+/* =========================================================
+   BARDZO WYSOKI EKRAN
+   ========================================================= */
 
 @media (min-height: 900px) {
 
     .header {
+
         height: 52px;
-        gap: 18px;
+
+        gap: 16px;
     }
 
     .header h1 {
+
         font-size: 25px;
     }
 
     .back a {
+
         font-size: 13px;
+
         padding: 6px 12px;
     }
 
+
     .table-wrap {
+
         top: 52px;
 
-        padding: 7px 9px 9px;
+        padding: 5px 5px 5px;
     }
 
+
+    col.time-col {
+
+        width: 110px;
+    }
+
+
     th {
-        height: 42px;
+
+        height: 40px;
+
         font-size: 15px;
     }
 
-    th.time {
+
+    th.time,
+    td.time {
+
         width: 110px;
+        min-width: 110px;
     }
 
+
     td.time {
-        width: 110px;
+
         font-size: 14px;
     }
 
+
     .tile-overlay {
+
         font-size: 16px;
+    }
+}
+
+
+/* =========================================================
+   DODATKOWA OCHRONA PRZED WYPCHNIĘCIEM TABELI
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    col.time-col {
+
+        width: 90px;
+    }
+
+    th.time,
+    td.time {
+
+        width: 90px;
+        min-width: 90px;
+    }
+
+    th {
+
+        font-size: 11px;
+    }
+
+    td.time {
+
+        font-size: 10px;
+    }
+
+    .tile-overlay {
+
+        font-size: 12px;
     }
 }
 
 </style>
 </head>
 
+
 <body>
 
-<!-- ==============================
+
+<!-- =====================================================
      HEADER
-     ============================== -->
+     ===================================================== -->
 
 <div class="header">
 
@@ -457,19 +714,45 @@ td {
     </h1>
 
     <div class="back">
-        <a href="/home">⬅️ Powrót</a>
+
+        <a href="/home">
+            ⬅️ Powrót
+        </a>
+
     </div>
 
 </div>
 
 
-<!-- ==============================
+<!-- =====================================================
      TABLE
-     ============================== -->
+     ===================================================== -->
 
 <div class="table-wrap">
 
-<table>
+<table id="liveTable">
+
+
+    <!-- =================================================
+         SZEROKOŚCI KOLUMN
+         ================================================= -->
+
+    <colgroup>
+
+        <col class="time-col">
+
+        {% for p in persons %}
+
+            <col>
+
+        {% endfor %}
+
+    </colgroup>
+
+
+    <!-- =================================================
+         HEADER TABELI
+         ================================================= -->
 
     <thead>
 
@@ -478,6 +761,7 @@ td {
             <th class="time">
                 ⏰ Czas
             </th>
+
 
             {% for p in persons %}
 
@@ -491,6 +775,10 @@ td {
 
     </thead>
 
+
+    <!-- =================================================
+         BODY
+         ================================================= -->
 
     <tbody>
 
@@ -507,22 +795,28 @@ td {
 
                 {% set cell = row[p.id] %}
 
+
                 <td class="{% if cell and cell.is_live %}live{% endif %}">
 
+
                     {% if cell %}
+
 
                         {% if cell.picture %}
 
                             <img
                                 src="{{ cell.picture }}"
                                 class="tile-img"
+                                alt=""
                             >
 
                         {% endif %}
 
 
                         <div class="tile-overlay">
+
                             {{ cell.description }}
+
                         </div>
 
 
@@ -533,6 +827,7 @@ td {
                         </div>
 
                     {% endif %}
+
 
                 </td>
 
@@ -549,27 +844,157 @@ td {
 </div>
 
 
-<!-- ==============================
+<!-- =====================================================
      AUTO REFRESH
-     ============================== -->
+     ===================================================== -->
 
 <script>
 
 (function () {
 
-    const REFRESH_MS = 30000; // 30s
+    const REFRESH_MS = 30000;
+
 
     setInterval(() => {
 
         if (!document.hidden) {
+
             location.reload();
+
         }
 
     }, REFRESH_MS);
 
+
+})();
+
+
+/* =========================================================
+   AUTOMATYCZNE DOPASOWANIE TABELI DO TV
+   ========================================================= */
+
+(function () {
+
+    function fitTableToScreen() {
+
+        const wrap = document.querySelector(".table-wrap");
+        const table = document.getElementById("liveTable");
+
+        if (!wrap || !table) {
+            return;
+        }
+
+
+        /*
+         * Najpierw zerujemy poprzednie dopasowanie.
+         */
+
+        table.style.transform = "none";
+        table.style.transformOrigin = "top left";
+
+
+        /*
+         * Pobieramy rzeczywisty rozmiar tabeli.
+         */
+
+        const tableRect = table.getBoundingClientRect();
+
+        const availableWidth = wrap.clientWidth;
+        const availableHeight = wrap.clientHeight;
+
+
+        if (
+            tableRect.width <= 0 ||
+            tableRect.height <= 0 ||
+            availableWidth <= 0 ||
+            availableHeight <= 0
+        ) {
+            return;
+        }
+
+
+        /*
+         * Liczymy skalę potrzebną do zmieszczenia
+         * całej tabeli w ekranie.
+         */
+
+        const scaleX =
+            availableWidth / tableRect.width;
+
+        const scaleY =
+            availableHeight / tableRect.height;
+
+
+        /*
+         * Nigdy nie powiększamy tabeli.
+         * Tylko zmniejszamy, jeżeli jest za duża.
+         */
+
+        const scale =
+            Math.min(1, scaleX, scaleY);
+
+
+        /*
+         * Jeżeli wszystko już się mieści,
+         * niczego nie zmieniamy.
+         */
+
+        if (scale >= 0.999) {
+            return;
+        }
+
+
+        /*
+         * Minimalne zmniejszenie.
+         * Dzięki temu TV nie obcina lewej,
+         * prawej ani dolnej części tabeli.
+         */
+
+        table.style.transform =
+            "scale(" + scale + ")";
+
+    }
+
+
+    /*
+     * Uruchom po załadowaniu strony.
+     */
+
+    window.addEventListener(
+        "load",
+        fitTableToScreen
+    );
+
+
+    /*
+     * Uruchom również po zmianie rozmiaru ekranu.
+     */
+
+    window.addEventListener(
+        "resize",
+        fitTableToScreen
+    );
+
+
+    /*
+     * TV czasami potrzebuje chwili,
+     * zanim prawidłowo policzy obrazki.
+     */
+
+    setTimeout(
+        fitTableToScreen,
+        300
+    );
+
+    setTimeout(
+        fitTableToScreen,
+        1000
+    );
+
 })();
 
 </script>
+
 
 </body>
 </html>
