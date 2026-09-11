@@ -1,0 +1,2530 @@
+<!DOCTYPE html>
+<html lang="pl">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+>
+
+<title>KLIENCI</title>
+
+
+<style>
+
+/* =========================================================
+   ZMIENNE
+   ========================================================= */
+
+:root {
+    --panel: #0c0f2a;
+    --panel-2: #111532;
+    --border: rgba(255,255,255,.12);
+    --text: #ffffff;
+    --muted: #8c8cb8;
+    --input: #080b20;
+    --button: rgba(255,255,255,.08);
+}
+
+
+/* =========================================================
+   BODY
+   ========================================================= */
+
+body {
+
+    margin: 0;
+    padding: 0;
+
+    min-height: 100vh;
+
+    background:
+        radial-gradient(
+            circle at top,
+            #0a0d3a,
+            #020210
+        );
+
+    color: var(--text);
+
+    font-family:
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================================
+   GŁÓWNY KONTENER
+   ========================================================= */
+
+.page {
+
+    width: 100%;
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding:
+        14px
+        12px
+        30px;
+
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   NAGŁÓWEK
+   ========================================================= */
+
+.header {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+
+.title {
+
+    margin: 0;
+
+    font-size: 22px;
+
+    font-weight: 800;
+
+    letter-spacing: .3px;
+}
+
+
+.header-buttons {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+}
+
+
+/* =========================================================
+   PRZYCISKI
+   ========================================================= */
+
+button {
+
+    font-family: inherit;
+}
+
+
+.top-button {
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: var(--button);
+
+    color: var(--text);
+
+    padding: 7px 10px;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+    text-decoration: none;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.add-button {
+
+    border: 0;
+
+    border-radius: 10px;
+
+    padding: 10px 14px;
+
+    background: #22c55e;
+
+    color: #fff;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 4px 12px rgba(0,0,0,.22);
+}
+
+
+.add-button:active,
+.top-button:active,
+.edit-button:active,
+.delete-button:active,
+.restore-button:active {
+
+    transform: scale(.97);
+}
+
+
+/* =========================================================
+   PRZEŁĄCZNIK AKTYWNI / NIEAKTYWNI
+   ========================================================= */
+
+.client-filter {
+
+    display: flex;
+
+    gap: 7px;
+
+    margin-bottom: 12px;
+
+    padding: 5px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 11px;
+
+    background: rgba(255,255,255,.04);
+
+    box-sizing: border-box;
+}
+
+
+.client-filter-button {
+
+    flex: 1;
+
+    min-height: 38px;
+
+    border: 1px solid transparent;
+
+    border-radius: 8px;
+
+    background: transparent;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.client-filter-button.active {
+
+    border-color: var(--border);
+
+    background: var(--button);
+
+    color: var(--text);
+
+}
+
+
+/* =========================================================
+   WYSZUKIWANIE
+   ========================================================= */
+
+.search-box {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    margin-bottom: 14px;
+
+    padding: 11px 13px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 10px;
+
+    outline: none;
+
+    background: var(--input);
+
+    color: var(--text);
+
+    font-size: 15px;
+}
+
+
+.search-box::placeholder {
+
+    color: var(--muted);
+
+}
+
+
+/* =========================================================
+   LISTA KLIENTÓW
+   ========================================================= */
+
+.clients-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* =========================================================
+   KARTA KLIENTA
+   ========================================================= */
+
+.client-card {
+
+    position: relative;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+
+    border-radius: 14px;
+
+    padding: 13px;
+
+    box-sizing: border-box;
+
+    box-shadow:
+        0 5px 16px rgba(0,0,0,.18);
+}
+
+
+.client-card.inactive {
+
+    opacity: .88;
+
+}
+
+
+.client-top {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 9px;
+}
+
+
+.client-name {
+
+    font-size: 18px;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+}
+
+
+.client-id {
+
+    margin-top: 3px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+}
+
+
+.client-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    padding: 4px 7px;
+
+    border-radius: 7px;
+
+    font-size: 10px;
+
+    font-weight: 800;
+
+    white-space: nowrap;
+}
+
+
+.client-status.active {
+
+    background: rgba(34,197,94,.12);
+
+    color: #4ade80;
+
+    border: 1px solid rgba(34,197,94,.25);
+}
+
+
+.client-status.inactive {
+
+    background: rgba(148,163,184,.10);
+
+    color: #aeb8c7;
+
+    border: 1px solid rgba(148,163,184,.20);
+}
+
+
+.client-info {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+
+    font-size: 14px;
+}
+
+
+.info-row {
+
+    display: flex;
+
+    gap: 6px;
+
+    line-height: 1.35;
+}
+
+
+.info-label {
+
+    min-width: 63px;
+
+    color: var(--muted);
+
+    font-weight: 600;
+}
+
+
+.client-description {
+
+    margin-top: 9px;
+
+    padding-top: 9px;
+
+    border-top: 1px solid var(--border);
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    line-height: 1.4;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   PRZYCISKI KARTY
+   ========================================================= */
+
+.client-actions {
+
+    display: flex;
+
+    gap: 7px;
+
+    margin-top: 11px;
+}
+
+
+.edit-button,
+.delete-button,
+.restore-button {
+
+    flex: 1;
+
+    padding: 9px 10px;
+
+    border-radius: 9px;
+
+    font-size: 13px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.edit-button {
+
+    border: 1px solid var(--border);
+
+    background: rgba(255,255,255,.07);
+
+    color: var(--text);
+}
+
+
+.delete-button {
+
+    border: 1px solid rgba(239,68,68,.3);
+
+    background: rgba(239,68,68,.10);
+
+    color: #ff8a8a;
+}
+
+
+.restore-button {
+
+    border: 1px solid rgba(34,197,94,.30);
+
+    background: rgba(34,197,94,.10);
+
+    color: #4ade80;
+}
+
+
+/* =========================================================
+   BRAK KLIENTÓW
+   ========================================================= */
+
+.empty-list {
+
+    padding: 28px 15px;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 14px;
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.modal-bg {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 1000;
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 12px;
+
+    box-sizing: border-box;
+
+    background: rgba(0,0,0,.70);
+}
+
+
+.modal-bg.show {
+
+    display: flex;
+}
+
+
+.modal {
+
+    width: 100%;
+
+    max-width: 520px;
+
+    max-height: 92vh;
+
+    overflow-y: auto;
+
+    box-sizing: border-box;
+
+    padding: 17px;
+
+    background: var(--panel);
+
+    border: 1px solid var(--border);
+
+    border-radius: 15px;
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,.45);
+}
+
+
+.modal-header {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+
+.modal-title {
+
+    margin: 0;
+
+    font-size: 20px;
+
+    font-weight: 800;
+}
+
+
+.close-button {
+
+    width: 34px;
+    height: 34px;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    background: rgba(255,255,255,.07);
+
+    color: var(--text);
+
+    font-size: 20px;
+
+    line-height: 1;
+
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   FORMULARZ
+   ========================================================= */
+
+.form-group {
+
+    margin-bottom: 11px;
+}
+
+
+.form-label {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+
+    font-weight: 700;
+}
+
+
+.form-input,
+.form-select,
+.form-textarea {
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+    border: 1px solid var(--border);
+
+    border-radius: 9px;
+
+    outline: none;
+
+    background: var(--input);
+
+    color: var(--text);
+
+    font-family: inherit;
+
+    font-size: 15px;
+}
+
+
+.form-input,
+.form-select {
+
+    height: 42px;
+
+    padding: 0 11px;
+}
+
+
+.form-textarea {
+
+    min-height: 90px;
+
+    padding: 10px 11px;
+
+    resize: vertical;
+}
+
+
+.form-input:focus,
+.form-select:focus,
+.form-textarea:focus {
+
+    border-color: rgba(255,255,255,.30);
+}
+
+
+/* =========================================================
+   FORMULARZ - DWA KOLUMNOWE POLA
+   ========================================================= */
+
+.form-row {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 9px;
+}
+
+
+/* =========================================================
+   PRZYCISKI MODALA
+   ========================================================= */
+
+.modal-actions {
+
+    display: flex;
+
+    gap: 8px;
+
+    margin-top: 16px;
+}
+
+
+.cancel-button,
+.save-button {
+
+    flex: 1;
+
+    height: 43px;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+
+    font-weight: 800;
+
+    cursor: pointer;
+}
+
+
+.cancel-button {
+
+    border: 1px solid var(--border);
+
+    background: rgba(255,255,255,.06);
+
+    color: var(--text);
+}
+
+
+.save-button {
+
+    border: 0;
+
+    background: #2563eb;
+
+    color: #fff;
+}
+
+
+/* =========================================================
+   KOMUNIKAT
+   ========================================================= */
+
+.message {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 18px;
+
+    z-index: 2000;
+
+    display: none;
+
+    transform: translateX(-50%);
+
+    max-width: calc(100% - 24px);
+
+    box-sizing: border-box;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    background: #111827;
+
+    color: #fff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.35);
+}
+
+
+.message.show {
+
+    display: block;
+}
+
+
+/* =========================================================
+   TRYB JASNY
+   ========================================================= */
+
+body.light-mode {
+
+    --panel: #ffffff;
+    --panel-2: #f5f7fa;
+    --border: rgba(0,0,0,.12);
+    --text: #151922;
+    --muted: #667085;
+    --input: #f7f8fa;
+    --button: rgba(0,0,0,.05);
+
+    background: #f2f4f8;
+
+    color: var(--text);
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 600px) {
+
+    .page {
+
+        padding:
+            10px
+            9px
+            25px;
+    }
+
+
+    .header {
+
+        align-items: flex-start;
+
+    }
+
+
+    .title {
+
+        font-size: 20px;
+    }
+
+
+    .top-button {
+
+        padding: 6px 8px;
+
+        font-size: 12px;
+    }
+
+
+    .add-button {
+
+        width: 100%;
+
+        margin-bottom: 10px;
+
+        padding: 11px 12px;
+    }
+
+
+    .client-filter-button {
+
+        font-size: 12px;
+
+        min-height: 36px;
+    }
+
+
+    .client-card {
+
+        padding: 12px;
+
+        border-radius: 13px;
+    }
+
+
+    .client-name {
+
+        font-size: 17px;
+    }
+
+
+    .client-info {
+
+        font-size: 14px;
+    }
+
+
+    .modal {
+
+        max-height: 95vh;
+
+        padding: 14px;
+    }
+
+
+    .form-row {
+
+        grid-template-columns: 1fr;
+    }
+
+
+    .modal-actions {
+
+        flex-direction: column;
+    }
+
+
+    .cancel-button,
+    .save-button {
+
+        flex: none;
+
+        width: 100%;
+    }
+
+}
+
+
+/* =========================================================
+   BARDZO MAŁY TELEFON
+   ========================================================= */
+
+@media (max-width: 390px) {
+
+    .header {
+
+        gap: 6px;
+    }
+
+
+    .title {
+
+        font-size: 18px;
+    }
+
+
+    .client-name {
+
+        font-size: 16px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+    <!-- =====================================================
+         NAGŁÓWEK
+         ===================================================== -->
+
+    <div class="header">
+
+        <h1 class="title">
+            KLIENCI
+        </h1>
+
+        <div class="header-buttons">
+
+            <a
+                href="/home/"
+                class="top-button"
+            >
+                ← Tydzień
+            </a>
+
+            <button
+                type="button"
+                class="top-button"
+                id="theme-button"
+            >
+                ☀️ Jasny
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DODAJ
+         ===================================================== -->
+
+    <button
+        type="button"
+        class="add-button"
+        id="add-client-button"
+    >
+        ＋ DODAJ KLIENTA
+    </button>
+
+
+    <!-- =====================================================
+         AKTYWNI / NIEAKTYWNI
+         ===================================================== -->
+
+    <div class="client-filter">
+
+        <button
+            type="button"
+            class="client-filter-button active"
+            id="active-clients-button"
+        >
+            🟢 AKTYWNI
+        </button>
+
+        <button
+            type="button"
+            class="client-filter-button"
+            id="inactive-clients-button"
+        >
+            ⚫ NIEAKTYWNI
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         SZUKANIE
+         ===================================================== -->
+
+    <input
+        type="search"
+        id="search-input"
+        class="search-box"
+        placeholder="🔎 Szukaj klienta..."
+        autocomplete="off"
+    >
+
+
+    <!-- =====================================================
+         LISTA
+         ===================================================== -->
+
+    <div
+        id="clients-list"
+        class="clients-list"
+    ></div>
+
+
+</div>
+
+
+<!-- =========================================================
+     MODAL KLIENTA
+     ========================================================= -->
+
+<div
+    class="modal-bg"
+    id="client-modal"
+>
+
+    <div class="modal">
+
+
+        <div class="modal-header">
+
+            <h2
+                class="modal-title"
+                id="modal-title"
+            >
+                Dodaj klienta
+            </h2>
+
+            <button
+                type="button"
+                class="close-button"
+                id="close-modal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="client-form">
+
+            <input
+                type="hidden"
+                id="client-id"
+            >
+
+
+            <!-- IMIĘ + NAZWISKO -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Imię
+                    </label>
+
+                    <input
+                        type="text"
+                        id="first-name"
+                        class="form-input"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Nazwisko
+                    </label>
+
+                    <input
+                        type="text"
+                        id="last-name"
+                        class="form-input"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- WIEK + PŁEĆ -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Wiek
+                    </label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        class="form-input"
+                        min="0"
+                        step="1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Płeć
+                    </label>
+
+                    <select
+                        id="gender"
+                        class="form-select"
+                    >
+
+                        <option value="">
+                            Nie podano
+                        </option>
+
+                        <option value="male">
+                            Mężczyzna
+                        </option>
+
+                        <option value="female">
+                            Kobieta
+                        </option>
+
+                        <option value="other">
+                            Inna
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- TELEFON -->
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Telefon
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    class="form-input"
+                    autocomplete="tel"
+                >
+
+            </div>
+
+
+            <!-- OPIS -->
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Opis
+                </label>
+
+                <label
+                    class="form-label"
+                    style="display: flex; align-items: center; gap: 9px; cursor: pointer;"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="is-active"
+                        checked
+                        style="width: 18px; height: 18px;"
+                    >
+
+                    <span>Aktywny</span>
+
+                </label>
+
+                <textarea
+                    id="description"
+                    class="form-textarea"
+                ></textarea>
+
+            </div>
+
+
+            <!-- PRZYCISKI -->
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    id="cancel-button"
+                >
+                    ANULUJ
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-button"
+                >
+                    ZAPISZ
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     KOMUNIKAT
+     ========================================================= -->
+
+<div
+    id="message"
+    class="message"
+></div>
+
+
+<script>
+
+/* =========================================================
+   ELEMENTY
+   ========================================================= */
+
+const clientsList =
+    document.getElementById(
+        'clients-list'
+    );
+
+const searchInput =
+    document.getElementById(
+        'search-input'
+    );
+
+const addClientButton =
+    document.getElementById(
+        'add-client-button'
+    );
+
+const activeClientsButton =
+    document.getElementById(
+        'active-clients-button'
+    );
+
+const inactiveClientsButton =
+    document.getElementById(
+        'inactive-clients-button'
+    );
+
+const modal =
+    document.getElementById(
+        'client-modal'
+    );
+
+const closeModalButton =
+    document.getElementById(
+        'close-modal'
+    );
+
+const cancelButton =
+    document.getElementById(
+        'cancel-button'
+    );
+
+const clientForm =
+    document.getElementById(
+        'client-form'
+    );
+
+const modalTitle =
+    document.getElementById(
+        'modal-title'
+    );
+
+const clientIdInput =
+    document.getElementById(
+        'client-id'
+    );
+
+const firstNameInput =
+    document.getElementById(
+        'first-name'
+    );
+
+const lastNameInput =
+    document.getElementById(
+        'last-name'
+    );
+
+const ageInput =
+    document.getElementById(
+        'age'
+    );
+
+const genderInput =
+    document.getElementById(
+        'gender'
+    );
+
+const phoneInput =
+    document.getElementById(
+        'phone'
+    );
+
+const descriptionInput =
+    document.getElementById(
+        'description'
+    );
+
+const isActiveInput =
+    document.getElementById(
+        'is-active'
+    );
+
+const themeButton =
+    document.getElementById(
+        'theme-button'
+    );
+
+const messageBox =
+    document.getElementById(
+        'message'
+    );
+
+
+let clients = [];
+
+let currentActiveFilter = 1;
+
+
+/* =========================================================
+   KOMUNIKAT
+   ========================================================= */
+
+function showMessage(text) {
+
+    messageBox.textContent = text;
+
+    messageBox.classList.add('show');
+
+    setTimeout(function() {
+
+        messageBox.classList.remove(
+            'show'
+        );
+
+    }, 2500);
+
+}
+
+
+/* =========================================================
+   USTAWIENIE FILTRA
+   ========================================================= */
+
+function setClientFilter(active) {
+
+    currentActiveFilter =
+        Number(active) === 1
+        ? 1
+        : 0;
+
+
+    activeClientsButton.classList.toggle(
+        'active',
+        currentActiveFilter === 1
+    );
+
+
+    inactiveClientsButton.classList.toggle(
+        'active',
+        currentActiveFilter === 0
+    );
+
+
+    searchInput.value = '';
+
+
+    loadClients();
+
+}
+
+
+/* =========================================================
+   POBIERANIE KLIENTÓW
+   ========================================================= */
+
+async function loadClients() {
+
+    try {
+
+        const response =
+            await fetch(
+                `/clients/list?active=${currentActiveFilter}`
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                'Nie udało się pobrać klientów'
+            );
+
+        }
+
+        clients =
+            await response.json();
+
+        renderClients();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        clientsList.innerHTML = `
+            <div class="empty-list">
+                Nie udało się pobrać listy klientów.
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER LISTY
+   ========================================================= */
+
+function renderClients() {
+
+    const search =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    const filteredClients =
+        clients.filter(function(client) {
+
+            const fullName =
+                (
+                    (client.FirstName || '') +
+                    ' ' +
+                    (client.LastName || '')
+                ).toLowerCase();
+
+            const phone =
+                (
+                    client.Phone || ''
+                ).toLowerCase();
+
+            return (
+                fullName.includes(search) ||
+                phone.includes(search)
+            );
+
+        });
+
+
+    clientsList.innerHTML = '';
+
+
+    if (!filteredClients.length) {
+
+        clientsList.innerHTML = `
+            <div class="empty-list">
+                ${
+                    search
+                    ? 'Nie znaleziono klienta.'
+                    :
+                    currentActiveFilter === 1
+                    ? 'Brak aktywnych klientów.'
+                    : 'Brak nieaktywnych klientów.'
+                }
+            </div>
+        `;
+
+        return;
+    }
+
+
+    filteredClients.forEach(function(client) {
+
+        const card =
+            document.createElement(
+                'div'
+            );
+
+
+        card.className =
+            'client-card';
+
+
+        if (
+            Number(client.IsActive) !== 1
+        ) {
+
+            card.classList.add(
+                'inactive'
+            );
+
+        }
+
+
+        const fullName =
+            (
+                (client.FirstName || '') +
+                ' ' +
+                (client.LastName || '')
+            ).trim();
+
+
+        let genderText =
+            '';
+
+
+        if (client.Gender === 'male') {
+
+            genderText =
+                'Mężczyzna';
+
+        }
+        else if (
+            client.Gender === 'female'
+        ) {
+
+            genderText =
+                'Kobieta';
+
+        }
+        else if (
+            client.Gender === 'other'
+        ) {
+
+            genderText =
+                'Inna';
+
+        }
+
+
+        const isActive =
+            Number(client.IsActive) === 1;
+
+
+        card.innerHTML = `
+
+            <div class="client-top">
+
+                <div>
+
+                    <div class="client-name">
+                        ${escapeHtml(fullName)}
+                    </div>
+
+                    <div class="client-id">
+                        ID: ${client.Id}
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="client-status ${
+                        isActive
+                        ? 'active'
+                        : 'inactive'
+                    }"
+                >
+                    ${
+                        isActive
+                        ? 'AKTYWNY'
+                        : 'NIEAKTYWNY'
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="client-info">
+
+                ${
+                    client.Age !== null &&
+                    client.Age !== undefined &&
+                    client.Age !== ''
+                    ?
+                    `
+                    <div class="info-row">
+
+                        <span class="info-label">
+                            Wiek:
+                        </span>
+
+                        <span>
+                            ${escapeHtml(
+                                String(client.Age)
+                            )}
+                        </span>
+
+                    </div>
+                    `
+                    :
+                    ''
+                }
+
+
+                ${
+                    genderText
+                    ?
+                    `
+                    <div class="info-row">
+
+                        <span class="info-label">
+                            Płeć:
+                        </span>
+
+                        <span>
+                            ${escapeHtml(
+                                genderText
+                            )}
+                        </span>
+
+                    </div>
+                    `
+                    :
+                    ''
+                }
+
+
+                ${
+                    client.Phone
+                    ?
+                    `
+                    <div class="info-row">
+
+                        <span class="info-label">
+                            Telefon:
+                        </span>
+
+                        <span>
+                            ${escapeHtml(
+                                client.Phone
+                            )}
+                        </span>
+
+                    </div>
+                    `
+                    :
+                    ''
+                }
+
+            </div>
+
+
+            ${
+                client.Description
+                ?
+                `
+                <div class="client-description">
+                    ${escapeHtml(
+                        client.Description
+                    )}
+                </div>
+                `
+                :
+                ''
+            }
+
+
+            <div class="client-actions">
+
+                <button
+                    type="button"
+                    class="edit-button"
+                    data-id="${client.Id}"
+                >
+                    ✏️ EDYTUJ
+                </button>
+
+                ${
+                    isActive
+                    ?
+                    `
+                    <button
+                        type="button"
+                        class="delete-button"
+                        data-id="${client.Id}"
+                    >
+                        🗑️ USUŃ
+                    </button>
+                    `
+                    :
+                    `
+                    <button
+                        type="button"
+                        class="restore-button"
+                        data-id="${client.Id}"
+                    >
+                        🟢 PRZYWRÓĆ
+                    </button>
+                    `
+                }
+
+            </div>
+
+        `;
+
+
+        clientsList.appendChild(card);
+
+    });
+
+
+    /* -----------------------------------------------------
+       EDYCJA
+       ----------------------------------------------------- */
+
+    document
+        .querySelectorAll('.edit-button')
+        .forEach(function(button) {
+
+            button.addEventListener(
+                'click',
+                function() {
+
+                    const id =
+                        Number(
+                            this.dataset.id
+                        );
+
+                    openEditModal(id);
+
+                }
+            );
+
+        });
+
+
+    /* -----------------------------------------------------
+       USUWANIE
+       ----------------------------------------------------- */
+
+    document
+        .querySelectorAll('.delete-button')
+        .forEach(function(button) {
+
+            button.addEventListener(
+                'click',
+                function() {
+
+                    const id =
+                        Number(
+                            this.dataset.id
+                        );
+
+                    deleteClient(id);
+
+                }
+            );
+
+        });
+
+
+    /* -----------------------------------------------------
+       PRZYWRACANIE
+       ----------------------------------------------------- */
+
+    document
+        .querySelectorAll('.restore-button')
+        .forEach(function(button) {
+
+            button.addEventListener(
+                'click',
+                function() {
+
+                    const id =
+                        Number(
+                            this.dataset.id
+                        );
+
+                    activateClient(id);
+
+                }
+            );
+
+        });
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+   ========================================================= */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+
+}
+
+
+/* =========================================================
+   OTWÓRZ MODAL - NOWY
+   ========================================================= */
+
+function openCreateModal() {
+
+    modalTitle.textContent =
+        'Dodaj klienta';
+
+    clientIdInput.value =
+        '';
+
+    firstNameInput.value =
+        '';
+
+    lastNameInput.value =
+        '';
+
+    ageInput.value =
+        '';
+
+    genderInput.value =
+        '';
+
+    phoneInput.value =
+        '';
+
+    descriptionInput.value =
+        '';
+
+    isActiveInput.checked = true;
+
+    modal.classList.add('show');
+
+    setTimeout(function() {
+
+        firstNameInput.focus();
+
+    }, 100);
+
+}
+
+
+/* =========================================================
+   OTWÓRZ MODAL - EDYCJA
+   ========================================================= */
+
+function openEditModal(clientId) {
+
+    const client =
+        clients.find(function(item) {
+
+            return (
+                Number(item.Id) ===
+                Number(clientId)
+            );
+
+        });
+
+
+    if (!client) {
+
+        showMessage(
+            'Nie znaleziono klienta'
+        );
+
+        return;
+
+    }
+
+
+    modalTitle.textContent =
+        'Edytuj klienta';
+
+
+    clientIdInput.value =
+        client.Id;
+
+
+    firstNameInput.value =
+        client.FirstName || '';
+
+
+    lastNameInput.value =
+        client.LastName || '';
+
+
+    ageInput.value =
+        client.Age ?? '';
+
+
+    genderInput.value =
+        client.Gender || '';
+
+
+    phoneInput.value =
+        client.Phone || '';
+
+
+    descriptionInput.value =
+        client.Description || '';
+
+
+    isActiveInput.checked =
+        Number(client.IsActive) === 1;
+
+
+    modal.classList.add('show');
+
+
+    setTimeout(function() {
+
+        firstNameInput.focus();
+
+    }, 100);
+
+}
+
+
+/* =========================================================
+   ZAMKNIJ MODAL
+   ========================================================= */
+
+function closeModal() {
+
+    modal.classList.remove(
+        'show'
+    );
+
+}
+
+
+closeModalButton.addEventListener(
+    'click',
+    closeModal
+);
+
+
+cancelButton.addEventListener(
+    'click',
+    closeModal
+);
+
+
+modal.addEventListener(
+    'click',
+    function(event) {
+
+        if (
+            event.target === modal
+        ) {
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DODAJ KLIENTA
+   ========================================================= */
+
+addClientButton.addEventListener(
+    'click',
+    openCreateModal
+);
+
+
+/* =========================================================
+   PRZEŁĄCZANIE AKTYWNI / NIEAKTYWNI
+   ========================================================= */
+
+activeClientsButton.addEventListener(
+    'click',
+    function() {
+
+        if (currentActiveFilter !== 1) {
+
+            setClientFilter(1);
+
+        }
+
+    }
+);
+
+
+inactiveClientsButton.addEventListener(
+    'click',
+    function() {
+
+        if (currentActiveFilter !== 0) {
+
+            setClientFilter(0);
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ZAPIS FORMULARZA
+   ========================================================= */
+
+clientForm.addEventListener(
+    'submit',
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const clientId =
+            clientIdInput.value;
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            'first_name',
+            firstNameInput.value
+        );
+
+        formData.append(
+            'last_name',
+            lastNameInput.value
+        );
+
+        formData.append(
+            'age',
+            ageInput.value
+        );
+
+        formData.append(
+            'description',
+            descriptionInput.value
+        );
+
+        formData.append(
+            'phone',
+            phoneInput.value
+        );
+
+        formData.append(
+            'gender',
+            genderInput.value
+        );
+
+        formData.append(
+            'is_active',
+            isActiveInput.checked ? '1' : '0'
+        );
+
+
+        try {
+
+            let response;
+
+
+            if (clientId) {
+
+                response =
+                    await fetch(
+                        `/clients/edit/${clientId}`,
+                        {
+                            method: 'PUT',
+                            body: formData
+                        }
+                    );
+
+            }
+            else {
+
+                response =
+                    await fetch(
+                        '/clients/create',
+                        {
+                            method: 'POST',
+                            body: formData
+                        }
+                    );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    'Wystąpił błąd'
+                );
+
+            }
+
+
+            closeModal();
+
+
+            showMessage(
+                data.message ||
+                'Zapisano'
+            );
+
+
+            /*
+             * Po edycji klient może zmienić
+             * aktywność, dlatego odświeżamy
+             * aktualny widok.
+             */
+
+            await loadClients();
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                error.message ||
+                'Nie udało się zapisać klienta'
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   USUWANIE KLIENTA
+   ========================================================= */
+
+async function deleteClient(clientId) {
+
+    const client =
+        clients.find(function(item) {
+
+            return (
+                Number(item.Id) ===
+                Number(clientId)
+            );
+
+        });
+
+
+    if (!client) {
+
+        return;
+
+    }
+
+
+    const fullName =
+        (
+            (client.FirstName || '') +
+            ' ' +
+            (client.LastName || '')
+        ).trim();
+
+
+    const confirmed =
+        confirm(
+            `Czy na pewno usunąć klienta:\n\n${fullName}?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/clients/delete/${clientId}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                'Nie udało się usunąć klienta'
+            );
+
+        }
+
+
+        showMessage(
+            data.message ||
+            'Klient usunięty'
+        );
+
+
+        await loadClients();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message ||
+            'Nie udało się usunąć klienta'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRZYWRACANIE KLIENTA
+   ========================================================= */
+
+async function activateClient(clientId) {
+
+    const client =
+        clients.find(function(item) {
+
+            return (
+                Number(item.Id) ===
+                Number(clientId)
+            );
+
+        });
+
+
+    if (!client) {
+
+        return;
+
+    }
+
+
+    const fullName =
+        (
+            (client.FirstName || '') +
+            ' ' +
+            (client.LastName || '')
+        ).trim();
+
+
+    const confirmed =
+        confirm(
+            `Czy przywrócić klienta:\n\n${fullName}?`
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/clients/activate/${clientId}`,
+                {
+                    method: 'POST'
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                'Nie udało się przywrócić klienta'
+            );
+
+        }
+
+
+        showMessage(
+            data.message ||
+            'Klient przywrócony'
+        );
+
+
+        /*
+         * Po przywróceniu klient
+         * znika z widoku NIEAKTYWNYCH.
+         */
+
+        await loadClients();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message ||
+            'Nie udało się przywrócić klienta'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   WYSZUKIWANIE
+   ========================================================= */
+
+searchInput.addEventListener(
+    'input',
+    renderClients
+);
+
+
+/* =========================================================
+   MOTYW
+   ========================================================= */
+
+function updateThemeButton() {
+
+    if (
+        document.body.classList.contains(
+            'light-mode'
+        )
+    ) {
+
+        themeButton.textContent =
+            '🌙 Ciemny';
+
+    }
+    else {
+
+        themeButton.textContent =
+            '☀️ Jasny';
+
+    }
+
+}
+
+
+if (
+    localStorage.getItem('theme') ===
+    'light'
+) {
+
+    document.body.classList.add(
+        'light-mode'
+    );
+
+}
+
+
+updateThemeButton();
+
+
+themeButton.addEventListener(
+    'click',
+    function() {
+
+        document.body.classList.toggle(
+            'light-mode'
+        );
+
+
+        if (
+            document.body.classList.contains(
+                'light-mode'
+            )
+        ) {
+
+            localStorage.setItem(
+                'theme',
+                'light'
+            );
+
+        }
+        else {
+
+            localStorage.setItem(
+                'theme',
+                'dark'
+            );
+
+        }
+
+
+        updateThemeButton();
+
+    }
+);
+
+
+/* =========================================================
+   ESC - ZAMYKANIE
+   ========================================================= */
+
+document.addEventListener(
+    'keydown',
+    function(event) {
+
+        if (
+            event.key === 'Escape'
+        ) {
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+loadClients();
+
+</script>
+
+</body>
+
+</html>
