@@ -2523,6 +2523,47 @@ function createSession() {
         ).dataset.sessionDate;
 
 
+    // WALIDACJA GODZIN
+
+    if (!startTime) {
+        showDialog(
+            "Wybierz godzinę rozpoczęcia.",
+            "warning",
+            "Brak godziny"
+        );
+
+        document.getElementById('p-start').focus();
+
+        return;
+    }
+
+
+    if (!endTime) {
+        showDialog(
+            "Wybierz godzinę zakończenia.",
+            "warning",
+            "Brak godziny"
+        );
+
+        document.getElementById('p-end').focus();
+
+        return;
+    }
+
+
+    if (!clientId) {
+        showDialog(
+            "Wybierz klienta.",
+            "warning",
+            "Brak klienta"
+        );
+
+        document.getElementById('p-client').focus();
+
+        return;
+    }
+
+
     if (!baseDate) {
 
         showDialog(
