@@ -18,6 +18,21 @@ android {
             abiFilters "arm64-v8a"
         }
     }
+
+    signingConfigs {
+        release {
+            storeFile file('../meetings-release.jks')
+            storePassword 'Alicja@@13!!!'
+            keyAlias 'meetings'
+            keyPassword 'Alicja@@13!!!'
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
 }
 
 chaquopy {
