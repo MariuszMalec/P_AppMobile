@@ -967,12 +967,253 @@ body.light-mode {
 
 }
 
+
+/* =========================================================
+   CUSTOM DIALOG
+   ========================================================= */
+
+.custom-dialog-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.68);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.custom-dialog-overlay.active {
+    display: flex;
+}
+
+.custom-dialog {
+    width: min(430px, 100%);
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(25, 29, 70, 0.98),
+            rgba(8, 11, 35, 0.98)
+        );
+
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 18px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,.55),
+        0 0 30px rgba(0,140,255,.12);
+
+    padding: 22px;
+
+    color: #fff;
+
+    animation: customDialogIn .18s ease-out;
+}
+
+@keyframes customDialogIn {
+    from {
+        opacity: 0;
+        transform: scale(.94) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.custom-dialog-icon {
+    width: 48px;
+    height: 48px;
+
+    margin: 0 auto 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    font-size: 25px;
+    font-weight: 700;
+
+    background: rgba(255,255,255,.10);
+}
+
+.custom-dialog-title {
+    margin: 0 0 10px;
+
+    text-align: center;
+
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.custom-dialog-message {
+    margin: 0;
+
+    text-align: center;
+
+    color: rgba(255,255,255,.82);
+
+    font-size: 15px;
+    line-height: 1.5;
+
+    white-space: pre-line;
+}
+
+.custom-dialog-buttons {
+    display: flex;
+    gap: 10px;
+
+    margin-top: 22px;
+}
+
+.custom-dialog-button {
+    flex: 1;
+
+    min-height: 44px;
+
+    border: none;
+    border-radius: 11px;
+
+    padding: 9px 14px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform .15s ease,
+        filter .15s ease,
+        background .15s ease;
+}
+
+.custom-dialog-button:hover {
+    filter: brightness(1.12);
+}
+
+.custom-dialog-button:active {
+    transform: scale(.97);
+}
+
+.custom-dialog-button.cancel {
+    background: rgba(255,255,255,.10);
+    color: #fff;
+}
+
+.custom-dialog-button.confirm {
+    background: linear-gradient(135deg, #00c6ff, #0072ff);
+    color: #fff;
+}
+
+.custom-dialog-button.danger {
+    background: linear-gradient(135deg, #ff5252, #d50000);
+    color: #fff;
+}
+
+.custom-dialog-button.success {
+    background: linear-gradient(135deg, #00e676, #00a152);
+    color: #001b0d;
+}
+
+.custom-dialog.success .custom-dialog-icon {
+    color: #00ff9f;
+    background: rgba(0,255,159,.12);
+}
+
+.custom-dialog.info .custom-dialog-icon {
+    color: #00c6ff;
+    background: rgba(0,198,255,.12);
+}
+
+.custom-dialog.warning .custom-dialog-icon {
+    color: #ffd740;
+    background: rgba(255,215,64,.12);
+}
+
+.custom-dialog.error .custom-dialog-icon {
+    color: #ff5252;
+    background: rgba(255,82,82,.12);
+}
+
+@media (max-width: 480px) {
+
+    .custom-dialog {
+        padding: 19px;
+        border-radius: 16px;
+    }
+
+    .custom-dialog-title {
+        font-size: 18px;
+    }
+
+    .custom-dialog-message {
+        font-size: 14px;
+    }
+
+    .custom-dialog-button {
+        min-height: 46px;
+    }
+}
+
 </style>
 
 </head>
 
 
 <body>
+
+<!-- =========================================================
+     CUSTOM DIALOG
+     ========================================================= -->
+
+<div
+    id="custom-dialog-overlay"
+    class="custom-dialog-overlay"
+>
+    <div
+        id="custom-dialog"
+        class="custom-dialog"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div
+            id="custom-dialog-icon"
+            class="custom-dialog-icon"
+        >
+            !
+        </div>
+
+        <h3
+            id="custom-dialog-title"
+            class="custom-dialog-title"
+        >
+            Informacja
+        </h3>
+
+        <div
+            id="custom-dialog-message"
+            class="custom-dialog-message"
+        ></div>
+
+        <div
+            id="custom-dialog-buttons"
+            class="custom-dialog-buttons"
+        ></div>
+
+    </div>
+</div>
+
+
 
 
 <div class="page">
@@ -1295,7 +1536,337 @@ body.light-mode {
 ></div>
 
 
+
 <script>
+
+/* =========================================================
+   CUSTOM DIALOG SYSTEM
+   ========================================================= */
+
+let customDialogResolver = null;
+
+function showDialog(
+    message,
+    type = "info",
+    title = null
+) {
+    const overlay =
+        document.getElementById(
+            "custom-dialog-overlay"
+        );
+
+    const dialog =
+        document.getElementById(
+            "custom-dialog"
+        );
+
+    const icon =
+        document.getElementById(
+            "custom-dialog-icon"
+        );
+
+    const titleElement =
+        document.getElementById(
+            "custom-dialog-title"
+        );
+
+    const messageElement =
+        document.getElementById(
+            "custom-dialog-message"
+        );
+
+    const buttons =
+        document.getElementById(
+            "custom-dialog-buttons"
+        );
+
+    if (!overlay || !dialog) {
+        console.error(
+            "Custom dialog nie został znaleziony."
+        );
+
+        return;
+    }
+
+    dialog.classList.remove(
+        "success",
+        "info",
+        "warning",
+        "error"
+    );
+
+    dialog.classList.add(type);
+
+    const settings = {
+        success: {
+            icon: "✓",
+            title: "Gotowe"
+        },
+
+        info: {
+            icon: "ℹ",
+            title: "Informacja"
+        },
+
+        warning: {
+            icon: "!",
+            title: "Uwaga"
+        },
+
+        error: {
+            icon: "×",
+            title: "Błąd"
+        }
+    };
+
+    const current =
+        settings[type] ||
+        settings.info;
+
+    icon.textContent =
+        current.icon;
+
+    titleElement.textContent =
+        title || current.title;
+
+    messageElement.textContent =
+        message;
+
+    buttons.innerHTML = "";
+
+    const okButton =
+        document.createElement("button");
+
+    okButton.type = "button";
+
+    okButton.className =
+        "custom-dialog-button confirm";
+
+    okButton.textContent =
+        "OK";
+
+    okButton.addEventListener(
+        "click",
+        () => {
+            closeDialog();
+        }
+    );
+
+    buttons.appendChild(
+        okButton
+    );
+
+    overlay.classList.add(
+        "active"
+    );
+
+    setTimeout(
+        () => okButton.focus(),
+        0
+    );
+}
+
+
+function showConfirmDialog(
+    message,
+    options = {}
+) {
+    return new Promise(resolve => {
+
+        const overlay =
+            document.getElementById(
+                "custom-dialog-overlay"
+            );
+
+        const dialog =
+            document.getElementById(
+                "custom-dialog"
+            );
+
+        const icon =
+            document.getElementById(
+                "custom-dialog-icon"
+            );
+
+        const titleElement =
+            document.getElementById(
+                "custom-dialog-title"
+            );
+
+        const messageElement =
+            document.getElementById(
+                "custom-dialog-message"
+            );
+
+        const buttons =
+            document.getElementById(
+                "custom-dialog-buttons"
+            );
+
+        if (!overlay || !dialog) {
+            console.error(
+                "Custom dialog nie został znaleziony."
+            );
+
+            resolve(false);
+
+            return;
+        }
+
+        if (customDialogResolver) {
+            customDialogResolver(false);
+        }
+
+        customDialogResolver =
+            resolve;
+
+        dialog.classList.remove(
+            "success",
+            "info",
+            "warning",
+            "error"
+        );
+
+        dialog.classList.add(
+            options.type || "warning"
+        );
+
+        icon.textContent =
+            options.icon || "!";
+
+        titleElement.textContent =
+            options.title || "Potwierdzenie";
+
+        messageElement.textContent =
+            message;
+
+        buttons.innerHTML = "";
+
+        const cancelButton =
+            document.createElement("button");
+
+        cancelButton.type = "button";
+
+        cancelButton.className =
+            "custom-dialog-button cancel";
+
+        cancelButton.textContent =
+            options.cancelText || "Anuluj";
+
+        cancelButton.addEventListener(
+            "click",
+            () => {
+                finishDialog(false);
+            }
+        );
+
+        const confirmButton =
+            document.createElement("button");
+
+        confirmButton.type = "button";
+
+        confirmButton.className =
+            "custom-dialog-button " +
+            (
+                options.danger
+                    ? "danger"
+                    : "confirm"
+            );
+
+        confirmButton.textContent =
+            options.confirmText || "OK";
+
+        confirmButton.addEventListener(
+            "click",
+            () => {
+                finishDialog(true);
+            }
+        );
+
+        buttons.appendChild(
+            cancelButton
+        );
+
+        buttons.appendChild(
+            confirmButton
+        );
+
+        overlay.classList.add(
+            "active"
+        );
+
+        setTimeout(
+            () => confirmButton.focus(),
+            0
+        );
+    });
+}
+
+
+function finishDialog(result) {
+
+    const resolver =
+        customDialogResolver;
+
+    customDialogResolver =
+        null;
+
+    closeDialog();
+
+    if (resolver) {
+        resolver(result);
+    }
+}
+
+
+function closeDialog() {
+
+    const overlay =
+        document.getElementById(
+            "custom-dialog-overlay"
+        );
+
+    if (!overlay) {
+        return;
+    }
+
+    overlay.classList.remove(
+        "active"
+    );
+}
+
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if (event.key !== "Escape") {
+            return;
+        }
+
+        const overlay =
+            document.getElementById(
+                "custom-dialog-overlay"
+            );
+
+        if (
+            !overlay ||
+            !overlay.classList.contains(
+                "active"
+            )
+        ) {
+            return;
+        }
+
+        if (customDialogResolver) {
+            finishDialog(false);
+        } else {
+            closeDialog();
+        }
+    }
+);
+
+
 
 /* =========================================================
    ELEMENTY
@@ -2251,8 +2822,15 @@ async function deleteClient(clientId) {
 
 
     const confirmed =
-        confirm(
-            `Czy na pewno usunąć klienta:\n\n${fullName}?`
+        await showConfirmDialog(
+            `Czy na pewno usunąć klienta:\n\n${fullName}?`,
+            {
+                type: "warning",
+                title: "Usuwanie klienta",
+                cancelText: "Anuluj",
+                confirmText: "Usuń",
+                danger: true
+            }
         );
 
 
@@ -2344,8 +2922,14 @@ async function activateClient(clientId) {
 
 
     const confirmed =
-        confirm(
-            `Czy przywrócić klienta:\n\n${fullName}?`
+        await showConfirmDialog(
+            `Czy przywrócić klienta:\n\n${fullName}?`,
+            {
+                type: "success",
+                title: "Przywracanie klienta",
+                cancelText: "Anuluj",
+                confirmText: "Przywróć"
+            }
         );
 
 
