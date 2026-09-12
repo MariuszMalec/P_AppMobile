@@ -170,93 +170,37 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
     return {"status": "ok"}
 
 
+
 # =====================================================
-# EDYCJA ORDERA Z KONTROLĄ LIMITU 24 GODZIN
+# EDYCJA ORDERA
 # =====================================================
 @router.post("/edit/{order_id}")
 def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    # =====================================================
-    # Pobierz aktualny order
-    # =====================================================
-    current_order = cursor.execute("""
-        SELECT MachineId, StartDate, Hours
-        FROM Orders
-        WHERE Id = ?
-    """, (order_id,)).fetchone()
-
-    if not current_order:
-        return {
-            "status": "error",
-            "message": "Nie znaleziono ordera!"
-        }
-
-    # =====================================================
-    # Nowe dane
-    # =====================================================
-    new_start = datetime.fromisoformat(data["StartDate"])
-    new_hours = int(data.get("Hours", 8))
+    # -------------------------------------------------
+    # Dane z formularza
+    # -------------------------------------------------
     new_machine = int(data["MachineId"])
+    new_start = data["StartDate"]
+    new_hours = int(data.get("Hours", 8))
 
-    # =====================================================
-    # Sprawdzenie, czy zmieniły się dane harmonogramu
-    #
-    # Kolor NIE wpływa na konflikt.
-    # =====================================================
-    schedule_changed = (
-        int(current_order["MachineId"]) != new_machine
-        or current_order["StartDate"] != data["StartDate"]
-        or int(current_order["Hours"]) != new_hours
-    )
+    if new_hours < 1:
+        new_hours = 1
 
-    # =====================================================
-    # Kontrola limitu 24 godzin
-    # TYLKO gdy zmieniane są dane harmonogramu
-    # =====================================================
-    if schedule_changed:
-
-        # Data bez godziny
-        new_day = new_start.date().isoformat()
-
-        # Pobierz pozostałe ordery na tej samej maszynie
-        # z pominięciem aktualnie edytowanego ordera.
-        other_orders = cursor.execute("""
-            SELECT Id, StartDate, Hours
-            FROM Orders
-            WHERE MachineId = ?
-              AND Id != ?
-        """, (new_machine, order_id)).fetchall()
-
-        total_hours = new_hours
-
-        for o in other_orders:
-            existing_start = datetime.fromisoformat(o["StartDate"])
-
-            # Liczymy tylko ordery z tego samego dnia
-            if existing_start.date().isoformat() == new_day:
-                total_hours += int(o["Hours"])
-
-        # Maksymalnie 24 godziny na maszynę w jednym dniu
-        if total_hours > 24:
-            return {
-                "status": "error",
-                "message": (
-                    f"Przekroczono limit 24 godzin "
-                    f"na maszynie {new_machine} "
-                    f"w dniu {new_day}!"
-                )
-            }
-
-    # =====================================================
-    # Kolor
-    # Zmiana koloru jest zawsze dozwolona
-    # =====================================================
     color = data.get("Color") or "#f4f4f4"
 
-    # =====================================================
-    # Aktualizacja ordera
-    # =====================================================
+    # -------------------------------------------------
+    # EDYCJA
+    #
+    # UWAGA:
+    # NIE sprawdzamy tutaj konfliktu godzinowego!
+    #
+    # Dokładnie tak samo działa Drag & Drop:
+    # zapisujemy nową maszynę i datę,
+    # a harmonogram_page() sam później
+    # rozłoży ordery i przesunie pozostałe w prawo.
+    # -------------------------------------------------
     cursor.execute("""
         UPDATE Orders
         SET MachineId = ?,
@@ -272,7 +216,7 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
         WHERE Id = ?
     """, (
         new_machine,
-        data["StartDate"],
+        new_start,
         data.get("Exw", None),
         new_hours,
         data.get("ExistNC", 0),
@@ -286,9 +230,8 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 
     db.commit()
 
-    return {
-        "status": "ok"
-    }
+    return {"status": "ok"}
+
 
 # =====================================================
 # PRZENOSZENIE ORDERA (DRAG & DROP)

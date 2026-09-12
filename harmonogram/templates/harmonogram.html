@@ -801,6 +801,170 @@ body {
 }
 
 
+/* =========================================================
+   ŁADNY KOMUNIKAT ZAMIAST alert()
+   ========================================================= */
+
+#messageModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    justify-content: center;
+    align-items: center;
+    z-index: 20000;
+}
+
+#messageModal > div {
+    background: white;
+    width: 420px;
+    max-width: calc(100vw - 30px);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.30);
+    text-align: center;
+}
+
+#messageModalTitle {
+    margin: 0 0 12px 0;
+    font-size: 21px;
+}
+
+#messageModalText {
+    margin-bottom: 20px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+    word-break: break-word;
+}
+
+#messageModal button {
+    min-width: 100px;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 7px;
+    background: #4caf50;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#messageModal button:hover {
+    background: #43a047;
+}
+
+@media (max-width: 768px) {
+
+    #messageModal > div {
+        width: calc(100vw - 20px);
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    #messageModalTitle {
+        font-size: 19px;
+    }
+
+    #messageModalText {
+        font-size: 15px;
+    }
+
+    #messageModal button {
+        width: 100%;
+        min-height: 42px;
+    }
+}
+
+
+/* =========================================================
+   ŁADNE POTWIERDZENIE USUWANIA ZAMIAST confirm()
+   ========================================================= */
+
+#confirmModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    justify-content: center;
+    align-items: center;
+    z-index: 21000;
+}
+
+#confirmModal > div {
+    background: white;
+    width: 420px;
+    max-width: calc(100vw - 30px);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.30);
+    text-align: center;
+}
+
+#confirmModalTitle {
+    margin: 0 0 12px 0;
+    font-size: 21px;
+}
+
+#confirmModalText {
+    margin-bottom: 22px;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+}
+
+#confirmModal .confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#confirmModal button {
+    min-width: 110px;
+    padding: 9px 18px;
+    border: none;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+#confirmModalCancel {
+    background: #ddd;
+    color: #222;
+}
+
+#confirmModalCancel:hover {
+    background: #ccc;
+}
+
+#confirmModalOk {
+    background: #dc3545;
+    color: white;
+}
+
+#confirmModalOk:hover {
+    background: #c82333;
+}
+
+@media (max-width: 768px) {
+
+    #confirmModal > div {
+        width: calc(100vw - 20px);
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    #confirmModal .confirm-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    #confirmModal button {
+        width: 100%;
+        min-height: 42px;
+    }
+}
 
 </style>
 </head>
@@ -1375,7 +1539,134 @@ body {
 
 </div>
 
+
+<!-- =====================================================
+     ŁADNY KOMUNIKAT
+     ===================================================== -->
+
+<div id="messageModal">
+
+    <div>
+
+        <h3 id="messageModalTitle">
+            Informacja
+        </h3>
+
+        <div id="messageModalText"></div>
+
+        <button
+            onclick="closeMessageModal()"
+        >
+            OK
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     ŁADNE POTWIERDZENIE USUWANIA
+     ===================================================== -->
+
+<div id="confirmModal">
+
+    <div>
+
+        <h3 id="confirmModalTitle">
+            Potwierdzenie
+        </h3>
+
+        <div id="confirmModalText"></div>
+
+        <div class="confirm-buttons">
+
+            <button
+                id="confirmModalCancel"
+                onclick="closeConfirmModal(false)"
+            >
+                Anuluj
+            </button>
+
+            <button
+                id="confirmModalOk"
+                onclick="closeConfirmModal(true)"
+            >
+                Usuń
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
 <script>
+
+
+/* =========================================================
+   ŁADNY KOMUNIKAT ZAMIAST alert()
+   ========================================================= */
+
+function showMessage(message, title = "Informacja") {
+
+    document.getElementById("messageModalTitle").innerText =
+        title;
+
+    document.getElementById("messageModalText").innerText =
+        message;
+
+    document.getElementById("messageModal").style.display =
+        "flex";
+}
+
+
+function closeMessageModal() {
+
+    document.getElementById("messageModal").style.display =
+        "none";
+}
+
+
+/* =========================================================
+   ŁADNE POTWIERDZENIE USUWANIA
+   ========================================================= */
+
+let confirmCallback = null;
+
+
+function showConfirm(message, callback) {
+
+    document.getElementById("confirmModalText").innerText =
+        message;
+
+    confirmCallback = callback;
+
+    document.getElementById("confirmModal").style.display =
+        "flex";
+}
+
+
+function closeConfirmModal(result) {
+
+    document.getElementById("confirmModal").style.display =
+        "none";
+
+    if (result && confirmCallback) {
+
+        const callback = confirmCallback;
+
+        confirmCallback = null;
+
+        callback();
+
+    } else {
+
+        confirmCallback = null;
+
+    }
+}
 
 
 /* =========================================================
@@ -1621,7 +1912,7 @@ function saveOrder() {
 
         if (data.status === "error") {
 
-            alert(data.message);
+            showMessage(data.message);
 
         } else {
 
@@ -1641,44 +1932,43 @@ function saveOrder() {
 
 function deleteOrder() {
 
-    if (
-        !confirm(
-            "Czy na pewno chcesz usunąć ten order?"
-        )
-    )
-        return;
+    showConfirm(
+        "Czy na pewno chcesz usunąć ten order?",
+        function() {
+
+            const id =
+                document.getElementById("editId").value;
 
 
-    const id =
-        document.getElementById("editId").value;
+            fetch(
+                `/harmonogram/delete/${id}`,
+                {
+                    method: "POST",
 
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }
+            )
 
-    fetch(
-        `/harmonogram/delete/${id}`,
-        {
-            method: "POST",
+            .then(res => res.json())
 
-            headers: {
-                "Content-Type": "application/json"
-            }
+            .then(data => {
+
+                if (data.status === "error") {
+
+                    showMessage(data.message);
+
+                } else {
+
+                    location.reload();
+
+                }
+
+            });
+
         }
-    )
-
-    .then(res => res.json())
-
-    .then(data => {
-
-        if (data.status === "error") {
-
-            alert(data.message);
-
-        } else {
-
-            location.reload();
-
-        }
-
-    });
+    );
 }
 
 
@@ -1751,7 +2041,7 @@ function drop(ev, machineId, newDate) {
 
         if (data.status === "error") {
 
-            alert(data.message);
+            showMessage(data.message);
 
         } else {
 
@@ -1945,7 +2235,7 @@ function saveMachine() {
 
         if (data.status === "error") {
 
-            alert(data.message);
+            showMessage(data.message);
 
         } else {
 
@@ -1964,43 +2254,44 @@ function saveMachine() {
 
 function deleteMachine() {
 
-    if (
-        !confirm(
-            "Czy na pewno chcesz usunąć tę maszynę?"
-        )
-    )
-        return;
+    showConfirm(
+        "Czy na pewno chcesz usunąć tę maszynę?",
+        function() {
 
-    const id =
-        document.getElementById("editMachineId").value;
+            const id =
+                document.getElementById("editMachineId").value;
 
-    fetch(`/machines/delete/${id}`, {
+            fetch(`/machines/delete/${id}`, {
 
-        method: "POST",
+                method: "POST",
 
-        headers: {
-            "Content-Type": "application/json"
+                headers: {
+                    "Content-Type": "application/json"
+                }
+
+            })
+
+            .then(res => res.json())
+
+            .then(data => {
+
+                if (data.status === "error") {
+
+                    showMessage(data.message);
+
+                } else {
+
+                    location.reload();
+
+                }
+
+            });
+
         }
-
-    })
-
-    .then(res => res.json())
-
-    .then(data => {
-
-        if (data.status === "error") {
-
-            alert(data.message);
-
-        } else {
-
-            location.reload();
-
-        }
-
-    });
+    );
 
 }
+
 
 /* =========================================================
    NOWA MASZYNA
