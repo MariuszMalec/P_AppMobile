@@ -116,3 +116,6 @@ target/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+
+# Gradle cache
+.gradle/
