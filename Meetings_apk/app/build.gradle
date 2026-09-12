@@ -7,6 +7,10 @@ android {
     namespace 'com.example.androidtest'
     compileSdk 35
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId 'com.example.meetings'
         minSdk 24

@@ -229,13 +229,19 @@ public class MainActivity extends Activity {
         }, 1000);
 
         // ============================================
-        // WAŻNE:
-        //
-        // NIE URUCHAMIAMY AUTOMATYCZNIE WebView.
-        //
-        // Użytkownik sam naciska:
-        // "OTWÓRZ MEETINGS"
+        // DEBUG / RELEASE
         // ============================================
+
+        if (!BuildConfig.DEBUG) {
+
+            // RELEASE:
+            // automatycznie otwieramy Meetings
+            // po krótkim czasie na uruchomienie FastAPI
+
+            handler.postDelayed(() -> {
+                showWebView();
+            }, 1500);
+        }
     }
 
     // =================================================
@@ -368,3 +374,6 @@ public class MainActivity extends Activity {
         }
     }
 }
+
+
+
