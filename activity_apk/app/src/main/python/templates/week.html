@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Tydzień{% endblock %}
+
+{% block content %}
+
+<!-- 🔝 TOP BAR -->
+<div style="display:flex; gap:12px; margin-bottom:20px;">
+    <a href="/activities" style="flex:1">
+        <button class="btn gray">⬅ Powrot</button>
+    </a>
+
+    <a href="/home" style="flex:1">
+        <button class="btn green">⏱ LIVE</button>
+    </a>
+
+</div>
+
+{% for day, items in week.items() %}
+<div style="
+    margin-bottom:20px;
+    background:#020617;
+    border-radius:16px;
+    padding:14px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.35);
+">
+    <h3 style="margin-bottom:12px; color:#38bdf8;">
+        {{ day_names.get(day, "Nieznany dzień") }}
+    </h3>
+
+    {% for i in items %}
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:8px 0;
+        border-bottom:1px dashed rgba(255,255,255,0.08);
+        font-size:14px;
+    ">
+        <div>
+            <strong>{{ i.StartTime }} – {{ i.EndTime }}</strong><br>
+            <span style="opacity:.85;">{{ i.Description }}</span>
+        </div>
+
+        {% if i.PersonName %}
+        <span style="
+            background:#1e293b;
+            padding:4px 10px;
+            border-radius:999px;
+            font-size:12px;
+            opacity:.8;
+        ">
+            {{ i.PersonName }}
+        </span>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+{% endblock %}

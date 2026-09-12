@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>LIVE TERAZ</title>
+
+<style>
+:root {
+    --bg: #020210;
+    --panel: #0c0f2a;
+    --text: #ffffff;
+    --muted: #8c8cb8;
+    --live: #00c853;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #0a0d3a, #020210);
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+}
+
+/* POWRÓT */
+.back {
+    padding: 14px 16px 0;
+}
+.back a {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 12px 8px 6px;
+}
+.header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+}
+
+/* NOW: DATE TIME */
+.datetime {
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+
+/* GRID */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    padding: 16px;
+}
+
+/* TILE */
+.tile {
+    position: relative;
+    height: 220px;
+    border-radius: 18px;
+    overflow: hidden;
+    background: var(--panel);
+}
+
+/* IMAGE */
+.tile-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* OVERLAY */
+.tile-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 14px;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.45),
+        rgba(0,0,0,.85)
+    );
+    animation: livePulse 2s ease-in-out infinite;
+}
+
+/* PERSON */
+.person {
+    font-size: 16px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+/* PERSON ROW */
+.person-row {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,0,0,.55);
+    padding: 6px 10px;
+    border-radius: 20px;
+}
+
+.personpicture-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #00c853;
+    background: #000;
+    box-shadow:
+        0 0 0 2px rgba(0,0,0,.6),
+        0 4px 12px rgba(0,0,0,.8);
+}
+
+/* DESCRIPTION */
+.desc {
+    margin-top: auto;
+    padding-bottom: 12px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+/* LIVE PULSE */
+@keyframes livePulse {
+    0%   { opacity: 1.0; }
+    50%  { opacity: 0.35; }
+    100% { opacity: 1.0; }
+}
+
+/* EMPTY */
+.empty {
+    text-align: center;
+    color: var(--muted);
+    font-size: 20px;
+    padding: 80px 16px;
+}
+
+/* TV MODE */
+@media (min-width: 1200px) {
+    .tile { height: 260px; }
+    .desc { font-size: 26px; }
+}
+
+.time-range {
+    font-weight: 600;
+    font-size: 1.3em;
+}
+
+@media (max-width: 600px) {
+    .time-range {
+        font-size: 1.05em;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="back">
+    <a href="/home">⬅ Home Page</a>
+</div>
+
+<div class="header">
+    <h1>🟢 LIVE TERAZ</h1>
+</div>
+
+<!-- NOW: DATE + TIME -->
+<div class="datetime" id="datetime"></div>
+
+{% if live_items %}
+<div class="grid">
+    {% for item in live_items %}
+    <div class="tile">
+        {% if item.picture %}
+            <img class="tile-bg" src="{{ item.picture }}">
+        {% endif %}
+
+        <div class="tile-overlay">
+            <div class="person">👤 {{ item.person }}</div>
+
+            <div  style="font-weight:600; font-size: clamp(1em, 4vw, 1.4em);">
+            <!-- <div class="time-range"></div> -->
+                {{ item.start }} – {{ item.end }}
+            </div>
+
+            <div class="person-row">
+                {% if item.personPicture %}
+                    <img class="personpicture-pic" src="{{ item.personPicture }}">
+                {% endif %}
+            </div>
+
+            <div class="desc">{{ item.description }}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty">
+    Brak aktywnych zajęć LIVE
+</div>
+{% endif %}
+
+<script>
+/* AUTO REFRESH */
+setInterval(() => {
+    if (!document.hidden) location.reload();
+}, 30000);
+
+/* DATE TIME LIVE */
+function updateDateTime() {
+    const el = document.getElementById('datetime');
+    const now = new Date();
+
+    const days = [
+        'Niedziela','Poniedziałek','Wtorek',
+        'Środa','Czwartek','Piątek','Sobota'
+    ];
+
+    const day = days[now.getDay()];
+    const time = now.toLocaleTimeString('pl-PL', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    el.textContent = `${day} • ${time}`;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+</script>
+
+</body>
+</html>

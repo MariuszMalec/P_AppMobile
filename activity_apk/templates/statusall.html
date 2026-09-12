@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>LIVE ALL</title>
+
+<style>
+
+@keyframes slideDown {
+    from { opacity:0; transform:translate(-50%, -10px); }
+    to   { opacity:1; transform:translate(-50%, 0); }
+}
+
+:root {
+    --panel: #0c0f2a;
+    --border: rgba(255,255,255,.12);
+    --text: #ffffff;
+    --muted: #8c8cb8;
+}
+
+body {
+    margin: 0;
+    background: radial-gradient(circle at top, #0a0d3a, #020210);
+    color: var(--text);
+    font-family: system-ui, sans-serif;
+
+    /* WAŻNE */
+    overflow-x: hidden;
+}
+
+/* ================= POWRÓT ================= */
+
+.back {
+    padding: 10px 16px 2px;
+}
+
+.back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 6px 11px;
+
+    color: #cbd5e1;
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 9px;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,.25);
+
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .15s ease;
+}
+
+.back a:hover {
+    background: rgba(56,189,248,.12);
+    border-color: rgba(56,189,248,.55);
+    color: #38bdf8;
+}
+
+.back a:active {
+    transform: scale(.96);
+}
+/* HEADER */
+.header {
+    text-align: center;
+    padding: 8px 8px 16px;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+/* =========================================================
+   TABLE + STICKY HEADER
+   ========================================================= */
+
+.table-wrap {
+    padding: 8px;
+
+    /* WAŻNE:
+       nie może być tutaj overflow-x:auto,
+       ponieważ blokuje sticky względem strony */
+    overflow: visible;
+}
+
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background: var(--panel);
+    border-radius: 14px;
+}
+
+/* CAŁY WIERSZ NAGŁÓWKA JEST STICKY */
+thead {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+/* KOMÓRKI Z IMIONAMI */
+thead th {
+    height: 44px;
+    font-size: 12px;
+    color: var(--muted);
+
+    background: #0c0f2a;
+
+    position: sticky;
+    top: 0;
+
+    z-index: 1001;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,.5);
+}
+
+th,
+td {
+    border: 1px solid var(--border);
+    text-align: center;
+    padding: 0;
+}
+
+
+td {
+    height: 96px;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* TILE */
+.tile-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.tile-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    background: linear-gradient(
+        to top,
+        rgba(0,0,0,.65),
+        rgba(0,0,0,.35),
+        rgba(0,0,0,.65)
+    );
+}
+
+/* LIVE */
+@keyframes livePulse {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(1.6); }
+    100% { filter: brightness(1); }
+}
+
+.live {
+    animation: livePulse 1.8s infinite;
+}
+
+/* EMPTY */
+.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    font-size: 20px;
+}
+
+/* ================= PREVIEW CARD ================= */
+
+.preview-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    /* MODAL ZAWSZE NAD STICKY HEADER */
+    z-index: 5000;
+
+    /* ważne na telefonach */
+    isolation: isolate;
+}
+
+.preview-bg.active {
+    display: flex;
+}
+
+.preview-card {
+    width: min(92vw, 420px);
+    background: var(--panel);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    animation: pop .18s ease-out;
+    position: relative;
+}
+
+@keyframes pop {
+    from { transform: scale(.92); opacity: .5; }
+    to   { transform: scale(1); opacity: 1; }
+}
+
+.preview-card img {
+    width: 100%;
+    max-height: 240px;
+    object-fit: cover;
+}
+
+.preview-desc {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.preview-desc label {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.preview-desc input,
+.preview-desc select {
+    padding: 8px;
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+}
+
+.preview-desc button {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    border: none;
+    background: #38bdf8;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.preview-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 22px;
+    cursor: pointer;
+}
+
+
+.week-arrow {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: 700;
+    cursor: pointer;
+
+    width: 46px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border: 2px solid rgba(255,255,255,.5);
+    border-radius: 12px;
+    background: rgba(255,255,255,.06);
+
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+.week-arrow:hover {
+    background: rgba(255,255,255,.15);
+    border-color: rgba(255,255,255,.9);
+    transform: scale(1.05);
+}
+
+.week-arrow:active {
+    transform: scale(0.95);
+}
+
+
+/* MOBILE */
+@media (max-width: 600px) {
+    td {
+        height: 86px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="back">
+    <a href="/home">⬅ Powrót</a>
+</div>
+
+
+<div class="header">
+
+    <div style="
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        gap:14px;
+        font-size:18px;
+        font-weight:600;
+    ">
+
+        <span
+            style="cursor:pointer; user-select:none;"
+            onclick="changeDay(-1)"
+            class="week-arrow"
+        >⬅</span>
+
+        <span>
+            🟢 LIVE — {{ day_name }}
+        </span>
+
+        <span
+            class="datetime"
+            id="datetime"
+        ></span>
+
+        <span
+            style="cursor:pointer; user-select:none;"
+            onclick="changeDay(1)"
+            class="week-arrow"
+        >➡</span>
+
+        <button
+            type="button"
+            onclick="createActivity()"
+            style="
+                padding:8px 14px;
+                border:none;
+                border-radius:10px;
+                background:#22c55e;
+                color:#fff;
+                font-size:13px;
+                font-weight:700;
+                cursor:pointer;
+                box-shadow:0 4px 12px rgba(34,197,94,.25);
+            "
+        >
+            ➕ Utwórz aktywność
+        </button>
+
+    </div>
+
+</div>
+
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+    <th>⏰</th>
+
+    {% for p in persons %}
+        <th>{{ p.name }}</th>
+    {% endfor %}
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+{% for time, row in table.items() %}
+
+<tr>
+
+    <td>{{ time }}</td>
+
+    {% for p in persons %}
+
+        {% set cell = row[p.id] %}
+
+        <td
+            class="{% if cell and cell.is_live %}live{% endif %}"
+
+            {% if cell %}
+
+            data-activity-id="{{ cell.activity_id }}"
+            data-desc="{{ cell.description }}"
+            data-img="{{ cell.picture }}"
+            data-start="{{ cell.start }}"
+            data-end="{{ cell.end }}"
+            data-activityname="{{ cell.activityname }}"
+            data-person-id="{{ cell.person_id }}"
+            data-day="{{ day_index }}"
+            onclick="openPreview(this)"
+
+            {% endif %}
+        >
+
+            {% if cell %}
+
+                {% if cell.picture %}
+
+                    <img
+                        src="{{ cell.picture }}"
+                        class="tile-img"
+                    >
+
+                {% endif %}
+
+                <div class="tile-overlay">
+                    {{ cell.description }}
+                </div>
+
+            {% else %}
+
+                <div
+                    class="empty"
+                    onclick="createActivityForPerson('{{ p.id }}')"
+                >
+                    —
+                </div>
+
+            {% endif %}
+
+        </td>
+
+    {% endfor %}
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<!-- ================= PREVIEW ================= -->
+
+<div
+    class="preview-bg"
+    id="preview"
+    onclick="closePreview()"
+>
+
+    <div
+        class="preview-card"
+        onclick="event.stopPropagation()"
+    >
+
+        <div
+            class="preview-close"
+            onclick="closePreview()"
+        >
+            ✕
+        </div>
+
+
+        <img id="p-img">
+
+
+        <div class="preview-desc">
+
+            <div
+                id="p-name"
+                style="font-weight:600; text-align:center;"
+            ></div>
+
+
+            <label>Start</label>
+
+            <input
+                type="time"
+                id="p-start"
+            >
+
+
+            <label>Koniec</label>
+
+            <input
+                type="time"
+                id="p-end"
+            >
+
+
+            <!-- ================= DZIEŃ TYGODNIA ================= -->
+
+            <label>Dzień tygodnia</label>
+
+                <select id="p-day">
+                    <option value="1">Niedziela</option>
+                    <option value="2">Poniedziałek</option>
+                    <option value="3">Wtorek</option>
+                    <option value="4">Środa</option>
+                    <option value="5">Czwartek</option>
+                    <option value="6">Piątek</option>
+                    <option value="7">Sobota</option>
+                </select>
+
+                <label>Osoba</label>
+
+                <select id="p-person">
+                    <option value="">— BRAK —</option>
+
+                    {% for p in persons %}
+                        <option value="{{ p.id }}">
+                            {{ p.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+            <label>Aktywność</label>
+
+            <select
+                id="p-activity-select"
+                name="activityname"
+            >
+
+                <option value="">
+                    — BRAK —
+                </option>
+
+                {% for v in pictures %}
+
+                    <option
+                        value="{{ v.label }}"
+                        data-picture="{{ v.picture }}"
+                    >
+                        {{ v.label }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <label>Opis</label>
+
+            <input
+                type="text"
+                id="p-desc-input"
+            >
+
+
+            <button onclick="saveEdit()">
+                💾 Zapisz
+            </button>
+
+
+            <button
+                onclick="deleteActivity()"
+                style="
+                    margin-top:6px;
+                    background:#ef4444;
+                    color:#fff;
+                    font-weight:700;
+                "
+            >
+                🗑 Usuń aktywność
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= CREATE ACTIVITY ================= -->
+
+<div
+    class="preview-bg"
+    id="create-preview"
+    onclick="closeCreatePreview()"
+>
+
+    <div
+        class="preview-card"
+        onclick="event.stopPropagation()"
+    >
+
+        <div
+            class="preview-close"
+            onclick="closeCreatePreview()"
+        >
+            ✕
+        </div>
+
+        <div class="preview-desc">
+
+            <div
+                style="
+                    font-weight:700;
+                    text-align:center;
+                    font-size:18px;
+                    margin-bottom:8px;
+                "
+            >
+                ➕ Utwórz aktywność
+            </div>
+
+
+            <label>Start</label>
+
+            <input
+                type="time"
+                id="c-start"
+            >
+
+
+            <label>Koniec</label>
+
+            <input
+                type="time"
+                id="c-end"
+            >
+
+
+            <label>Dzień tygodnia</label>
+
+            <select id="c-day">
+
+                <option value="1">Niedziela</option>
+                <option value="2">Poniedziałek</option>
+                <option value="3">Wtorek</option>
+                <option value="4">Środa</option>
+                <option value="5">Czwartek</option>
+                <option value="6">Piątek</option>
+                <option value="7">Sobota</option>
+
+            </select>
+
+
+            <label>Osoba</label>
+
+            <select id="c-person">
+
+                <option value="">— WYBIERZ OSOBĘ —</option>
+
+                {% for p in persons %}
+
+                    <option value="{{ p.id }}">
+                        {{ p.name }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <label>Aktywność</label>
+
+            <select
+                id="c-activity"
+            >
+
+                <option value="">
+                    — WYBIERZ AKTYWNOŚĆ —
+                </option>
+
+                {% for v in pictures %}
+
+                    <option
+                        value="{{ v.label }}"
+                        data-picture="{{ v.picture }}"
+                    >
+                        {{ v.label }}
+                    </option>
+
+                {% endfor %}
+
+            </select>
+
+
+            <!-- PODGLĄD OBRAZKA -->
+
+            <img
+                id="c-img"
+                style="
+                    width:100%;
+                    max-height:200px;
+                    object-fit:cover;
+                    border-radius:10px;
+                    display:none;
+                    margin-top:4px;
+                "
+            >
+
+
+            <label>Opis</label>
+
+            <input
+                type="text"
+                id="c-desc"
+                placeholder="Opis aktywności..."
+            >
+
+
+            <button
+                type="button"
+                onclick="saveCreateActivity()"
+            >
+                💾 Utwórz aktywność
+            </button>
+
+
+            <button
+                type="button"
+                onclick="closeCreatePreview()"
+                style="
+                    margin-top:6px;
+                    background:#475569;
+                    color:#fff;
+                    font-weight:700;
+                "
+            >
+                Anuluj
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- ================= TOAST ================= -->
+
+<div
+    id="toast"
+    style="
+        position:fixed;
+        top:24px;
+        left:50%;
+        transform:translateX(-50%);
+        background:#020617;
+        color:#fff;
+        padding:16px 20px;
+        border-radius:14px;
+        border:2px solid #ef4444;
+        box-shadow:0 10px 30px rgba(0,0,0,.5);
+        font-weight:600;
+        min-width:280px;
+        max-width:90%;
+        z-index:9999;
+        display:none;
+        animation:slideDown .3s ease;
+    "
+>
+
+    <span id="toast-text"></span>
+
+</div>
+
+
+<script>
+
+let currentCell = null;
+let originalState = null;
+
+
+/* ================= OPEN PREVIEW ================= */
+
+function openPreview(el) {
+
+    currentCell = el;
+
+    // 🔒 zapamiętaj stan przed edycją
+
+    originalState = {
+
+        img: el.dataset.img || '',
+
+        desc: el.dataset.desc || '',
+
+        activityname:
+            el.dataset.activityname || '',
+
+        start:
+            el.dataset.start || '',
+
+        end:
+            el.dataset.end || '',
+
+        day:
+            el.dataset.day || '',
+
+        personId: el.dataset.personId || ''
+
+    };
+
+
+    document.getElementById('p-img').src =
+        originalState.img;
+
+    document.getElementById('p-start').value =
+        originalState.start;
+
+    document.getElementById('p-end').value =
+        originalState.end;
+
+    document.getElementById('p-desc-input').value =
+        originalState.desc;
+
+
+    // 📅 ustaw aktualny dzień
+
+    document.getElementById('p-day').value =
+        originalState.day;
+
+    // 👤 ustaw aktualną osobę
+
+    document.getElementById('p-person').value =
+        el.dataset.personId || '';
+
+    // 🖼️ ustaw aktywność
+
+    const select =
+        document.getElementById(
+            'p-activity-select'
+        );
+
+    select.value =
+        originalState.activityname;
+
+
+    document
+        .getElementById('preview')
+        .classList.add('active');
+}
+
+
+/* ================= CLOSE PREVIEW ================= */
+
+function closePreview() {
+
+    if (currentCell && originalState) {
+
+        // 🔙 przywróć dataset
+
+        currentCell.dataset.img =
+            originalState.img;
+
+        currentCell.dataset.desc =
+            originalState.desc;
+
+        currentCell.dataset.activityname =
+            originalState.activityname;
+
+        currentCell.dataset.start =
+            originalState.start;
+
+        currentCell.dataset.end =
+            originalState.end;
+
+        currentCell.dataset.day =
+            originalState.day;
+
+
+        // 🔙 przywróć obrazek
+
+        let tileImg =
+            currentCell.querySelector(
+                '.tile-img'
+            );
+
+
+        if (originalState.img) {
+
+            if (!tileImg) {
+
+                tileImg =
+                    document.createElement(
+                        'img'
+                    );
+
+                tileImg.className =
+                    'tile-img';
+
+                currentCell.prepend(
+                    tileImg
+                );
+            }
+
+            tileImg.src =
+                originalState.img;
+
+        } else if (tileImg) {
+
+            tileImg.remove();
+
+        }
+
+
+        // 🔙 przywróć opis
+
+        const overlay =
+            currentCell.querySelector(
+                '.tile-overlay'
+            );
+
+        if (overlay) {
+
+            overlay.textContent =
+                originalState.desc;
+
+        }
+
+    }
+
+
+    document
+        .getElementById('preview')
+        .classList.remove('active');
+
+
+    currentCell = null;
+    originalState = null;
+}
+
+
+/* ================= ACTIVITY CHANGE ================= */
+
+document
+    .getElementById(
+        'p-activity-select'
+    )
+    .addEventListener(
+        'change',
+        e => {
+
+            const selected =
+                e.target.selectedOptions[0];
+
+            if (!selected) return;
+
+
+            const imgUrl =
+                selected.dataset.picture || '';
+
+
+            // 🖼️ preview
+
+            const previewImg =
+                document.getElementById(
+                    'p-img'
+                );
+
+            previewImg.src =
+                imgUrl;
+
+
+            // 🧠 zapamiętaj do zapisu
+
+            if (currentCell) {
+
+                currentCell.dataset.img =
+                    imgUrl;
+
+
+                let tileImg =
+                    currentCell.querySelector(
+                        '.tile-img'
+                    );
+
+
+                if (!tileImg) {
+
+                    tileImg =
+                        document.createElement(
+                            'img'
+                        );
+
+                    tileImg.className =
+                        'tile-img';
+
+                    currentCell.prepend(
+                        tileImg
+                    );
+
+                }
+
+                tileImg.src =
+                    imgUrl;
+
+            }
+
+        }
+    );
+
+
+/* ================= SAVE ================= */
+
+function saveEdit() {
+
+    if (!currentCell) return;
+
+
+    const activityId =
+        currentCell.dataset.activityId;
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "start",
+        document.getElementById(
+            'p-start'
+        ).value
+    );
+
+
+    formData.append(
+        "end",
+        document.getElementById(
+            'p-end'
+        ).value
+    );
+
+
+    formData.append(
+        "description",
+        document.getElementById(
+            'p-desc-input'
+        ).value
+    );
+
+
+    formData.append(
+        "activityname",
+        document
+            .getElementById(
+                'p-activity-select'
+            )
+            .value
+    );
+
+    formData.append(
+        "person_id",
+        document.getElementById('p-person').value
+    );
+
+
+    // 📅 NOWY DZIEŃ
+
+    formData.append(
+        "day",
+        document.getElementById(
+            'p-day'
+        ).value
+    );
+
+
+    fetch(
+        `/live/statusall/edit/${activityId}`,
+        {
+            method: "PUT",
+            body: formData
+        }
+    )
+
+    .then(async r => {
+
+        const text =
+            await r.text();
+
+
+        if (!r.ok) {
+
+            console.error(
+                "STATUS:",
+                r.status
+            );
+
+            console.error(
+                "RESPONSE:",
+                text
+            );
+
+
+            let message = text;
+
+
+            // Próba odczytania JSON
+            try {
+
+                const data =
+                    JSON.parse(text);
+
+                if (
+                    data.errors &&
+                    Array.isArray(data.errors)
+                ) {
+
+                    message =
+                        data.errors.join("\n");
+
+                } else if (
+                    data.detail
+                ) {
+
+                    message =
+                        data.detail;
+
+                }
+
+            } catch (e) {
+                // odpowiedź nie była JSON
+            }
+
+
+            throw new Error(
+                message ||
+                "Błąd zapisu"
+            );
+        }
+
+
+        return text;
+
+    })
+
+    .then(() => {
+
+        closePreview();
+
+        location.reload();
+
+    })
+
+    .catch(err => {
+
+        showErrorToast(
+            err.message
+        );
+
+    });
+
+}
+
+
+/* ================= AUTO REFRESH ================= */
+
+setInterval(() => {
+
+    const previewOpen =
+        document
+            .getElementById('preview')
+            .classList
+            .contains('active');
+
+    const createPreviewOpen =
+        document
+            .getElementById('create-preview')
+            .classList
+            .contains('active');
+
+
+    /*
+     * NIE odświeżaj strony, jeżeli:
+     * - otwarte jest okno edycji
+     * LUB
+     * - otwarte jest okno tworzenia aktywności
+     *
+     * Dzięki temu wpisywane dane nie znikną
+     * po 30 sekundach.
+     */
+
+    if (
+        !document.hidden &&
+        !previewOpen &&
+        !createPreviewOpen
+    ) {
+
+        location.reload();
+
+    }
+
+}, 30000);
+
+
+/* ================= ERROR TOAST ================= */
+
+function showErrorToast(message) {
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+    const text =
+        document.getElementById(
+            "toast-text"
+        );
+
+
+    text.innerText =
+        "❌ " + message;
+
+
+    toast.style.display =
+        "block";
+
+
+    setTimeout(() => {
+
+        toast.style.opacity =
+            "0";
+
+
+        setTimeout(() => {
+
+            toast.style.display =
+                "none";
+
+            toast.style.opacity =
+                "1";
+
+        }, 300);
+
+    }, 4500);
+
+}
+
+
+/* ================= DELETE ================= */
+
+function deleteActivity() {
+
+    if (!currentCell) return;
+
+
+    const activityId =
+        currentCell.dataset.activityId;
+
+
+    if (!activityId) return;
+
+
+    if (
+        !confirm(
+            "Czy na pewno usunąć aktywność?"
+        )
+    ) return;
+
+
+    fetch(
+        `/activities/delete/${activityId}`,
+        {
+            method: "POST"
+        }
+    )
+
+    .then(r => {
+
+        if (!r.ok) {
+
+            throw new Error(
+                "Nie udało się usunąć aktywności"
+            );
+
+        }
+
+
+        closePreview();
+
+        location.reload();
+
+    })
+
+    .catch(err =>
+
+        showErrorToast(
+            err.message
+        )
+
+    );
+
+}
+
+
+/* ================= CHANGE DAY ================= */
+
+const currentDay =
+    {{ day_index }};
+
+
+function changeDay(step) {
+
+    let newDay =
+        currentDay + step;
+
+
+    if (newDay < 1)
+        newDay = 7;
+
+
+    if (newDay > 7)
+        newDay = 1;
+
+
+    window.location.href =
+        `/live/liveall/${newDay}`;
+
+}
+
+
+/* ================= DATE TIME LIVE ================= */
+
+function updateDateTime() {
+
+    const el =
+        document.getElementById(
+            'datetime'
+        );
+
+
+    const now =
+        new Date();
+
+
+    const days = [
+
+        'Niedziela',
+        'Poniedziałek',
+        'Wtorek',
+        'Środa',
+        'Czwartek',
+        'Piątek',
+        'Sobota'
+
+    ];
+
+
+    const day =
+        days[now.getDay()];
+
+
+    const time =
+        now.toLocaleTimeString(
+            'pl-PL',
+            {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            }
+        );
+
+
+    el.textContent =
+        `${time}`;
+
+}
+
+
+/* ================= CREATE ACTIVITY FOR EMPTY CELL ================= */
+
+function createActivityForPerson(personId) {
+
+    // Ustaw aktualnie oglądany dzień
+    document.getElementById('c-day').value =
+        currentDay.toString();
+
+    // Ustaw osobę z klikniętej kolumny
+    document.getElementById('c-person').value =
+        personId.toString();
+
+    // Wyczyść formularz
+    document.getElementById('c-start').value = '';
+    document.getElementById('c-end').value = '';
+    document.getElementById('c-activity').value = '';
+    document.getElementById('c-desc').value = '';
+
+    // Wyczyść obrazek
+    const img = document.getElementById('c-img');
+
+    img.src = '';
+    img.style.display = 'none';
+
+    // Pokaż modal
+    document
+        .getElementById('create-preview')
+        .classList.add('active');
+}
+
+
+/* ================= CREATE ACTIVITY ================= */
+
+function createActivity() {
+
+    // Domyślnie ustaw aktualnie oglądany dzień
+    document.getElementById('c-day').value =
+        currentDay.toString();
+
+    // Wyczyść formularz
+    document.getElementById('c-start').value = '';
+    document.getElementById('c-end').value = '';
+    document.getElementById('c-person').value = '';
+    document.getElementById('c-activity').value = '';
+    document.getElementById('c-desc').value = '';
+
+    // Wyczyść obrazek
+    const img = document.getElementById('c-img');
+
+    img.src = '';
+    img.style.display = 'none';
+
+    // Pokaż popup
+    document
+        .getElementById('create-preview')
+        .classList.add('active');
+}
+
+
+/* ================= CLOSE CREATE ================= */
+
+function closeCreatePreview() {
+
+    document
+        .getElementById('create-preview')
+        .classList.remove('active');
+}
+
+
+/* ================= CREATE ACTIVITY IMAGE ================= */
+
+document
+    .getElementById('c-activity')
+    .addEventListener('change', function () {
+
+        const selected =
+            this.selectedOptions[0];
+
+        const img =
+            document.getElementById('c-img');
+
+        const imgUrl =
+            selected?.dataset.picture || '';
+
+        if (imgUrl) {
+
+            img.src = imgUrl;
+            img.style.display = 'block';
+
+        } else {
+
+            img.src = '';
+            img.style.display = 'none';
+
+        }
+
+    });
+
+
+/* ================= SAVE NEW ACTIVITY ================= */
+
+function saveCreateActivity() {
+
+    const start =
+        document.getElementById('c-start').value;
+
+    const end =
+        document.getElementById('c-end').value;
+
+    const day =
+        document.getElementById('c-day').value;
+
+    const person =
+        document.getElementById('c-person').value;
+
+    const activity =
+        document.getElementById('c-activity').value;
+
+    const description =
+        document.getElementById('c-desc').value;
+
+
+    // Podstawowa walidacja po stronie przeglądarki
+
+    if (!start) {
+
+        showErrorToast(
+            'Podaj godzinę rozpoczęcia.'
+        );
+
+        return;
+
+    }
+
+
+    if (!end) {
+
+        showErrorToast(
+            'Podaj godzinę zakończenia.'
+        );
+
+        return;
+
+    }
+
+
+    if (!person) {
+
+        showErrorToast(
+            'Wybierz osobę.'
+        );
+
+        return;
+
+    }
+
+
+    if (!activity) {
+
+        showErrorToast(
+            'Wybierz aktywność.'
+        );
+
+        return;
+
+    }
+
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        'start',
+        start
+    );
+
+
+    formData.append(
+        'end',
+        end
+    );
+
+
+    formData.append(
+        'day_of_week',
+        day
+    );
+
+
+    formData.append(
+        'description',
+        description
+    );
+
+
+    formData.append(
+        'person_id',
+        person
+    );
+
+
+    formData.append(
+        'activity_name',
+        activity
+    );
+
+
+    fetch(
+        '/activities/add',
+        {
+            method: 'POST',
+            body: formData
+        }
+    )
+
+    .then(async response => {
+
+        /*
+         * Endpoint przy sukcesie zwraca
+         * RedirectResponse /activities.
+         *
+         * Przy błędach FastAPI zwróci
+         * stronę activity_add.html.
+         */
+
+        if (response.redirected) {
+
+            window.location.href =
+                response.url;
+
+            return;
+
+        }
+
+
+        const text =
+            await response.text();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                'Nie udało się utworzyć aktywności.'
+            );
+
+        }
+
+
+        /*
+         * Jeżeli backend zwrócił formularz
+         * z błędami walidacji, pokazujemy
+         * komunikat zamiast przeładowywać.
+         */
+
+        throw new Error(
+            'Nie udało się utworzyć aktywności. Sprawdź dane formularza.'
+        );
+
+    })
+
+    .catch(error => {
+
+        showErrorToast(
+            error.message
+        );
+
+    });
+
+}
+
+
+
+
+
+updateDateTime();
+
+
+setInterval(
+    updateDateTime,
+    1000
+);
+
+</script>
+
+</body>
+</html>

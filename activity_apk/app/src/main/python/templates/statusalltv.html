@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>LIVE ALL — TV</title>
+
+<style>
+
+:root {
+    --bg: #020210;
+    --panel: #0c0f2a;
+    --border: rgba(255,255,255,.15);
+    --text: #ffffff;
+    --muted: #9aa0ff;
+    --live: #00ff6a;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+body {
+    background: radial-gradient(circle at top,#0a0d3a,#020210);
+    color: var(--text);
+    font-family: system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.header {
+    position: relative;
+    width: 100%;
+    max-width: 100vw;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 14px;
+    padding: 4px 8px;
+
+    overflow: hidden;
+    min-width: 0;
+}
+
+.header h1 {
+    margin: 0;
+
+    font-size: 23px;
+    font-weight: 700;
+    letter-spacing: .5px;
+    line-height: 1.2;
+
+    white-space: nowrap;
+    flex: 0 1 auto;
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   STRZAŁKI DNI
+   ========================================================= */
+
+.week-arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    width: 38px;
+    height: 34px;
+
+    color: #fff;
+    font-size: 22px;
+    font-weight: 700;
+
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 8px;
+
+    cursor: pointer;
+    user-select: none;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        border-color .2s ease;
+}
+
+.week-arrow:hover {
+    background: rgba(255,255,255,.16);
+    border-color: rgba(255,255,255,.35);
+}
+
+.week-arrow:active {
+    transform: scale(.94);
+}
+
+
+/* =========================================================
+   POWRÓT
+   ========================================================= */
+
+.back {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    min-width: 0;
+}
+
+.back a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+    padding: 6px 12px;
+
+    color: #fff;
+    text-decoration: none;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 8px;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,.35),
+        inset 0 1px 0 rgba(255,255,255,.08);
+
+    white-space: nowrap;
+
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        border-color .2s ease;
+}
+
+.back a:hover {
+    background: rgba(255,255,255,.16);
+    border-color: rgba(255,255,255,.35);
+    transform: translateX(1px);
+}
+
+.back a:active {
+    transform: scale(.97);
+}
+
+
+/* =========================================================
+   TABELA
+   ========================================================= */
+
+.table-wrap {
+    position: absolute;
+
+    top: 48px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    max-width: 100vw;
+
+    min-width: 0;
+    min-height: 0;
+
+    padding: 4px;
+
+    overflow: hidden;
+    display: block;
+}
+
+table {
+    display: table;
+
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+
+    height: 100%;
+    max-height: 100%;
+
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    background: var(--panel);
+    border-radius: 8px;
+
+    overflow: hidden;
+    margin: 0;
+}
+
+col.time-col {
+    width: 12.5%;
+}
+
+th,
+td {
+    border: 1px solid var(--border);
+
+    text-align: center;
+    vertical-align: middle;
+
+    padding: 0;
+
+    min-width: 0;
+    max-width: 100%;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   NAGŁÓWKI
+   ========================================================= */
+
+th {
+    height: 36px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    color: var(--muted);
+
+    background: rgba(255,255,255,.05);
+
+    line-height: 1.1;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+th.time {
+    width: 12.5%;
+    min-width: 0;
+    max-width: 12.5%;
+
+    padding: 0 4px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+    text-overflow: clip;
+}
+
+
+/* =========================================================
+   CZAS
+   ========================================================= */
+
+td.time {
+    width: 12.5%;
+    min-width: 0;
+    max-width: 12.5%;
+
+    padding: 0 3px;
+
+    color: var(--muted);
+
+    font-size: 13px;
+    font-weight: 500;
+
+    line-height: 1.1;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   KOMÓRKI
+   ========================================================= */
+
+td {
+    position: relative;
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   OBRAZKI
+   ========================================================= */
+
+.tile-img {
+    position: absolute;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
+}
+
+
+/* =========================================================
+   NAPIS NA OBRAZKU
+   ========================================================= */
+
+.tile-overlay {
+    position: absolute;
+
+    inset: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 5px;
+
+    font-size: 15px;
+    font-weight: 700;
+
+    line-height: 1.05;
+
+    overflow: hidden;
+    overflow-wrap: anywhere;
+
+    background:
+        linear-gradient(
+            to top,
+            rgba(0,0,0,.78),
+            rgba(0,0,0,.30),
+            rgba(0,0,0,.78)
+        );
+}
+
+
+/* =========================================================
+   LIVE
+   ========================================================= */
+
+@keyframes liveGlow {
+
+    0% {
+        filter: brightness(1) saturate(1);
+    }
+
+    50% {
+        filter: brightness(1.45) saturate(1.7);
+    }
+
+    100% {
+        filter: brightness(1) saturate(1);
+    }
+
+}
+
+.live {
+    animation: liveGlow 1.8s ease-in-out infinite;
+}
+
+
+/* =========================================================
+   PUSTA KOMÓRKA
+   ========================================================= */
+
+.empty {
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 24px;
+
+    color: #444;
+}
+
+
+/* =========================================================
+   EKRANY DO 1280 PX
+   ========================================================= */
+
+@media (max-width: 1280px) {
+
+    .header {
+        height: 44px;
+        gap: 10px;
+        padding: 3px 6px;
+    }
+
+    .header h1 {
+        font-size: 21px;
+    }
+
+    .week-arrow {
+        width: 34px;
+        height: 30px;
+        font-size: 19px;
+    }
+
+    .back a {
+        font-size: 12px;
+        padding: 5px 9px;
+    }
+
+    .table-wrap {
+        top: 44px;
+        padding: 3px;
+    }
+
+    col.time-col {
+        width: 12.5%;
+    }
+
+    th {
+        height: 34px;
+        font-size: 13px;
+    }
+
+    th.time,
+    td.time {
+        width: 12.5%;
+        min-width: 0;
+        max-width: 12.5%;
+    }
+
+    td.time {
+        font-size: 12px;
+        padding: 0 3px;
+    }
+
+    .tile-overlay {
+        font-size: 14px;
+        padding: 4px;
+    }
+
+    .empty {
+        font-size: 22px;
+    }
+}
+
+
+/* =========================================================
+   NISKIE EKRANY / TV
+   ========================================================= */
+
+@media (max-height: 720px) {
+
+    .header {
+        height: 40px;
+        gap: 9px;
+        padding: 2px 5px;
+    }
+
+    .header h1 {
+        font-size: 18px;
+    }
+
+    .week-arrow {
+        width: 31px;
+        height: 27px;
+        font-size: 17px;
+    }
+
+    .back a {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+
+    .table-wrap {
+        top: 40px;
+        padding: 2px 3px 3px;
+    }
+
+    col.time-col {
+        width: 12.5%;
+    }
+
+    th {
+        height: 30px;
+        font-size: 11px;
+    }
+
+    th.time,
+    td.time {
+        width: 12.5%;
+        min-width: 0;
+        max-width: 12.5%;
+    }
+
+    td.time {
+        font-size: 11px;
+        padding: 0 2px;
+        white-space: nowrap;
+    }
+
+    .tile-overlay {
+        font-size: 12px;
+        padding: 3px;
+    }
+
+    .empty {
+        font-size: 18px;
+    }
+}
+
+
+/* =========================================================
+   WYSOKIE EKRANY
+   ========================================================= */
+
+@media (min-height: 900px) {
+
+    .header {
+        height: 52px;
+        gap: 16px;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .week-arrow {
+        width: 40px;
+        height: 36px;
+        font-size: 22px;
+    }
+
+    .back a {
+        font-size: 13px;
+        padding: 6px 12px;
+    }
+
+    .table-wrap {
+        top: 52px;
+        padding: 5px;
+    }
+
+    col.time-col {
+        width: 12.5%;
+    }
+
+    th {
+        height: 40px;
+        font-size: 15px;
+    }
+
+    th.time,
+    td.time {
+        width: 12.5%;
+        min-width: 0;
+        max-width: 12.5%;
+    }
+
+    td.time {
+        font-size: 14px;
+        white-space: nowrap;
+    }
+
+    .tile-overlay {
+        font-size: 16px;
+    }
+}
+
+
+/* =========================================================
+   TELEFON
+   ========================================================= */
+
+@media (max-width: 700px) {
+
+    col.time-col {
+        width: 90px;
+    }
+
+    th.time,
+    td.time {
+        width: 90px;
+        min-width: 90px;
+        max-width: 90px;
+    }
+
+    th {
+        font-size: 11px;
+    }
+
+    td.time {
+        font-size: 10px;
+        white-space: nowrap;
+    }
+
+    .tile-overlay {
+        font-size: 12px;
+    }
+}
+
+</style>
+</head>
+
+
+<body data-current-day="{{ day_index }}">
+
+
+<!-- =======================================================
+     HEADER
+     ======================================================= -->
+
+<div class="header">
+
+    <span
+        class="week-arrow"
+        onclick="changeDay(-1)"
+        title="Poprzedni dzień"
+    >⬅</span>
+
+    <h1>
+        🟢 LIVE TV — {{ day_name }}
+    </h1>
+
+    <span
+        class="week-arrow"
+        onclick="changeDay(1)"
+        title="Następny dzień"
+    >➡</span>
+
+    <div class="back">
+        <a href="/home">⬅️ Powrót</a>
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     TABELA
+     ======================================================= -->
+
+<div class="table-wrap">
+
+<table id="liveTable">
+
+<colgroup>
+
+    <col class="time-col">
+
+    {% for p in persons %}
+        <col>
+    {% endfor %}
+
+</colgroup>
+
+
+<thead>
+
+<tr>
+
+    <th class="time">
+        ⏰ Czas
+    </th>
+
+    {% for p in persons %}
+
+        <th>
+            {{ p.name }}
+        </th>
+
+    {% endfor %}
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+{% for time, row in table.items() %}
+
+<tr>
+
+    <td class="time">
+        {{ time }}
+    </td>
+
+
+    {% for p in persons %}
+
+        {% set cell = row[p.id] %}
+
+        <td class="{% if cell and cell.is_live %}live{% endif %}">
+
+            {% if cell %}
+
+                {% if cell.picture %}
+
+                    <img
+                        src="{{ cell.picture }}"
+                        class="tile-img"
+                        alt=""
+                    >
+
+                {% endif %}
+
+
+                <div class="tile-overlay">
+                    {{ cell.description }}
+                </div>
+
+            {% else %}
+
+                <div class="empty">
+                    —
+                </div>
+
+            {% endif %}
+
+        </td>
+
+    {% endfor %}
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<!-- =======================================================
+     JAVASCRIPT
+     ======================================================= -->
+
+<script>
+
+/*
+ * Pobieramy dzień z atrybutu HTML:
+ *
+ * <body data-current-day="{{ day_index }}">
+ *
+ * Dzięki temu nie powstanie:
+ *
+ * const currentDay = ;
+ *
+ * nawet jeśli Jinja miałaby problem z bezpośrednim
+ * wstawieniem wartości do JavaScript.
+ */
+
+const currentDay = Number(
+    document.body.dataset.currentDay
+);
+
+
+/* =========================================================
+   ZMIANA DNIA
+   ========================================================= */
+
+function changeDay(step) {
+
+    let newDay = currentDay + step;
+
+    /*
+     * Niedziela = 1
+     * Poniedziałek = 2
+     * ...
+     * Sobota = 7
+     */
+
+    if (newDay < 1) {
+        newDay = 7;
+    }
+
+    if (newDay > 7) {
+        newDay = 1;
+    }
+
+
+    window.location.href = `/live/livealltv/${newDay}`;
+}
+
+
+/* =========================================================
+   AUTOMATYCZNE ODŚWIEŻANIE
+   ========================================================= */
+
+(function () {
+
+    const REFRESH_MS = 30000;
+
+    setInterval(() => {
+
+        if (!document.hidden) {
+
+            location.reload();
+
+        }
+
+    }, REFRESH_MS);
+
+})();
+
+</script>
+
+</body>
+</html>

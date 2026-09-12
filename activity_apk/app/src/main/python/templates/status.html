@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+
+{% block title %}Status LIVE{% endblock %}
+
+{% block content %}
+
+<meta http-equiv="refresh" content="30">
+
+<!-- 🔝 TOP BAR -->
+<div style="
+    display:flex;
+    gap:12px;
+    margin-bottom:16px;
+">
+
+    <a href="/mainmenu" style="flex:1">
+        <button style="
+            width:100%;
+            padding:10px;
+            border-radius:14px;
+            border:none;
+            font-weight:bold;
+            background:#e5e7eb;
+            cursor:pointer;
+        ">
+            ⬅ Main Menu
+        </button>
+    </a>
+
+</div>
+
+<form method="get"
+      style="
+        display:flex;
+        align-items:center;
+        gap:10px;
+        justify-content:center;
+        margin-bottom:14px;
+      ">
+
+    {% if current and current.personPicture %}
+        <img
+            src="{{ current.personPicture }}"
+            id="person-avatar"
+            style="
+                width:40px;
+                height:40px;
+                border-radius:50%;
+                object-fit:cover;
+                border:2px solid #22c55e;
+                animation:pulse 1.6s infinite;
+            "
+        >
+    {% else %}
+        <div style="width:40px;height:40px;"></div>
+    {% endif %}
+
+    <select name="person"
+            onchange="this.form.submit()"
+            style="
+                padding:8px 12px;
+                border-radius:12px;
+                font-weight:600;
+                font-size:0.95em;
+            ">
+        {% for p in persons %}
+            <option value="{{ p }}"
+                {% if p == selected_person %}selected{% endif %}>
+                {{ p }}
+            </option>
+        {% endfor %}
+    </select>
+
+</form>
+
+<h2 style="text-align:center; margin-bottom:6px; font-size:1.1em;">
+    Teraz: {{ now }} {{ current_day_name }}
+</h2>
+
+{% if current %}
+<div style="
+    background:#020617;
+    border:2px solid #22c55e;
+    border-radius:16px;
+    padding:12px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.4);
+">
+
+    {% if current.picture %}
+        <img src="{{ current.picture }}"
+             style="
+                width:100%;
+                max-height:140px;
+                object-fit:cover;
+                border-radius:12px;
+                margin-bottom:10px;
+             ">
+    {% endif %}
+
+    <div style="font-size:1.25em; font-weight:bold;">
+        {{ current.start }} – {{ current.end }}
+    </div>
+
+    <div style="margin:8px 0; font-size:1.05em;">
+        {{ current.description }}
+    </div>
+
+    {% if current.person %}
+    <div style="display:flex; align-items:center; gap:10px;">
+        {% if current.personPicture %}
+            <img src="{{ current.personPicture }}"
+                 style="
+                    width:36px;
+                    height:36px;
+                    border-radius:50%;
+                    object-fit:cover;
+                 ">
+        {% endif %}
+        <div style="font-size:0.95em;">{{ current.person }}</div>
+    </div>
+    {% endif %}
+</div>
+{% else %}
+<p style="text-align:center; opacity:0.6;">
+    Brak aktualnej aktywności
+</p>
+{% endif %}
+
+{% if next %}
+<div style="
+    margin-top:18px;
+    background:#020617;
+    border:2px dashed #38bdf8;
+    border-radius:16px;
+    padding:12px;
+">
+
+    <div style="opacity:0.7; font-size:0.85em; margin-bottom:6px;">
+        Następnie
+    </div>
+
+    {% if next.picture %}
+        <img src="{{ next.picture }}"
+             style="
+                width:45%;
+                max-height:75px;
+                object-fit:cover;
+                border-radius:12px;
+                margin-bottom:10px;
+             ">
+    {% endif %}
+
+    {% if next.person %}
+    <div style="display:flex; align-items:center; gap:10px;">
+        {% if next.personPicture %}
+            <img src="{{ next.personPicture }}"
+                 style="
+                    width:34px;
+                    height:34px;
+                    border-radius:50%;
+                    object-fit:cover;
+                 ">
+        {% endif %}
+        <div style="font-size:0.95em;">{{ next.person }}</div>
+    </div>
+    {% endif %}
+
+    <div style="font-weight:bold; font-size:1em; margin-top:4px;">
+        {{ next.start }} – {{ next.end }}
+    </div>
+    <div style="font-size:0.95em;">{{ next.description }}</div>
+</div>
+{% endif %}
+
+{% endblock %}
