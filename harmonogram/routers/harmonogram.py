@@ -6,6 +6,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 import calendar
 import hashlib
+import random
 
 router = APIRouter(
     prefix="/harmonogram",
@@ -122,7 +123,21 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
 def add_order(data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    color = data.get("Color") or "#f4f4f4"
+    # Losowy kolor dla nowego ordera
+    colors = [
+        "#FFCCCC",
+        "#CCFFCC",
+        "#CCCCFF",
+        "#FFFFCC",
+        "#FFCCFF",
+        "#CCFFFF",
+        "#FFD9B3",
+        "#D9B3FF",
+        "#B3E6FF",
+        "#E6FFB3",
+    ]
+
+    color = random.choice(colors)
 
     cursor.execute("""
         INSERT INTO Orders (
@@ -156,36 +171,92 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
 
 
 # =====================================================
-# EDYCJA ORDERA Z KONTROLĄ KONFLIKTÓW GODZINOWYCH
+# EDYCJA ORDERA Z KONTROLĄ LIMITU 24 GODZIN
 # =====================================================
 @router.post("/edit/{order_id}")
 def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    # Parsowanie daty startu
+    # =====================================================
+    # Pobierz aktualny order
+    # =====================================================
+    current_order = cursor.execute("""
+        SELECT MachineId, StartDate, Hours
+        FROM Orders
+        WHERE Id = ?
+    """, (order_id,)).fetchone()
+
+    if not current_order:
+        return {
+            "status": "error",
+            "message": "Nie znaleziono ordera!"
+        }
+
+    # =====================================================
+    # Nowe dane
+    # =====================================================
     new_start = datetime.fromisoformat(data["StartDate"])
     new_hours = int(data.get("Hours", 8))
-    new_machine = data["MachineId"]
+    new_machine = int(data["MachineId"])
 
-    # Pobierz wszystkie ordery w tej maszynie oprócz edytowanego
-    other_orders = cursor.execute("""
-        SELECT Id, StartDate, Hours FROM Orders
-        WHERE MachineId = ? AND Id != ?
-    """, (new_machine, order_id)).fetchall()
+    # =====================================================
+    # Sprawdzenie, czy zmieniły się dane harmonogramu
+    #
+    # Kolor NIE wpływa na konflikt.
+    # =====================================================
+    schedule_changed = (
+        int(current_order["MachineId"]) != new_machine
+        or current_order["StartDate"] != data["StartDate"]
+        or int(current_order["Hours"]) != new_hours
+    )
 
-    # Sprawdzenie konfliktu godzinowego
-    for o in other_orders:
-        existing_start = datetime.fromisoformat(o["StartDate"])
-        existing_end = existing_start + timedelta(hours=o["Hours"])
-        new_end = new_start + timedelta(hours=new_hours)
+    # =====================================================
+    # Kontrola limitu 24 godzin
+    # TYLKO gdy zmieniane są dane harmonogramu
+    # =====================================================
+    if schedule_changed:
 
-        if (new_start < existing_end) and (new_end > existing_start):
-            return {"status": "error", "message": f"Konflikt z orderem ID {o['Id']}!"}
+        # Data bez godziny
+        new_day = new_start.date().isoformat()
 
-    # Pobierz kolor z payload lub ustaw domyślny
+        # Pobierz pozostałe ordery na tej samej maszynie
+        # z pominięciem aktualnie edytowanego ordera.
+        other_orders = cursor.execute("""
+            SELECT Id, StartDate, Hours
+            FROM Orders
+            WHERE MachineId = ?
+              AND Id != ?
+        """, (new_machine, order_id)).fetchall()
+
+        total_hours = new_hours
+
+        for o in other_orders:
+            existing_start = datetime.fromisoformat(o["StartDate"])
+
+            # Liczymy tylko ordery z tego samego dnia
+            if existing_start.date().isoformat() == new_day:
+                total_hours += int(o["Hours"])
+
+        # Maksymalnie 24 godziny na maszynę w jednym dniu
+        if total_hours > 24:
+            return {
+                "status": "error",
+                "message": (
+                    f"Przekroczono limit 24 godzin "
+                    f"na maszynie {new_machine} "
+                    f"w dniu {new_day}!"
+                )
+            }
+
+    # =====================================================
+    # Kolor
+    # Zmiana koloru jest zawsze dozwolona
+    # =====================================================
     color = data.get("Color") or "#f4f4f4"
 
-    # Aktualizacja ordera z zapisem wszystkich pól
+    # =====================================================
+    # Aktualizacja ordera
+    # =====================================================
     cursor.execute("""
         UPDATE Orders
         SET MachineId = ?,
@@ -201,7 +272,7 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
         WHERE Id = ?
     """, (
         new_machine,
-        data["StartDate"],          # pełny datetime
+        data["StartDate"],
         data.get("Exw", None),
         new_hours,
         data.get("ExistNC", 0),
@@ -214,10 +285,10 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     ))
 
     db.commit()
-    return {"status": "ok"}
 
-
-
+    return {
+        "status": "ok"
+    }
 
 # =====================================================
 # PRZENOSZENIE ORDERA (DRAG & DROP)

@@ -11,6 +11,19 @@ from conftest import TEST_DB
 # HELPERS
 # ============================================================
 
+RANDOM_COLORS = [
+    "#FFCCCC",
+    "#CCFFCC",
+    "#CCCCFF",
+    "#FFFFCC",
+    "#FFCCFF",
+    "#CCFFFF",
+    "#FFD9B3",
+    "#D9B3FF",
+    "#B3E6FF",
+    "#E6FFB3",
+]
+
 def get_test_db():
     """
     Otwiera bezpośrednie połączenie z testową bazą SQLite.
@@ -181,7 +194,7 @@ def test_add_order_ok(client: TestClient):
     assert order["ExistNC"] == 1
     assert order["ExistCMM"] == 0
     assert order["ExistMaterial"] == 1
-    assert order["Color"] == "#123456"
+    assert order["Color"] in RANDOM_COLORS
 
 
 def test_add_order_default_values(client: TestClient):
@@ -209,7 +222,7 @@ def test_add_order_default_values(client: TestClient):
     assert order["ExistNC"] == 0
     assert order["ExistCMM"] == 0
     assert order["ExistMaterial"] == 0
-    assert order["Color"] == "#f4f4f4"
+    assert order["Color"] in RANDOM_COLORS
 
 
 def test_add_order_custom_color(client: TestClient):
@@ -232,7 +245,7 @@ def test_add_order_custom_color(client: TestClient):
     order = get_order_by_zlecenie("ADD-COLOR")
 
     assert order is not None
-    assert order["Color"] == "#abcdef"
+    assert order["Color"] in RANDOM_COLORS
 
 
 # ============================================================
@@ -326,111 +339,12 @@ def test_edit_order_color(client: TestClient):
     assert order["Color"] == "#00ff00"
 
 
-def test_edit_order_conflict(client: TestClient):
-    clear_orders()
-
-    first_id = insert_test_order(
-        machine_id=1,
-        start_date="2026-09-10T10:00",
-        hours=4,
-        zlecenie="CONFLICT-001",
-        exw="2026-09-20",
-    )
-
-    second_id = insert_test_order(
-        machine_id=1,
-        start_date="2026-09-10T16:00",
-        hours=4,
-        zlecenie="CONFLICT-002",
-        exw="2026-09-20",
-    )
-
-    payload = {
-        "MachineId": 1,
-        "StartDate": "2026-09-10T12:00",
-        "Exw": "2026-09-20",
-        "Hours": 4,
-        "ExistNC": 0,
-        "ExistCMM": 0,
-        "ExistMaterial": 0,
-        "Zlecenie": "CONFLICT-002",
-        "ProjectName": "Projekt",
-        "Color": "#ff0000",
-    }
-
-    response = client.post(
-        f"/harmonogram/edit/{second_id}",
-        json=payload
-    )
-
-    assert response.status_code == 200
-
-    data = response.json()
-
-    assert data["status"] == "error"
-    assert str(first_id) in data["message"]
-
-    # Drugie zamówienie nie powinno zostać zmienione
-    order = get_order(second_id)
-
-    assert order["StartDate"] == "2026-09-10T16:00"
-    assert order["MachineId"] == 1
-
-
-def test_edit_order_adjacent_time_is_allowed(client: TestClient):
+def test_edit_order_move_to_another_machine_allowed(client: TestClient):
     clear_orders()
 
     insert_test_order(
         machine_id=1,
-        start_date="2026-09-10T10:00",
-        hours=4,
-        zlecenie="ADJ-001",
-        exw="2026-09-20",
-    )
-
-    second_id = insert_test_order(
-        machine_id=1,
-        start_date="2026-09-10T18:00",
-        hours=4,
-        zlecenie="ADJ-002",
-        exw="2026-09-20",
-    )
-
-    # Pierwszy order kończy się o 14:00.
-    # Drugi zaczyna się dokładnie o 14:00.
-    # Nie powinno być konfliktu.
-    payload = {
-        "MachineId": 1,
-        "StartDate": "2026-09-10T14:00",
-        "Exw": "2026-09-20",
-        "Hours": 4,
-        "ExistNC": 0,
-        "ExistCMM": 0,
-        "ExistMaterial": 0,
-        "Zlecenie": "ADJ-002",
-        "ProjectName": "Projekt",
-        "Color": "#ff0000",
-    }
-
-    response = client.post(
-        f"/harmonogram/edit/{second_id}",
-        json=payload
-    )
-
-    assert response.status_code == 200
-    assert response.json()["status"] == "ok"
-
-    order = get_order(second_id)
-
-    assert order["StartDate"] == "2026-09-10T14:00"
-
-
-def test_edit_order_move_to_another_machine(client: TestClient):
-    clear_orders()
-
-    insert_test_order(
-        machine_id=1,
-        start_date="2026-09-10T10:00",
+        start_date="2026-09-10",
         hours=8,
         zlecenie="MACHINE-001",
         exw="2026-09-20",
@@ -438,15 +352,21 @@ def test_edit_order_move_to_another_machine(client: TestClient):
 
     second_id = insert_test_order(
         machine_id=2,
-        start_date="2026-09-10T10:00",
+        start_date="2026-09-10",
         hours=8,
         zlecenie="MACHINE-002",
         exw="2026-09-20",
     )
 
+    # Przenosimy zamówienie z maszyny 2 na maszynę 1.
+    # Maszyna 1 ma już 8 h.
+    # Po przeniesieniu będzie miała:
+    # 8 h + 8 h = 16 h
+    # czyli poniżej limitu 24 h.
+
     payload = {
         "MachineId": 1,
-        "StartDate": "2026-09-10T18:00",
+        "StartDate": "2026-09-10",
         "Exw": "2026-09-20",
         "Hours": 8,
         "ExistNC": 0,
@@ -462,13 +382,170 @@ def test_edit_order_move_to_another_machine(client: TestClient):
         json=payload
     )
 
-    assert response.status_code == 200
-    assert response.json()["status"] == "ok"
+    print(response.json())
 
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["status"] == "ok"
+
+    # Zamówienie powinno zostać przeniesione na maszynę 1.
     order = get_order(second_id)
 
     assert order["MachineId"] == 1
-    assert order["StartDate"] == "2026-09-10T18:00"
+    assert order["StartDate"] == "2026-09-10"
+    assert order["Hours"] == 8
+
+
+def test_edit_order_move_to_another_machine_conflict(client: TestClient):
+    clear_orders()
+
+    # Maszyna 1 ma już 24 godziny w tym dniu.
+    insert_test_order(
+        machine_id=1,
+        start_date="2026-09-10",
+        hours=8,
+        zlecenie="MACHINE-001",
+        exw="2026-09-20",
+    )
+
+    insert_test_order(
+        machine_id=1,
+        start_date="2026-09-10",
+        hours=8,
+        zlecenie="MACHINE-002",
+        exw="2026-09-20",
+    )
+
+    insert_test_order(
+        machine_id=1,
+        start_date="2026-09-10",
+        hours=8,
+        zlecenie="MACHINE-003",
+        exw="2026-09-20",
+    )
+
+    # To zamówienie jest obecnie na maszynie 2.
+    second_id = insert_test_order(
+        machine_id=2,
+        start_date="2026-09-10",
+        hours=8,
+        zlecenie="MACHINE-004",
+        exw="2026-09-20",
+    )
+
+    # Próba przeniesienia na maszynę 1.
+    #
+    # Maszyna 1 ma już:
+    # 8 + 8 + 8 = 24 h
+    #
+    # Po przeniesieniu:
+    # 24 + 8 = 32 h
+    #
+    # Powinien wystąpić konflikt.
+
+    payload = {
+        "MachineId": 1,
+        "StartDate": "2026-09-10",
+        "Exw": "2026-09-20",
+        "Hours": 8,
+        "ExistNC": 0,
+        "ExistCMM": 0,
+        "ExistMaterial": 0,
+        "Zlecenie": "MACHINE-004",
+        "ProjectName": "Projekt",
+        "Color": "#123456",
+    }
+
+    response = client.post(
+        f"/harmonogram/edit/{second_id}",
+        json=payload
+    )
+
+    data = response.json()
+    print(data)
+
+    assert response.status_code == 200
+
+    assert data["status"] == "error"
+    assert "24 godzin" in data["message"]
+    assert "maszynie 1" in data["message"]
+    assert "2026-09-10" in data["message"]
+
+    # Zamówienie nie powinno zostać przeniesione.
+    order = get_order(second_id)
+
+    assert order["MachineId"] == 2
+    assert order["StartDate"] == "2026-09-10"
+    assert order["Hours"] == 8
+
+
+def test_edit_order_change_color_allowed_despite_conflict(client: TestClient):
+    clear_orders()
+
+    # Masz już 24 godziny na maszynie 1
+    insert_test_order(
+        machine_id=1,
+        start_date="2026-09-10",
+        hours=8,
+        zlecenie="COLOR-001",
+        exw="2026-09-20",
+    )
+
+    insert_test_order(
+        machine_id=1,
+        start_date="2026-09-10",
+        hours=8,
+        zlecenie="COLOR-002",
+        exw="2026-09-20",
+    )
+
+    insert_test_order(
+        machine_id=1,
+        start_date="2026-09-10",
+        hours=8,
+        zlecenie="COLOR-003",
+        exw="2026-09-20",
+    )
+
+    # Ten order również jest na maszynie 1,
+    # więc próba zmiany jego godzin/dat/machine mogłaby powodować konflikt.
+    order_id = insert_test_order(
+        machine_id=1,
+        start_date="2026-09-10",
+        hours=8,
+        zlecenie="COLOR-004",
+        exw="2026-09-20",
+    )
+
+    payload = {
+        "MachineId": 1,
+        "StartDate": "2026-09-10",
+        "Exw": "2026-09-20",
+        "Hours": 8,
+        "ExistNC": 0,
+        "ExistCMM": 0,
+        "ExistMaterial": 0,
+        "Zlecenie": "COLOR-004",
+        "ProjectName": "Projekt",
+        "Color": "#00ff00",
+    }
+
+    response = client.post(
+        f"/harmonogram/edit/{order_id}",
+        json=payload
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["status"] == "ok"
+
+    order = get_order(order_id)
+
+    assert order["Color"] == "#00ff00"
 
 
 # ============================================================
@@ -589,6 +666,8 @@ def test_move_order_exactly_24_hours_is_allowed(client: TestClient):
     assert order["StartDate"] == "2026-09-11T10:00"
 
 
+
+
 # ============================================================
 # POST /harmonogram/delete/{order_id}
 # ============================================================
@@ -671,7 +750,7 @@ def test_order_full_lifecycle(client: TestClient):
 
     assert order["MachineId"] == 1
     assert order["Hours"] == 8
-    assert order["Color"] == "#123456"
+    assert order["Color"] in RANDOM_COLORS
 
     # --------------------------------------------------------
     # 2. EDIT
