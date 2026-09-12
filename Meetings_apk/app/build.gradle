@@ -23,6 +23,14 @@ android {
         }
     }
 
+    sourceSets {
+        main {
+            python.srcDirs = [
+                "src/main/python"
+            ]
+        }
+    }
+
     signingConfigs {
         release {
             storeFile file('../meetings-release.jks')
@@ -36,6 +44,38 @@ android {
         release {
             signingConfig signingConfigs.release
         }
+    }
+}
+
+def meetingsApiDir = file("../../Meetings_api")
+def apkPythonDir = file("src/main/python")
+
+tasks.register("copyMeetingsApiPython") {
+    doLast {
+        println "========================================"
+        println "KOPIOWANIE Meetings_api -> APK Python"
+        println "Źródło:  ${meetingsApiDir}"
+        println "Cel:     ${apkPythonDir}"
+        println "========================================"
+
+        copy {
+            from meetingsApiDir
+            into apkPythonDir
+
+            include "main.py"
+            include "db.py"
+            include "templates.py"
+            include "validators.py"
+            include "routers/**"
+            include "templates/**"
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name == "generateDebugPythonSourceAssets" ||
+        name == "generateReleasePythonSourceAssets") {
+        dependsOn("copyMeetingsApiPython")
     }
 }
 
