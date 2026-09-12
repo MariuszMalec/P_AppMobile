@@ -185,7 +185,9 @@ public class MainActivity extends Activity {
                 )
         );
 
-        setContentView(layout);
+        if (BuildConfig.DEBUG) {
+            setContentView(layout);
+        }
 
         // ============================================
         // START FASTAPI W TLE
@@ -374,6 +376,7 @@ public class MainActivity extends Activity {
         }
     }
 }
+
 
 
 
