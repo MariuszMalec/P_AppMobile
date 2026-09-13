@@ -51,6 +51,24 @@ def activityApiDir = file("../../activity_api")
 def apkPythonDir = file("src/main/python")
 
 tasks.register("copyActivityApiPython") {
+    inputs.files(
+        fileTree(activityApiDir) {
+            include "main.py"
+            include "db.py"
+            include "enums.py"
+            include "templates.py"
+            include "validators.py"
+            include "activity.db"
+            include "routers/**"
+            include "templates/**"
+
+            exclude "**/__pycache__/**"
+            exclude "**/*.pyc"
+        }
+    )
+
+    outputs.dir(apkPythonDir)
+
     doLast {
         println "========================================"
         println "KOPIOWANIE activity_api -> APK Python"
@@ -78,8 +96,9 @@ tasks.register("copyActivityApiPython") {
 }
 
 tasks.configureEach {
-    if (name == "generateDebugPythonSourceAssets" ||
-        name == "generateReleasePythonSourceAssets") {
+    if (name == "mergeDebugPythonSources" ||
+        name == "mergeReleasePythonSources") {
+
         dependsOn("copyActivityApiPython")
     }
 }

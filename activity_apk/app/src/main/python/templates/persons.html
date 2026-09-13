@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Osoby</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f4f6f8;
+    color: #1f2937;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 28px;
+}
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.08);
+}
+
+.card h2 {
+    margin-top: 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 2fr auto;
+    gap: 12px;
+    align-items: end;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #4b5563;
+}
+
+input {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 15px;
+    outline: none;
+}
+
+input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,.12);
+}
+
+button {
+    border: 0;
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-add {
+    background: #4f46e5;
+    color: white;
+}
+
+.btn-save {
+    background: #16a34a;
+    color: white;
+}
+
+.btn-delete {
+    background: #dc2626;
+    color: white;
+}
+
+.persons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 18px;
+}
+
+.person {
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fff;
+}
+
+.picture {
+    width: 100%;
+    height: 190px;
+    background: #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.picture img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.no-picture {
+    font-size: 50px;
+    opacity: .35;
+}
+
+.person-body {
+    padding: 16px;
+}
+
+.person-id {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+.person-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.edit-form {
+    display: grid;
+    gap: 10px;
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.actions form {
+    margin: 0;
+}
+
+.empty {
+    text-align: center;
+    padding: 40px;
+    color: #6b7280;
+}
+
+@media (max-width: 700px) {
+
+    body {
+        padding: 12px;
+    }
+
+    .header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-add {
+        width: 100%;
+    }
+
+    .persons {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+.main-menu-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 9px 14px;
+    border-radius: 10px;
+    background: #e5e7eb;
+    color: #111827;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: .15s;
+}
+
+.main-menu-button:hover {
+    background: #d1d5db;
+    transform: translateY(-1px);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>👨‍👩‍👧 Osoby</h1>
+
+        <a href="/mainmenu" class="main-menu-button">
+            ⬅ Main menu
+        </a>
+    </div>
+
+
+    <!-- =====================================================
+         DODAWANIE
+    ====================================================== -->
+
+    <div class="card">
+
+        <h2>Dodaj osobę</h2>
+
+        <form method="post" action="/persons/add">
+
+            <div class="form-grid">
+
+                <div>
+                    <label for="person_name">
+                        Imię / nazwa
+                    </label>
+
+                    <input
+                        id="person_name"
+                        name="person_name"
+                        type="text"
+                        placeholder="np. TATA"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label for="person_picture">
+                        URL zdjęcia
+                    </label>
+
+                    <input
+                        id="person_picture"
+                        name="person_picture"
+                        type="url"
+                        placeholder="https://..."
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="btn-add"
+                >
+                    + Dodaj
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- =====================================================
+         LISTA
+    ====================================================== -->
+
+    <div class="card">
+
+        <h2>Lista osób</h2>
+
+        {% if persons %}
+
+        <div class="persons">
+
+            {% for person in persons %}
+
+            <div class="person">
+
+                <div class="picture">
+
+                    {% if person["PersonPicture"] %}
+
+                    <img
+                        src="{{ person['PersonPicture'] }}"
+                        alt="{{ person['PersonName'] }}"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"
+                    >
+
+                    <div
+                        class="no-picture"
+                        style="display:none;"
+                    >
+                        👤
+                    </div>
+
+                    {% else %}
+
+                    <div class="no-picture">
+                        👤
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="person-body">
+
+                    <div class="person-id">
+                        ID: {{ person["Id"] }}
+                    </div>
+
+                    <div class="person-name">
+                        {{ person["PersonName"] }}
+                    </div>
+
+
+                    <!-- EDYCJA -->
+
+                    <form
+                        method="post"
+                        action="/persons/edit/{{ person['Id'] }}"
+                        class="edit-form"
+                    >
+
+                        <div>
+
+                            <label>
+                                Nazwa
+                            </label>
+
+                            <input
+                                type="text"
+                                name="person_name"
+                                value="{{ person['PersonName'] }}"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div>
+
+                            <label>
+                                URL zdjęcia
+                            </label>
+
+                            <input
+                                type="url"
+                                name="person_picture"
+                                value="{{ person['PersonPicture'] or '' }}"
+                            >
+
+                        </div>
+
+
+                        <div class="actions">
+
+                            <button
+                                type="submit"
+                                class="btn-save"
+                            >
+                                💾 Zapisz
+                            </button>
+
+                        </div>
+
+                    </form>
+
+
+                    <!-- USUWANIE -->
+
+                    <form
+                        method="post"
+                        action="/persons/delete/{{ person['Id'] }}"
+                        onsubmit="return confirm('Czy na pewno usunąć {{ person['PersonName'] }}?');"
+                        style="margin-top: 8px;"
+                    >
+
+                        <button
+                            type="submit"
+                            class="btn-delete"
+                        >
+                            🗑 Usuń
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <div class="empty">
+            Brak osób w bazie danych.
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
