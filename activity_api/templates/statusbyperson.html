@@ -6,99 +6,394 @@
 
 <meta http-equiv="refresh" content="30">
 
-<!-- 🔝 TOP BAR -->
-<div style="
-    display:flex;
-    gap:12px;
-    margin-bottom:20px;
-">
+<style>
+    /* =====================================================
+       STATUS LIVE
+       ===================================================== */
 
-    <a href="/mainmenu" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#e5e7eb;
-            cursor:pointer;
-        ">
-            ⬅ Main menu
-        </button>
-    </a>
+    .live-page {
+        width: 100%;
+        max-width: 850px;
+        margin: 0 auto;
+    }
 
-    <a href="/live/now" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#22c55e;
-            color:#022c22;
-            cursor:pointer;
-        ">
-            ⏱ LIVE NOW  
-        </button>
-    </a>
+    /* =====================================================
+       TOP BAR
+       ===================================================== */
 
-    <a href="/live/statusall" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#38bdf8;
-            color:#020617;
-            cursor:pointer;
-        ">
-            🟢 LIVE ALL
-        </button>
-    </a>
+    .live-topbar {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+        margin-bottom: 22px;
+    }
 
-    <a href="/live/statusalltv" style="flex:1">
-        <button style="
-            width:100%;
-            padding:12px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#38bdf8;
-            color:#020617;
-            cursor:pointer;
-        ">
-            🔴 LIVE TV
-        </button>
-    </a>    
+    .live-topbar a {
+        text-decoration: none;
+    }
 
-</div>
+    .live-btn {
+        width: 100%;
+        min-height: 48px;
+        border: 1px solid rgba(255,255,255,.10);
+        border-radius: 14px;
+        font-weight: 800;
+        font-size: .82rem;
+        cursor: pointer;
+        transition: transform .18s ease, box-shadow .18s ease;
+        box-shadow: 0 6px 18px rgba(0,0,0,.15);
+    }
 
-<form method="get"
-      style="
-        display:flex;
-        align-items:center;
-        gap:10px;
-        justify-content:center;
-        margin-bottom:14px;
-      ">
+    .live-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 9px 23px rgba(0,0,0,.22);
+    }
 
-    {% if current and current.personPicture %}
-        <img
-            src="{{ current.personPicture }}"
-            id="person-avatar"
-            style="
-                width:40px;
-                height:40px;
-                border-radius:50%;
-                object-fit:cover;
-                border:2px solid #22c55e;
-                animation:pulse 1.6s infinite;
-            "
-        >
-    {% else %}
-        <div style="width:40px;height:40px;"></div>
-    {% endif %}
+    .live-btn:active {
+        transform: scale(.97);
+    }
+
+    .btn-menu {
+        background: linear-gradient(135deg, #e5e7eb, #cbd5e1);
+        color: #0f172a;
+    }
+
+    .btn-now {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: #022c22;
+    }
+
+    .btn-all,
+    .btn-tv {
+        background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+        color: #020617;
+    }
+
+    /* =====================================================
+       PERSON SELECTOR
+       ===================================================== */
+
+    .person-selector {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .person-selector select {
+        min-width: 150px;
+        padding: 10px 14px;
+        border-radius: 13px;
+        border: 1px solid rgba(255,255,255,.15);
+        background: rgba(255,255,255,.07);
+        color: inherit;
+        font-size: .95rem;
+        font-weight: 700;
+        outline: none;
+    }
+
+    .person-selector select:focus {
+        border-color: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34,197,94,.15);
+    }
+
+    .person-avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #22c55e;
+        animation: pulse 1.6s infinite;
+        box-shadow: 0 5px 15px rgba(34,197,94,.25);
+    }
+
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(34,197,94,.55);
+        }
+
+        70% {
+            box-shadow: 0 0 0 8px rgba(34,197,94,0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(34,197,94,0);
+        }
+    }
+
+    /* =====================================================
+       PAGE TITLE
+       ===================================================== */
+
+    .live-title {
+        text-align: center;
+        margin: 0 0 20px;
+        font-size: clamp(1.2rem, 4vw, 1.55rem);
+        font-weight: 800;
+    }
+
+    /* =====================================================
+       CURRENT ACTIVITY
+       ===================================================== */
+
+    .current-card {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+            135deg,
+            rgba(34,197,94,.12),
+            rgba(2,6,23,.92)
+        );
+        border: 1px solid rgba(34,197,94,.65);
+        border-radius: 20px;
+        padding: 18px;
+        margin-bottom: 16px;
+        box-shadow:
+            0 10px 30px rgba(0,0,0,.30),
+            0 0 25px rgba(34,197,94,.06);
+    }
+
+    .current-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 5px;
+        height: 100%;
+        background: #22c55e;
+    }
+
+    .current-picture {
+        width: 100%;
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        display: block;
+    }
+
+    .activity-time {
+        font-size: 1.35rem;
+        font-weight: 900;
+        letter-spacing: .3px;
+    }
+
+    .activity-description {
+        margin: 10px 0 14px;
+        font-size: 1.08rem;
+        line-height: 1.45;
+        font-weight: 600;
+    }
+
+    .activity-person {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: rgba(255,255,255,.78);
+        font-weight: 700;
+    }
+
+    .activity-person img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid rgba(255,255,255,.15);
+    }
+
+    .no-activity {
+        text-align: center;
+        padding: 24px 10px;
+        opacity: .55;
+    }
+
+    /* =====================================================
+       NEXT ACTIVITIES
+       ===================================================== */
+
+    .next-title {
+        margin: 30px 0 12px;
+        font-size: 1rem;
+        font-weight: 800;
+        opacity: .65;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+    }
+
+    .next-card {
+        background: linear-gradient(
+            135deg,
+            rgba(56,189,248,.09),
+            rgba(2,6,23,.90)
+        );
+        border: 1px dashed rgba(56,189,248,.65);
+        border-radius: 18px;
+        padding: 16px;
+        margin-top: 12px;
+    }
+
+    .next-picture {
+        width: 50%;
+        max-height: 100px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        display: block;
+    }
+
+    .next-time {
+        font-weight: 800;
+        font-size: 1rem;
+    }
+
+    .next-description {
+        margin-top: 6px;
+        line-height: 1.4;
+    }
+
+    .next-person {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        font-weight: 700;
+        opacity: .85;
+    }
+
+    .next-person img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* =====================================================
+       MOBILE
+       ===================================================== */
+
+    @media (max-width: 650px) {
+
+        .live-topbar {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 9px;
+            margin-bottom: 18px;
+        }
+
+        .live-btn {
+            min-height: 48px;
+            font-size: .76rem;
+            border-radius: 13px;
+        }
+
+        .person-selector {
+            margin-bottom: 15px;
+        }
+
+        .person-selector select {
+            min-width: 145px;
+        }
+
+        .current-card {
+            padding: 16px;
+            border-radius: 18px;
+        }
+
+        .current-picture {
+            max-height: 180px;
+        }
+
+        .activity-time {
+            font-size: 1.2rem;
+        }
+
+        .activity-description {
+            font-size: 1rem;
+        }
+
+        .next-card {
+            padding: 15px;
+        }
+
+        .next-picture {
+            width: 65%;
+        }
+    }
+
+    @media (max-width: 380px) {
+
+        .live-topbar {
+            gap: 7px;
+        }
+
+        .live-btn {
+            font-size: .7rem;
+            padding: 8px 4px;
+        }
+
+        .person-selector select {
+            min-width: 125px;
+            font-size: .88rem;
+        }
+
+        .activity-time {
+            font-size: 1.1rem;
+        }
+    }
+</style>
+
+
+<div class="live-page">
+
+    <!-- =================================================
+         TOP BAR
+         ================================================= -->
+
+    <div class="live-topbar">
+
+        <a href="/mainmenu">
+            <button class="live-btn btn-menu">
+                ⬅ Main menu
+            </button>
+        </a>
+
+        <a href="/live/now">
+            <button class="live-btn btn-now">
+                ⏱ LIVE NOW
+            </button>
+        </a>
+
+        <a href="/live/statusall">
+            <button class="live-btn btn-all">
+                🟢 LIVE ALL
+            </button>
+        </a>
+
+        <a href="/live/statusalltv">
+            <button class="live-btn btn-tv">
+                🔴 LIVE TV
+            </button>
+        </a>
+
+    </div>
+
+
+    <!-- =================================================
+         PERSON SELECTOR
+         ================================================= -->
+
+    <form method="get"
+          class="person-selector">
+
+        {% if current and current.personPicture %}
+            <img
+                src="{{ current.personPicture }}"
+                id="person-avatar"
+                class="person-avatar"
+            >
+        {% else %}
+            <div style="width:44px;height:44px;"></div>
+        {% endif %}
 
     <select name="person"
             onchange="this.form.submit()"
@@ -107,98 +402,141 @@
                 border-radius:12px;
                 font-weight:600;
                 font-size:0.95em;
+                background:#020617;
+                color:white;
+                border:1px solid rgba(255,255,255,.18);
             ">
         {% for p in persons %}
             <option value="{{ p }}"
-                {% if p == selected_person %}selected{% endif %}>
+                {% if p == selected_person %}selected{% endif %}
+                style="background:#020617; color:white;">
                 {{ p }}
             </option>
         {% endfor %}
     </select>
 
-</form>
+    </form>
 
-<h2 style="text-align:center; margin-bottom:12px;">
-    Teraz: {{ now }} {{ current_day_name }}
-</h2>
 
-<!-- ================= CURRENT ================= -->
-{% if current and current|length > 0 %}
-    {% for item in current %}
-    <div style="
-        background:#020617;
-        border:2px solid #22c55e;
-        border-radius:16px;
-        padding:16px;
-        margin-bottom:16px;
-        box-shadow:0 10px 30px rgba(0,0,0,0.4);
-    ">
+    <!-- =================================================
+         CURRENT TIME
+         ================================================= -->
 
-        {% if item.picture %}
-            <img src="{{ item.picture }}"
-                 style="width:100%; max-height:180px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
-        {% endif %}
+    <h2 class="live-title">
+        Teraz: {{ now }} {{ current_day_name }}
+    </h2>
 
-        <div style="font-size:1.4em; font-weight:bold;">
-            {{ item.start }} – {{ item.end }}
-        </div>
 
-        <div style="margin:10px 0; font-size:1.2em;">
-            {{ item.description }}
-        </div>
+    <!-- =================================================
+         CURRENT
+         ================================================= -->
 
-        {% if item.person %}
-        <div style="display:flex; align-items:center; gap:12px;">
-            {% if item.personPicture %}
-                <img src="{{ item.personPicture }}"
-                     style="width:42px;height:42px;border-radius:50%;object-fit:cover;">
+    {% if current and current|length > 0 %}
+
+        {% for item in current %}
+
+        <div class="current-card">
+
+            {% if item.picture %}
+                <img
+                    src="{{ item.picture }}"
+                    class="current-picture"
+                >
             {% endif %}
-            <div>{{ item.person }}</div>
-        </div>
-        {% endif %}
-    </div>
-    {% endfor %}
-{% else %}
-<p style="text-align:center; opacity:0.6;">
-    Brak aktualnej aktywności
-</p>
-{% endif %}
 
-<!-- ================= NEXT ================= -->
-{% if next and next|length > 0 %}
-<h3 style="margin-top:28px; opacity:0.7;">Następnie</h3>
+            <div class="activity-time">
+                {{ item.start }} – {{ item.end }}
+            </div>
 
-    {% for item in next %}
-    <div style="
-        margin-top:16px;
-        background:#020617;
-        border:2px dashed #38bdf8;
-        border-radius:16px;
-        padding:16px;
-    ">
+            <div class="activity-description">
+                {{ item.description }}
+            </div>
 
-        {% if item.picture %}
-            <img src="{{ item.picture }}"
-                 style="width:50%; max-height:90px; object-fit:cover; border-radius:12px; margin-bottom:12px;">
-        {% endif %}
+            {% if item.person %}
 
-        <div style="font-weight:bold;">
-            {{ item.start }} – {{ item.end }}
-        </div>
+            <div class="activity-person">
 
-        <div>{{ item.description }}</div>
+                {% if item.personPicture %}
+                    <img
+                        src="{{ item.personPicture }}"
+                    >
+                {% endif %}
 
-        {% if item.person %}
-        <div style="display:flex; align-items:center; gap:12px; margin-top:8px;">
-            {% if item.personPicture %}
-                <img src="{{ item.personPicture }}"
-                     style="width:36px;height:36px;border-radius:50%;object-fit:cover;">
+                <div>
+                    {{ item.person }}
+                </div>
+
+            </div>
+
             {% endif %}
-            <div>{{ item.person }}</div>
+
         </div>
-        {% endif %}
-    </div>
-    {% endfor %}
-{% endif %}
+
+        {% endfor %}
+
+    {% else %}
+
+        <p class="no-activity">
+            Brak aktualnej aktywności
+        </p>
+
+    {% endif %}
+
+
+    <!-- =================================================
+         NEXT
+         ================================================= -->
+
+    {% if next and next|length > 0 %}
+
+        <h3 class="next-title">
+            Następnie
+        </h3>
+
+        {% for item in next %}
+
+        <div class="next-card">
+
+            {% if item.picture %}
+                <img
+                    src="{{ item.picture }}"
+                    class="next-picture"
+                >
+            {% endif %}
+
+            <div class="next-time">
+                {{ item.start }} – {{ item.end }}
+            </div>
+
+            <div class="next-description">
+                {{ item.description }}
+            </div>
+
+            {% if item.person %}
+
+            <div class="next-person">
+
+                {% if item.personPicture %}
+                    <img
+                        src="{{ item.personPicture }}"
+                    >
+                {% endif %}
+
+                <div>
+                    {{ item.person }}
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+</div>
+
 
 {% endblock %}

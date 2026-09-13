@@ -6,116 +6,436 @@
 
 <meta http-equiv="refresh" content="30">
 
-<h2 style="text-align:center; margin-bottom:8px;">
-    ⚙️ Main menu   
-</h2>
+<style>
 
-<!-- 🔝 TOP BAR -->
+    /* =====================================================
+       MAIN MENU
+       ===================================================== */
 
-<div style="
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-    margin-top:12px;
-">
+    .main-menu {
+        width: 100%;
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 8px 0 20px;
+    }
 
-    <a href="/home/homebyperson" style="text-decoration:none;">
-        <button style="
-            width:100%;
-            padding:14px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#22c55e;
-            color:#022c22;
-            cursor:pointer;
-        ">
-            ⏱ LIVE ALL BY PERSON
-        </button>
-    </a>
+    .menu-title {
+        text-align: center;
+        margin: 4px 0 4px;
+        font-size: clamp(1.35rem, 4vw, 1.8rem);
+        font-weight: 800;
+        letter-spacing: .3px;
+    }
 
-    <a href="/live/status" style="text-decoration:none;">
-        <button style="
-            width:100%;
-            padding:14px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#22c55e;
-            color:#022c22;
-            cursor:pointer;
-        ">
-            🔴 LIVE NOW
-        </button>
-    </a>
+    .menu-subtitle {
+        text-align: center;
+        margin: 0 0 22px;
+        color: #94a3b8;
+        font-size: .9rem;
+    }
+
+    .menu-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .menu-card {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-height: 82px;
+        padding: 15px 17px;
+        border-radius: 18px;
+        text-decoration: none;
+        color: inherit;
+        overflow: hidden;
+
+        border: 1px solid rgba(255,255,255,.10);
+        background: rgba(255,255,255,.055);
+        box-shadow:
+            0 8px 24px rgba(0,0,0,.16),
+            inset 0 1px 0 rgba(255,255,255,.05);
+
+        transition:
+            transform .18s ease,
+            box-shadow .18s ease,
+            border-color .18s ease;
+    }
+
+    .menu-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            135deg,
+            rgba(255,255,255,.08),
+            transparent 55%
+        );
+        pointer-events: none;
+    }
+
+    .menu-card:hover {
+        transform: translateY(-3px);
+        box-shadow:
+            0 13px 30px rgba(0,0,0,.23),
+            inset 0 1px 0 rgba(255,255,255,.08);
+        border-color: rgba(255,255,255,.20);
+    }
+
+    .menu-card:active {
+        transform: scale(.97);
+    }
+
+    .menu-icon {
+        position: relative;
+        z-index: 1;
+
+        width: 50px;
+        height: 50px;
+        min-width: 50px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border-radius: 15px;
+        font-size: 1.55rem;
+
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,.18),
+            0 5px 12px rgba(0,0,0,.15);
+    }
+
+    .menu-text {
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+    }
+
+    .menu-name {
+        display: block;
+        font-size: .98rem;
+        font-weight: 800;
+        line-height: 1.2;
+        letter-spacing: .2px;
+    }
+
+    .menu-description {
+        display: block;
+        margin-top: 5px;
+        font-size: .75rem;
+        line-height: 1.25;
+        opacity: .68;
+    }
+
+    .menu-arrow {
+        position: relative;
+        z-index: 1;
+        margin-left: auto;
+        font-size: 1.2rem;
+        opacity: .45;
+    }
+
+    /* =====================================================
+       COLORS
+       ===================================================== */
+
+    .live-all-person {
+        background:
+            linear-gradient(135deg,
+                rgba(34,197,94,.20),
+                rgba(34,197,94,.055));
+    }
+
+    .live-now {
+        background:
+            linear-gradient(135deg,
+                rgba(239,68,68,.20),
+                rgba(239,68,68,.055));
+    }
+
+    .live-all {
+        background:
+            linear-gradient(135deg,
+                rgba(34,197,94,.15),
+                rgba(34,197,94,.045));
+    }
+
+    .activities {
+        background:
+            linear-gradient(135deg,
+                rgba(37,99,235,.22),
+                rgba(37,99,235,.055));
+    }
+
+    .picture {
+        background:
+            linear-gradient(135deg,
+                rgba(250,204,21,.20),
+                rgba(250,204,21,.055));
+    }
+
+    .persons {
+        background:
+            linear-gradient(135deg,
+                rgba(96,165,250,.20),
+                rgba(96,165,250,.055));
+    }
+
+    .icon-green {
+        background: rgba(34,197,94,.18);
+    }
+
+    .icon-red {
+        background: rgba(239,68,68,.18);
+    }
+
+    .icon-blue {
+        background: rgba(37,99,235,.20);
+    }
+
+    .icon-yellow {
+        background: rgba(250,204,21,.18);
+    }
+
+    .icon-person {
+        background: rgba(96,165,250,.18);
+    }
+
+    /* =====================================================
+       PHONE
+       ===================================================== */
+
+    @media (max-width: 600px) {
+
+        .main-menu {
+            padding: 4px 0 15px;
+        }
+
+        .menu-subtitle {
+            margin-bottom: 16px;
+        }
+
+        .menu-grid {
+            grid-template-columns: 1fr;
+            gap: 11px;
+        }
+
+        .menu-card {
+            min-height: 74px;
+            padding: 12px 14px;
+            border-radius: 16px;
+        }
+
+        .menu-icon {
+            width: 46px;
+            height: 46px;
+            min-width: 46px;
+            border-radius: 13px;
+            font-size: 1.4rem;
+        }
+
+        .menu-name {
+            font-size: .94rem;
+        }
+
+        .menu-description {
+            font-size: .72rem;
+            margin-top: 4px;
+        }
+
+        .menu-arrow {
+            font-size: 1.1rem;
+        }
+    }
+
+    /* Bardzo małe telefony */
+    @media (max-width: 360px) {
+
+        .menu-card {
+            min-height: 70px;
+            padding: 10px 12px;
+        }
+
+        .menu-icon {
+            width: 43px;
+            height: 43px;
+            min-width: 43px;
+        }
+
+        .menu-name {
+            font-size: .9rem;
+        }
+
+        .menu-description {
+            font-size: .68rem;
+        }
+    }
+
+</style>
 
 
-    <a href="/home" style="text-decoration:none;">
-        <button style="
-            width:100%;
-            padding:14px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#22c55e;
-            color:#022c22;
-            cursor:pointer;
-        ">
-            ⏱ LIVE ALL
-        </button>
-    </a>
+<div class="main-menu">
 
-    <a href="/activities" style="text-decoration:none;">
-        <button style="
-            width:100%;
-            padding:14px;
-            border-radius:14px;
-            border:none;
-            font-weight:bold;
-            background:#0d42ad;
-            color:white;
-            cursor:pointer;
-        ">
-            🏃‍♂️ ACTIVITY SCHEDULE
-        </button>
-    </a>
+    <h2 class="menu-title">
+        ⚙️ Main menu
+    </h2>
 
-    <a href="/pictureactivities" style="text-decoration:none;">
-        <button style="
-            width:100%;
-            padding:14px;
-            border-radius:14px;
-            border:none;
-            font-size:1em;
-            font-weight:bold;
-            background:#fde047;
-            color:#422006;
-            cursor:pointer;
-        ">
-            🖼 AKTIVITY
-        </button>
-    </a>
+    <div class="menu-subtitle">
+        Choose what you want to see
+    </div>
 
-    <a href="/persons" style="text-decoration:none;">
-        <button style="
-            width:100%;
-            padding:14px;
-            border-radius:14px;
-            border:none;
-            font-size:1em;
-            font-weight:bold;
-            background:#2f78b4;
-            color:#422006;
-            cursor:pointer;
-        ">
-            👨‍👩‍👧 Osoby
-        </button>
-    </a>
+
+    <div class="menu-grid">
+
+        <!-- LIVE ALL BY PERSON -->
+        <a href="/home/homebyperson"
+           class="menu-card live-all-person">
+
+            <div class="menu-icon icon-green">
+                👥
+            </div>
+
+            <div class="menu-text">
+                <span class="menu-name">
+                    LIVE ALL BY PERSON
+                </span>
+                <span class="menu-description">
+                    Activities grouped by person
+                </span>
+            </div>
+
+            <div class="menu-arrow">
+                ›
+            </div>
+
+        </a>
+
+
+        <!-- LIVE NOW -->
+        <a href="/live/status"
+           class="menu-card live-now">
+
+            <div class="menu-icon icon-red">
+                🔴
+            </div>
+
+            <div class="menu-text">
+                <span class="menu-name">
+                    LIVE NOW
+                </span>
+                <span class="menu-description">
+                    What is happening right now
+                </span>
+            </div>
+
+            <div class="menu-arrow">
+                ›
+            </div>
+
+        </a>
+
+
+        <!-- LIVE ALL -->
+        <a href="/home"
+           class="menu-card live-all">
+
+            <div class="menu-icon icon-green">
+                ⏱️
+            </div>
+
+            <div class="menu-text">
+                <span class="menu-name">
+                    LIVE ALL
+                </span>
+                <span class="menu-description">
+                    Full live activity overview
+                </span>
+            </div>
+
+            <div class="menu-arrow">
+                ›
+            </div>
+
+        </a>
+
+
+        <!-- ACTIVITY SCHEDULE -->
+        <a href="/activities"
+           class="menu-card activities">
+
+            <div class="menu-icon icon-blue">
+                🏃‍♂️
+            </div>
+
+            <div class="menu-text">
+                <span class="menu-name">
+                    ACTIVITY SCHEDULE
+                </span>
+                <span class="menu-description">
+                    Plan and view activities
+                </span>
+            </div>
+
+            <div class="menu-arrow">
+                ›
+            </div>
+
+        </a>
+
+
+        <!-- AKTIVITY -->
+        <a href="/pictureactivities"
+           class="menu-card picture">
+
+            <div class="menu-icon icon-yellow">
+                🖼️
+            </div>
+
+            <div class="menu-text">
+                <span class="menu-name">
+                    AKTIVITY
+                </span>
+                <span class="menu-description">
+                    Activities with pictures
+                </span>
+            </div>
+
+            <div class="menu-arrow">
+                ›
+            </div>
+
+        </a>
+
+
+        <!-- OSOBY -->
+        <a href="/persons"
+           class="menu-card persons">
+
+            <div class="menu-icon icon-person">
+                👨‍👩‍👧
+            </div>
+
+            <div class="menu-text">
+                <span class="menu-name">
+                    OSOBY
+                </span>
+                <span class="menu-description">
+                    Family members
+                </span>
+            </div>
+
+            <div class="menu-arrow">
+                ›
+            </div>
+
+        </a>
+
+    </div>
 
 </div>
-
-
-
 
 
 {% endblock %}
