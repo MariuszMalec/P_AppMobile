@@ -204,12 +204,14 @@ def statusall_page(request: Request, db = Depends(get_db)):
             ORDER BY ad.StartTime
         """, (current_day,)).fetchall()
         
+
         persons = [
-            {"id": 3, "name": "GOSIA"},
-            {"id": 2, "name": "MAMA"},
-            {"id": 1, "name": "TATA"},
-            {"id": 4, "name": "EMILKA"},
-            {"id": 5, "name": "ALL"},
+            {"id": r["Id"], "name": r["PersonName"]}
+            for r in cursor.execute("""
+                SELECT Id, PersonName
+                FROM PersonFamilies
+                ORDER BY Id
+            """).fetchall()
         ]
 
         # --- AKTYWNOŚCI (POPRAWKA) ---
@@ -317,11 +319,12 @@ def statusall_by_day(request: Request, day: int, db = Depends(get_db)):
         """, (current_day,)).fetchall()
 
         persons = [
-            {"id": 3, "name": "GOSIA"},
-            {"id": 2, "name": "MAMA"},
-            {"id": 1, "name": "TATA"},
-            {"id": 4, "name": "EMILKA"},
-            {"id": 5, "name": "ALL"},
+            {"id": r["Id"], "name": r["PersonName"]}
+            for r in cursor.execute("""
+                SELECT Id, PersonName
+                FROM PersonFamilies
+                ORDER BY Id
+            """).fetchall()
         ]
 
         pictures_raw = cursor.execute("""
@@ -401,15 +404,16 @@ def statusalltv_page(request: Request, db = Depends(get_db)):
             ORDER BY ad.StartTime
         """, (current_day,)).fetchall()
 
-        db.close()
-
         persons = [
-            {"id": 3, "name": "GOSIA"},
-            {"id": 2, "name": "MAMA"},
-            {"id": 1, "name": "TATA"},
-            {"id": 4, "name": "EMILKA"},
-            {"id": 5, "name": "ALL"},
+            {"id": r["Id"], "name": r["PersonName"]}
+            for r in cursor.execute("""
+                SELECT Id, PersonName
+                FROM PersonFamilies
+                ORDER BY Id
+            """).fetchall()
         ]
+
+        db.close()
 
         table = {}
 
@@ -492,13 +496,16 @@ def statusall_by_day(request: Request, day: int, db = Depends(get_db)):
             ORDER BY ad.StartTime
         """, (current_day,)).fetchall()
 
+
         persons = [
-            {"id": 3, "name": "GOSIA"},
-            {"id": 2, "name": "MAMA"},
-            {"id": 1, "name": "TATA"},
-            {"id": 4, "name": "EMILKA"},
-            {"id": 5, "name": "ALL"},
+            {"id": r["Id"], "name": r["PersonName"]}
+            for r in cursor.execute("""
+                SELECT Id, PersonName
+                FROM PersonFamilies
+                ORDER BY Id
+            """).fetchall()
         ]
+        
 
         pictures_raw = cursor.execute("""
             SELECT Id, Name, Picture

@@ -505,6 +505,7 @@ def statusall_by_day(request: Request, day: int, db = Depends(get_db)):
                 ORDER BY Id
             """).fetchall()
         ]
+        
 
         pictures_raw = cursor.execute("""
             SELECT Id, Name, Picture
