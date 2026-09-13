@@ -43,14 +43,22 @@ def validate_activity_form(
     # --- format czasu ---
     try:
         start_min = time_to_minutes(start)
-        end_min   = time_to_minutes(end)
+        end_min = time_to_minutes(end)
     except Exception:
         errors.append("Nieprawidłowy format czasu")
         return errors, None
 
     if start_min == end_min:
-        errors.append("Godzina rozpoczęcia i zakończenia nie mogą być takie same")
+        errors.append(
+            "Godzina rozpoczęcia i zakończenia nie mogą być takie same"
+        )
 
+    elif start_min > end_min:
+        errors.append(
+            "Godzina rozpoczęcia nie może być późniejsza niż godzina zakończenia"
+        )
+
+    # --- dzień ---
     if day_of_week not in range(1, 8):
         errors.append("Nieprawidłowy dzień tygodnia")
 
@@ -84,7 +92,7 @@ def validate_activity_form(
 
     for row in existing:
         ex_start = time_to_minutes(row["StartTime"])
-        ex_end   = time_to_minutes(row["EndTime"])
+        ex_end = time_to_minutes(row["EndTime"])
         ex_ranges = normalize_range(ex_start, ex_end)
 
         for nr in new_ranges:
@@ -97,8 +105,6 @@ def validate_activity_form(
                     return errors, None
 
     return errors, picture_id
-
-
 
 def validate_activity_edit_form(
     start: str,
@@ -119,7 +125,14 @@ def validate_activity_edit_form(
         return errors
 
     if start_min == end_min:
-        errors.append("Godzina rozpoczęcia i zakończenia nie mogą być takie same")
+        errors.append(
+            "Godzina rozpoczęcia i zakończenia nie mogą być takie same"
+        )
+    elif start_min > end_min:
+        errors.append(
+            "Godzina rozpoczęcia nie może być późniejsza niż godzina zakończenia"
+        )
+
 
     # jeżeli są już błędy – nie ma sensu iść do bazy
     if errors:

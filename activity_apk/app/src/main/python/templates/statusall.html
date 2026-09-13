@@ -1,10 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <title>LIVE ALL</title>
+
+<link rel="stylesheet" href="/static/css/dialogs.css">
 
 <style>
 
@@ -310,6 +313,7 @@ td {
 }
 
 </style>
+
 </head>
 
 <body>
@@ -318,61 +322,59 @@ td {
     <a href="/home">⬅ Home Page</a>
 </div>
 
-
 <div class="header">
 
-    <div style="
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        gap:14px;
-        font-size:18px;
-        font-weight:600;
-    ">
+<div style="
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    font-size:18px;
+    font-weight:600;
+">
 
-        <span
-            style="cursor:pointer; user-select:none;"
-            onclick="changeDay(-1)"
-            class="week-arrow"
-        >⬅</span>
+    <span
+        style="cursor:pointer; user-select:none;"
+        onclick="changeDay(-1)"
+        class="week-arrow"
+    >⬅</span>
 
-        <span>
-            🟢 LIVE — {{ day_name }}
-        </span>
+    <span>
+        🟢 LIVE — {{ day_name }}
+    </span>
 
-        <span
-            class="datetime"
-            id="datetime"
-        ></span>
+    <span
+        class="datetime"
+        id="datetime"
+    ></span>
 
-        <span
-            style="cursor:pointer; user-select:none;"
-            onclick="changeDay(1)"
-            class="week-arrow"
-        >➡</span>
+    <span
+        style="cursor:pointer; user-select:none;"
+        onclick="changeDay(1)"
+        class="week-arrow"
+    >➡</span>
 
-        <button
-            type="button"
-            onclick="createActivity()"
-            style="
-                padding:8px 14px;
-                border:none;
-                border-radius:10px;
-                background:#22c55e;
-                color:#fff;
-                font-size:13px;
-                font-weight:700;
-                cursor:pointer;
-                box-shadow:0 4px 12px rgba(34,197,94,.25);
-            "
-        >
-            ➕ Utwórz aktywność
-        </button>
-
-    </div>
+    <button
+        type="button"
+        onclick="createActivity()"
+        style="
+            padding:8px 14px;
+            border:none;
+            border-radius:10px;
+            background:#22c55e;
+            color:#fff;
+            font-size:13px;
+            font-weight:700;
+            cursor:pointer;
+            box-shadow:0 4px 12px rgba(34,197,94,.25);
+        "
+    >
+        ➕ Utwórz aktywność
+    </button>
 
 </div>
 
+</div>
 
 <div class="table-wrap">
 
@@ -382,16 +384,15 @@ td {
 
 <tr>
 
-    <th>⏰</th>
+<th>⏰</th>
 
-    {% for p in persons %}
-        <th>{{ p.name }}</th>
-    {% endfor %}
+{% for p in persons %}
+    <th>{{ p.name }}</th>
+{% endfor %}
 
 </tr>
 
 </thead>
-
 
 <tbody>
 
@@ -399,59 +400,59 @@ td {
 
 <tr>
 
-    <td>{{ time }}</td>
+<td>{{ time }}</td>
 
-    {% for p in persons %}
+{% for p in persons %}
 
-        {% set cell = row[p.id] %}
+    {% set cell = row[p.id] %}
 
-        <td
-            class="{% if cell and cell.is_live %}live{% endif %}"
+    <td
+        class="{% if cell and cell.is_live %}live{% endif %}"
 
-            {% if cell %}
+        {% if cell %}
 
-            data-activity-id="{{ cell.activity_id }}"
-            data-desc="{{ cell.description }}"
-            data-img="{{ cell.picture }}"
-            data-start="{{ cell.start }}"
-            data-end="{{ cell.end }}"
-            data-activityname="{{ cell.activityname }}"
-            data-person-id="{{ cell.person_id }}"
-            data-day="{{ day_index }}"
-            onclick="openPreview(this)"
+        data-activity-id="{{ cell.activity_id }}"
+        data-desc="{{ cell.description }}"
+        data-img="{{ cell.picture }}"
+        data-start="{{ cell.start }}"
+        data-end="{{ cell.end }}"
+        data-activityname="{{ cell.activityname }}"
+        data-person-id="{{ cell.person_id }}"
+        data-day="{{ day_index }}"
+        onclick="openPreview(this)"
 
-            {% endif %}
-        >
+        {% endif %}
+    >
 
-            {% if cell %}
+        {% if cell %}
 
-                {% if cell.picture %}
+            {% if cell.picture %}
 
-                    <img
-                        src="{{ cell.picture }}"
-                        class="tile-img"
-                    >
-
-                {% endif %}
-
-                <div class="tile-overlay">
-                    {{ cell.description }}
-                </div>
-
-            {% else %}
-
-                <div
-                    class="empty"
-                    onclick="createActivityForPerson('{{ p.id }}')"
+                <img
+                    src="{{ cell.picture }}"
+                    class="tile-img"
                 >
-                    —
-                </div>
 
             {% endif %}
 
-        </td>
+            <div class="tile-overlay">
+                {{ cell.description }}
+            </div>
 
-    {% endfor %}
+        {% else %}
+
+            <div
+                class="empty"
+                onclick="createActivityForPerson('{{ p.id }}')"
+            >
+                —
+            </div>
+
+        {% endif %}
+
+    </td>
+
+{% endfor %}
 
 </tr>
 
@@ -463,7 +464,6 @@ td {
 
 </div>
 
-
 <!-- ================= PREVIEW ================= -->
 
 <div
@@ -472,129 +472,127 @@ td {
     onclick="closePreview()"
 >
 
+<div
+    class="preview-card"
+    onclick="event.stopPropagation()"
+>
+
     <div
-        class="preview-card"
-        onclick="event.stopPropagation()"
+        class="preview-close"
+        onclick="closePreview()"
     >
+        ✕
+    </div>
+
+
+    <img id="p-img">
+
+
+    <div class="preview-desc">
 
         <div
-            class="preview-close"
-            onclick="closePreview()"
+            id="p-name"
+            style="font-weight:600; text-align:center;"
+        ></div>
+
+
+        <label>Start</label>
+
+        <input
+            type="time"
+            id="p-start"
         >
-            ✕
-        </div>
 
 
-        <img id="p-img">
+        <label>Koniec</label>
+
+        <input
+            type="time"
+            id="p-end"
+        >
 
 
-        <div class="preview-desc">
+        <!-- ================= DZIEŃ TYGODNIA ================= -->
 
-            <div
-                id="p-name"
-                style="font-weight:600; text-align:center;"
-            ></div>
+        <label>Dzień tygodnia</label>
 
-
-            <label>Start</label>
-
-            <input
-                type="time"
-                id="p-start"
-            >
-
-
-            <label>Koniec</label>
-
-            <input
-                type="time"
-                id="p-end"
-            >
-
-
-            <!-- ================= DZIEŃ TYGODNIA ================= -->
-
-            <label>Dzień tygodnia</label>
-
-                <select id="p-day">
-                    <option value="1">Niedziela</option>
-                    <option value="2">Poniedziałek</option>
-                    <option value="3">Wtorek</option>
-                    <option value="4">Środa</option>
-                    <option value="5">Czwartek</option>
-                    <option value="6">Piątek</option>
-                    <option value="7">Sobota</option>
-                </select>
-
-                <label>Osoba</label>
-
-                <select id="p-person">
-                    <option value="">— BRAK —</option>
-
-                    {% for p in persons %}
-                        <option value="{{ p.id }}">
-                            {{ p.name }}
-                        </option>
-                    {% endfor %}
-                </select>
-
-            <label>Aktywność</label>
-
-            <select
-                id="p-activity-select"
-                name="activityname"
-            >
-
-                <option value="">
-                    — BRAK —
-                </option>
-
-                {% for v in pictures %}
-
-                    <option
-                        value="{{ v.label }}"
-                        data-picture="{{ v.picture }}"
-                    >
-                        {{ v.label }}
-                    </option>
-
-                {% endfor %}
-
+            <select id="p-day">
+                <option value="1">Niedziela</option>
+                <option value="2">Poniedziałek</option>
+                <option value="3">Wtorek</option>
+                <option value="4">Środa</option>
+                <option value="5">Czwartek</option>
+                <option value="6">Piątek</option>
+                <option value="7">Sobota</option>
             </select>
 
+            <label>Osoba</label>
 
-            <label>Opis</label>
+            <select id="p-person">
+                <option value="">— BRAK —</option>
 
-            <input
-                type="text"
-                id="p-desc-input"
-            >
+                {% for p in persons %}
+                    <option value="{{ p.id }}">
+                        {{ p.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+        <label>Aktywność</label>
+
+        <select
+            id="p-activity-select"
+            name="activityname"
+        >
+
+            <option value="">
+                — BRAK —
+            </option>
+
+            {% for v in pictures %}
+
+                <option
+                    value="{{ v.label }}"
+                    data-picture="{{ v.picture }}"
+                >
+                    {{ v.label }}
+                </option>
+
+            {% endfor %}
+
+        </select>
 
 
-            <button onclick="saveEdit()">
-                💾 Zapisz
-            </button>
+        <label>Opis</label>
+
+        <input
+            type="text"
+            id="p-desc-input"
+        >
 
 
-            <button
-                onclick="deleteActivity()"
-                style="
-                    margin-top:6px;
-                    background:#ef4444;
-                    color:#fff;
-                    font-weight:700;
-                "
-            >
-                🗑 Usuń aktywność
-            </button>
+        <button onclick="saveEdit()">
+            💾 Zapisz
+        </button>
 
-        </div>
+
+        <button
+            onclick="deleteActivity()"
+            style="
+                margin-top:6px;
+                background:#ef4444;
+                color:#fff;
+                font-weight:700;
+            "
+        >
+            🗑 Usuń aktywność
+        </button>
 
     </div>
 
 </div>
 
-
+</div>
 
 <!-- ================= CREATE ACTIVITY ================= -->
 
@@ -604,156 +602,154 @@ td {
     onclick="closeCreatePreview()"
 >
 
+<div
+    class="preview-card"
+    onclick="event.stopPropagation()"
+>
+
     <div
-        class="preview-card"
-        onclick="event.stopPropagation()"
+        class="preview-close"
+        onclick="closeCreatePreview()"
     >
+        ✕
+    </div>
+
+    <div class="preview-desc">
 
         <div
-            class="preview-close"
-            onclick="closeCreatePreview()"
+            style="
+                font-weight:700;
+                text-align:center;
+                font-size:18px;
+                margin-bottom:8px;
+            "
         >
-            ✕
+            ➕ Utwórz aktywność
         </div>
 
-        <div class="preview-desc">
 
-            <div
-                style="
-                    font-weight:700;
-                    text-align:center;
-                    font-size:18px;
-                    margin-bottom:8px;
-                "
-            >
-                ➕ Utwórz aktywność
-            </div>
+        <label>Start</label>
+
+        <input
+            type="time"
+            id="c-start"
+        >
 
 
-            <label>Start</label>
+        <label>Koniec</label>
 
-            <input
-                type="time"
-                id="c-start"
-            >
-
-
-            <label>Koniec</label>
-
-            <input
-                type="time"
-                id="c-end"
-            >
+        <input
+            type="time"
+            id="c-end"
+        >
 
 
-            <label>Dzień tygodnia</label>
+        <label>Dzień tygodnia</label>
 
-            <select id="c-day">
+        <select id="c-day">
 
-                <option value="1">Niedziela</option>
-                <option value="2">Poniedziałek</option>
-                <option value="3">Wtorek</option>
-                <option value="4">Środa</option>
-                <option value="5">Czwartek</option>
-                <option value="6">Piątek</option>
-                <option value="7">Sobota</option>
+            <option value="1">Niedziela</option>
+            <option value="2">Poniedziałek</option>
+            <option value="3">Wtorek</option>
+            <option value="4">Środa</option>
+            <option value="5">Czwartek</option>
+            <option value="6">Piątek</option>
+            <option value="7">Sobota</option>
 
-            </select>
-
-
-            <label>Osoba</label>
-
-            <select id="c-person">
-
-                <option value="">— WYBIERZ OSOBĘ —</option>
-
-                {% for p in persons %}
-
-                    <option value="{{ p.id }}">
-                        {{ p.name }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
+        </select>
 
 
-            <label>Aktywność</label>
+        <label>Osoba</label>
 
-            <select
-                id="c-activity"
-            >
+        <select id="c-person">
 
-                <option value="">
-                    — WYBIERZ AKTYWNOŚĆ —
+            <option value="">— WYBIERZ OSOBĘ —</option>
+
+            {% for p in persons %}
+
+                <option value="{{ p.id }}">
+                    {{ p.name }}
                 </option>
 
-                {% for v in pictures %}
+            {% endfor %}
 
-                    <option
-                        value="{{ v.label }}"
-                        data-picture="{{ v.picture }}"
-                    >
-                        {{ v.label }}
-                    </option>
-
-                {% endfor %}
-
-            </select>
+        </select>
 
 
-            <!-- PODGLĄD OBRAZKA -->
+        <label>Aktywność</label>
 
-            <img
-                id="c-img"
-                style="
-                    width:100%;
-                    max-height:200px;
-                    object-fit:cover;
-                    border-radius:10px;
-                    display:none;
-                    margin-top:4px;
-                "
-            >
+        <select
+            id="c-activity"
+        >
 
+            <option value="">
+                — WYBIERZ AKTYWNOŚĆ —
+            </option>
 
-            <label>Opis</label>
+            {% for v in pictures %}
 
-            <input
-                type="text"
-                id="c-desc"
-                placeholder="Opis aktywności..."
-            >
+                <option
+                    value="{{ v.label }}"
+                    data-picture="{{ v.picture }}"
+                >
+                    {{ v.label }}
+                </option>
 
+            {% endfor %}
 
-            <button
-                type="button"
-                onclick="saveCreateActivity()"
-            >
-                💾 Utwórz aktywność
-            </button>
+        </select>
 
 
-            <button
-                type="button"
-                onclick="closeCreatePreview()"
-                style="
-                    margin-top:6px;
-                    background:#475569;
-                    color:#fff;
-                    font-weight:700;
-                "
-            >
-                Anuluj
-            </button>
+        <!-- PODGLĄD OBRAZKA -->
 
-        </div>
+        <img
+            id="c-img"
+            style="
+                width:100%;
+                max-height:200px;
+                object-fit:cover;
+                border-radius:10px;
+                display:none;
+                margin-top:4px;
+            "
+        >
+
+
+        <label>Opis</label>
+
+        <input
+            type="text"
+            id="c-desc"
+            placeholder="Opis aktywności..."
+        >
+
+
+        <button
+            type="button"
+            onclick="saveCreateActivity()"
+        >
+            💾 Utwórz aktywność
+        </button>
+
+
+        <button
+            type="button"
+            onclick="closeCreatePreview()"
+            style="
+                margin-top:6px;
+                background:#475569;
+                color:#fff;
+                font-weight:700;
+            "
+        >
+            Anuluj
+        </button>
 
     </div>
 
 </div>
 
-
+</div>
 
 <!-- ================= TOAST ================= -->
 
@@ -779,10 +775,9 @@ td {
     "
 >
 
-    <span id="toast-text"></span>
+<span id="toast-text"></span>
 
 </div>
-
 
 <script>
 
@@ -1270,43 +1265,46 @@ function deleteActivity() {
     if (!activityId) return;
 
 
-    if (
-        !confirm(
-            "Czy na pewno usunąć aktywność?"
-        )
-    ) return;
+    showDeleteConfirm(
+        function() {
+
+            fetch(
+                `/activities/delete/${activityId}`,
+                {
+                    method: "POST"
+                }
+            )
+
+            .then(r => {
+
+                if (!r.ok) {
+
+                    throw new Error(
+                        "Nie udało się usunąć aktywności"
+                    );
+
+                }
 
 
-    fetch(
-        `/activities/delete/${activityId}`,
-        {
-            method: "POST"
-        }
-    )
+                closePreview();
 
-    .then(r => {
+                location.reload();
 
-        if (!r.ok) {
+            })
 
-            throw new Error(
-                "Nie udało się usunąć aktywności"
+            .catch(err =>
+
+                showErrorToast(
+                    err.message
+                )
+
             );
 
-        }
+        },
 
+        "Usuń aktywność?",
 
-        closePreview();
-
-        location.reload();
-
-    })
-
-    .catch(err =>
-
-        showErrorToast(
-            err.message
-        )
-
+        "Czy na pewno chcesz usunąć tę aktywność?"
     );
 
 }
@@ -1487,6 +1485,8 @@ document
 
 /* ================= SAVE NEW ACTIVITY ================= */
 
+/* ================= SAVE NEW ACTIVITY ================= */
+
 function saveCreateActivity() {
 
     const start =
@@ -1563,30 +1563,25 @@ function saveCreateActivity() {
         start
     );
 
-
     formData.append(
         'end',
         end
     );
-
 
     formData.append(
         'day_of_week',
         day
     );
 
-
     formData.append(
         'description',
         description
     );
 
-
     formData.append(
         'person_id',
         person
     );
-
 
     formData.append(
         'activity_name',
@@ -1605,11 +1600,9 @@ function saveCreateActivity() {
     .then(async response => {
 
         /*
-         * Endpoint przy sukcesie zwraca
-         * RedirectResponse /activities.
+         * SUKCES
          *
-         * Przy błędach FastAPI zwróci
-         * stronę activity_add.html.
+         * Backend zwraca RedirectResponse.
          */
 
         if (response.redirected) {
@@ -1626,7 +1619,70 @@ function saveCreateActivity() {
             await response.text();
 
 
+        /*
+         * BŁĄD
+         *
+         * Backend zwraca activity_add.html
+         * z listą konkretnych błędów.
+         */
+
         if (!response.ok) {
+
+            try {
+
+                const parser =
+                    new DOMParser();
+
+                const doc =
+                    parser.parseFromString(
+                        text,
+                        'text/html'
+                    );
+
+
+                const errorBox =
+                    doc.querySelector('.errors');
+
+
+                if (errorBox) {
+
+                    const errors =
+                        Array.from(
+                            errorBox.querySelectorAll('li')
+                        )
+                        .map(li => li.textContent.trim())
+                        .filter(Boolean);
+
+
+                    if (errors.length > 0) {
+
+                        throw new Error(
+                            errors.join('\n')
+                        );
+
+                    }
+
+                }
+
+            } catch (e) {
+
+                /*
+                 * Jeżeli udało się wyciągnąć
+                 * konkretny komunikat, przepuszczamy go dalej.
+                 */
+
+                if (
+                    e instanceof Error &&
+                    e.message &&
+                    !e.message.includes('DOMParser')
+                ) {
+
+                    throw e;
+
+                }
+
+            }
+
 
             throw new Error(
                 'Nie udało się utworzyć aktywności.'
@@ -1636,9 +1692,7 @@ function saveCreateActivity() {
 
 
         /*
-         * Jeżeli backend zwrócił formularz
-         * z błędami walidacji, pokazujemy
-         * komunikat zamiast przeładowywać.
+         * Nieoczekiwana odpowiedź bez przekierowania.
          */
 
         throw new Error(
@@ -1659,8 +1713,6 @@ function saveCreateActivity() {
 
 
 
-
-
 updateDateTime();
 
 
@@ -1671,5 +1723,8 @@ setInterval(
 
 </script>
 
+<script src="/static/js/dialogs.js"></script>
+
 </body>
 </html>
+

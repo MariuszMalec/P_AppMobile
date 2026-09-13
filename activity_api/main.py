@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 import sqlite3
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 from db import (
@@ -17,7 +18,6 @@ from routers.mainmenu import router as mainmenu_router
 from routers.livenow import router as livenow_router
 from routers.pictureactivity import router as pictureactivity_router
 from routers.persons import router as persons_router
-
 
 
 # =========================
@@ -42,21 +42,38 @@ async def lifespan(app: FastAPI):
         insert_activities_days(conn)
 
         conn.commit()
-        conn.close()   # ← zamykasz TU
+        conn.close()
 
-        yield  # start aplikacji
+        yield
+
     finally:
-        conn.close()  # shutdown
+        conn.close()
 
 
-# ⬅️ TU PODPINAMY LIFESPAN
+# =========================
+# FASTAPI
+# =========================
 app = FastAPI(lifespan=lifespan)
+
+# =========================
+# STATIC
+# =========================
+STATIC_DIR = Path(__file__).parent / "static"
+
+app.mount(
+    "/static",
+    StaticFiles(directory=STATIC_DIR),
+    name="static"
+)
 
 
 # ---------- MAIN PAGE ----------
 @app.get("/")
 def root_redirect():
-    return RedirectResponse("/live/statusall", status_code=302)
+    return RedirectResponse(
+        "/live/statusall",
+        status_code=302
+    )
 
 
 # ---------- ROUTERS ----------

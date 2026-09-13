@@ -6,6 +6,8 @@
 
 <title>Osoby</title>
 
+<link rel="stylesheet" href="/static/css/dialogs.css">
+
 <style>
 
 * {
@@ -401,7 +403,7 @@ button {
                     <form
                         method="post"
                         action="/persons/delete/{{ person['Id'] }}"
-                        onsubmit="return confirm('Czy na pewno usunąć {{ person['PersonName'] }}?');"
+                        onsubmit="event.preventDefault(); showDeleteConfirm(() => this.submit(), 'Usuń osobę?', 'Czy na pewno chcesz usunąć {{ person['PersonName'] }}?');"
                         style="margin-top: 8px;"
                     >
 
@@ -433,6 +435,8 @@ button {
     </div>
 
 </div>
+
+<script src="/static/js/dialogs.js"></script>
 
 </body>
 </html>

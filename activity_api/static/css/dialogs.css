@@ -1,0 +1,106 @@
+/* =========================================================
+   WSPÓLNE OKNA DIALOGOWE
+   ========================================================= */
+
+.delete-confirm-bg {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    isolation: isolate;
+    padding: 20px;
+}
+
+.delete-confirm-bg.active {
+    display: flex;
+}
+
+.delete-confirm-card {
+    width: min(90vw, 360px);
+    background: #0c0f2a;
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.65);
+    text-align: center;
+    animation: deletePop .18s ease-out;
+}
+
+@keyframes deletePop {
+    from {
+        opacity: 0;
+        transform: scale(.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.delete-confirm-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(239,68,68,.14);
+    border: 1px solid rgba(239,68,68,.35);
+    font-size: 25px;
+}
+
+.delete-confirm-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.delete-confirm-text {
+    color: #aeb4c7;
+    font-size: 14px;
+    line-height: 1.45;
+    margin-bottom: 20px;
+}
+
+.delete-confirm-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.delete-confirm-buttons button {
+    flex: 1;
+    padding: 11px 10px;
+    border: none;
+    border-radius: 11px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        transform .15s ease,
+        opacity .15s ease;
+}
+
+.delete-confirm-buttons button:active {
+    transform: scale(.96);
+}
+
+.delete-cancel {
+    background: #334155;
+    color: white;
+}
+
+.delete-confirm {
+    background: #ef4444;
+    color: white;
+    box-shadow:
+        0 4px 14px rgba(239,68,68,.25);
+}
+
+.delete-confirm-buttons button:hover {
+    opacity: .9;
+}

@@ -5,6 +5,8 @@
     <title>Plan aktywności</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="stylesheet" href="/static/css/dialogs.css">
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -168,7 +170,6 @@
             color: #ecfdf5;
         }
 
-
     </style>
 </head>
 
@@ -242,23 +243,24 @@
                 ✏️
             </a>
 
-                <form method="post"
-                    action="/activities/delete/{{ a.id }}"
-                    onsubmit="return confirm('Czy na pewno usunąć tę aktywność?');"
-                    style="margin-left:8px">
+            <form method="post"
+                  action="/activities/delete/{{ a.id }}"
+                  onsubmit="event.preventDefault(); showDeleteConfirm(() => this.submit(), 'Usuń aktywność?', 'Czy na pewno chcesz usunąć tę aktywność?');"
+                  style="margin-left:8px">
 
-                    <button type="submit" class="delete-btn" title="Usuń">
-                        🗑️
-                    </button>
-                </form>
+                <button type="submit" class="delete-btn" title="Usuń">
+                    🗑️
+                </button>
+            </form>
 
         </div>
-
 
     </div>
     {% endfor %}
 </div>
 {% endfor %}
+
+<script src="/static/js/dialogs.js"></script>
 
 </body>
 </html>

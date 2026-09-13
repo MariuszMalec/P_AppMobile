@@ -61,6 +61,7 @@ tasks.register("copyActivityApiPython") {
             include "activity.db"
             include "routers/**"
             include "templates/**"
+            include "static/**"
 
             exclude "**/__pycache__/**"
             exclude "**/*.pyc"
@@ -88,6 +89,7 @@ tasks.register("copyActivityApiPython") {
             include "activity.db"
             include "routers/**"
             include "templates/**"
+            include "static/**"
 
             exclude "**/__pycache__/**"
             exclude "**/*.pyc"
