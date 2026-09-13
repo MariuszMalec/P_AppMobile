@@ -117,15 +117,22 @@ def status_page(
 
         params = [current_day]
 
+        # =====================================================
+        # OSOBY - POBIERANE DYNAMICZNIE Z BAZY
+        # =====================================================
+        persons_raw = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+            ORDER BY Id
+        """).fetchall()
+
         PERSON_LABEL_TO_ID = {
-            "TATA": 1,
-            "MAMA": 2,
-            "GOSIA": 3,
-            "EMILKA": 4,
-            "RODZINA": 5,
+            p["PersonName"].upper(): p["Id"]
+            for p in persons_raw
         }
 
         person = person.upper()
+
         person_id = PERSON_LABEL_TO_ID.get(person)
 
         # filtr tylko gdy wybrano konkretną osobę
@@ -136,6 +143,7 @@ def status_page(
         sql += " ORDER BY ad.StartTime"
 
         rows = cursor.execute(sql, params).fetchall()
+
         db.close()
 
         current = None
@@ -160,13 +168,13 @@ def status_page(
         return templates.TemplateResponse(
             request,
             "status.html",
-            {                 
+            {
                 "now": current_time,
                 "current": current,
                 "next": next_item,
                 "current_day_name": current_day_name,
 
-                # 👇 DO WIDOKU
+                # 👇 DO WIDOKU - DYNAMICZNIE Z BAZY
                 "selected_person": person,
                 "persons": list(PERSON_LABEL_TO_ID.keys()),
             }

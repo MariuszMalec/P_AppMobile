@@ -155,19 +155,6 @@ def get_activity_page(request: Request, activity_id: int, db = Depends(get_db)):
         })
 
 
-        
-        # return templates.TemplateResponse(
-        #     request,
-        #     "get_activity.html",
-        #     {
-        #         "activity": activity,
-        #         "persons": persons,
-        #         "pictures": pictures,
-        #         "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
-        #     }
-        # )
-
-
 # ==============================
 # DODAWANIE AKTYWNOŚCI
 # ==============================
@@ -182,13 +169,34 @@ def add_activity_form(request: Request, db = Depends(get_db)):
             ORDER BY Name
         """)
         activities = cursor.fetchall()
+
+        # --- OSOBY Z BAZY ---
+        persons_raw = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+            ORDER BY Id
+        """).fetchall()
+
+        # Formularz activity_add.html oczekuje DICT:
+        # {% for id, name in persons.items() %}
+        #
+        # 0 pozostaje specjalnym wyborem RODZINA,
+        # który w POST jest zamieniany na ID 5.
+        persons = {
+            0: "RODZINA"
+        }
+
+        for p in persons_raw:
+            if p["Id"] != 5:
+                persons[p["Id"]] = p["PersonName"]
+
         db.close()
 
         return templates.TemplateResponse(
             request,
             "activity_add.html",
             {
-                "persons": PERSON_ENUM_MAP,
+                "persons": persons,
                 "activities": activities,
                 "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
             }
@@ -216,6 +224,22 @@ def add_activity_post(
     )
 
     if errors:
+
+        # --- OSOBY Z BAZY ---
+        persons_raw = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+            ORDER BY Id
+        """).fetchall()
+
+        persons = {
+            0: "RODZINA"
+        }
+
+        for p in persons_raw:
+            if p["Id"] != 5:
+                persons[p["Id"]] = p["PersonName"]
+
         return templates.TemplateResponse(
             request,
             "activity_add.html",
@@ -229,7 +253,7 @@ def add_activity_post(
                     "person_id": person_id,
                     "activity_name": activity_name,
                 },
-                "persons": PERSON_ENUM_MAP,
+                "persons": persons,
                 "activities": activities,
                 "days": {k: v for k, v in DAY_NAMES.items() if k != 0},
             },
@@ -507,4 +531,4 @@ def delete_activity(activity_id: int, db = Depends(get_db)):
 
         db.commit()  # 🔴 to jest kluczowe
 
-        return RedirectResponse("/activities", status_code=303)    
+        return RedirectResponse("/activities", status_code=303)

@@ -116,29 +116,45 @@ def home_page_by_person(
         current_day = system_day_to_db_day(iso_day)
         current_day_name = now.strftime("%A")
 
-        # 👉 MAPY (STRING <-> ID)
-        PERSON_NAME_MAP = {
-            1: "TATA",
-            2: "MAMA",
-            3: "GOSIA",
-            4: "EMILKA",
-            5: "RODZINA",
-        }
+        # ==============================
+        # OSOBY Z BAZY
+        # ==============================
+        person_rows = cursor.execute("""
+            SELECT Id, PersonName
+            FROM PersonFamilies
+            ORDER BY Id
+        """).fetchall()
 
+        persons = [
+            r["PersonName"]
+            for r in person_rows
+        ]
+
+        # ==============================
+        # MAPA NAZWA -> ID
+        # ==============================
         PERSON_STRING_TO_ID = {
-            "TATA": 1,
-            "MAMA": 2,
-            "GOSIA": 3,
-            "EMILKA": 4,
-            "RODZINA": 5,
+            r["PersonName"]: r["Id"]
+            for r in person_rows
         }
 
-        persons = ["RODZINA", "TATA", "MAMA", "GOSIA", "EMILKA"]
-        selected_person = person if person in persons else "RODZINA"
+        # ==============================
+        # WYBRANA OSOBA
+        # ==============================
+        if person in PERSON_STRING_TO_ID:
+            selected_person = person
+        elif "MAMA" in PERSON_STRING_TO_ID:
+            selected_person = "MAMA"
+        elif persons:
+            selected_person = persons[0]
+        else:
+            selected_person = ""
 
-        person_id = PERSON_STRING_TO_ID[selected_person]
+        person_id = PERSON_STRING_TO_ID.get(selected_person)
 
-        # 👉 SQL
+        # ==============================
+        # SQL
+        # ==============================
         sql = """
             SELECT
                 ad.StartTime,
@@ -154,10 +170,14 @@ def home_page_by_person(
                 ON ad.ModelPictureActivityId = pa.Id
             WHERE ad.DayOfWeek = ?
         """
+
         params = [current_day]
 
-        # 👉 FILTR OSOBY (jeśli nie ALL)
-        if person_id != 5:
+        # ==============================
+        # FILTR OSOBY
+        # RODZINA = WSZYSTKIE
+        # ==============================
+        if selected_person != "RODZINA" and person_id is not None:
             sql += " AND ad.ModelPersonFamilyId = ?"
             params.append(person_id)
 
@@ -200,7 +220,6 @@ def home_page_by_person(
             }
         )
             
-@router.get("/activities", response_class=HTMLResponse)    
+@router.get("/activities", response_class=HTMLResponse)       
 def home_activities_redirect():
-        return RedirectResponse("/activities", status_code=302)       
-
+        return RedirectResponse("/activities", status_code=302)
