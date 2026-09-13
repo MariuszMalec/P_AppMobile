@@ -7,6 +7,10 @@ android {
     namespace 'com.example.activity'
     compileSdk 35
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId 'com.example.activity'
         minSdk 24
@@ -17,6 +21,51 @@ android {
         ndk {
             abiFilters "arm64-v8a"
         }
+    }
+
+    sourceSets {
+        main {
+            python.srcDirs = [
+                "src/main/python"
+            ]
+        }
+    }
+}
+
+def activityApiDir = file("../../activity_api")
+def apkPythonDir = file("src/main/python")
+
+tasks.register("copyActivityApiPython") {
+    doLast {
+        println "========================================"
+        println "KOPIOWANIE activity_api -> APK Python"
+        println "Źródło:  ${activityApiDir}"
+        println "Cel:     ${apkPythonDir}"
+        println "========================================"
+
+        copy {
+            from activityApiDir
+            into apkPythonDir
+
+            include "main.py"
+            include "db.py"
+            include "enums.py"
+            include "templates.py"
+            include "validators.py"
+            include "activity.db"
+            include "routers/**"
+            include "templates/**"
+
+            exclude "**/__pycache__/**"
+            exclude "**/*.pyc"
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name == "generateDebugPythonSourceAssets" ||
+        name == "generateReleasePythonSourceAssets") {
+        dependsOn("copyActivityApiPython")
     }
 }
 
