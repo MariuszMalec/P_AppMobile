@@ -54,9 +54,15 @@ def validate_activity_form(
         )
 
     elif start_min > end_min:
-        errors.append(
-            "Godzina rozpoczęcia nie może być późniejsza niż godzina zakończenia"
-        )
+        # Dozwolone przejście przez północ, np. 23:30 -> 00:30.
+        # Zwykły odwrócony zakres, np. 10:30 -> 09:30,
+        # pozostaje błędem.
+        crosses_midnight = start_min >= 18 * 60 and end_min < 6 * 60
+
+        if not crosses_midnight:
+            errors.append(
+                "Godzina rozpoczęcia nie może być późniejsza niż godzina zakończenia"
+            )
 
     # --- dzień ---
     if day_of_week not in range(1, 8):
@@ -129,10 +135,16 @@ def validate_activity_edit_form(
             "Godzina rozpoczęcia i zakończenia nie mogą być takie same"
         )
     elif start_min > end_min:
-        errors.append(
-            "Godzina rozpoczęcia nie może być późniejsza niż godzina zakończenia"
-        )
+        # Dozwolone jest przejście przez północ,
+        # np. 23:30 -> 00:30.
+        # Zwykłe odwrócenie zakresu, np. 10:30 -> 09:30,
+        # pozostaje błędem.
+        crosses_midnight = start_min >= 18 * 60 and end_min < 6 * 60
 
+        if not crosses_midnight:
+            errors.append(
+                "Godzina rozpoczęcia nie może być późniejsza niż godzina zakończenia"
+            )
 
     # jeżeli są już błędy – nie ma sensu iść do bazy
     if errors:
