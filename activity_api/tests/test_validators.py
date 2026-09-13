@@ -461,6 +461,39 @@ def test_validate_activity_form_family_person_zero_uses_id_5(client, empty_db):
     finally:
         db.close()
 
+def test_validate_activity_add_form_period_crosses_midnight_ok(client, empty_db):
+    db = get_test_db()
+
+    try:
+        add_person(db, 1)
+        add_activity(db, 1, "Testowa")
+
+        # Istniejąca aktywność: 01:00 - 02:00
+        add_session(
+            db,
+            start="01:00:00",
+            end="02:00:00",
+            day_of_week=1,
+            person_id=1,
+            activity_id=1,
+        )
+
+        # Nowa aktywność: 23:30 - 00:30
+        # Przechodzi przez północ, ale nie koliduje z 01:00 - 02:00.
+        errors, picture_id = validate_activity_form(
+            start="23:30",
+            end="00:30",
+            day_of_week=1,
+            person_id=1,
+            activity_name="Testowa",
+            db=db,
+        )
+
+        assert errors == []
+        assert picture_id == 1
+
+    finally:
+        db.close()
 
 # ============================================================
 # validate_activity_edit_form
@@ -659,6 +692,48 @@ def test_validate_activity_edit_form_adjacent_time_ok(client, empty_db):
         errors = validate_activity_edit_form(
             start="11:00",
             end="12:00",
+            day_of_week=1,
+            person_id=1,
+            activity_id=session2_id,
+            db=db,
+        )
+
+        assert errors == []
+
+    finally:
+        db.close()
+
+def test_validate_activity_edit_form_period_crosses_midnight_ok(client, empty_db):
+    db = get_test_db()
+
+    try:
+        add_person(db, 1)
+        add_activity(db, 1, "Testowa")
+
+        # Istniejąca aktywność: 01:00 - 02:00
+        session1_id = add_session(
+            db,
+            start="01:00:00",
+            end="02:00:00",
+            day_of_week=1,
+            person_id=1,
+            activity_id=1,
+        )
+
+        # Edytowana aktywność: 23:30 - 00:30
+        # Przechodzi przez północ i nie koliduje z 01:00 - 02:00
+        session2_id = add_session(
+            db,
+            start="10:00:00",
+            end="11:00:00",
+            day_of_week=1,
+            person_id=1,
+            activity_id=1,
+        )
+
+        errors = validate_activity_edit_form(
+            start="23:30",
+            end="00:30",
             day_of_week=1,
             person_id=1,
             activity_id=session2_id,
