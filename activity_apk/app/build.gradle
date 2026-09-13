@@ -30,6 +30,21 @@ android {
             ]
         }
     }
+
+    signingConfigs {
+        release {
+            storeFile file('../../Meetings_apk/meetings-release.jks')
+            storePassword 'Alicja@@13!!!'
+            keyAlias 'meetings'
+            keyPassword 'Alicja@@13!!!'
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
 }
 
 def activityApiDir = file("../../activity_api")

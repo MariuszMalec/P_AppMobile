@@ -99,6 +99,7 @@ public class MainActivity extends Activity {
 
                     appendLog("BAZA NIE ISTNIEJE.");
                     appendLog("Nie ma czego usuwać.");
+
                 }
 
             } catch (Throwable e) {
@@ -149,10 +150,12 @@ public class MainActivity extends Activity {
         );
 
         // ============================================
-        // NAJPIERW POKAZUJEMY EKRAN LOGU
+        // DEBUG / RELEASE
         // ============================================
 
-        setContentView(layout);
+        if (BuildConfig.DEBUG) {
+            setContentView(layout);
+        }
 
         appendLog("========================================");
         appendLog("ACTIVITY APK - START");
@@ -232,6 +235,21 @@ public class MainActivity extends Activity {
             }
 
         }, 1000);
+
+        // ============================================
+        // RELEASE
+        // ============================================
+
+        if (!BuildConfig.DEBUG) {
+
+            // RELEASE:
+            // nie pokazujemy ekranu logu
+            // automatycznie otwieramy Activity
+
+            handler.postDelayed(() -> {
+                showWebView();
+            }, 1500);
+        }
     }
 
     // =================================================
