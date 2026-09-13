@@ -2,23 +2,26 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dodaj aktywność</title>
 
     <style>
         body {
+            margin: 0;
+            padding: 24px;
             font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
             background: #020617;
             color: #e5e7eb;
-            padding: 24px;
         }
 
         h2 {
-            margin-bottom: 16px;
+            margin: 0 0 16px 0;
         }
 
         form {
             max-width: 420px;
-            background: #020617;
+            margin: 0 auto;
+            background: #0f172a;
             padding: 20px;
             border-radius: 16px;
             box-shadow: 0 8px 24px rgba(0,0,0,.4);
@@ -30,18 +33,28 @@
             font-weight: 600;
         }
 
-        select, input, textarea, button {
+        select,
+        input,
+        textarea,
+        button {
             width: 100%;
+            box-sizing: border-box;
             padding: 10px;
             border-radius: 10px;
-            border: none;
             font-size: 14px;
         }
 
-        select, input, textarea {
+        select,
+        input,
+        textarea {
             background: #020617;
             color: #e5e7eb;
             border: 1px solid #1e293b;
+        }
+
+        select option {
+            background: #020617;
+            color: #e5e7eb;
         }
 
         textarea {
@@ -55,115 +68,46 @@
 
         button {
             margin-top: 10px;
+            border: none;
             background: #22c55e;
             color: #022c22;
             font-weight: bold;
             cursor: pointer;
         }
 
+        button:hover {
+            background: #16a34a;
+        }
+
+        /* =========================
+           BŁĘDY WALIDACJI
+           ========================= */
+
         .errors {
-            background: #7f1d1d;
+            background: rgba(127, 29, 29, .45);
+            border: 1px solid #ef4444;
             color: #fecaca;
-            padding: 12px;
+            padding: 14px;
             border-radius: 12px;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
+        }
+
+        .errors-title {
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: #fca5a5;
         }
 
         .errors ul {
-            margin: 6px 0 0 16px;
+            margin: 0;
+            padding-left: 20px;
         }
-    </style>
-</head>
-<body>
 
-<h2>➕ Dodaj aktywność</h2>
+        .errors li {
+            margin: 5px 0;
+        }
 
-<form method="post" action="/activities/add">
-
-    {# ---------- BŁĘDY ---------- #}
-    {% if errors %}
-    <div class="errors">
-        <strong>Popraw formularz:</strong>
-        <ul>
-            {% for e in errors %}
-            <li>{{ e }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
-
-    {# ---------- OSOBA ---------- #}
-    <div class="field">
-        <label>Osoba</label>
-        <select name="person_id" required>
-            {% for id, name in persons.items() %}
-                <option value="{{ id }}"
-                    {% if form and form.person_id == id %}selected{% endif %}
-                >
-                    {{ name.value if name.value is defined else name }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
-
-    {# ---------- AKTYWNOŚĆ ---------- #}
-    <div class="field">
-        <label>Aktywność</label>
-        
-        <select name="activity_name" required>
-            {% for a in activities %}
-                <option value="{{ a.Name }}">{{ a.Name }}</option>
-            {% endfor %}
-        </select>
-
-    </div>
-
-    {# ---------- DZIEŃ ---------- #}
-    <div class="field">
-        <label>Dzień tygodnia</label>
-        <select name="day_of_week" required>
-            {% for day_id, day_name in days.items() %}
-                <option value="{{ day_id }}"
-                    {% if form and form.day_of_week == day_id %}selected{% endif %}
-                >
-                    {{ day_name }}
-                </option>
-            {% endfor %}
-        </select>
-    </div>
-
-    {# ---------- GODZINY ---------- #}
-    <div class="field">
-        <label>Start</label>
-        <input type="time" name="start" required step="60" lang="pl">
-    </div>
-
-    <div class="field">
-        <label>Koniec</label>
-        <input type="time" name="end" required step="60" lang="pl">
-    </div>
-
-    {# ---------- OPIS ---------- #}
-    <div class="field">
-        <label>Opis</label>
-        <textarea name="description">{{ form.description if form else 'test' }}</textarea>
-    </div>
-
-    <button type="submit">💾 Zapisz</button>
-
-    <a href="/activities"
-    class="back-btn">
-    ⬅ Wróć do listy
-    </a>
-
-
-</form>
-
-</body>
-</html>
-
-<style>
-            .back-btn {
+        .back-btn {
             display: block;
             text-align: center;
             margin-top: 12px;
@@ -178,4 +122,157 @@
         .back-btn:hover {
             background: #334155;
         }
-</style>
+
+        @media (max-width: 480px) {
+            body {
+                padding: 14px;
+            }
+
+            form {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>➕ Dodaj aktywność</h2>
+
+<form method="post" action="/activities/add">
+
+    {% if errors %}
+    <div class="errors">
+        <div class="errors-title">
+            ⚠️ Nie można dodać aktywności
+        </div>
+
+        <ul>
+            {% for e in errors %}
+                <li>{{ e }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+
+    <!-- =========================
+         OSOBA
+         ========================= -->
+
+    <div class="field">
+        <label>Osoba</label>
+
+        <select name="person_id" required>
+            {% for id, name in persons.items() %}
+                <option value="{{ id }}"
+                    {% if form and form.person_id == id %}selected{% endif %}
+                >
+                    {{ name.value if name.value is defined else name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+
+    <!-- =========================
+         AKTYWNOŚĆ
+         ========================= -->
+
+    <div class="field">
+        <label>Aktywność</label>
+
+        <select name="activity_name" required>
+            {% for a in activities %}
+                <option value="{{ a.Name }}"
+                    {% if form and form.activity_name == a.Name %}selected{% endif %}
+                >
+                    {{ a.Name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+
+    <!-- =========================
+         DZIEŃ
+         ========================= -->
+
+    <div class="field">
+        <label>Dzień tygodnia</label>
+
+        <select name="day_of_week" required>
+            {% for day_id, day_name in days.items() %}
+                <option value="{{ day_id }}"
+                    {% if form and form.day_of_week == day_id %}selected{% endif %}
+                >
+                    {{ day_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+
+    <!-- =========================
+         START
+         ========================= -->
+
+    <div class="field">
+        <label>Start</label>
+
+        <input
+            type="time"
+            name="start"
+            value="{{ form.start if form else '' }}"
+            required
+            step="60"
+            lang="pl"
+        >
+    </div>
+
+
+    <!-- =========================
+         KONIEC
+         ========================= -->
+
+    <div class="field">
+        <label>Koniec</label>
+
+        <input
+            type="time"
+            name="end"
+            value="{{ form.end if form else '' }}"
+            required
+            step="60"
+            lang="pl"
+        >
+    </div>
+
+
+    <!-- =========================
+         OPIS
+         ========================= -->
+
+    <div class="field">
+        <label>Opis</label>
+
+        <textarea name="description">{{ form.description if form else '' }}</textarea>
+    </div>
+
+
+    <!-- =========================
+         ZAPIS
+         ========================= -->
+
+    <button type="submit">
+        💾 Zapisz
+    </button>
+
+    <a href="/activities" class="back-btn">
+        ⬅ Wróć do listy
+    </a>
+
+</form>
+
+</body>
+</html>

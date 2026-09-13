@@ -103,7 +103,6 @@ def test_add_activity_validation_error(monkeypatch):
     def fake_validate(*args, **kwargs):
         return ["Błąd formularza"], None
 
-    # 🔴 patch w MIEJSCU UŻYCIA
     monkeypatch.setattr(
         "routers.activity.validate_activity_form",
         fake_validate
@@ -112,8 +111,21 @@ def test_add_activity_validation_error(monkeypatch):
     # --- fake DB ---
     class FakeCursor:
         def execute(self, sql, params=None):
-            # tylko lista aktywności (pierwsze SELECT)
-            self._data = [{"Id": 1, "Name": "Test"}]
+            if "FROM PictureActivities" in sql:
+                self._data = [
+                    {"Id": 1, "Name": "Test"}
+                ]
+            elif "FROM PersonFamilies" in sql:
+                self._data = [
+                    {"Id": 1, "PersonName": "TATA"},
+                    {"Id": 2, "PersonName": "MAMA"},
+                    {"Id": 3, "PersonName": "GOSIA"},
+                    {"Id": 4, "PersonName": "EMILKA"},
+                    {"Id": 5, "PersonName": "RODZINA"},
+                ]
+            else:
+                self._data = []
+
             return self
 
         def fetchall(self):
@@ -122,6 +134,7 @@ def test_add_activity_validation_error(monkeypatch):
     class FakeDB:
         def cursor(self):
             return FakeCursor()
+
         def close(self):
             pass
 
@@ -131,13 +144,26 @@ def test_add_activity_validation_error(monkeypatch):
 
     from templates import templates
 
-    def fake_template_response(request, name, context, status_code=200):
+    def fake_template_response(
+        request,
+        name,
+        context,
+        status_code=200
+    ):
         captured["name"] = name
         captured["context"] = context
         captured["status"] = status_code
-        return {"_template": name, "_context": context}
 
-    monkeypatch.setattr(templates, "TemplateResponse", fake_template_response)
+        return {
+            "_template": name,
+            "_context": context
+        }
+
+    monkeypatch.setattr(
+        templates,
+        "TemplateResponse",
+        fake_template_response
+    )
 
     # --- wywołanie metody ---
     result = add_activity_post(
@@ -157,7 +183,7 @@ def test_add_activity_validation_error(monkeypatch):
     assert "errors" in captured["context"]
     assert captured["context"]["errors"] == ["Błąd formularza"]
     assert "activities" in captured["context"]
-
+    
 
 def test_add_activity_success_redirect(monkeypatch):
     from routers.activity import add_activity_post

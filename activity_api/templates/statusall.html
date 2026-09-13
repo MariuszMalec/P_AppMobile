@@ -1487,6 +1487,8 @@ document
 
 /* ================= SAVE NEW ACTIVITY ================= */
 
+/* ================= SAVE NEW ACTIVITY ================= */
+
 function saveCreateActivity() {
 
     const start =
@@ -1563,30 +1565,25 @@ function saveCreateActivity() {
         start
     );
 
-
     formData.append(
         'end',
         end
     );
-
 
     formData.append(
         'day_of_week',
         day
     );
 
-
     formData.append(
         'description',
         description
     );
 
-
     formData.append(
         'person_id',
         person
     );
-
 
     formData.append(
         'activity_name',
@@ -1605,11 +1602,9 @@ function saveCreateActivity() {
     .then(async response => {
 
         /*
-         * Endpoint przy sukcesie zwraca
-         * RedirectResponse /activities.
+         * SUKCES
          *
-         * Przy błędach FastAPI zwróci
-         * stronę activity_add.html.
+         * Backend zwraca RedirectResponse.
          */
 
         if (response.redirected) {
@@ -1626,7 +1621,70 @@ function saveCreateActivity() {
             await response.text();
 
 
+        /*
+         * BŁĄD
+         *
+         * Backend zwraca activity_add.html
+         * z listą konkretnych błędów.
+         */
+
         if (!response.ok) {
+
+            try {
+
+                const parser =
+                    new DOMParser();
+
+                const doc =
+                    parser.parseFromString(
+                        text,
+                        'text/html'
+                    );
+
+
+                const errorBox =
+                    doc.querySelector('.errors');
+
+
+                if (errorBox) {
+
+                    const errors =
+                        Array.from(
+                            errorBox.querySelectorAll('li')
+                        )
+                        .map(li => li.textContent.trim())
+                        .filter(Boolean);
+
+
+                    if (errors.length > 0) {
+
+                        throw new Error(
+                            errors.join('\n')
+                        );
+
+                    }
+
+                }
+
+            } catch (e) {
+
+                /*
+                 * Jeżeli udało się wyciągnąć
+                 * konkretny komunikat, przepuszczamy go dalej.
+                 */
+
+                if (
+                    e instanceof Error &&
+                    e.message &&
+                    !e.message.includes('DOMParser')
+                ) {
+
+                    throw e;
+
+                }
+
+            }
+
 
             throw new Error(
                 'Nie udało się utworzyć aktywności.'
@@ -1636,9 +1694,7 @@ function saveCreateActivity() {
 
 
         /*
-         * Jeżeli backend zwrócił formularz
-         * z błędami walidacji, pokazujemy
-         * komunikat zamiast przeładowywać.
+         * Nieoczekiwana odpowiedź bez przekierowania.
          */
 
         throw new Error(
@@ -1656,8 +1712,6 @@ function saveCreateActivity() {
     });
 
 }
-
-
 
 
 
