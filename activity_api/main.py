@@ -16,6 +16,8 @@ from routers.activity import router as activity_router
 from routers.mainmenu import router as mainmenu_router
 from routers.livenow import router as livenow_router
 from routers.pictureactivity import router as pictureactivity_router
+from routers.persons import router as persons_router
+
 
 
 # =========================
@@ -54,7 +56,7 @@ app = FastAPI(lifespan=lifespan)
 # ---------- MAIN PAGE ----------
 @app.get("/")
 def root_redirect():
-    return RedirectResponse("/home", status_code=302)
+    return RedirectResponse("/live/statusall", status_code=302)
 
 
 # ---------- ROUTERS ----------
@@ -63,3 +65,4 @@ app.include_router(mainmenu_router)
 app.include_router(activity_router)
 app.include_router(livenow_router)
 app.include_router(pictureactivity_router)
+app.include_router(persons_router)
