@@ -287,3 +287,567 @@ def get_team_trophies_by_season(team_id: int, db=Depends(get_db)):
         }
         for season, trophies in sorted(season_map.items())
     ]
+@router.get("/{team_id}/picture", response_class=JSONResponse)
+def get_team_picture(team_id: int, db=Depends(get_db)):
+    cursor = db.cursor()
+
+    team = cursor.execute(
+        "SELECT Picture FROM Teams WHERE Id = ?",
+        (team_id,)
+    ).fetchone()
+
+    db.close()
+
+    if not team or not team["Picture"]:
+        raise HTTPException(status_code=404, detail="Picture not found")
+
+    return {"picture": team["Picture"]}
+
+@router.get("/trophies/options")
+def get_trophy_options(db=Depends(get_db)):
+    try:
+        trophies = db.execute("""
+            SELECT Id, Name
+            FROM Trophies
+            ORDER BY Name ASC
+        """).fetchall()
+
+        return [
+            {
+                "Id": trophy["Id"],
+                "Name": trophy["Name"]
+            }
+            for trophy in trophies
+        ]
+
+    finally:
+        db.close()
+
+
+@router.post("/create", response_class=HTMLResponse)
+def create_team(
+    request: Request,
+    Name: str = Form(...),
+    Description: str = Form(None),
+    NationalityName: str = Form(None),
+    Season: int = Form(None),
+    TopScorer: str = Form(None),
+    Picture: str = Form(None),
+    FinalResult: str = Form(None),
+    TrophyWin: str = Form(None),
+    TrophyModelId: int = Form(None),
+    filter_name: str = Form(None),
+    filter_trophy: str = Form(None),
+    filter_result: str = Form(None),
+    sort: str = Form(None),
+    db=Depends(get_db)
+):
+    if not Name.strip():
+        return templates.TemplateResponse(
+            request,
+            "teams.html",
+            {
+                "error": "Team name cannot be empty"
+            }
+        )
+
+    # ============================================================
+    # POPRAWA FORMATU FINAL RESULT
+    # ============================================================
+
+    if FinalResult:
+        FinalResult = FinalResult.strip()
+
+        # Jeżeli wynik ma postać np. Parma:Ajax2:0
+        # poprawiamy go na Parma:Ajax 2:0
+        if ":" in FinalResult:
+            parts = FinalResult.rsplit(":", 2)
+
+            if len(parts) == 3:
+                team_part = parts[0].strip()
+                goals_a = parts[1].strip()
+                goals_b = parts[2].strip()
+
+                if (
+                    team_part
+                    and goals_a.isdigit()
+                    and goals_b.isdigit()
+                ):
+                    if not team_part.endswith(" "):
+                        FinalResult = (
+                            f"{team_part} "
+                            f"{goals_a}:{goals_b}"
+                        )
+
+    # Jeżeli FinalResult jest puste,
+    # zapisujemy pusty tekst zamiast NULL.
+    if not FinalResult:
+        FinalResult = ""
+
+    try:
+        cursor = db.cursor()
+
+        # ============================================================
+        # SPRAWDZENIE TROFEUM
+        # ============================================================
+
+        if TrophyModelId:
+            trophy = cursor.execute(
+                """
+                SELECT Id, Name
+                FROM Trophies
+                WHERE Id = ?
+                """,
+                (TrophyModelId,)
+            ).fetchone()
+
+            if not trophy:
+                TrophyModelId = None
+            else:
+                # Nazwa TrophyWin zawsze odpowiada wybranemu trofeum
+                TrophyWin = trophy["Name"]
+
+        # Jeżeli nie wybrano trofeum
+        if not TrophyWin:
+            TrophyWin = "No"
+            TrophyModelId = None
+
+        # ============================================================
+        # SPRAWDZENIE DUPLIKATU
+        # ============================================================
+
+        existing = cursor.execute(
+            """
+            SELECT Id FROM Teams
+            WHERE Name = ? AND Season = ? AND TrophyWin = ?
+            """,
+            (Name, Season, TrophyWin)
+        ).fetchone()
+
+        if existing:
+
+            base_query = """
+                SELECT
+                    Teams.*,
+                    Trophies.Picture AS TrophyPicture,
+                    Trophies.Name AS TrophyName
+                FROM Teams
+                LEFT JOIN Trophies
+                    ON Trophies.Id = Teams.TrophyModelId
+            """
+
+            filters = []
+            params = []
+
+            if filter_name and filter_name.strip():
+                filters.append("Teams.Name LIKE ?")
+                params.append(f"%{filter_name.strip()}%")
+
+            if filter_trophy and filter_trophy.strip():
+                filters.append("Teams.TrophyWin LIKE ?")
+                params.append(f"%{filter_trophy.strip()}%")
+
+            if filter_result and filter_result.strip():
+                filters.append("Teams.FinalResult LIKE ?")
+                params.append(f"%{filter_result.strip()}%")
+
+            if filters:
+                base_query += " WHERE " + " AND ".join(filters)
+
+            if sort == "name_desc":
+                base_query += " ORDER BY Teams.Name DESC, Teams.Season DESC"
+            else:
+                base_query += " ORDER BY Teams.Name ASC, Teams.Season ASC"
+
+            teams = cursor.execute(
+                base_query,
+                params
+            ).fetchall()
+
+            return templates.TemplateResponse(
+                request,
+                "teams.html",
+                {
+                    "teams": teams,
+                    "filter_name": filter_name,
+                    "filter_trophy": filter_trophy,
+                    "filter_result": filter_result,
+                    "sort": sort,
+                    "error": "Team with this Name + Season + Trophy already exists!"
+                }
+            )
+
+        # ============================================================
+        # INSERT
+        # ============================================================
+
+        cursor.execute(
+            """
+            INSERT INTO Teams
+            (Name, Description, NationalityName, Season, TopScorer,
+             Picture, FinalResult, TrophyWin, TrophyModelId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                Name,
+                Description,
+                NationalityName,
+                Season,
+                TopScorer,
+                Picture,
+                FinalResult,
+                TrophyWin,
+                TrophyModelId
+            )
+        )
+
+        db.commit()
+
+    except Exception as e:
+        db.rollback()
+        db.close()
+        raise HTTPException(status_code=500, detail=str(e))
+
+    db.close()
+
+    params = {}
+
+    if filter_name:
+        params["filter_name"] = filter_name
+
+    if filter_trophy:
+        params["filter_trophy"] = filter_trophy
+
+    if filter_result:
+        params["filter_result"] = filter_result
+
+    if sort:
+        params["sort"] = sort
+
+    redirect_url = "/teams"
+
+    if params:
+        redirect_url += "?" + urlencode(params)
+
+    return RedirectResponse(
+        url=redirect_url,
+        status_code=HTTP_303_SEE_OTHER
+    )
+
+
+
+@router.post("/{team_id}/delete")
+def delete_team(
+    team_id: int,
+    request: Request,
+    filter_name: str = Form(None),
+    filter_trophy: str = Form(None),
+    filter_result: str = Form(None),
+    sort: str = Form(None),
+    db=Depends(get_db)
+):
+    try:
+        cursor = db.cursor()
+
+        team = cursor.execute(
+            "SELECT * FROM Teams WHERE Id = ?",
+            (team_id,)
+        ).fetchone()
+
+        if not team:
+            raise HTTPException(
+                status_code=404,
+                detail="Team not found"
+            )
+
+        cursor.execute(
+            "DELETE FROM Teams WHERE Id = ?",
+            (team_id,)
+        )
+
+        db.commit()
+
+    except HTTPException:
+        # Nie zamykamy bazy przed rollbackiem.
+        # 404 ma pozostać 404.
+        db.rollback()
+        raise
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+    finally:
+        db.close()
+
+    params = {}
+
+    if filter_name:
+        params["filter_name"] = filter_name
+
+    if filter_trophy:
+        params["filter_trophy"] = filter_trophy
+
+    if filter_result:
+        params["filter_result"] = filter_result
+
+    if sort:
+        params["sort"] = sort
+
+    redirect_url = "/teams"
+
+    if params:
+        redirect_url += "?" + urlencode(params)
+
+    return RedirectResponse(
+        url=redirect_url,
+        status_code=HTTP_303_SEE_OTHER
+    )
+
+
+@router.get("/{team_id}/edit", response_class=HTMLResponse)
+def edit_team_form(
+    team_id: int,
+    request: Request,
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    team = cursor.execute(
+        """
+        SELECT *
+        FROM Teams
+        WHERE Id = ?
+        """,
+        (team_id,)
+    ).fetchone()
+
+    if not team:
+        db.close()
+        raise HTTPException(
+            status_code=404,
+            detail="Team not found"
+        )
+
+    # Pobierz trofea do listy wyboru
+    trophies = cursor.execute(
+        """
+        SELECT Id, Name
+        FROM Trophies
+        ORDER BY Name ASC
+        """
+    ).fetchall()
+
+    db.close()
+
+    return templates.TemplateResponse(
+        request,
+        "edit_team.html",
+        {
+            "team": team,
+            "trophies": trophies,
+            "filter_name": request.query_params.get("filter_name"),
+            "filter_trophy": request.query_params.get("filter_trophy"),
+            "filter_result": request.query_params.get("filter_result"),
+            "sort": request.query_params.get("sort")
+        }
+    )
+
+
+@router.post("/{team_id}/edit")
+def edit_team(
+    team_id: int,
+    request: Request,
+    Name: str = Form(...),
+    Description: str = Form(None),
+    NationalityName: str = Form(None),
+    Season: int = Form(None),
+    TopScorer: str = Form(None),
+    Picture: str = Form(None),
+    FinalResult: str = Form(None),
+    TrophyWin: str = Form(None),
+    TrophyModelId: int = Form(None),
+    filter_name: str = Form(None),
+    filter_trophy: str = Form(None),
+    filter_result: str = Form(None),
+    sort: str = Form(None),
+    db=Depends(get_db)
+):
+    if not Name.strip():
+        raise HTTPException(
+            status_code=400,
+            detail="Team name cannot be empty"
+        )
+
+    try:
+        cursor = db.cursor()
+
+        existing = cursor.execute(
+            """
+            SELECT *
+            FROM Teams
+            WHERE Id = ?
+            """,
+            (team_id,)
+        ).fetchone()
+
+        if not existing:
+            raise HTTPException(
+                status_code=404,
+                detail="Team not found"
+            )
+
+        # ============================================================
+        # SPRAWDZENIE FINAL RESULT
+        # ============================================================
+
+        # Jeżeli formularz nie przesłał FinalResult,
+        # zachowujemy wartość istniejącą w bazie.
+        if not FinalResult or not FinalResult.strip():
+            FinalResult = existing["FinalResult"]
+
+        # ============================================================
+        # TROPHY - ID USTALAMY NA PODSTAWIE WYBRANEGO TROPHY WIN
+        # ============================================================
+
+        if TrophyWin and TrophyWin != "No":
+
+            trophy = cursor.execute(
+                """
+                SELECT Id, Name
+                FROM Trophies
+                WHERE Name = ?
+                """,
+                (TrophyWin,)
+            ).fetchone()
+
+            if not trophy:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Selected trophy does not exist"
+                )
+
+            TrophyWin = trophy["Name"]
+            TrophyModelId = trophy["Id"]
+
+        else:
+            TrophyWin = "No"
+            TrophyModelId = None
+
+        # ============================================================
+        # UPDATE
+        # ============================================================
+
+        cursor.execute(
+            """
+            UPDATE Teams
+            SET Name = ?,
+                Description = ?,
+                NationalityName = ?,
+                Season = ?,
+                TopScorer = ?,
+                Picture = ?,
+                FinalResult = ?,
+                TrophyWin = ?,
+                TrophyModelId = ?
+            WHERE Id = ?
+            """,
+            (
+                Name,
+                Description,
+                NationalityName,
+                Season,
+                TopScorer,
+                Picture,
+                FinalResult,
+                TrophyWin,
+                TrophyModelId,
+                team_id
+            )
+        )
+
+        db.commit()
+
+    except HTTPException:
+        db.rollback()
+        raise
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=500,
+            detail=str(e)
+        )
+
+    finally:
+        db.close()
+
+    params = {}
+
+    if filter_name:
+        params["filter_name"] = filter_name
+
+    if filter_trophy:
+        params["filter_trophy"] = filter_trophy
+
+    if filter_result:
+        params["filter_result"] = filter_result
+
+    if sort:
+        params["sort"] = sort
+
+    redirect_url = "/teams"
+
+    if params:
+        redirect_url += "?" + urlencode(params)
+
+    return RedirectResponse(
+        url=redirect_url,
+        status_code=HTTP_303_SEE_OTHER
+    )
+
+
+@router.get("/topscorer", response_class=HTMLResponse)
+def teams_by_topscorer_page(
+    request: Request,
+    topscorer: str = Query(None),
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    query = """
+        SELECT
+            Teams.*,
+            Trophies.Picture AS TrophyPicture,
+            Trophies.Name AS TrophyName
+        FROM Teams
+        LEFT JOIN Trophies
+            ON Trophies.Id = Teams.TrophyModelId
+    """
+
+    filters = []
+    params = []
+
+    if topscorer and topscorer.strip():
+        filters.append("Teams.TopScorer LIKE ?")
+        params.append(f"%{topscorer.strip()}%")
+
+    if filters:
+        query += " WHERE " + " AND ".join(filters)
+
+    query += " ORDER BY Teams.Name ASC"
+
+    teams = cursor.execute(query, params).fetchall()
+    db.close()
+
+    return templates.TemplateResponse(
+        request,
+        "teams_by_topscorer.html",
+        {
+            "teams": teams,
+            "topscorer": topscorer
+        }
+    )
