@@ -1,0 +1,586 @@
+/* ============================================================
+   SWS API - SHARED STYLES
+   ============================================================ */
+
+
+/* ============================================================
+   TEAMS BY TOPSCORER
+   ============================================================ */
+
+body.topscorer-page {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 30px;
+    background: #f4f6f8;
+    color: #263238;
+}
+
+.topscorer-page * {
+    box-sizing: border-box;
+}
+
+.topscorer-page h1 {
+    margin: 0 0 24px 0;
+    font-size: 28px;
+    color: #1f2933;
+}
+
+.topscorer-page h2 {
+    margin: 24px 0 14px 0;
+    font-size: 20px;
+    color: #37474f;
+}
+
+.topscorer-page .form-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.topscorer-page .form-box form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.topscorer-page input[type="text"] {
+    min-width: 260px;
+    padding: 10px 12px;
+    border: 1px solid #cfd8dc;
+    border-radius: 8px;
+    font-size: 15px;
+    background: white;
+    outline: none;
+}
+
+.topscorer-page input[type="text"]:focus {
+    border-color: #78909c;
+    box-shadow: 0 0 0 3px rgba(120, 144, 156, 0.15);
+}
+
+.topscorer-page .btn {
+    display: inline-block;
+    padding: 10px 16px;
+    border: 0;
+    border-radius: 8px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    background: #455a64;
+    color: white;
+    transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.topscorer-page .btn:hover {
+    background: #37474f;
+}
+
+.topscorer-page .btn:active {
+    transform: translateY(1px);
+}
+
+.topscorer-page table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: separate;
+    border-spacing: 0;
+    overflow: hidden;
+    background: white;
+    border: 1px solid #dfe4e8;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.topscorer-page th,
+.topscorer-page td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid #e8ecef;
+}
+
+.topscorer-page th {
+    background: #455a64;
+    color: white;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.topscorer-page tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.topscorer-page tbody tr:hover {
+    background: #f7f9fa;
+}
+
+.topscorer-page img {
+    max-height: 60px;
+    max-width: 100px;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.topscorer-page p {
+    padding: 14px 16px;
+    background: white;
+    border: 1px solid #dfe4e8;
+    border-radius: 8px;
+}
+
+.topscorer-page > a {
+    display: inline-block;
+    margin-top: 18px;
+    color: #455a64;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.topscorer-page > a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 800px) {
+
+    .topscorer-page {
+        padding: 16px;
+    }
+
+    .topscorer-page h1 {
+        font-size: 23px;
+    }
+
+    .topscorer-page table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .topscorer-page input[type="text"] {
+        min-width: 220px;
+        width: 100%;
+    }
+}
+
+
+/* ============================================================
+   TEAMS
+   ============================================================ */
+
+.teams-page {
+    --teams-bg: #f4f7fb;
+    --teams-card: #ffffff;
+    --teams-border: #e2e8f0;
+    --teams-text: #1e293b;
+    --teams-muted: #64748b;
+    --teams-primary: #2563eb;
+    --teams-primary-dark: #1d4ed8;
+    --teams-hover: #f8fafc;
+
+    background:
+        linear-gradient(
+            180deg,
+            #f8fafc 0%,
+            #eef3f8 100%
+        );
+    color: var(--teams-text);
+    min-height: 100vh;
+}
+
+.teams-page h1 {
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: #172033;
+}
+
+.teams-page .teams-toolbar {
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid var(--teams-border);
+    border-radius: 16px;
+    padding: 14px;
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.06);
+    backdrop-filter: blur(8px);
+}
+
+.teams-page .teams-toolbar .btn {
+    border-radius: 9px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.teams-page .teams-toolbar .btn-primary {
+    background: var(--teams-primary);
+    border-color: var(--teams-primary);
+}
+
+.teams-page .teams-toolbar .btn-primary:hover {
+    background: var(--teams-primary-dark);
+    border-color: var(--teams-primary-dark);
+}
+
+.teams-page #filterForm {
+    flex-wrap: wrap;
+}
+
+.teams-page #filterForm .form-control {
+    border: 1px solid #d8e0ea;
+    border-radius: 9px;
+    background: #fff;
+    box-shadow: none;
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.teams-page #filterForm .form-control:focus {
+    border-color: #93c5fd;
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.teams-page #filterForm .btn {
+    border-radius: 9px;
+}
+
+.teams-page table.table {
+    margin-top: 18px;
+    margin-bottom: 0;
+    background: var(--teams-card);
+    border: 1px solid var(--teams-border);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow:
+        0 5px 18px rgba(15, 23, 42, 0.07);
+    vertical-align: middle;
+}
+
+.teams-page .table > :not(caption) > * > * {
+    padding: 13px 14px;
+    border-color: var(--teams-border);
+}
+
+.teams-page .table thead th {
+    background:
+        linear-gradient(
+            180deg,
+            #263449 0%,
+            #1e293b 100%
+        ) !important;
+    color: #fff;
+    border-color: #334155;
+    font-size: 0.84rem;
+    font-weight: 600;
+    letter-spacing: 0.25px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.teams-page .table thead th:first-child {
+    border-top-left-radius: 13px;
+}
+
+.teams-page .table thead th:last-child {
+    border-top-right-radius: 13px;
+}
+
+.teams-page tr.team-row {
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+.teams-page tr.team-row:hover {
+    background-color: var(--teams-hover) !important;
+}
+
+.teams-page .table-striped > tbody > tr.team-row:nth-of-type(odd) > * {
+    background-color: rgba(248, 250, 252, 0.72);
+}
+
+.teams-page .table-striped > tbody > tr.team-row:hover > * {
+    background-color: #eef5ff !important;
+}
+
+.teams-page .team-row td:first-child {
+    font-weight: 600;
+    color: #172033;
+}
+
+.teams-page .team-row td:nth-child(2) {
+    font-weight: 600;
+    color: #475569;
+}
+
+.teams-page .team-row td:nth-child(3) {
+    min-width: 180px;
+}
+
+.teams-page .team-row td:nth-child(4) {
+    color: #475569;
+}
+
+.teams-page .table thead th[onclick="toggleSeasonSort()"] {
+    user-select: none;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease;
+}
+
+.teams-page .table thead th[onclick="toggleSeasonSort()"]:hover {
+    background: #334155 !important;
+    color: #bfdbfe;
+}
+
+.teams-page .table thead th[onclick="toggleSeasonSort()"]::after {
+    content: "↕";
+    margin-left: 7px;
+    font-size: 0.75rem;
+    opacity: 0.45;
+}
+
+.teams-page .trophy-link i {
+    font-size: 1.4rem;
+    color: #f59e0b;
+    padding: 5px 7px;
+    border: 1px solid #f6c453;
+    border-radius: 8px;
+    background-color: rgba(245, 158, 11, 0.10);
+    transition:
+        transform 0.15s ease,
+        color 0.15s ease,
+        background-color 0.15s ease;
+}
+
+.teams-page .trophy-link:hover i {
+    color: #d97706;
+    background-color: rgba(245, 158, 11, 0.18);
+    transform: scale(1.12);
+}
+
+.teams-page .team-row td img {
+    border-radius: 8px;
+}
+
+.teams-page .team-row td:last-child {
+    white-space: nowrap;
+}
+
+.teams-page .team-row td:last-child .btn {
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.teams-page .show-trophies-btn {
+    color: #0f766e;
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+}
+
+.teams-page .show-trophies-btn:hover {
+    color: #065f46;
+    background: #d1fae5;
+    border-color: #6ee7b7;
+}
+
+.teams-page .team-row .btn-outline-info {
+    color: #2563eb;
+    border-color: #bfdbfe;
+    background: #eff6ff;
+}
+
+.teams-page .team-row .btn-outline-info:hover {
+    color: #1d4ed8;
+    background: #dbeafe;
+    border-color: #93c5fd;
+}
+
+.teams-page .team-row .btn-outline-danger {
+    color: #dc2626;
+    border-color: #fecaca;
+    background: #fff1f2;
+}
+
+.teams-page .team-row .btn-outline-danger:hover {
+    color: #b91c1c;
+    background: #ffe4e6;
+    border-color: #fca5a5;
+}
+
+.teams-page .no-data {
+    padding: 35px !important;
+    color: var(--teams-muted) !important;
+    font-weight: 500;
+}
+
+.teams-page .modal-content {
+    border: 0;
+    border-radius: 16px;
+    box-shadow:
+        0 20px 50px rgba(15, 23, 42, 0.20);
+}
+
+.teams-page .modal-header {
+    border-bottom-color: var(--teams-border);
+}
+
+.teams-page .modal-footer {
+    border-top-color: var(--teams-border);
+}
+
+.teams-page .modal-title {
+    font-weight: 650;
+}
+
+.teams-page .modal-body .form-control,
+.teams-page .modal-body .form-select {
+    border-radius: 9px;
+    border-color: #d8e0ea;
+}
+
+.teams-page .modal-body .form-control:focus,
+.teams-page .modal-body .form-select:focus {
+    border-color: #93c5fd;
+    box-shadow:
+        0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+@media (max-width: 1100px) {
+
+    .teams-page .teams-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .teams-page .teams-toolbar > div {
+        flex-wrap: wrap;
+    }
+
+    .teams-page #filterForm {
+        width: 100%;
+        margin-left: 0 !important;
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 700px) {
+
+    .teams-page {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    .teams-page h1 {
+        font-size: 1.65rem;
+        margin-bottom: 16px !important;
+    }
+
+    .teams-page .teams-toolbar {
+        padding: 10px;
+    }
+
+    .teams-page .teams-toolbar > div:first-child {
+        width: 100%;
+    }
+
+    .teams-page .teams-toolbar > div:first-child .btn {
+        margin-bottom: 5px;
+    }
+
+    .teams-page #filterForm {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px !important;
+    }
+
+    .teams-page #filterForm input {
+        width: 100% !important;
+    }
+
+    .teams-page #filterForm .btn {
+        width: 100%;
+    }
+
+    .teams-page .teams-toolbar > .btn-primary {
+        width: 100%;
+        margin-top: 8px;
+    }
+
+    .teams-page .table-responsive {
+        border-radius: 14px;
+    }
+
+    .teams-page table.table {
+        font-size: 0.88rem;
+    }
+
+    .teams-page .table > :not(caption) > * > * {
+        padding: 10px 9px;
+    }
+}
+
+
+/* ============================================================
+   TROPHIES BY SEASON
+   ============================================================ */
+
+.trophies-season-page {
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    min-height: 100vh;
+    color: #fff;
+}
+
+.trophies-season-page .season-card {
+    background: rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.trophies-season-page .trophy-card {
+    background: rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 12px;
+    height: 100%;
+}
+
+.trophies-season-page .trophy-img {
+    width: 100%;
+    height: 140px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: 8px;
+    padding: 6px;
+}
+
+.trophies-season-page .season-title {
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 6px;
+}
+
+.trophies-season-page .empty {
+    opacity: 0.6;
+    font-style: italic;
+}
+
+
+/* ============================================================
+   EDIT TEAM
+   ============================================================ */
+
+#trophyModelIdInput {
+    background-color: #e9ecef;
+    color: #6c757d;
+    cursor: not-allowed;
+}
