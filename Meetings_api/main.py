@@ -12,6 +12,7 @@ from db import (
 
 from routers.home import router as home_router
 from routers.clients import router as clients_router
+from routers.sessions import router as sessions_router
 
 
 
@@ -50,10 +51,11 @@ app = FastAPI(lifespan=lifespan)
 # ---------- MAIN PAGE ----------
 @app.get("/")
 def root_redirect():
-    return RedirectResponse("/home", status_code=302)
+    return RedirectResponse("/sessions", status_code=302)
 
 
 # ---------- ROUTERS ----------
 app.include_router(home_router)
 app.include_router(clients_router)
+app.include_router(sessions_router)
 
