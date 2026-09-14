@@ -143,8 +143,8 @@ def get_client(
 
 @router.post("/create")
 def create_client(
-    first_name: str = Form(...),
-    last_name: str = Form(...),
+    first_name: str = Form(""),
+    last_name: str = Form(""),
     age: int = Form(None),
     description: str = Form(""),
     phone: str = Form(""),
@@ -203,6 +203,12 @@ def create_client(
         "other",
         ""
     )
+
+    if not gender:
+        raise HTTPException(
+            status_code=400,
+            detail="Proszę wybierz płeć"
+        )
 
     if gender not in allowed_gender:
         raise HTTPException(
@@ -604,3 +610,6 @@ def delete_client(
         "client_id": client_id,
         "deleted_sessions": session_count
     })
+
+
+
