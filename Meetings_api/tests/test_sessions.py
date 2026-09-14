@@ -119,7 +119,7 @@ def insert_session(
 # HOME / SESSION
 # ============================================================
 
-def test_home_page_returns_200(client):
+def test_home_page_returns_200(client):#przerzucic do test_home.py
     response = client.get("/home/")
 
     assert response.status_code == 200
@@ -150,7 +150,7 @@ def test_recurring_count(client, empty_db):
     )
 
     response = client.get(
-        f"/home/session/recurring-count/{recurring_group_id}"
+        f"sessions/recurring-count/{recurring_group_id}"
     )
 
     assert response.status_code == 200
@@ -170,7 +170,7 @@ def test_create_session_ok(client, empty_db):
     monday = get_monday()
 
     response = client.post(
-        "/home/session/create",
+        "/sessions/create",
         data={
             "start": "10:00",
             "end": "11:00",
@@ -225,7 +225,7 @@ def test_create_recurring_session(client, empty_db):
     monday = get_monday()
 
     response = client.post(
-        "/home/session/create",
+        "sessions/create",
         data={
             "start": "10:00",
             "end": "11:00",
@@ -283,7 +283,7 @@ def test_create_session_invalid_client(client, empty_db):
     monday = get_monday()
 
     response = client.post(
-        "/home/session/create",
+        "sessions/create",
         data={
             "start": "10:00",
             "end": "11:00",
@@ -312,7 +312,7 @@ def test_create_session_time_conflict(client, empty_db):
     )
 
     response = client.post(
-        "/home/session/create",
+        "sessions/create",
         data={
             "start": "10:30",
             "end": "11:30",
@@ -341,7 +341,7 @@ def test_create_session_adjacent_time_allowed(client, empty_db):
     )
 
     response = client.post(
-        "/home/session/create",
+        "/sessions/create",
         data={
             "start": "11:00",
             "end": "12:00",
@@ -363,7 +363,7 @@ def test_create_session_invalid_recurring_weeks(client, empty_db):
     monday = get_monday()
 
     response = client.post(
-        "/home/session/create",
+        "sessions/create",
         data={
             "start": "10:00",
             "end": "11:00",
@@ -397,7 +397,7 @@ def test_edit_session_ok(client, empty_db):
     )
 
     response = client.put(
-        f"/home/session/edit/{session_id}",
+        f"sessions/edit/{session_id}",
         data={
             "start": "12:00",
             "end": "13:00",
@@ -441,7 +441,7 @@ def test_edit_session_not_exists(client, empty_db):
     monday = get_monday()
 
     response = client.put(
-        "/home/session/edit/99999",
+        "/sessions/edit/99999",
         data={
             "start": "10:00",
             "end": "11:00",
@@ -476,7 +476,7 @@ def test_edit_session_conflict(client, empty_db):
     )
 
     response = client.put(
-        f"/home/session/edit/{session1_id}",
+        f"sessions/edit/{session1_id}",
         data={
             "start": "12:30",
             "end": "13:30",
@@ -511,7 +511,7 @@ def test_edit_session_adjacent_time_allowed(client, empty_db):
     )
 
     response = client.put(
-        f"/home/session/edit/{session_id}",
+        f"/sessions/edit/{session_id}",
         data={
             "start": "11:00",
             "end": "12:00",
@@ -536,7 +536,7 @@ def test_edit_recurring_series(client, empty_db):
     monday = get_monday()
 
     response = client.post(
-        "/home/session/create",
+        "/sessions/create",
         data={
             "start": "10:00",
             "end": "11:00",
@@ -570,7 +570,7 @@ def test_edit_recurring_series(client, empty_db):
         db.close()
 
     response = client.put(
-        f"/home/session/edit/{session_id}",
+        f"sessions/edit/{session_id}",
         data={
             "start": "14:00",
             "end": "15:00",
@@ -629,7 +629,7 @@ def test_edit_single_scope_on_non_recurring_session(
     )
 
     response = client.put(
-        f"/home/session/edit/{session_id}",
+        f"/sessions/edit/{session_id}",
         data={
             "start": "12:00",
             "end": "13:00",
@@ -659,7 +659,7 @@ def test_delete_session_ok(client, empty_db):
     )
 
     response = client.post(
-        f"/home/session/delete/{session_id}",
+        f"/sessions/delete/{session_id}",
         data={
             "delete_scope": "single"
         }
@@ -693,7 +693,7 @@ def test_delete_session_ok(client, empty_db):
 
 def test_delete_session_not_exists(client, empty_db):
     response = client.post(
-        "/home/session/delete/99999",
+        "sessions/delete/99999",
         data={
             "delete_scope": "single"
         }
@@ -712,7 +712,7 @@ def test_delete_recurring_series_ok(client, empty_db):
     monday = get_monday()
 
     response = client.post(
-        "/home/session/create",
+        "/sessions/create",
         data={
             "start": "10:00",
             "end": "11:00",
@@ -746,7 +746,7 @@ def test_delete_recurring_series_ok(client, empty_db):
         db.close()
 
     response = client.post(
-        f"/home/session/delete/{session_id}",
+        f"/sessions/delete/{session_id}",
         data={
             "delete_scope": "series"
         }
@@ -793,7 +793,7 @@ def test_delete_series_scope_on_non_recurring_session(
     )
 
     response = client.post(
-        f"/home/session/delete/{session_id}",
+        f"/sessions/delete/{session_id}",
         data={
             "delete_scope": "series"
         }
@@ -817,7 +817,7 @@ def test_delete_session_invalid_scope(client, empty_db):
     )
 
     response = client.post(
-        f"/home/session/delete/{session_id}",
+        f"/sessions/delete/{session_id}",
         data={
             "delete_scope": "invalid"
         }
@@ -837,7 +837,7 @@ def test_edit_session_invalid_scope(client, empty_db):
     )
 
     response = client.put(
-        f"/home/session/edit/{session_id}",
+        f"/sessions/edit/{session_id}",
         data={
             "start": "12:00",
             "end": "13:00",
