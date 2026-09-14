@@ -599,7 +599,7 @@ def test_validate_activity_edit_form_conflict(client, empty_db):
         add_person(db, 1)
         add_activity(db, 1, "Testowa")
 
-        session1_id = add_session(
+        add_session(
             db,
             start="10:00:00",
             end="11:00:00",

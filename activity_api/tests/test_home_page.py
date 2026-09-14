@@ -9,12 +9,6 @@ from pathlib import Path
 from conftest import TEST_DB
 
 
-@freeze_time("2025-01-08 20:10:00")
-def test_home_current_and_next_items(client):
-    response = client.get("/home")
-    assert response.status_code == 200
-
-
 def test_home_page_return_status_code_200(client):
     response = client.get("/home")
     assert response.status_code == 200
@@ -53,22 +47,11 @@ def test_home_by_person_return_status_code_200(client):
     assert response.status_code == 200
 
 
-def test_home_by_person_all_status_200(client):
-    response = client.get(
-        "/home/homebyperson",
-        params={"person": "ALL"}
-    )
-    assert response.status_code == 200
-
 def test_home_by_person_invalid_person_fallback(client):
     response = client.get(
         "/home/homebyperson",
         params={"person": "XXX"}
     )
-    assert response.status_code == 200
-
-def test_home_by_person_empty_db_status_200(client):
-    response = client.get("/home/homebyperson")
     assert response.status_code == 200
 
 

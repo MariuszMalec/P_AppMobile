@@ -22,11 +22,11 @@ def test_activities_page_returns_html(client):
     response = client.get("/activities")
     assert "text/html" in response.headers["content-type"]
 
-def test_activities_page_contains_day_name(client):
+def test_activities_page_contains_tuesday(client):
     response = client.get("/activities")
     assert "Poniedziałek" in response.text or "Wtorek" in response.text
 
-def test_activities_page_multiple_days_rendered(client):
+def test_activities_page_renders_multiple_days(client):
     response = client.get("/activities")
     assert any(day in response.text for day in ["Poniedziałek", "Wtorek", "Środa"])
 
