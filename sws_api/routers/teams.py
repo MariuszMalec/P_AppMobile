@@ -5,6 +5,7 @@ from typing import List, Dict
 from templates import templates
 from db import get_db
 import sqlite3
+from urllib.parse import urlencode
 
 
 router = APIRouter(
@@ -265,6 +266,8 @@ def create_team(
     TrophyWin: str = Form(None),
     TrophyModelId: int = Form(None),
     filter_name: str = Form(None),
+    filter_trophy: str = Form(None),
+    filter_result: str = Form(None),
     sort: str = Form(None),
     db=Depends(get_db)
 ):
@@ -352,22 +355,53 @@ def create_team(
 
         if existing:
 
-            teams = cursor.execute("""
-                SELECT Teams.*, Trophies.Picture AS TrophyPicture,
-                       Trophies.Name AS TrophyName
+            base_query = """
+                SELECT
+                    Teams.*,
+                    Trophies.Picture AS TrophyPicture,
+                    Trophies.Name AS TrophyName
                 FROM Teams
                 LEFT JOIN Trophies
                     ON Trophies.Id = Teams.TrophyModelId
-                ORDER BY Teams.Name ASC
-            """).fetchall()
+            """
 
-            db.close()
+            filters = []
+            params = []
+
+            if filter_name and filter_name.strip():
+                filters.append("Teams.Name LIKE ?")
+                params.append(f"%{filter_name.strip()}%")
+
+            if filter_trophy and filter_trophy.strip():
+                filters.append("Teams.TrophyWin LIKE ?")
+                params.append(f"%{filter_trophy.strip()}%")
+
+            if filter_result and filter_result.strip():
+                filters.append("Teams.FinalResult LIKE ?")
+                params.append(f"%{filter_result.strip()}%")
+
+            if filters:
+                base_query += " WHERE " + " AND ".join(filters)
+
+            if sort == "name_desc":
+                base_query += " ORDER BY Teams.Name DESC, Teams.Season DESC"
+            else:
+                base_query += " ORDER BY Teams.Name ASC, Teams.Season ASC"
+
+            teams = cursor.execute(
+                base_query,
+                params
+            ).fetchall()
 
             return templates.TemplateResponse(
                 request,
                 "teams.html",
                 {
                     "teams": teams,
+                    "filter_name": filter_name,
+                    "filter_trophy": filter_trophy,
+                    "filter_result": filter_result,
+                    "sort": sort,
                     "error": "Team with this Name + Season + Trophy already exists!"
                 }
             )
@@ -405,17 +439,24 @@ def create_team(
 
     db.close()
 
-    redirect_url = "/teams"
-    params = []
+    params = {}
 
     if filter_name:
-        params.append(f"filter_name={filter_name}")
+        params["filter_name"] = filter_name
+
+    if filter_trophy:
+        params["filter_trophy"] = filter_trophy
+
+    if filter_result:
+        params["filter_result"] = filter_result
 
     if sort:
-        params.append(f"sort={sort}")
+        params["sort"] = sort
+
+    redirect_url = "/teams"
 
     if params:
-        redirect_url += "?" + "&".join(params)
+        redirect_url += "?" + urlencode(params)
 
     return RedirectResponse(
         url=redirect_url,
@@ -429,6 +470,8 @@ def delete_team(
     team_id: int,
     request: Request,
     filter_name: str = Form(None),
+    filter_trophy: str = Form(None),
+    filter_result: str = Form(None),
     sort: str = Form(None),
     db=Depends(get_db)
 ):
@@ -469,17 +512,24 @@ def delete_team(
     finally:
         db.close()
 
-    redirect_url = "/teams"
-    params = []
+    params = {}
 
     if filter_name:
-        params.append(f"filter_name={filter_name}")
+        params["filter_name"] = filter_name
+
+    if filter_trophy:
+        params["filter_trophy"] = filter_trophy
+
+    if filter_result:
+        params["filter_result"] = filter_result
 
     if sort:
-        params.append(f"sort={sort}")
+        params["sort"] = sort
+
+    redirect_url = "/teams"
 
     if params:
-        redirect_url += "?" + "&".join(params)
+        redirect_url += "?" + urlencode(params)
 
     return RedirectResponse(
         url=redirect_url,
@@ -529,6 +579,8 @@ def edit_team_form(
             "team": team,
             "trophies": trophies,
             "filter_name": request.query_params.get("filter_name"),
+            "filter_trophy": request.query_params.get("filter_trophy"),
+            "filter_result": request.query_params.get("filter_result"),
             "sort": request.query_params.get("sort")
         }
     )
@@ -548,6 +600,8 @@ def edit_team(
     TrophyWin: str = Form(None),
     TrophyModelId: int = Form(None),
     filter_name: str = Form(None),
+    filter_trophy: str = Form(None),
+    filter_result: str = Form(None),
     sort: str = Form(None),
     db=Depends(get_db)
 ):
@@ -660,17 +714,24 @@ def edit_team(
     finally:
         db.close()
 
-    redirect_url = "/teams"
-    params = []
+    params = {}
 
     if filter_name:
-        params.append(f"filter_name={filter_name}")
+        params["filter_name"] = filter_name
+
+    if filter_trophy:
+        params["filter_trophy"] = filter_trophy
+
+    if filter_result:
+        params["filter_result"] = filter_result
 
     if sort:
-        params.append(f"sort={sort}")
+        params["sort"] = sort
+
+    redirect_url = "/teams"
 
     if params:
-        redirect_url += "?" + "&".join(params)
+        redirect_url += "?" + urlencode(params)
 
     return RedirectResponse(
         url=redirect_url,

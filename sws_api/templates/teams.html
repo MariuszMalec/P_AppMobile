@@ -446,7 +446,7 @@
           type="button"
           class="btn btn-outline-info btn-sm ms-1"
           title="Edit team"
-          onclick="event.stopPropagation(); window.location.href='/teams/{{ t.Id }}/edit?filter_name={{ filter_name or '' }}&sort={{ sort or '' }}'"
+          onclick="event.stopPropagation(); window.location.href='/teams/{{ t.Id }}/edit?filter_name={{ filter_name or '' }}&filter_trophy={{ filter_trophy or '' }}&filter_result={{ filter_result or '' }}&sort={{ sort or '' }}'"
         >
           <i class="bi bi-pencil-fill"></i>
         </button>
@@ -523,6 +523,18 @@
           type="hidden"
           name="filter_name"
           value="{{ filter_name or '' }}"
+        >
+
+        <input
+          type="hidden"
+          name="filter_trophy"
+          value="{{ filter_trophy or '' }}"
+        >
+
+        <input
+          type="hidden"
+          name="filter_result"
+          value="{{ filter_result or '' }}"
         >
 
         <input
@@ -737,6 +749,18 @@
           type="hidden"
           name="filter_name"
           value="{{ filter_name or '' }}"
+        >
+
+        <input
+          type="hidden"
+          name="filter_trophy"
+          value="{{ filter_trophy or '' }}"
+        >
+
+        <input
+          type="hidden"
+          name="filter_result"
+          value="{{ filter_result or '' }}"
         >
 
         <input
