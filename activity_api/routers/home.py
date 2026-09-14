@@ -1,13 +1,7 @@
-import traceback
-from fastapi import APIRouter, Request, Form, Query, Depends
-from fastapi.responses import RedirectResponse, HTMLResponse
-from starlette.status import HTTP_303_SEE_OTHER
-import sqlite3
+from fastapi import APIRouter, Request, Query, Depends
+from fastapi.responses import HTMLResponse
 from templates import templates
-from enums import PERSON_ENUM_MAP
-from validators import (    
-    system_day_to_db_day,
-)
+from validators import system_day_to_db_day
 from db import get_db
 from datetime import datetime
 
@@ -16,6 +10,17 @@ router = APIRouter(
     prefix="/home",
     tags=["home"]
 )
+
+
+def make_item(r):
+    return {
+        "start": r["StartTime"],
+        "end": r["EndTime"],
+        "description": r["Description"],
+        "person": r["PersonName"],
+        "personPicture": r["PersonPicture"],
+        "picture": r["Picture"],
+    }
 
 
 # ==============================
@@ -40,7 +45,9 @@ def home_page(
 
         current_day_name = now.strftime("%A")
 
+        # ==============================
         # DZISIAJ
+        # ==============================
         rows_today = cursor.execute("""
             SELECT
                 ad.StartTime,
@@ -58,7 +65,11 @@ def home_page(
             ORDER BY ad.StartTime
         """, (current_day,)).fetchall()
 
-        # POPRZEDNI DZIEŃ - AKTYWNOŚCI PRZECHODZĄCE PRZEZ PÓŁNOC
+        # ==============================
+        # POPRZEDNI DZIEŃ
+        # TYLKO AKTYWNOŚCI PRZECHODZĄCE
+        # PRZEZ PÓŁNOC I NADAL TRWAJĄCE
+        # ==============================
         rows_previous = cursor.execute("""
             SELECT
                 ad.StartTime,
@@ -84,33 +95,54 @@ def home_page(
         current_items = []
         next_items = []
 
-        # AKTYWNE Z POPRZEDNIEGO DNIA
+        # ==============================
+        # TERAZ - POPRZEDNI DZIEŃ
+        # ==============================
         for r in rows_previous:
-            current_items.append({
-                "start": r["StartTime"],
-                "end": r["EndTime"],
-                "description": r["Description"],
-                "person": r["PersonName"],
-                "personPicture": r["PersonPicture"],
-                "picture": r["Picture"],
-            })
+            current_items.append(make_item(r))
 
+        # ==============================
         # DZISIAJ
+        # ==============================
         for r in rows_today:
-            item = {
-                "start": r["StartTime"],
-                "end": r["EndTime"],
-                "description": r["Description"],
-                "person": r["PersonName"],
-                "personPicture": r["PersonPicture"],
-                "picture": r["Picture"],
-            }
+            item = make_item(r)
 
-            if r["StartTime"] <= current_time <= r["EndTime"]:
-                current_items.append(item)
+            start = r["StartTime"]
+            end = r["EndTime"]
 
-            elif r["StartTime"] > current_time:
-                next_items.append(item)
+            # ==============================
+            # ZWYKŁA AKTYWNOŚĆ
+            # np. 08:00 -> 10:00
+            # ==============================
+            if start <= end:
+
+                if start <= current_time <= end:
+                    current_items.append(item)
+
+                elif start > current_time:
+                    next_items.append(item)
+
+                continue
+
+            # ==============================
+            # AKTYWNOŚĆ PRZECHODZĄCA PRZEZ PÓŁNOC
+            # np. 23:00 -> 06:45
+            #
+            # Jeżeli jest zapisana na DZISIAJ:
+            #
+            # 05:55 -> jeszcze się nie rozpoczęła
+            #          => NASTĘPNIE
+            #
+            # 23:30 -> już trwa
+            #          => TERAZ
+            # ==============================
+            if start > end:
+
+                if current_time >= start:
+                    current_items.append(item)
+
+                elif current_time < start:
+                    next_items.append(item)
 
         current_items.sort(key=lambda x: x["start"])
         next_items.sort(key=lambda x: x["start"])
@@ -166,13 +198,15 @@ def home_page(
         db.close()
 
 
+# ==============================
+# HOME BY PERSON
+# ==============================
 @router.get("/homebyperson", response_class=HTMLResponse)
 def home_page_by_person(
-        request: Request,
-        person: str = Query(default="MAMA"),
-        db=Depends(get_db)
-    ):
-
+    request: Request,
+    person: str = Query(default="MAMA"),
+    db=Depends(get_db)
+):
     cursor = db.cursor()
 
     now = datetime.now()
@@ -200,10 +234,7 @@ def home_page_by_person(
         for r in person_rows
     ]
 
-    # ==============================
-    # MAPA NAZWA -> ID
-    # ==============================
-    PERSON_STRING_TO_ID = {
+    person_string_to_id = {
         r["PersonName"]: r["Id"]
         for r in person_rows
     }
@@ -211,19 +242,19 @@ def home_page_by_person(
     # ==============================
     # WYBRANA OSOBA
     # ==============================
-    if person in PERSON_STRING_TO_ID:
+    if person in person_string_to_id:
         selected_person = person
-    elif "MAMA" in PERSON_STRING_TO_ID:
+    elif "MAMA" in person_string_to_id:
         selected_person = "MAMA"
     elif persons:
         selected_person = persons[0]
     else:
         selected_person = ""
 
-    person_id = PERSON_STRING_TO_ID.get(selected_person)
+    person_id = person_string_to_id.get(selected_person)
 
     # ==============================
-    # SQL - DZISIAJ
+    # DZISIAJ
     # ==============================
     sql_today = """
         SELECT
@@ -243,7 +274,6 @@ def home_page_by_person(
 
     params_today = [current_day]
 
-    # RODZINA = WSZYSTKIE OSOBY
     if selected_person != "RODZINA" and person_id is not None:
         sql_today += " AND ad.ModelPersonFamilyId = ?"
         params_today.append(person_id)
@@ -256,8 +286,9 @@ def home_page_by_person(
     ).fetchall()
 
     # ==============================
-    # SQL - POPRZEDNI DZIEŃ
+    # POPRZEDNI DZIEŃ
     # TYLKO PRZEJŚCIE PRZEZ PÓŁNOC
+    # I TYLKO AKTYWNOŚCI NADAL TRWAJĄCE
     # ==============================
     sql_previous = """
         SELECT
@@ -300,39 +331,48 @@ def home_page_by_person(
 
     # ==============================
     # TERAZ - POPRZEDNI DZIEŃ
-    # PRZECHODZI PRZEZ PÓŁNOC
     # ==============================
     for r in rows_previous:
-        current_items.append({
-            "start": r["StartTime"],
-            "end": r["EndTime"],
-            "description": r["Description"],
-            "person": r["PersonName"],
-            "personPicture": r["PersonPicture"],
-            "picture": r["Picture"],
-        })
+        current_items.append(make_item(r))
 
     # ==============================
     # DZISIAJ
     # ==============================
     for r in rows_today:
+        item = make_item(r)
 
-        item = {
-            "start": r["StartTime"],
-            "end": r["EndTime"],
-            "description": r["Description"],
-            "person": r["PersonName"],
-            "personPicture": r["PersonPicture"],
-            "picture": r["Picture"],
-        }
+        start = r["StartTime"]
+        end = r["EndTime"]
 
-        # TERAZ
-        if r["StartTime"] <= current_time <= r["EndTime"]:
-            current_items.append(item)
+        # ==============================
+        # ZWYKŁA AKTYWNOŚĆ
+        # ==============================
+        if start <= end:
 
-        # NASTĘPNIE
-        elif r["StartTime"] > current_time:
-            next_items.append(item)
+            if start <= current_time <= end:
+                current_items.append(item)
+
+            elif start > current_time:
+                next_items.append(item)
+
+            continue
+
+        # ==============================
+        # AKTYWNOŚĆ PRZECHODZĄCA PRZEZ PÓŁNOC
+        #
+        # Dzisiejsza:
+        # 23:00 -> 06:45
+        #
+        # 05:55 = NASTĘPNIE
+        # 23:30 = TERAZ
+        # ==============================
+        if start > end:
+
+            if current_time >= start:
+                current_items.append(item)
+
+            elif current_time < start:
+                next_items.append(item)
 
     current_items.sort(key=lambda x: x["start"])
     next_items.sort(key=lambda x: x["start"])
@@ -367,4 +407,3 @@ def home_page_by_person(
             "selected_person": selected_person,
         }
     )
-

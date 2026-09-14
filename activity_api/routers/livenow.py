@@ -35,12 +35,20 @@ DAY_NAMES = {
 
 def is_time_in_range(start, end, current):
     """
-    Obsługuje zarówno zwykły przedział:
+    Sprawdza, czy aktywność jest LIVE.
+
+    Zwykła aktywność:
         08:00 -> 16:00
 
-    jak i przejście przez północ:
-        23:00 -> 05:55
+    Przejście przez północ:
+        23:00 -> 06:45
+
+    UWAGA:
+    Dla aktywności zapisanej na DZISIAJ 23:00 -> 06:45
+    godzina 05:55 NIE jest LIVE.
+    O tej godzinie LIVE może być tylko aktywność z dnia poprzedniego.
     """
+
     start_min = time_to_minutes(start)
     end_min = time_to_minutes(end)
     current_min = time_to_minutes(current)
@@ -48,8 +56,14 @@ def is_time_in_range(start, end, current):
     if start_min <= end_min:
         return start_min <= current_min <= end_min
 
-    # przejście przez północ
-    return current_min >= start_min or current_min <= end_min
+    # Aktywność przechodząca przez północ.
+    # Jest LIVE tylko po godzinie startu tego dnia.
+    return current_min >= start_min
+
+
+def is_cross_midnight(start, end):
+    """Czy aktywność przechodzi przez północ."""
+    return time_to_minutes(start) > time_to_minutes(end)
 
 
 def get_previous_day(current_day_iso):
@@ -118,14 +132,8 @@ def livenow_page(request: Request, db=Depends(get_db)):
         LEFT JOIN PictureActivities pa
             ON ad.ModelPictureActivityId = pa.Id
         WHERE ad.DayOfWeek = ?
-          AND time(ad.StartTime) <= time(?)
-          AND time(ad.EndTime) >= time(?)
         ORDER BY ad.StartTime
-    """, (
-        current_day,
-        current_time,
-        current_time,
-    )).fetchall()
+    """, (current_day,)).fetchall()
 
     # ========================================================
     # 2. WSZYSTKIE AKTYWNOŚCI LIVE Z POPRZEDNIEGO DNIA
@@ -173,14 +181,21 @@ def livenow_page(request: Request, db=Depends(get_db)):
         })
 
     for r in rows_today:
-        live_items.append({
-            "person": r["PersonName"],
-            "description": r["Description"],
-            "picture": r["Picture"],
-            "personPicture": r["PersonPicture"],
-            "start": r["StartTime"],
-            "end": r["EndTime"],
-        })
+        # Dzisiejsza aktywność jest LIVE tylko wtedy,
+        # gdy faktycznie rozpoczęła się już dzisiaj.
+        if is_time_in_range(
+            r["StartTime"],
+            r["EndTime"],
+            current_time
+        ):
+            live_items.append({
+                "person": r["PersonName"],
+                "description": r["Description"],
+                "picture": r["Picture"],
+                "personPicture": r["PersonPicture"],
+                "start": r["StartTime"],
+                "end": r["EndTime"],
+            })
 
     # sortowanie po godzinie rozpoczęcia
     live_items.sort(key=lambda x: x["start"])
