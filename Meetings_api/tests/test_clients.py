@@ -196,7 +196,7 @@ def test_create_client_without_first_name(client, empty_db):
         }
     )
 
-    assert response.status_code == 422
+    assert response.status_code == 400
 
 
 def test_create_client_without_last_name(client, empty_db):
@@ -212,7 +212,7 @@ def test_create_client_without_last_name(client, empty_db):
         }
     )
 
-    assert response.status_code == 422
+    assert response.status_code == 400
 
 
 def test_create_client_negative_age(client, empty_db):
