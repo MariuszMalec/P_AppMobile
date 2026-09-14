@@ -471,18 +471,18 @@ def test_validate_activity_add_form_period_crosses_midnight_ok(client, empty_db)
         # Istniejąca aktywność: 01:00 - 02:00
         add_session(
             db,
-            start="01:00:00",
-            end="02:00:00",
+            start="06:35:00",
+            end="22:00:00",
             day_of_week=1,
             person_id=1,
             activity_id=1,
         )
 
         # Nowa aktywność: 23:30 - 00:30
-        # Przechodzi przez północ, ale nie koliduje z 01:00 - 02:00.
+        # Przechodzi przez północ, ale nie koliduje z 06:35 - 22:00.
         errors, picture_id = validate_activity_form(
             start="23:30",
-            end="00:30",
+            end="06:30",
             day_of_week=1,
             person_id=1,
             activity_name="Testowa",

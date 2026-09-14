@@ -48,16 +48,23 @@ def validate_activity_form(
         errors.append("Nieprawidłowy format czasu")
         return errors, None
 
+    # --- czas ---
     if start_min == end_min:
         errors.append(
             "Godzina rozpoczęcia i zakończenia nie mogą być takie same"
         )
 
     elif start_min > end_min:
-        # Dozwolone przejście przez północ, np. 23:30 -> 00:30.
+        # Dozwolone przejście przez północ:
+        # np. 23:30 -> 00:30
+        #      23:30 -> 06:30
+        #
         # Zwykły odwrócony zakres, np. 10:30 -> 09:30,
         # pozostaje błędem.
-        crosses_midnight = start_min >= 18 * 60 and end_min < 6 * 60
+        crosses_midnight = (
+            start_min >= 18 * 60
+            and end_min < 12 * 60
+        )
 
         if not crosses_midnight:
             errors.append(
@@ -94,11 +101,18 @@ def validate_activity_form(
     ))
 
     existing = cursor.fetchall()
+
+    # Zakres przechodzący przez północ zostanie rozbity
+    # np. 23:30 -> 06:30
+    # na:
+    # 23:30 -> 24:00
+    # 00:00 -> 06:30
     new_ranges = normalize_range(start_min, end_min)
 
     for row in existing:
         ex_start = time_to_minutes(row["StartTime"])
         ex_end = time_to_minutes(row["EndTime"])
+
         ex_ranges = normalize_range(ex_start, ex_end)
 
         for nr in new_ranges:
@@ -111,6 +125,7 @@ def validate_activity_form(
                     return errors, None
 
     return errors, picture_id
+
 
 def validate_activity_edit_form(
     start: str,
@@ -134,12 +149,18 @@ def validate_activity_edit_form(
         errors.append(
             "Godzina rozpoczęcia i zakończenia nie mogą być takie same"
         )
+
     elif start_min > end_min:
-        # Dozwolone jest przejście przez północ,
-        # np. 23:30 -> 00:30.
+        # Dozwolone przejście przez północ:
+        # np. 23:30 -> 00:30
+        #      23:30 -> 06:30
+        #
         # Zwykłe odwrócenie zakresu, np. 10:30 -> 09:30,
         # pozostaje błędem.
-        crosses_midnight = start_min >= 18 * 60 and end_min < 6 * 60
+        crosses_midnight = (
+            start_min >= 18 * 60
+            and end_min < 12 * 60
+        )
 
         if not crosses_midnight:
             errors.append(
@@ -160,10 +181,16 @@ def validate_activity_edit_form(
             DayOfWeek = ?
             AND ModelPersonFamilyId = ?
             AND Id != ?
-    """, (day_of_week, person_id, activity_id))
+    """, (
+        day_of_week,
+        person_id,
+        activity_id
+    ))
 
     existing = cursor.fetchall()
 
+    # Zakres przechodzący przez północ jest rozbijany
+    # na dwa odcinki.
     new_ranges = normalize_range(start_min, end_min)
 
     for row in existing:
@@ -179,10 +206,9 @@ def validate_activity_edit_form(
                         f"❌ Masz już zaplanowaną aktywność w tym czasie "
                         f"({row['StartTime']} – {row['EndTime']})"
                     )
-                    return errors  # jedna kolizja wystarczy
+                    return errors
 
     return errors
-
 
 
 def validate_activity_form_old(
@@ -209,7 +235,8 @@ def validate_activity_form_old(
         except ValueError as e:
             errors.append(str(e))
 
-        # ✅ TU JEST WŁAŚCIWA WALIDACJA
+        # Zerowy czas trwania nadal jest błędem.
+        # Przejście przez północ jest dozwolone.
         if not errors and start_min == end_min:
             errors.append("Godzina startu musi być inna niż zakończenia")
 
@@ -225,6 +252,7 @@ def validate_activity_form_old(
         errors.append("Nieprawidłowa aktywność")
 
     return errors
+
 
 def validate_activity_edit_form_old(
     start: str,
@@ -249,13 +277,24 @@ def validate_activity_edit_form_old(
         except ValueError as e:
             errors.append(str(e))
 
-        # ❌ tylko gdy start jest PO end
-        if start_min > end_min:
-            errors.append("❌ Godzina rozpoczęcia musi być wcześniejsza niż zakończenia")
+        # Przejście przez północ jest dozwolone.
+        # Błędem jest tylko zwykłe odwrócenie zakresu.
+        if not errors and start_min > end_min:
+            crosses_midnight = (
+                start_min >= 18 * 60
+                and end_min < 12 * 60
+            )
 
-        # ❌ opcjonalnie: blokada zerowej aktywności
-        if start_min == end_min:
-            errors.append("❌ Czas trwania aktywności nie może wynosić 0 minut")
+            if not crosses_midnight:
+                errors.append(
+                    "❌ Godzina rozpoczęcia musi być wcześniejsza niż zakończenia"
+                )
+
+        # Zerowy czas trwania nadal jest błędem.
+        if not errors and start_min == end_min:
+            errors.append(
+                "❌ Czas trwania aktywności nie może wynosić 0 minut"
+            )
 
     # --- dzień ---
     if day_of_week not in DAY_NAMES or day_of_week == 0:
@@ -265,21 +304,42 @@ def validate_activity_edit_form_old(
     if person_id not in PERSON_ENUM_MAP:
         errors.append("Nieprawidłowa osoba")
 
-
     return errors
+
 
 def system_day_to_db_day(iso_day: int) -> int:
     # iso: 1=Mon ... 7=Sun
     # db : 1=Sun ... 7=Sat
     return 1 if iso_day == 7 else iso_day + 1
 
-def normalize_range(start_min: int, end_min: int) -> list[tuple[int, int]]:
+
+def normalize_range(
+    start_min: int,
+    end_min: int
+) -> list[tuple[int, int]]:
+    """
+    Normalizuje zakres czasu.
+
+    Zwykły zakres:
+        06:00 -> 10:00
+        [(360, 600)]
+
+    Zakres przez północ:
+        23:30 -> 06:30
+        [(1410, 1440), (0, 390)]
+    """
+
     if end_min > start_min:
         return [(start_min, end_min)]
+
     return [
         (start_min, 1440),
         (0, end_min)
     ]
 
-def ranges_overlap(a: tuple[int, int], b: tuple[int, int]) -> bool:
+
+def ranges_overlap(
+    a: tuple[int, int],
+    b: tuple[int, int]
+) -> bool:
     return a[0] < b[1] and b[0] < a[1]
