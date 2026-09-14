@@ -63,6 +63,12 @@ def teams_page(
         elif sort == "name_desc":
             base_query += " ORDER BY Teams.Name DESC, Teams.Season DESC"
 
+        elif sort == "season_asc":
+            base_query += " ORDER BY Teams.Season ASC, Teams.Name ASC"
+
+        elif sort == "season_desc":
+            base_query += " ORDER BY Teams.Season DESC, Teams.Name ASC"
+
         else:
             base_query += " ORDER BY Teams.Name ASC, Teams.Season ASC"
 

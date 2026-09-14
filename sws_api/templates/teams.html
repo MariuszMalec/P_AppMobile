@@ -113,7 +113,18 @@
   <thead class="table-dark">
     <tr>
       <th>Name</th>
-      <th>Season</th>
+      <th
+        style="cursor:pointer;"
+        onclick="toggleSeasonSort()"
+        title="Sort by season"
+      >
+        Season
+        {% if sort == "season_asc" %}
+          ↑
+        {% elif sort == "season_desc" %}
+          ↓
+        {% endif %}
+      </th>
       <th>Final Result</th>
       <th>Trophy Win</th>
       <th>Trophy</th>
@@ -826,7 +837,12 @@
 
 
 <!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js">
+    window.location.href =
+        url.toString();
+}
+
+</script>
 
 
 <script>
@@ -2052,6 +2068,21 @@ if (createModal) {
         }
     );
 
+}
+
+function toggleSeasonSort() {
+
+    const url = new URL(window.location.href);
+
+    const currentSort = url.searchParams.get("sort");
+
+    if (currentSort === "season_asc") {
+        url.searchParams.set("sort", "season_desc");
+    } else {
+        url.searchParams.set("sort", "season_asc");
+    }
+
+    window.location.href = url.toString();
 }
 
 </script>
