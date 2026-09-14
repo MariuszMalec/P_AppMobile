@@ -88,7 +88,18 @@
                             <div class="trophy-card">
                                 <img class="trophy-img" src="{{ t.Picture }}" alt="">
                                 <h6 class="mt-2">{{ t.Name }}</h6>
-                                <small class="opacity-75">{{ t.Description }}</small>
+
+{% if t.Lose %}
+    <div class="text-danger fw-bold">
+        🔴 PRZEGRANA
+    </div>
+{% else %}
+    <div class="text-success fw-bold">
+        🟢 WYGRANA
+    </div>
+{% endif %}
+
+<small class="opacity-75">{{ t.Description }}</small>
                             </div>
                         </div>
                     {% endfor %}
@@ -101,3 +112,5 @@
 
 </body>
 </html>
+
+

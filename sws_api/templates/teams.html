@@ -109,7 +109,6 @@
         {% endif %}
       </th>
       <th>Final Result</th>
-      <th>Trophy Win</th>
       <th>Trophy</th>
       <th style="width:120px;">Actions</th>
     </tr>
@@ -119,7 +118,7 @@
 
     {% if not teams %}
         <tr>
-            <td colspan="6" class="text-center text-muted no-data">
+            <td colspan="5" class="text-center text-muted no-data">
                 No data
             </td>
         </tr>
@@ -138,6 +137,22 @@
         {% set team_name = t["Name"] %}
         {% set display_result = result %}
         {% set lose = false %}
+
+{% if result and "winner" in result|lower %}
+    {% set lose = false %}
+{% elif result and ":" not in result %}
+    {% set lose = true %}
+{% elif result and "round" in result|lower %}
+    {% set lose = true %}
+{% endif %}
+
+{% if result and ":" not in result %}
+    {% set lose = true %}
+{% endif %}
+
+{% if result and "round" in result|lower %}
+    {% set lose = true %}
+{% endif %}
 
         {% if result %}
 
@@ -384,12 +399,31 @@
 
 
             {# ============================================================
-               KOLOROWANIE PRZEGRANEGO
+               OSTATECZNE USTALENIE STATUSU
+               ============================================================ #}
+
+            {% if result and "winner" in result|lower %}
+                {% set lose = false %}
+            {% elif result and "round" in result|lower %}
+                {% set lose = true %}
+            {% elif result and ":" not in result %}
+                {% set lose = true %}
+            {% endif %}
+
+
+            {# ============================================================
+               KOLOROWANIE FINAL RESULT
                ============================================================ #}
 
             {% if lose %}
 
                 <span class="text-danger fw-bold">
+                    {{ display_result }}
+                </span>
+
+            {% elif result and "winner" in result|lower %}
+
+                <span class="text-success fw-bold">
                     {{ display_result }}
                 </span>
 
@@ -402,17 +436,34 @@
         {% endif %}
       </td>
 
-      <td>{{ t["TrophyWin"] or "—" }}</td>
 
       <td class="text-center">
         {% if t["TrophyPicture"] %}
 
-          <img
-            src="{{ t['TrophyPicture'] }}"
-            alt="{{ t['TrophyName'] }}"
-            title="{{ t['TrophyName'] }}"
-            style="height:60px;"
-          >
+          <div>
+            <img
+              src="{{ t['TrophyPicture'] }}"
+              alt="{{ t['TrophyName'] }}"
+              title="{{ t['TrophyName'] }}"
+              style="height:60px;"
+            >
+          </div>
+
+          {% if t["TrophyWin"] and t["TrophyWin"] != "No" and t["FinalResult"] %}
+            <div class="fw-bold mt-1">
+              {{ t["TrophyWin"] }}
+            </div>
+
+            {% if lose %}
+              <div class="text-danger fw-bold">
+                🔴 PRZEGRANA
+              </div>
+            {% else %}
+              <div class="text-success fw-bold">
+                🟢 WYGRANA
+              </div>
+            {% endif %}
+          {% endif %}
 
         {% else %}
 
@@ -2081,3 +2132,11 @@ function toggleSeasonSort() {
 
 </body>
 </html>
+
+
+
+
+
+
+
+
