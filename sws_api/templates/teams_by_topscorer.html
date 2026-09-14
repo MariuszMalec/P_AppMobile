@@ -4,43 +4,162 @@
     <meta charset="UTF-8">
     <title>Drużyny według strzelca</title>
     <style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 30px;
+        background: #f4f6f8;
+        color: #263238;
+    }
+
+    h1 {
+        margin: 0 0 24px 0;
+        font-size: 28px;
+        color: #1f2933;
+    }
+
+    h2 {
+        margin: 24px 0 14px 0;
+        font-size: 20px;
+        color: #37474f;
+    }
+
+    .form-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    .form-box form {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    input[type="text"] {
+        min-width: 260px;
+        padding: 10px 12px;
+        border: 1px solid #cfd8dc;
+        border-radius: 8px;
+        font-size: 15px;
+        background: white;
+        outline: none;
+    }
+
+    input[type="text"]:focus {
+        border-color: #78909c;
+        box-shadow: 0 0 0 3px rgba(120, 144, 156, 0.15);
+    }
+
+    .btn {
+        display: inline-block;
+        padding: 10px 16px;
+        border: 0;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        background: #455a64;
+        color: white;
+        transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .btn:hover {
+        background: #37474f;
+    }
+
+    .btn:active {
+        transform: translateY(1px);
+    }
+
+    table {
+        width: 100%;
+        margin-top: 20px;
+        border-collapse: separate;
+        border-spacing: 0;
+        overflow: hidden;
+        background: white;
+        border: 1px solid #dfe4e8;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    th,
+    td {
+        padding: 12px 14px;
+        text-align: left;
+        border-bottom: 1px solid #e8ecef;
+    }
+
+    th {
+        background: #455a64;
+        color: white;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    tbody tr:hover {
+        background: #f7f9fa;
+    }
+
+    img {
+        max-height: 60px;
+        max-width: 100px;
+        object-fit: contain;
+        vertical-align: middle;
+    }
+
+    p {
+        padding: 14px 16px;
+        background: white;
+        border: 1px solid #dfe4e8;
+        border-radius: 8px;
+    }
+
+    body > a {
+        display: inline-block;
+        margin-top: 18px;
+        color: #455a64;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    body > a:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 800px) {
         body {
-            font-family: Arial, sans-serif;
-            margin: 40px;
+            padding: 16px;
         }
+
+        h1 {
+            font-size: 23px;
+        }
+
         table {
-            border-collapse: collapse;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        input[type="text"] {
+            min-width: 220px;
             width: 100%;
-            margin-top: 20px;
         }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        img {
-            max-height: 60px;
-        }
-        .form-box {
-            margin-bottom: 20px;
-        }
-        .btn {
-            padding: 6px 12px;
-            cursor: pointer;
-            border: 1px solid #999;
-            background-color: #eee;
-            text-decoration: none;
-            color: black;
-        }
-
-        .btn:hover {
-            background-color: #ddd;
-        }
-
-    </style>
+    }
+</style>
 </head>
 <body>
 
