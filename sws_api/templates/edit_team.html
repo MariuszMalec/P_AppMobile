@@ -52,6 +52,25 @@
 
                 <div class="card-body">
 
+                    {% if error %}
+                    <div
+                        role="alert"
+                        style="
+                            background: #f8d7da !important;
+                            color: #000000 !important;
+                            border: 2px solid #dc3545 !important;
+                            border-radius: 8px;
+                            padding: 14px 16px;
+                            margin-bottom: 20px;
+                            font-size: 17px;
+                            font-weight: bold;
+                            line-height: 1.5;
+                        "
+                    >
+                        ⚠️ {{ error }}
+                    </div>
+                    {% endif %}
+
                     <form method="post" action="/teams/{{ team.Id }}/edit">
 
                         <input type="hidden" name="filter_name" value="{{ filter_name or '' }}">

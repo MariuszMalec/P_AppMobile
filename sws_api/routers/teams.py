@@ -747,6 +747,59 @@ def edit_team(
             TrophyModelId = None
 
         # ============================================================
+        # SPRAWDZENIE DUPLIKATU
+        # ============================================================
+
+        duplicate = cursor.execute(
+            """
+            SELECT Id
+            FROM Teams
+            WHERE Name = ?
+              AND Season = ?
+              AND TrophyWin = ?
+              AND Id != ?
+            """,
+            (
+                Name,
+                Season,
+                TrophyWin,
+                team_id
+            )
+        ).fetchone()
+
+        if duplicate:
+            return templates.TemplateResponse(
+                request,
+                "edit_team.html",
+                {
+                    "team": {
+                        "Id": team_id,
+                        "Name": Name,
+                        "Description": Description,
+                        "NationalityName": NationalityName,
+                        "Season": Season,
+                        "TopScorer": TopScorer,
+                        "Picture": Picture,
+                        "FinalResult": FinalResult,
+                        "TrophyWin": TrophyWin,
+                        "TrophyModelId": TrophyModelId,
+                    },
+                    "trophies": cursor.execute(
+                        """
+                        SELECT Id, Name
+                        FROM Trophies
+                        ORDER BY Name ASC
+                        """
+                    ).fetchall(),
+                    "filter_name": filter_name,
+                    "filter_trophy": filter_trophy,
+                    "filter_result": filter_result,
+                    "sort": sort,
+                    "error": "Team with this Name + Season + Trophy already exists!"
+                }
+            )
+
+        # ============================================================
         # UPDATE
         # ============================================================
 
