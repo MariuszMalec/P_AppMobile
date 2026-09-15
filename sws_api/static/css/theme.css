@@ -499,10 +499,34 @@ html[data-theme="dark"] body.topscorer-page .form-box {
         width: 22% !important;
     }
 
+    /* NAME */
+    .teams-page table th:nth-child(1),
+    .teams-page table td:nth-child(1) {
+        width: 20% !important;
+    }
+
+    /* SEASON */
+    .teams-page table th:nth-child(2),
+    .teams-page table td:nth-child(2) {
+        width: 14% !important;
+    }
+
+    /* FINAL RESULT */
+    .teams-page table th:nth-child(3),
+    .teams-page table td:nth-child(3) {
+        width: 22% !important;
+    }
+
     /* TROPHY */
     .teams-page table th:nth-child(4),
     .teams-page table td:nth-child(4) {
-        width: 16% !important;
+        width: 20% !important;
+    }
+
+    /* ACTIONS */
+    .teams-page table th:nth-child(5),
+    .teams-page table td:nth-child(5) {
+        width: 24% !important;
     }
 
     /* ACTIONS */
@@ -521,16 +545,16 @@ html[data-theme="dark"] body.topscorer-page .form-box {
         object-fit: contain !important;
     }
 
-    /* ACTION BUTTONS */
+    /* ACTION BUTTONS - VERTICAL ON MOBILE */
     .teams-page table td .btn {
-        display: inline-flex !important;
+        display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        width: 20px !important;
-        min-width: 20px !important;
+        width: 24px !important;
+        min-width: 24px !important;
         height: 24px !important;
         padding: 1px !important;
-        margin: 1px !important;
+        margin: 2px auto !important;
         font-size: 10px !important;
         line-height: 1 !important;
     }
