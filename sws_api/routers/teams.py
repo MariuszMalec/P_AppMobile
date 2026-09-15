@@ -481,7 +481,8 @@ def create_team(
                     "filter_trophy": filter_trophy,
                     "filter_result": filter_result,
                     "sort": sort,
-                    "error": "Team with this Name + Season + Trophy already exists!"
+                    "error": "Team with this Name + Season + Trophy already exists!",
+                    "open_create_team_modal": True
                 }
             )
 

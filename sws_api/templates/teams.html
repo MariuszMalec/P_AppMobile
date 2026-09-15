@@ -45,9 +45,22 @@
 </div>
 
 {% if error %}
-    <div style="color: red; margin-bottom: 15px;">
-        {{ error }}
-    </div>
+<div
+    role="alert"
+    style="
+        background: #f8d7da !important;
+        color: #000000 !important;
+        border: 2px solid #dc3545 !important;
+        border-radius: 8px;
+        padding: 14px 16px;
+        margin-bottom: 20px;
+        font-size: 17px;
+        font-weight: bold;
+        line-height: 1.5;
+    "
+>
+    ⚠️ {{ error }}
+</div>
 {% endif %}
 
 <!-- NAV -->
@@ -625,13 +638,31 @@
 
         </div>
 
-
         <div class="modal-body">
 
-          <div class="mb-3">
+        {% if error %}
+        <div
+            role="alert"
+            style="
+                background: #f8d7da !important;
+                color: #000000 !important;
+                border: 2px solid #dc3545 !important;
+                border-radius: 8px;
+                padding: 14px 16px;
+                margin-bottom: 20px;
+                font-size: 17px;
+                font-weight: bold;
+                line-height: 1.5;
+            "
+        >
+            ⚠️ {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="mb-3">
 
             <label class="form-label">
-              Name *
+            Name *
             </label>
 
             <input
@@ -2138,7 +2169,71 @@ function toggleSeasonSort() {
     window.location.href = url.toString();
 }
 
+
+
 </script>
+
+{% if open_create_team_modal %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const modalElement = document.getElementById("createTeamModal");
+
+    if (modalElement) {
+
+        const modal = new bootstrap.Modal(modalElement);
+        modal.show();
+
+        // Przy błędzie POST /teams/create przeglądarka
+        // nadal pozostaje na adresie /teams/create.
+        // Przywracamy prawidłowy adres strony /teams
+        // razem z aktualnymi filtrami i sortowaniem.
+
+        const params = new URLSearchParams();
+
+        {% if filter_name %}
+        params.set(
+            "filter_name",
+            "{{ filter_name|e }}"
+        );
+        {% endif %}
+
+        {% if filter_trophy %}
+        params.set(
+            "filter_trophy",
+            "{{ filter_trophy|e }}"
+        );
+        {% endif %}
+
+        {% if filter_result %}
+        params.set(
+            "filter_result",
+            "{{ filter_result|e }}"
+        );
+        {% endif %}
+
+        {% if sort %}
+        params.set(
+            "sort",
+            "{{ sort|e }}"
+        );
+        {% endif %}
+
+        const query = params.toString();
+
+        const correctUrl =
+            "/teams" + (query ? "?" + query : "");
+
+        window.history.replaceState(
+            {},
+            "",
+            correctUrl
+        );
+    }
+
+});
+</script>
+{% endif %}
 
 </body>
 </html>
