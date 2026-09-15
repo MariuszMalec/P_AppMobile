@@ -2105,28 +2105,15 @@ if (createModal) {
 function toggleSeasonSort() {
 
     const url = new URL(window.location.href);
-
-    const currentSort =
-        url.searchParams.get("sort");
+    const currentSort = url.searchParams.get("sort");
 
     if (currentSort === "season_asc") {
-
-        url.searchParams.set(
-            "sort",
-            "season_desc"
-        );
-
+        url.searchParams.set("sort", "season_desc");
     } else {
-
-        url.searchParams.set(
-            "sort",
-            "season_asc"
-        );
-
+        url.searchParams.set("sort", "season_asc");
     }
 
-    window.location.href =
-        url.toString();
+    window.location.href = url.toString();
 }
 
 </script>
