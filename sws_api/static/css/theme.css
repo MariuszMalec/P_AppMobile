@@ -481,28 +481,11 @@ html[data-theme="dark"] body.topscorer-page .form-box {
         word-break: break-word !important;
     }
 
+
     /* NAME */
     .teams-page table th:nth-child(1),
     .teams-page table td:nth-child(1) {
-        width: 24% !important;
-    }
-
-    /* SEASON */
-    .teams-page table th:nth-child(2),
-    .teams-page table td:nth-child(2) {
-        width: 14% !important;
-    }
-
-    /* FINAL RESULT */
-    .teams-page table th:nth-child(3),
-    .teams-page table td:nth-child(3) {
         width: 22% !important;
-    }
-
-    /* NAME */
-    .teams-page table th:nth-child(1),
-    .teams-page table td:nth-child(1) {
-        width: 20% !important;
     }
 
     /* SEASON */
@@ -520,19 +503,13 @@ html[data-theme="dark"] body.topscorer-page .form-box {
     /* TROPHY */
     .teams-page table th:nth-child(4),
     .teams-page table td:nth-child(4) {
-        width: 20% !important;
-    }
-
-    /* ACTIONS */
-    .teams-page table th:nth-child(5),
-    .teams-page table td:nth-child(5) {
         width: 24% !important;
     }
 
     /* ACTIONS */
     .teams-page table th:nth-child(5),
     .teams-page table td:nth-child(5) {
-        width: 24% !important;
+        width: 18% !important;
     }
 
     /* TROPHY IMAGE */
