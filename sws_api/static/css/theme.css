@@ -1,33 +1,156 @@
 :root {
+    color-scheme: light;
     --sws-bg: #f8f9fa;
+    --sws-surface: #ffffff;
+    --sws-surface-2: #f1f3f5;
     --sws-text: #212529;
-    --sws-card: #ffffff;
+    --sws-text-muted: #6c757d;
     --sws-border: #dee2e6;
+    --sws-input-bg: #ffffff;
+    --sws-input-text: #212529;
+    --sws-link: #0d6efd;
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --sws-bg: #121212;
+    --sws-surface: #1e1e1e;
+    --sws-surface-2: #252525;
+    --sws-text: #eeeeee;
+    --sws-text-muted: #b0b0b0;
+    --sws-border: #444444;
+    --sws-input-bg: #2b2b2b;
+    --sws-input-text: #ffffff;
+    --sws-link: #6ea8fe;
 }
 
 html[data-theme="dark"] body {
-    background-color: #121212 !important;
+    background-color: var(--sws-bg) !important;
+    color: var(--sws-text) !important;
+}
+
+html[data-theme="dark"] p,
+html[data-theme="dark"] span,
+html[data-theme="dark"] div,
+html[data-theme="dark"] label,
+html[data-theme="dark"] small,
+html[data-theme="dark"] strong,
+html[data-theme="dark"] b,
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6 {
+    color: var(--sws-text);
+}
+
+html[data-theme="dark"] .text-dark {
     color: #eeeeee !important;
 }
 
-html[data-theme="dark"] .card,
-html[data-theme="dark"] .modal-content,
-html[data-theme="dark"] .list-group-item {
-    background-color: #1e1e1e !important;
+html[data-theme="dark"] .text-secondary,
+html[data-theme="dark"] .text-muted {
+    color: var(--sws-text-muted) !important;
+}
+
+html[data-theme="dark"] a {
+    color: var(--sws-link);
+}
+
+html[data-theme="dark"] a:hover {
+    color: #9ec5fe;
+}
+
+/* TABELA */
+html[data-theme="dark"] .table {
+    --bs-table-color: #eeeeee;
+    --bs-table-bg: #1e1e1e;
+    --bs-table-border-color: #444444;
+    --bs-table-striped-color: #eeeeee;
+    --bs-table-striped-bg: #252525;
+    --bs-table-hover-color: #ffffff;
+    --bs-table-hover-bg: #303030;
+
     color: #eeeeee !important;
+    background-color: #1e1e1e !important;
     border-color: #444444 !important;
 }
 
-html[data-theme="dark"] .table {
+html[data-theme="dark"] .table > :not(caption) > * > * {
+    color: #eeeeee !important;
+    background-color: #1e1e1e !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+    color: #eeeeee !important;
+    background-color: #252525 !important;
+}
+
+html[data-theme="dark"] .table-hover > tbody > tr:hover > * {
+    color: #ffffff !important;
+    background-color: #303030 !important;
+}
+
+html[data-theme="dark"] th {
+    color: #ffffff !important;
+    background-color: #252525 !important;
+}
+
+html[data-theme="dark"] td {
     color: #eeeeee !important;
 }
 
+/* KARTY */
+html[data-theme="dark"] .card {
+    background-color: var(--sws-surface) !important;
+    color: var(--sws-text) !important;
+    border-color: var(--sws-border) !important;
+}
+
+html[data-theme="dark"] .card-header,
+html[data-theme="dark"] .card-footer {
+    background-color: var(--sws-surface-2) !important;
+    color: var(--sws-text) !important;
+    border-color: var(--sws-border) !important;
+}
+
+/* MODALE */
+html[data-theme="dark"] .modal-content {
+    background-color: var(--sws-surface) !important;
+    color: var(--sws-text) !important;
+    border-color: var(--sws-border) !important;
+}
+
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer {
+    border-color: var(--sws-border) !important;
+}
+
+html[data-theme="dark"] .modal-title {
+    color: #ffffff !important;
+}
+
+/* INPUTY */
 html[data-theme="dark"] .form-control,
 html[data-theme="dark"] .form-select,
-html[data-theme="dark"] textarea {
-    background-color: #2b2b2b !important;
-    color: #ffffff !important;
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] input,
+html[data-theme="dark"] select {
+    background-color: var(--sws-input-bg) !important;
+    color: var(--sws-input-text) !important;
     border-color: #555555 !important;
+}
+
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] select:focus {
+    background-color: #303030 !important;
+    color: #ffffff !important;
+    border-color: #6ea8fe !important;
 }
 
 html[data-theme="dark"] .form-control::placeholder,
@@ -35,15 +158,60 @@ html[data-theme="dark"] textarea::placeholder {
     color: #aaaaaa !important;
 }
 
-html[data-theme="dark"] .text-muted,
-html[data-theme="dark"] .text-secondary {
-    color: #aaaaaa !important;
+html[data-theme="dark"] .form-label {
+    color: #eeeeee !important;
 }
 
-html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
-    color: #eeeeee;
+/* LISTY */
+html[data-theme="dark"] .list-group-item {
+    background-color: var(--sws-surface) !important;
+    color: var(--sws-text) !important;
+    border-color: var(--sws-border) !important;
 }
 
+/* DROPDOWN */
+html[data-theme="dark"] .dropdown-menu {
+    background-color: #1e1e1e !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] .dropdown-item {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] .dropdown-item:hover {
+    color: #ffffff !important;
+    background-color: #303030 !important;
+}
+
+/* NAVBAR */
+html[data-theme="dark"] .navbar {
+    background-color: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] .navbar-brand,
+html[data-theme="dark"] .navbar-nav .nav-link {
+    color: #eeeeee !important;
+}
+
+/* PRZYCISK */
+html[data-theme="dark"] .btn-outline-secondary {
+    color: #dddddd !important;
+    border-color: #777777 !important;
+}
+
+html[data-theme="dark"] .btn-outline-secondary:hover {
+    color: #ffffff !important;
+    background-color: #444444 !important;
+}
+
+/* OBRAMOWANIA */
+html[data-theme="dark"] .border {
+    border-color: #444444 !important;
+}
+
+/* PRZEŁĄCZNIK */
 .sws-theme-toggle {
     position: fixed !important;
     top: 12px !important;
@@ -53,4 +221,203 @@ html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
 
 .sws-theme-toggle button {
     white-space: nowrap;
+}
+html[data-theme="dark"] body.teams-page {
+    background-color: #121212 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="light"] body.teams-page {
+    background-color: #f8f9fa !important;
+    color: #212529 !important;
+}
+/* ============================================================
+   TEAMS - DARK MODE
+   ============================================================ */
+
+html[data-theme="dark"] body.teams-page {
+    background: #121212 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .container,
+html[data-theme="dark"] body.teams-page .container-fluid,
+html[data-theme="dark"] body.teams-page main,
+html[data-theme="dark"] body.teams-page section {
+    background: transparent !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .card,
+html[data-theme="dark"] body.teams-page .table-responsive,
+html[data-theme="dark"] body.teams-page .teams-card {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .table {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .table td,
+html[data-theme="dark"] body.teams-page .table th {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .table-striped > tbody > tr:nth-of-type(odd) > * {
+    background: #252525 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .table-striped > tbody > tr:nth-of-type(even) > * {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+/* Jasne tła używane przez style.css */
+html[data-theme="dark"] body.teams-page [style*="background"],
+html[data-theme="dark"] body.teams-page .bg-white {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page input,
+html[data-theme="dark"] body.teams-page select,
+html[data-theme="dark"] body.teams-page textarea {
+    background: #2b2b2b !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+html[data-theme="dark"] body.teams-page .teams-toolbar {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body.teams-page .teams-toolbar * {
+    color: #eeeeee !important;
+}
+html[data-theme="dark"] body .container.py-5.text-center {
+    background: #121212 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body .container.py-5.text-center * {
+    color: #eeeeee !important;
+}
+html[data-theme="dark"] body header.bg-white {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body header.bg-white * {
+    color: #eeeeee !important;
+}
+html[data-theme="dark"] body .table {
+    --bs-table-color: #eeeeee !important;
+    --bs-table-bg: #1e1e1e !important;
+    --bs-table-border-color: #444444 !important;
+    --bs-table-striped-color: #eeeeee !important;
+    --bs-table-striped-bg: #252525 !important;
+    --bs-table-hover-color: #ffffff !important;
+    --bs-table-hover-bg: #303030 !important;
+
+    color: #eeeeee !important;
+    background-color: #1e1e1e !important;
+}
+
+html[data-theme="dark"] body .table > :not(caption) > * > * {
+    color: #eeeeee !important;
+    background-color: #1e1e1e !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body .table-striped > tbody > tr:nth-of-type(odd) > * {
+    color: #eeeeee !important;
+    background-color: #252525 !important;
+}
+
+html[data-theme="dark"] body .table-striped > tbody > tr:nth-of-type(even) > * {
+    color: #eeeeee !important;
+    background-color: #1e1e1e !important;
+}
+
+html[data-theme="dark"] body .table th {
+    color: #ffffff !important;
+    background-color: #252525 !important;
+}
+
+html[data-theme="dark"] body .table td {
+    color: #eeeeee !important;
+}
+/* ============================================================
+   TOPSCORER PAGE - DARK MODE
+   ============================================================ */
+
+html[data-theme="dark"] body.topscorer-page {
+    background: #121212 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.topscorer-page h1,
+html[data-theme="dark"] body.topscorer-page h2,
+html[data-theme="dark"] body.topscorer-page p {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.topscorer-page table {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page table th {
+    background: #252525 !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page table td {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page table tr:nth-child(even) td {
+    background: #252525 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page a {
+    color: #6ea8fe !important;
+}
+
+html[data-theme="dark"] body.topscorer-page input {
+    background: #2b2b2b !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page input::placeholder {
+    color: #aaaaaa !important;
+}
+
+html[data-theme="dark"] body.topscorer-page .form-box {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+.sws-theme-toggle {
+    position: fixed !important;
+    top: 12px !important;
+    left: 12px !important;
+    right: auto !important;
+    z-index: 99999 !important;
+}
+.sws-theme-toggle {
+    position: fixed !important;
+    top: 10px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    z-index: 99999 !important;
 }
