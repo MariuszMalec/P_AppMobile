@@ -87,19 +87,28 @@
                         <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                             <div class="trophy-card">
                                 <img class="trophy-img" src="{{ t.Picture }}" alt="">
+
+                                {% if t.Lose %}
+                                <div class="text-center mt-2 mb-1">
+                                    <img src="{{ t.LoserPicture }}"
+                                         alt="Loser"
+                                         style="height:60px; object-fit:contain;">
+                                </div>
+                                {% endif %}
+
                                 <h6 class="mt-2">{{ t.Name }}</h6>
 
-{% if t.Lose %}
-    <div class="text-danger fw-bold">
-        🔴 PRZEGRANA
-    </div>
-{% else %}
-    <div class="text-success fw-bold">
-        🟢 WYGRANA
-    </div>
-{% endif %}
+                                {% if t.Lose %}
+                                <div class="text-danger fw-bold">
+                                    🔴 PRZEGRANA
+                                </div>
+                                {% else %}
+                                <div class="text-success fw-bold">
+                                    🟢 WYGRANA
+                                </div>
+                                {% endif %}
 
-<small class="opacity-75">{{ t.Description }}</small>
+                                <small class="opacity-75">{{ t.Description }}</small>
                             </div>
                         </div>
                     {% endfor %}

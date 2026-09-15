@@ -178,6 +178,13 @@ def get_team_trophies_by_season(team_id: int, db=Depends(get_db)):
 
     team_name = team["Name"]
 
+    loser_trophy = cursor.execute(
+        "SELECT Picture FROM Trophies WHERE Name = ?",
+        ("Loser",)
+    ).fetchone()
+
+    loser_picture = loser_trophy["Picture"] if loser_trophy else None
+
     records = cursor.execute(
         """
         SELECT Season, TrophyModelId, TrophyWin, FinalResult
@@ -274,7 +281,8 @@ def get_team_trophies_by_season(team_id: int, db=Depends(get_db)):
             "Picture": trophy["Picture"],
             "Description": trophy["Description"],
             "TrophyWin": r["TrophyWin"],
-            "Lose": lose
+            "Lose": lose,
+            "LoserPicture": loser_picture
         })
 
     db.close()
