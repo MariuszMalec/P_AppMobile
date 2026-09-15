@@ -536,3 +536,24 @@ html[data-theme="dark"] body.topscorer-page .form-box {
         line-height: 1 !important;
     }
 }
+
+
+/* ============================================================
+   MOBILE - TROPHY MODAL
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .trophy-modal img {
+        height: 50px !important;
+        width: auto !important;
+        max-width: 50px !important;
+        object-fit: contain !important;
+    }
+
+    .trophy-season-divider {
+        margin: 8px 0 12px !important;
+        border: 0 !important;
+        border-top: 1px solid #adb5bd !important;
+        opacity: 1 !important;
+    }
+}
