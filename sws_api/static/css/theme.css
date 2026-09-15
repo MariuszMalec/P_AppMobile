@@ -11,6 +11,10 @@
     --sws-link: #0d6efd;
 }
 
+/* ============================================================
+   DARK MODE - ZMIENNE
+   ============================================================ */
+
 html[data-theme="dark"] {
     color-scheme: dark;
     --sws-bg: #121212;
@@ -23,6 +27,10 @@ html[data-theme="dark"] {
     --sws-input-text: #ffffff;
     --sws-link: #6ea8fe;
 }
+
+/* ============================================================
+   DARK MODE - PODSTAWY
+   ============================================================ */
 
 html[data-theme="dark"] body {
     background-color: var(--sws-bg) !important;
@@ -62,7 +70,10 @@ html[data-theme="dark"] a:hover {
     color: #9ec5fe;
 }
 
-/* TABELA */
+/* ============================================================
+   DARK MODE - TABELA
+   ============================================================ */
+
 html[data-theme="dark"] .table {
     --bs-table-color: #eeeeee;
     --bs-table-bg: #1e1e1e;
@@ -88,21 +99,29 @@ html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
     background-color: #252525 !important;
 }
 
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) > * {
+    color: #eeeeee !important;
+    background-color: #1e1e1e !important;
+}
+
 html[data-theme="dark"] .table-hover > tbody > tr:hover > * {
     color: #ffffff !important;
     background-color: #303030 !important;
 }
 
-html[data-theme="dark"] th {
+html[data-theme="dark"] .table th {
     color: #ffffff !important;
     background-color: #252525 !important;
 }
 
-html[data-theme="dark"] td {
+html[data-theme="dark"] .table td {
     color: #eeeeee !important;
 }
 
-/* KARTY */
+/* ============================================================
+   DARK MODE - KARTY
+   ============================================================ */
+
 html[data-theme="dark"] .card {
     background-color: var(--sws-surface) !important;
     color: var(--sws-text) !important;
@@ -116,7 +135,10 @@ html[data-theme="dark"] .card-footer {
     border-color: var(--sws-border) !important;
 }
 
-/* MODALE */
+/* ============================================================
+   DARK MODE - MODALE
+   ============================================================ */
+
 html[data-theme="dark"] .modal-content {
     background-color: var(--sws-surface) !important;
     color: var(--sws-text) !important;
@@ -132,7 +154,10 @@ html[data-theme="dark"] .modal-title {
     color: #ffffff !important;
 }
 
-/* INPUTY */
+/* ============================================================
+   DARK MODE - INPUTY
+   ============================================================ */
+
 html[data-theme="dark"] .form-control,
 html[data-theme="dark"] .form-select,
 html[data-theme="dark"] textarea,
@@ -162,14 +187,20 @@ html[data-theme="dark"] .form-label {
     color: #eeeeee !important;
 }
 
-/* LISTY */
+/* ============================================================
+   DARK MODE - LISTY
+   ============================================================ */
+
 html[data-theme="dark"] .list-group-item {
     background-color: var(--sws-surface) !important;
     color: var(--sws-text) !important;
     border-color: var(--sws-border) !important;
 }
 
-/* DROPDOWN */
+/* ============================================================
+   DARK MODE - DROPDOWN
+   ============================================================ */
+
 html[data-theme="dark"] .dropdown-menu {
     background-color: #1e1e1e !important;
     border-color: #444444 !important;
@@ -184,7 +215,10 @@ html[data-theme="dark"] .dropdown-item:hover {
     background-color: #303030 !important;
 }
 
-/* NAVBAR */
+/* ============================================================
+   DARK MODE - NAVBAR
+   ============================================================ */
+
 html[data-theme="dark"] .navbar {
     background-color: #1e1e1e !important;
     color: #eeeeee !important;
@@ -195,7 +229,10 @@ html[data-theme="dark"] .navbar-nav .nav-link {
     color: #eeeeee !important;
 }
 
-/* PRZYCISK */
+/* ============================================================
+   DARK MODE - PRZYCISKI
+   ============================================================ */
+
 html[data-theme="dark"] .btn-outline-secondary {
     color: #dddddd !important;
     border-color: #777777 !important;
@@ -206,31 +243,33 @@ html[data-theme="dark"] .btn-outline-secondary:hover {
     background-color: #444444 !important;
 }
 
-/* OBRAMOWANIA */
+/* ============================================================
+   DARK MODE - OBRAMOWANIA
+   ============================================================ */
+
 html[data-theme="dark"] .border {
     border-color: #444444 !important;
 }
 
-/* PRZEŁĄCZNIK */
+/* ============================================================
+   PRZEŁĄCZNIK MOTYWU / GÓRA
+   ============================================================ */
+
 .sws-theme-toggle {
     position: fixed !important;
-    top: 12px !important;
-    right: 12px !important;
+    top: 10px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
     z-index: 99999 !important;
+    display: flex;
+    gap: 6px;
 }
 
 .sws-theme-toggle button {
     white-space: nowrap;
 }
-html[data-theme="dark"] body.teams-page {
-    background-color: #121212 !important;
-    color: #eeeeee !important;
-}
 
-html[data-theme="light"] body.teams-page {
-    background-color: #f8f9fa !important;
-    color: #212529 !important;
-}
 /* ============================================================
    TEAMS - DARK MODE
    ============================================================ */
@@ -238,6 +277,11 @@ html[data-theme="light"] body.teams-page {
 html[data-theme="dark"] body.teams-page {
     background: #121212 !important;
     color: #eeeeee !important;
+}
+
+html[data-theme="light"] body.teams-page {
+    background: #f8f9fa !important;
+    color: #212529 !important;
 }
 
 html[data-theme="dark"] body.teams-page .container,
@@ -275,7 +319,6 @@ html[data-theme="dark"] body.teams-page .table-striped > tbody > tr:nth-of-type(
     color: #eeeeee !important;
 }
 
-/* Jasne tła używane przez style.css */
 html[data-theme="dark"] body.teams-page [style*="background"],
 html[data-theme="dark"] body.teams-page .bg-white {
     color: #eeeeee !important;
@@ -288,6 +331,7 @@ html[data-theme="dark"] body.teams-page textarea {
     color: #ffffff !important;
     border-color: #555555 !important;
 }
+
 html[data-theme="dark"] body.teams-page .teams-toolbar {
     background: #1e1e1e !important;
     color: #eeeeee !important;
@@ -297,6 +341,7 @@ html[data-theme="dark"] body.teams-page .teams-toolbar {
 html[data-theme="dark"] body.teams-page .teams-toolbar * {
     color: #eeeeee !important;
 }
+
 html[data-theme="dark"] body .container.py-5.text-center {
     background: #121212 !important;
     color: #eeeeee !important;
@@ -305,6 +350,7 @@ html[data-theme="dark"] body .container.py-5.text-center {
 html[data-theme="dark"] body .container.py-5.text-center * {
     color: #eeeeee !important;
 }
+
 html[data-theme="dark"] body header.bg-white {
     background: #1e1e1e !important;
     color: #eeeeee !important;
@@ -314,43 +360,7 @@ html[data-theme="dark"] body header.bg-white {
 html[data-theme="dark"] body header.bg-white * {
     color: #eeeeee !important;
 }
-html[data-theme="dark"] body .table {
-    --bs-table-color: #eeeeee !important;
-    --bs-table-bg: #1e1e1e !important;
-    --bs-table-border-color: #444444 !important;
-    --bs-table-striped-color: #eeeeee !important;
-    --bs-table-striped-bg: #252525 !important;
-    --bs-table-hover-color: #ffffff !important;
-    --bs-table-hover-bg: #303030 !important;
 
-    color: #eeeeee !important;
-    background-color: #1e1e1e !important;
-}
-
-html[data-theme="dark"] body .table > :not(caption) > * > * {
-    color: #eeeeee !important;
-    background-color: #1e1e1e !important;
-    border-color: #444444 !important;
-}
-
-html[data-theme="dark"] body .table-striped > tbody > tr:nth-of-type(odd) > * {
-    color: #eeeeee !important;
-    background-color: #252525 !important;
-}
-
-html[data-theme="dark"] body .table-striped > tbody > tr:nth-of-type(even) > * {
-    color: #eeeeee !important;
-    background-color: #1e1e1e !important;
-}
-
-html[data-theme="dark"] body .table th {
-    color: #ffffff !important;
-    background-color: #252525 !important;
-}
-
-html[data-theme="dark"] body .table td {
-    color: #eeeeee !important;
-}
 /* ============================================================
    TOPSCORER PAGE - DARK MODE
    ============================================================ */
@@ -406,58 +416,90 @@ html[data-theme="dark"] body.topscorer-page .form-box {
     background: #1e1e1e !important;
     color: #eeeeee !important;
 }
-.sws-theme-toggle {
-    position: fixed !important;
-    top: 12px !important;
-    left: 12px !important;
-    right: auto !important;
-    z-index: 99999 !important;
-}
-.sws-theme-toggle {
-    position: fixed !important;
-    top: 10px !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
-    z-index: 99999 !important;
-}
 
 /* ============================================================
-   MOBILE - CZYTELNE PRZYCISKI MOTYWU I GÓRA
+   MOBILE - PRZYCISKI MOTYWU I GÓRA
    ============================================================ */
 
 @media (max-width: 768px) {
     .sws-theme-toggle {
-        gap: 10px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
     }
 
     .sws-theme-toggle button {
-        width: 140px !important;
-        min-width: 140px !important;
-        height: 52px !important;
-        min-height: 52px !important;
-        padding: 10px 16px !important;
-        font-size: 17px !important;
+        width: 80px !important;
+        min-width: 80px !important;
+        max-width: 80px !important;
+
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+
+        padding: 6px 10px !important;
+        font-size: 14px !important;
         line-height: 1.2 !important;
     }
 }
 
 /* ============================================================
-   MOBILE - DUŻE PRZYCISKI CIEMNY/JASNY + GÓRA
+   MOBILE - TABELA TEAMS
    ============================================================ */
 
-@media screen and (max-width: 768px) {
-    div.sws-theme-toggle button.btn {
-        width: 140px !important;
-        min-width: 140px !important;
-        max-width: 140px !important;
+@media (max-width: 768px) {
+    .teams-page .table-responsive {
+        overflow-x: hidden !important;
+    }
 
-        height: 52px !important;
-        min-height: 52px !important;
-        max-height: 52px !important;
+    .teams-page table {
+        width: 100% !important;
+        table-layout: fixed !important;
+        font-size: 11px !important;
+    }
 
-        padding: 10px 16px !important;
-        font-size: 17px !important;
-        line-height: 1.2 !important;
+    .teams-page table th,
+    .teams-page table td {
+        padding: 4px 3px !important;
+        vertical-align: middle !important;
+        word-break: break-word !important;
+    }
+
+    .teams-page table th:nth-child(1),
+    .teams-page table td:nth-child(1) {
+        width: 23% !important;
+    }
+
+    .teams-page table th:nth-child(2),
+    .teams-page table td:nth-child(2) {
+        width: 13% !important;
+    }
+
+    .teams-page table th:nth-child(3),
+    .teams-page table td:nth-child(3) {
+        width: 24% !important;
+    }
+
+    .teams-page table th:nth-child(4),
+    .teams-page table td:nth-child(4) {
+        width: 18% !important;
+    }
+
+    .teams-page table th:nth-child(5),
+    .teams-page table td:nth-child(5) {
+        width: 22% !important;
+    }
+
+    .teams-page table td img {
+        height: 35px !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
+    }
+
+    .teams-page table td .btn {
+        padding: 2px 4px !important;
+        font-size: 11px !important;
+        margin-left: 1px !important;
     }
 }
