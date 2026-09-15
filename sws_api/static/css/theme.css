@@ -443,63 +443,95 @@ html[data-theme="dark"] body.topscorer-page .form-box {
         line-height: 1.2 !important;
     }
 }
-
 /* ============================================================
-   MOBILE - TABELA TEAMS
+   MOBILE 390px - TABELA TEAMS
    ============================================================ */
 
 @media (max-width: 768px) {
+
+    .teams-page {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
     .teams-page .table-responsive {
+        width: 100% !important;
+        max-width: 100% !important;
         overflow-x: hidden !important;
+        margin: 0 !important;
     }
 
     .teams-page table {
         width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
         table-layout: fixed !important;
-        font-size: 11px !important;
+        margin: 0 !important;
+        font-size: 10px !important;
     }
 
     .teams-page table th,
     .teams-page table td {
-        padding: 4px 3px !important;
+        min-width: 0 !important;
+        padding: 3px 2px !important;
         vertical-align: middle !important;
+        text-align: center !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
         word-break: break-word !important;
     }
 
+    /* NAME */
     .teams-page table th:nth-child(1),
     .teams-page table td:nth-child(1) {
-        width: 23% !important;
-    }
-
-    .teams-page table th:nth-child(2),
-    .teams-page table td:nth-child(2) {
-        width: 13% !important;
-    }
-
-    .teams-page table th:nth-child(3),
-    .teams-page table td:nth-child(3) {
         width: 24% !important;
     }
 
-    .teams-page table th:nth-child(4),
-    .teams-page table td:nth-child(4) {
-        width: 18% !important;
+    /* SEASON */
+    .teams-page table th:nth-child(2),
+    .teams-page table td:nth-child(2) {
+        width: 14% !important;
     }
 
-    .teams-page table th:nth-child(5),
-    .teams-page table td:nth-child(5) {
+    /* FINAL RESULT */
+    .teams-page table th:nth-child(3),
+    .teams-page table td:nth-child(3) {
         width: 22% !important;
     }
 
+    /* TROPHY */
+    .teams-page table th:nth-child(4),
+    .teams-page table td:nth-child(4) {
+        width: 16% !important;
+    }
+
+    /* ACTIONS */
+    .teams-page table th:nth-child(5),
+    .teams-page table td:nth-child(5) {
+        width: 24% !important;
+    }
+
+    /* TROPHY IMAGE */
     .teams-page table td img {
-        height: 35px !important;
+        display: block !important;
+        width: auto !important;
         max-width: 100% !important;
+        height: 28px !important;
+        margin: 0 auto !important;
         object-fit: contain !important;
     }
 
+    /* ACTION BUTTONS */
     .teams-page table td .btn {
-        padding: 2px 4px !important;
-        font-size: 11px !important;
-        margin-left: 1px !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 20px !important;
+        min-width: 20px !important;
+        height: 24px !important;
+        padding: 1px !important;
+        margin: 1px !important;
+        font-size: 10px !important;
+        line-height: 1 !important;
     }
 }
