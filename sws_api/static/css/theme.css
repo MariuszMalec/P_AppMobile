@@ -1,0 +1,56 @@
+:root {
+    --sws-bg: #f8f9fa;
+    --sws-text: #212529;
+    --sws-card: #ffffff;
+    --sws-border: #dee2e6;
+}
+
+html[data-theme="dark"] body {
+    background-color: #121212 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .modal-content,
+html[data-theme="dark"] .list-group-item {
+    background-color: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] .table {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] textarea {
+    background-color: #2b2b2b !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+
+html[data-theme="dark"] .form-control::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+    color: #aaaaaa !important;
+}
+
+html[data-theme="dark"] .text-muted,
+html[data-theme="dark"] .text-secondary {
+    color: #aaaaaa !important;
+}
+
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+    color: #eeeeee;
+}
+
+.sws-theme-toggle {
+    position: fixed !important;
+    top: 12px !important;
+    right: 12px !important;
+    z-index: 99999 !important;
+}
+
+.sws-theme-toggle button {
+    white-space: nowrap;
+}

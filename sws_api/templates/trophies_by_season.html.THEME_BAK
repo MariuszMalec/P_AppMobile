@@ -51,22 +51,8 @@
             font-style: italic;
         }
     </style>
-
-<link rel="stylesheet" href="{{ url_for('static', path='css/theme.css') }}">
-<script src="{{ url_for('static', path='js/theme.js') }}"></script>
 </head>
 <body>
-<div class="sws-theme-toggle">
-    <button
-        type="button"
-        id="themeToggleBtn"
-        class="btn btn-sm btn-outline-secondary"
-        onclick="toggleSwsTheme()"
-    >
-        🌙 Ciemny
-    </button>
-</div>
-
 
 <div class="container py-4">
 

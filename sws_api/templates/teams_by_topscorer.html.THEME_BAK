@@ -4,22 +4,8 @@
     <meta charset="UTF-8">
     <title>Drużyny według strzelca</title>
 <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
-
-<link rel="stylesheet" href="{{ url_for('static', path='css/theme.css') }}">
-<script src="{{ url_for('static', path='js/theme.js') }}"></script>
 </head>
 <body class="topscorer-page">
-<div class="sws-theme-toggle">
-    <button
-        type="button"
-        id="themeToggleBtn"
-        class="btn btn-sm btn-outline-secondary"
-        onclick="toggleSwsTheme()"
-    >
-        🌙 Ciemny
-    </button>
-</div>
-
 
 <h1>Wyszukaj drużyny według najlepszego strzelca</h1>
 

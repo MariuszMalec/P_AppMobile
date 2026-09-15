@@ -584,3 +584,61 @@ body.topscorer-page {
     color: #6c757d;
     cursor: not-allowed;
 }
+
+
+/* ============================================================
+   GLOBALNY TRYB JASNY / CIEMNY
+   ============================================================ */
+
+:root {
+    --sws-bg: #f8f9fa;
+    --sws-text: #212529;
+    --sws-card: #ffffff;
+    --sws-border: #dee2e6;
+}
+
+html[data-theme="dark"] {
+    --sws-bg: #121212;
+    --sws-text: #eeeeee;
+    --sws-card: #1e1e1e;
+    --sws-border: #444444;
+}
+
+html[data-theme="dark"] body {
+    background-color: var(--sws-bg);
+    color: var(--sws-text);
+}
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .modal-content,
+html[data-theme="dark"] .list-group-item {
+    background-color: var(--sws-card);
+    color: var(--sws-text);
+    border-color: var(--sws-border);
+}
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select {
+    background-color: #2b2b2b;
+    color: #ffffff;
+    border-color: #555555;
+}
+
+html[data-theme="dark"] .form-control::placeholder {
+    color: #aaaaaa;
+}
+
+html[data-theme="dark"] .table {
+    color: var(--sws-text);
+}
+
+html[data-theme="dark"] .text-muted {
+    color: #aaaaaa !important;
+}
+
+.sws-theme-toggle {
+    position: fixed;
+    top: 12px;
+    right: 12px;
+    z-index: 9999;
+}
