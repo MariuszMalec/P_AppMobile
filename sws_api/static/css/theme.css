@@ -543,6 +543,17 @@ html[data-theme="dark"] body.topscorer-page .form-box {
    ============================================================ */
 
 @media (max-width: 768px) {
+    .trophy-modal small {
+        display: block !important;
+        width: 35px !important;
+        max-width: 35px !important;
+        margin: 0 auto !important;
+        font-size: 8px !important;
+        line-height: 1.1 !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+    }
+
     .trophy-modal img {
         height: 50px !important;
         width: auto !important;
