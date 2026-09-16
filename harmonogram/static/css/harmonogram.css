@@ -13,6 +13,7 @@ body {
 .calendar {
     max-width: 1800px;
     margin: 0 auto;
+    position: relative;
 }
 
 .calendar-header {
@@ -22,7 +23,7 @@ body {
 
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
 
     background: white;
     padding-right: 6px;
