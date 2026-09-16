@@ -1361,5 +1361,94 @@ function openAddMachineModal() {
 </script>
 
 
+
+
+<!-- STAŁY PASEK PRZEWIJANIA POZIOMEGO — PC -->
+<div id="fixedHorizontalScroll">
+    <div id="fixedHorizontalScrollInner"></div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const scrollbar =
+        document.getElementById("fixedHorizontalScroll");
+
+    const scrollbarInner =
+        document.getElementById("fixedHorizontalScrollInner");
+
+    if (!scrollbar || !scrollbarInner) {
+        return;
+    }
+
+    function updateScrollbar() {
+
+        const calendarGrid = document.querySelector(".calendar-grid");
+
+        const pageWidth = calendarGrid
+            ? calendarGrid.scrollWidth + 40
+            : document.documentElement.scrollWidth;
+
+        const viewportWidth =
+            document.documentElement.clientWidth;
+
+        scrollbarInner.style.width =
+            pageWidth + "px";
+
+        scrollbar.style.display =
+            pageWidth > viewportWidth
+                ? "block"
+                : "none";
+
+        scrollbar.scrollLeft =
+            window.scrollX;
+    }
+
+
+    scrollbar.addEventListener("scroll", function () {
+
+        window.scrollTo(
+            scrollbar.scrollLeft,
+            window.scrollY
+        );
+
+    });
+
+
+    window.addEventListener(
+        "scroll",
+        function () {
+
+            if (
+                Math.abs(
+                    scrollbar.scrollLeft - window.scrollX
+                ) > 1
+            ) {
+
+                scrollbar.scrollLeft =
+                    window.scrollX;
+
+            }
+
+        }
+    );
+
+
+    window.addEventListener(
+        "resize",
+        updateScrollbar
+    );
+
+
+    updateScrollbar();
+
+    setTimeout(updateScrollbar, 100);
+    setTimeout(updateScrollbar, 500);
+
+});
+</script>
+
+
 </body>
 </html>
+
