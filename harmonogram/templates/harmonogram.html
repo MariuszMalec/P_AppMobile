@@ -960,6 +960,7 @@ function saveOrder() {
 
         } else {
 
+            saveHarmonogramScrollPosition();
             location.reload();
 
         }
@@ -1005,6 +1006,7 @@ function deleteOrder() {
 
                 } else {
 
+                    saveHarmonogramScrollPosition();
                     location.reload();
 
                 }
@@ -1571,6 +1573,120 @@ document.addEventListener("DOMContentLoaded", function () {
     measureHeader();
 
 });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    if (window.innerWidth > 768) {
+        return;
+    }
+
+    const calendar =
+        document.querySelector(".calendar");
+
+    if (!calendar) {
+        return;
+    }
+
+
+    /*
+     * Przywracanie pozycji po location.reload()
+     */
+
+    const saved =
+        sessionStorage.getItem(
+            "harmonogramScrollPosition"
+        );
+
+    if (!saved) {
+        return;
+    }
+
+
+    try {
+
+        const position =
+            JSON.parse(saved);
+
+
+        sessionStorage.removeItem(
+            "harmonogramScrollPosition"
+        );
+
+
+        function restorePosition() {
+
+            window.scrollTo(
+                position.x || 0,
+                position.y || 0
+            );
+
+
+            calendar.scrollLeft =
+                position.calendarX || 0;
+        }
+
+
+        requestAnimationFrame(function () {
+
+            restorePosition();
+
+            requestAnimationFrame(function () {
+
+                restorePosition();
+
+                setTimeout(
+                    restorePosition,
+                    100
+                );
+
+            });
+
+        });
+
+    } catch (e) {
+
+        sessionStorage.removeItem(
+            "harmonogramScrollPosition"
+        );
+
+    }
+
+});
+
+
+/*
+ * Zapamiętanie pozycji przed przeładowaniem
+ */
+
+function saveHarmonogramScrollPosition() {
+
+    if (window.innerWidth > 768) {
+        return;
+    }
+
+
+    const calendar =
+        document.querySelector(".calendar");
+
+
+    sessionStorage.setItem(
+        "harmonogramScrollPosition",
+        JSON.stringify({
+
+            x: window.scrollX,
+
+            y: window.scrollY,
+
+            calendarX:
+                calendar
+                    ? calendar.scrollLeft
+                    : 0
+
+        })
+    );
+}
 </script>
 
 </body>
