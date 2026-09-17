@@ -979,3 +979,14 @@ body {
     width: 2430px;
 }
 
+@media (max-width: 768px) {
+
+    .calendar-header.mobile-sticky-fixed {
+        position: fixed !important;
+        top: 0 !important;
+        z-index: 1000 !important;
+        margin: 0 !important;
+        background: white;
+    }
+
+}

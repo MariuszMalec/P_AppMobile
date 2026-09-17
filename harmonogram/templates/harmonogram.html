@@ -1449,6 +1449,123 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    if (window.innerWidth > 768) {
+        return;
+    }
+
+    const calendar = document.querySelector(".calendar");
+    const header = calendar?.querySelector(".calendar-header");
+
+    if (!calendar || !header) {
+        return;
+    }
+
+    let headerPageTop = 0;
+    let headerHeight = 0;
+    let headerLeft = 0;
+    let headerWidth = 0;
+    let isFixed = false;
+
+
+    function measureHeader() {
+
+        if (isFixed) {
+            isFixed = false;
+            header.classList.remove("mobile-sticky-fixed");
+
+            header.style.left = "";
+            header.style.width = "";
+
+            calendar.style.paddingTop = "";
+        }
+
+
+        const rect = header.getBoundingClientRect();
+
+
+        headerPageTop =
+            rect.top + window.scrollY;
+
+        headerLeft =
+            rect.left + window.scrollX;
+
+        headerHeight =
+            header.offsetHeight;
+
+        headerWidth =
+            header.scrollWidth;
+
+
+        updateHeader();
+    }
+
+
+    function updateHeader() {
+
+        const shouldFix =
+            window.scrollY >= headerPageTop;
+
+
+        if (shouldFix && !isFixed) {
+
+            isFixed = true;
+
+            header.classList.add(
+                "mobile-sticky-fixed"
+            );
+
+            calendar.style.paddingTop =
+                headerHeight + "px";
+        }
+
+
+        if (!shouldFix && isFixed) {
+
+            isFixed = false;
+
+            header.classList.remove(
+                "mobile-sticky-fixed"
+            );
+
+            header.style.left = "";
+            header.style.width = "";
+
+            calendar.style.paddingTop = "";
+        }
+
+
+        if (isFixed) {
+
+            header.style.left =
+                (headerLeft - window.scrollX) + "px";
+
+            header.style.width =
+                headerWidth + "px";
+        }
+    }
+
+
+    window.addEventListener(
+        "scroll",
+        updateHeader,
+        { passive: true }
+    );
+
+
+    window.addEventListener(
+        "resize",
+        measureHeader
+    );
+
+
+    measureHeader();
+
+});
+</script>
+
 </body>
 </html>
 
