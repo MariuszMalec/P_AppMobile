@@ -1536,19 +1536,26 @@ document.addEventListener("DOMContentLoaded", function () {
             calendar.style.paddingTop = "";
         }
 
-
         if (isFixed) {
 
             header.style.left =
-                (headerLeft - window.scrollX) + "px";
+                (headerLeft - calendar.scrollLeft) + "px";
 
             header.style.width =
                 headerWidth + "px";
         }
+
     }
 
 
     window.addEventListener(
+        "scroll",
+        updateHeader,
+        { passive: true }
+    );
+
+
+    calendar.addEventListener(
         "scroll",
         updateHeader,
         { passive: true }
