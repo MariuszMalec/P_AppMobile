@@ -33,6 +33,11 @@
     >
         ⬆ Góra
     </button>
+
+    <span id="teamsResultCount" class="teams-result-count">
+        {{ teams|length }}
+    </span>
+
 </div>
 
 
@@ -126,6 +131,8 @@
     <i class="bi bi-plus-circle"></i> Create Team
   </button>
 </div>
+
+
 
 <!-- TABLE -->
 <div class="table-responsive shadow-sm rounded-3"><table class="table table-striped table-bordered mb-0">
@@ -1292,6 +1299,23 @@ function initTrophyButtons() {
 }
 
 
+function updateTeamsResultCount(tbody) {
+    const resultCountElement =
+        document.getElementById("teamsResultCount");
+
+    if (!resultCountElement) {
+        return;
+    }
+
+    const count =
+        tbody
+            ? tbody.querySelectorAll("tr.team-row").length
+            : 0;
+
+    resultCountElement.textContent = count;
+}
+
+
 /* ============================================================
    FILTER — DYNAMICZNIE PODCZAS PISANIA
    ============================================================ */
@@ -1500,6 +1524,8 @@ async function applyFilters() {
             currentTbody.replaceWith(
                 newTbody
             );
+            
+            updateTeamsResultCount(newTbody);
 
         }
 
@@ -1786,6 +1812,8 @@ if (clearFiltersBtn) {
                         currentTbody.replaceWith(
                             newTbody
                         );
+
+                        updateTeamsResultCount(newTbody);
 
                     }
 
