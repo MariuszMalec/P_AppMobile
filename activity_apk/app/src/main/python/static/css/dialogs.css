@@ -104,3 +104,134 @@
 .delete-confirm-buttons button:hover {
     opacity: .9;
 }
+
+
+/* =========================================================
+   GÓRNE PRZYCISKI
+   ========================================================= */
+
+.back {
+    padding: 10px 16px 2px !important;
+}
+
+
+/* HOME PAGE */
+
+.back .home-page-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+
+    padding: 6px 11px !important;
+    margin-left: 0 !important;
+
+    color: #cbd5e1 !important;
+    text-decoration: none !important;
+
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: normal !important;
+
+    background: rgba(255,255,255,.06) !important;
+    border: 1px solid rgba(255,255,255,.16) !important;
+    border-radius: 9px !important;
+
+    box-shadow: 0 3px 10px rgba(0,0,0,.25) !important;
+
+    cursor: pointer !important;
+    transition:
+        background .2s ease,
+        border-color .2s ease,
+        transform .15s ease !important;
+}
+
+.back .home-page-button:hover {
+    background: rgba(56,189,248,.12) !important;
+    border-color: rgba(56,189,248,.55) !important;
+    color: #38bdf8 !important;
+}
+
+.back .home-page-button:active {
+    transform: scale(.96) !important;
+}
+
+
+/* UTWÓRZ AKTYWNOŚĆ */
+
+.back .create-activity-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+
+    margin-left: 8px !important;
+    padding: 6px 11px !important;
+
+    color: #fff !important;
+    text-decoration: none !important;
+
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: normal !important;
+
+    background: #22c55e !important;
+    border: none !important;
+    border-radius: 9px !important;
+
+    box-shadow: 0 3px 10px rgba(34,197,94,.25) !important;
+
+    cursor: pointer !important;
+}
+
+.back .create-activity-button:hover {
+    background: #22c55e !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+.back .create-activity-button:active {
+    background: #22c55e !important;
+    color: #fff !important;
+    transform: scale(.96) !important;
+}
+
+
+/* TERAZ */
+
+.back .live-now-button {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+
+    margin-left: 8px !important;
+    padding: 6px 11px !important;
+
+    color: #fff !important;
+    text-decoration: none !important;
+
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    line-height: normal !important;
+
+    background: #22c55e !important;
+    border: none !important;
+    border-radius: 9px !important;
+
+    box-shadow: 0 3px 10px rgba(34,197,94,.25) !important;
+
+    cursor: pointer !important;
+}
+
+.back .live-now-button:hover {
+    background: #22c55e !important;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
+.back .live-now-button:active {
+    background: #22c55e !important;
+    color: #fff !important;
+    transform: scale(.96) !important;
+}

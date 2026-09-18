@@ -915,6 +915,7 @@ def statusalltv_page(request: Request, db=Depends(get_db)):
             "table": table,
             "persons": persons,
             "day_name": DAY_NAMES.get(current_day, ""),
+            "day_index": current_day,
             "now": current_time,
         }
     )
