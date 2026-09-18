@@ -657,3 +657,135 @@ html[data-theme="dark"] .text-muted {
     line-height: 1 !important;
     white-space: nowrap !important;
 }
+
+
+
+@media (max-width: 576px) {
+
+    .trophies-table {
+        table-layout: fixed;
+        width: 100%;
+        font-size: 0.75rem;
+    }
+
+    .trophies-table th,
+    .trophies-table td {
+        padding: 0.3rem 0.2rem;
+        vertical-align: middle;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+    }
+
+    .trophies-table th:nth-child(1),
+    .trophies-table td:nth-child(1) {
+        width: 18%;
+    }
+
+    .trophies-table th:nth-child(2),
+    .trophies-table td:nth-child(2) {
+        width: 30%;
+    }
+
+    .trophies-table th:nth-child(3),
+    .trophies-table td:nth-child(3) {
+        width: 18%;
+    }
+
+    .trophies-table th:nth-child(4),
+    .trophies-table td:nth-child(4) {
+        width: 16%;
+        text-align: center;
+    }
+
+    .trophies-table th:nth-child(5),
+    .trophies-table td:nth-child(5) {
+        width: 18%;
+        text-align: center;
+    }
+
+    .trophies-table img {
+        height: 45px !important;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    .trophies-table .btn {
+        font-size: 0.65rem;
+        padding: 0.2rem 0.3rem;
+    }
+}
+
+
+/* ============================================================
+   TOPSCORER - RESPONSIVE MOBILE TABLE
+   ============================================================ */
+
+@media (max-width: 576px) {
+
+    body.topscorer-page {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    body.topscorer-page .topscorer-table {
+        width: 100% !important;
+        max-width: 100% !important;
+        table-layout: fixed !important;
+        border-collapse: collapse;
+        font-size: 11px;
+    }
+
+    body.topscorer-page .topscorer-table th,
+    body.topscorer-page .topscorer-table td {
+        box-sizing: border-box;
+        padding: 4px 3px;
+        vertical-align: middle;
+        overflow-wrap: anywhere;
+        word-break: break-word;
+        white-space: normal;
+    }
+
+    /* Nazwa */
+    body.topscorer-page .topscorer-table th:nth-child(1),
+    body.topscorer-page .topscorer-table td:nth-child(1) {
+        width: 20% !important;
+    }
+
+    /* Kraj */
+    body.topscorer-page .topscorer-table th:nth-child(2),
+    body.topscorer-page .topscorer-table td:nth-child(2) {
+        width: 14% !important;
+    }
+
+    /* Sezon */
+    body.topscorer-page .topscorer-table th:nth-child(3),
+    body.topscorer-page .topscorer-table td:nth-child(3) {
+        width: 11% !important;
+        text-align: center;
+    }
+
+    /* Najlepszy strzelec */
+    body.topscorer-page .topscorer-table th:nth-child(4),
+    body.topscorer-page .topscorer-table td:nth-child(4) {
+        width: 32% !important;
+    }
+
+    /* Trofeum */
+    body.topscorer-page .topscorer-table th:nth-child(5),
+    body.topscorer-page .topscorer-table td:nth-child(5) {
+        width: 23% !important;
+        text-align: center;
+    }
+
+    body.topscorer-page .topscorer-table img {
+        display: block;
+        max-width: 100% !important;
+        width: auto !important;
+        height: 40px !important;
+        object-fit: contain;
+        margin: 0 auto;
+    }
+}

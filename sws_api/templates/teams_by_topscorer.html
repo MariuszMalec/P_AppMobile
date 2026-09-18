@@ -2,9 +2,9 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Drużyny według strzelca</title>
 <link rel="stylesheet" href="{{ url_for('static', path='css/style.css') }}">
-
 <link rel="stylesheet" href="{{ url_for('static', path='css/theme.css') }}">
 <script src="{{ url_for('static', path='js/theme.js') }}"></script>
 </head>
@@ -48,14 +48,13 @@
 {% endif %}
 
 {% if teams and teams|length > 0 %}
-<table>
+<table class="topscorer-table">
     <thead>
         <tr>
             <th>Nazwa</th>
             <th>Kraj</th>
             <th>Sezon</th>
             <th>Najlepszy strzelec</th>
-            <th>Wynik końcowy</th>
             <th>Trofeum</th>
         </tr>
     </thead>
@@ -66,7 +65,6 @@
             <td>{{ team.NationalityName }}</td>
             <td>{{ team.Season }}</td>
             <td>{{ team.TopScorer }}</td>
-            <td>{{ team.FinalResult }}</td>
             <td>
                 {% if team.Picture %}
                     <img src="{{ team.TrophyPicture }}" alt="Trofeum">
