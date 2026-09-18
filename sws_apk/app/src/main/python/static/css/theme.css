@@ -1,0 +1,633 @@
+:root {
+    color-scheme: light;
+    --sws-bg: #f8f9fa;
+    --sws-surface: #ffffff;
+    --sws-surface-2: #f1f3f5;
+    --sws-text: #212529;
+    --sws-text-muted: #6c757d;
+    --sws-border: #dee2e6;
+    --sws-input-bg: #ffffff;
+    --sws-input-text: #212529;
+    --sws-link: #0d6efd;
+}
+
+/* ============================================================
+   DARK MODE - ZMIENNE
+   ============================================================ */
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --sws-bg: #121212;
+    --sws-surface: #1e1e1e;
+    --sws-surface-2: #252525;
+    --sws-text: #eeeeee;
+    --sws-text-muted: #b0b0b0;
+    --sws-border: #444444;
+    --sws-input-bg: #2b2b2b;
+    --sws-input-text: #ffffff;
+    --sws-link: #6ea8fe;
+}
+
+/* ============================================================
+   DARK MODE - PODSTAWY
+   ============================================================ */
+
+html[data-theme="dark"] body {
+    background-color: var(--sws-bg) !important;
+    color: var(--sws-text) !important;
+}
+
+html[data-theme="dark"] p,
+html[data-theme="dark"] span,
+html[data-theme="dark"] div,
+html[data-theme="dark"] label,
+html[data-theme="dark"] small,
+html[data-theme="dark"] strong,
+html[data-theme="dark"] b,
+html[data-theme="dark"] h1,
+html[data-theme="dark"] h2,
+html[data-theme="dark"] h3,
+html[data-theme="dark"] h4,
+html[data-theme="dark"] h5,
+html[data-theme="dark"] h6 {
+    color: var(--sws-text);
+}
+
+html[data-theme="dark"] .text-dark {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] .text-secondary,
+html[data-theme="dark"] .text-muted {
+    color: var(--sws-text-muted) !important;
+}
+
+html[data-theme="dark"] a {
+    color: var(--sws-link);
+}
+
+html[data-theme="dark"] a:hover {
+    color: #9ec5fe;
+}
+
+/* ============================================================
+   DARK MODE - TABELA
+   ============================================================ */
+
+html[data-theme="dark"] .table {
+    --bs-table-color: #eeeeee;
+    --bs-table-bg: #1e1e1e;
+    --bs-table-border-color: #444444;
+    --bs-table-striped-color: #eeeeee;
+    --bs-table-striped-bg: #252525;
+    --bs-table-hover-color: #ffffff;
+    --bs-table-hover-bg: #303030;
+
+    color: #eeeeee !important;
+    background-color: #1e1e1e !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] .table > :not(caption) > * > * {
+    color: #eeeeee !important;
+    background-color: #1e1e1e !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+    color: #eeeeee !important;
+    background-color: #252525 !important;
+}
+
+html[data-theme="dark"] .table-striped > tbody > tr:nth-of-type(even) > * {
+    color: #eeeeee !important;
+    background-color: #1e1e1e !important;
+}
+
+html[data-theme="dark"] .table-hover > tbody > tr:hover > * {
+    color: #ffffff !important;
+    background-color: #303030 !important;
+}
+
+html[data-theme="dark"] .table th {
+    color: #ffffff !important;
+    background-color: #252525 !important;
+}
+
+html[data-theme="dark"] .table td {
+    color: #eeeeee !important;
+}
+
+/* ============================================================
+   DARK MODE - KARTY
+   ============================================================ */
+
+html[data-theme="dark"] .card {
+    background-color: var(--sws-surface) !important;
+    color: var(--sws-text) !important;
+    border-color: var(--sws-border) !important;
+}
+
+html[data-theme="dark"] .card-header,
+html[data-theme="dark"] .card-footer {
+    background-color: var(--sws-surface-2) !important;
+    color: var(--sws-text) !important;
+    border-color: var(--sws-border) !important;
+}
+
+/* ============================================================
+   DARK MODE - MODALE
+   ============================================================ */
+
+html[data-theme="dark"] .modal-content {
+    background-color: var(--sws-surface) !important;
+    color: var(--sws-text) !important;
+    border-color: var(--sws-border) !important;
+}
+
+html[data-theme="dark"] .modal-header,
+html[data-theme="dark"] .modal-footer {
+    border-color: var(--sws-border) !important;
+}
+
+html[data-theme="dark"] .modal-title {
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   DARK MODE - INPUTY
+   ============================================================ */
+
+html[data-theme="dark"] .form-control,
+html[data-theme="dark"] .form-select,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] input,
+html[data-theme="dark"] select {
+    background-color: var(--sws-input-bg) !important;
+    color: var(--sws-input-text) !important;
+    border-color: #555555 !important;
+}
+
+html[data-theme="dark"] .form-control:focus,
+html[data-theme="dark"] .form-select:focus,
+html[data-theme="dark"] textarea:focus,
+html[data-theme="dark"] input:focus,
+html[data-theme="dark"] select:focus {
+    background-color: #303030 !important;
+    color: #ffffff !important;
+    border-color: #6ea8fe !important;
+}
+
+html[data-theme="dark"] .form-control::placeholder,
+html[data-theme="dark"] textarea::placeholder {
+    color: #aaaaaa !important;
+}
+
+html[data-theme="dark"] .form-label {
+    color: #eeeeee !important;
+}
+
+/* ============================================================
+   DARK MODE - LISTY
+   ============================================================ */
+
+html[data-theme="dark"] .list-group-item {
+    background-color: var(--sws-surface) !important;
+    color: var(--sws-text) !important;
+    border-color: var(--sws-border) !important;
+}
+
+/* ============================================================
+   DARK MODE - DROPDOWN
+   ============================================================ */
+
+html[data-theme="dark"] .dropdown-menu {
+    background-color: #1e1e1e !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] .dropdown-item {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] .dropdown-item:hover {
+    color: #ffffff !important;
+    background-color: #303030 !important;
+}
+
+/* ============================================================
+   DARK MODE - NAVBAR
+   ============================================================ */
+
+html[data-theme="dark"] .navbar {
+    background-color: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] .navbar-brand,
+html[data-theme="dark"] .navbar-nav .nav-link {
+    color: #eeeeee !important;
+}
+
+/* ============================================================
+   DARK MODE - PRZYCISKI
+   ============================================================ */
+
+html[data-theme="dark"] .btn-outline-secondary {
+    color: #dddddd !important;
+    border-color: #777777 !important;
+}
+
+html[data-theme="dark"] .btn-outline-secondary:hover {
+    color: #ffffff !important;
+    background-color: #444444 !important;
+}
+
+/* ============================================================
+   DARK MODE - OBRAMOWANIA
+   ============================================================ */
+
+html[data-theme="dark"] .border {
+    border-color: #444444 !important;
+}
+
+/* ============================================================
+   PRZEŁĄCZNIK MOTYWU / GÓRA
+   ============================================================ */
+
+.sws-theme-toggle {
+    position: fixed !important;
+    top: 10px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    z-index: 99999 !important;
+    display: flex;
+    gap: 6px;
+}
+
+.sws-theme-toggle button {
+    white-space: nowrap;
+}
+
+/* ============================================================
+   TEAMS - DARK MODE
+   ============================================================ */
+
+html[data-theme="dark"] body.teams-page {
+    background: #121212 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="light"] body.teams-page {
+    background: #f8f9fa !important;
+    color: #212529 !important;
+}
+
+html[data-theme="dark"] body.teams-page .container,
+html[data-theme="dark"] body.teams-page .container-fluid,
+html[data-theme="dark"] body.teams-page main,
+html[data-theme="dark"] body.teams-page section {
+    background: transparent !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .card,
+html[data-theme="dark"] body.teams-page .table-responsive,
+html[data-theme="dark"] body.teams-page .teams-card {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .table {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .table td,
+html[data-theme="dark"] body.teams-page .table th {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .table-striped > tbody > tr:nth-of-type(odd) > * {
+    background: #252525 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page .table-striped > tbody > tr:nth-of-type(even) > * {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page [style*="background"],
+html[data-theme="dark"] body.teams-page .bg-white {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.teams-page input,
+html[data-theme="dark"] body.teams-page select,
+html[data-theme="dark"] body.teams-page textarea {
+    background: #2b2b2b !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+
+html[data-theme="dark"] body.teams-page .teams-toolbar {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body.teams-page .teams-toolbar * {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body .container.py-5.text-center {
+    background: #121212 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body .container.py-5.text-center * {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body header.bg-white {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body header.bg-white * {
+    color: #eeeeee !important;
+}
+
+/* ============================================================
+   TOPSCORER PAGE - DARK MODE
+   ============================================================ */
+
+html[data-theme="dark"] body.topscorer-page {
+    background: #121212 !important;
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.topscorer-page h1,
+html[data-theme="dark"] body.topscorer-page h2,
+html[data-theme="dark"] body.topscorer-page p {
+    color: #eeeeee !important;
+}
+
+html[data-theme="dark"] body.topscorer-page table {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page table th {
+    background: #252525 !important;
+    color: #ffffff !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page table td {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+    border-color: #444444 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page table tr:nth-child(even) td {
+    background: #252525 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page a {
+    color: #6ea8fe !important;
+}
+
+html[data-theme="dark"] body.topscorer-page input {
+    background: #2b2b2b !important;
+    color: #ffffff !important;
+    border-color: #555555 !important;
+}
+
+html[data-theme="dark"] body.topscorer-page input::placeholder {
+    color: #aaaaaa !important;
+}
+
+html[data-theme="dark"] body.topscorer-page .form-box {
+    background: #1e1e1e !important;
+    color: #eeeeee !important;
+}
+
+/* ============================================================
+   MOBILE - PRZYCISKI MOTYWU I GÓRA
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .sws-theme-toggle {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+    }
+
+    .sws-theme-toggle button {
+        width: 80px !important;
+        min-width: 80px !important;
+        max-width: 80px !important;
+
+        height: 38px !important;
+        min-height: 38px !important;
+        max-height: 38px !important;
+
+        padding: 6px 10px !important;
+        font-size: 14px !important;
+        line-height: 1.2 !important;
+    }
+}
+/* ============================================================
+   MOBILE 390px - TABELA TEAMS
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .teams-page {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .teams-page .table-responsive {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+        margin: 0 !important;
+    }
+
+    .teams-page table {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+        margin: 0 !important;
+        font-size: 10px !important;
+    }
+
+    .teams-page table th,
+    .teams-page table td {
+        min-width: 0 !important;
+        padding: 3px 2px !important;
+        vertical-align: middle !important;
+        text-align: center !important;
+        white-space: normal !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+    }
+
+
+    /* NAME */
+    .teams-page table th:nth-child(1),
+    .teams-page table td:nth-child(1) {
+        width: 22% !important;
+    }
+
+    /* SEASON */
+    .teams-page table th:nth-child(2),
+    .teams-page table td:nth-child(2) {
+        width: 14% !important;
+    }
+
+    /* FINAL RESULT */
+    .teams-page table th:nth-child(3),
+    .teams-page table td:nth-child(3) {
+        width: 22% !important;
+    }
+
+    /* TROPHY */
+    .teams-page table th:nth-child(4),
+    .teams-page table td:nth-child(4) {
+        width: 24% !important;
+    }
+
+    /* ACTIONS */
+    .teams-page table th:nth-child(5),
+    .teams-page table td:nth-child(5) {
+        width: 18% !important;
+    }
+
+    /* TROPHY IMAGE */
+    .teams-page table td img {
+        display: block !important;
+        width: auto !important;
+        max-width: 100% !important;
+        height: 28px !important;
+        margin: 0 auto !important;
+        object-fit: contain !important;
+    }
+
+    /* ACTION BUTTONS - VERTICAL ON MOBILE */
+    .teams-page table td .btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 24px !important;
+        min-width: 24px !important;
+        height: 24px !important;
+        padding: 1px !important;
+        margin: 2px auto !important;
+        font-size: 10px !important;
+        line-height: 1 !important;
+    }
+}
+
+
+/* ============================================================
+   MOBILE - TROPHY MODAL
+   ============================================================ */
+
+@media (max-width: 768px) {
+    .trophy-modal small {
+        display: block !important;
+        width: 35px !important;
+        max-width: 35px !important;
+        margin: 0 auto !important;
+        font-size: 8px !important;
+        line-height: 1.1 !important;
+        overflow-wrap: anywhere !important;
+        word-break: break-word !important;
+    }
+
+    .trophy-modal img {
+        height: 50px !important;
+        width: auto !important;
+        max-width: 50px !important;
+        object-fit: contain !important;
+    }
+
+    .trophy-season-divider {
+        margin: 8px 0 12px !important;
+        border: 0 !important;
+        border-top: 1px solid #adb5bd !important;
+        opacity: 1 !important;
+    }
+}
+
+/* ============================================================
+   MOBILE - CREATE TEAM MODAL
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    #createTeamModal .modal-dialog {
+        margin: 8px auto !important;
+        width: calc(100% - 16px) !important;
+        max-width: calc(100% - 16px) !important;
+    }
+
+    #createTeamModal .modal-content {
+        max-height: calc(100vh - 16px) !important;
+    }
+
+    #createTeamModal .modal-header {
+        padding: 8px 12px !important;
+    }
+
+    #createTeamModal .modal-header h5 {
+        font-size: 17px !important;
+        margin: 0 !important;
+    }
+
+    #createTeamModal .modal-body {
+        padding: 8px 12px !important;
+    }
+
+    #createTeamModal .modal-body .mb-3 {
+        margin-bottom: 7px !important;
+    }
+
+    #createTeamModal .form-label {
+        margin-bottom: 2px !important;
+        font-size: 13px !important;
+    }
+
+    #createTeamModal .form-control,
+    #createTeamModal .form-select {
+        min-height: 34px !important;
+        height: 34px !important;
+        padding: 4px 8px !important;
+        font-size: 13px !important;
+    }
+
+    #createTeamModal .modal-footer {
+        padding: 8px 12px !important;
+    }
+
+    #createTeamModal .modal-footer .btn {
+        padding: 5px 12px !important;
+        font-size: 13px !important;
+    }
+
+    #createTeamModal .modal-body [role="alert"] {
+        padding: 7px 9px !important;
+        margin-bottom: 8px !important;
+        font-size: 13px !important;
+        line-height: 1.3 !important;
+    }
+}
