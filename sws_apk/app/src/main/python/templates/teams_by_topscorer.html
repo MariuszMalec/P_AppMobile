@@ -9,6 +9,7 @@
 <script src="{{ url_for('static', path='js/theme.js') }}"></script>
 </head>
 <body class="topscorer-page">
+    
 <div class="sws-theme-toggle">
     <button
         type="button"
@@ -18,6 +19,7 @@
     >
         🌙 Ciemny
     </button>
+
     <button
         type="button"
         class="btn btn-sm btn-outline-secondary"
@@ -26,19 +28,21 @@
     >
         ⬆ Góra
     </button>
+
+    <span id="teamsResultCount" class="teams-result-count">
+        {{ teams|length }}
+    </span>
 </div>
 
 
-<h1>Wyszukaj drużyny według najlepszego strzelca</h1>
-
-<div class="form-box" style="display: flex; align-items: center; gap: 10px;">
+<div class="form-box" style="display: flex; align-items: center; gap: 10px; margin-top: 70px;">
     <form method="get" action="/teams/topscorer" style="display: flex; gap: 10px;">
         <input type="text" name="topscorer" placeholder="Wpisz nazwisko strzelca"
                value="{{ topscorer or '' }}">
         <button type="submit" class="btn">Szukaj</button>
     </form>
 
-    <a href="/teams" class="btn" style="text-decoration: none; background-color: #ddd;">
+    <a href="/teams" class="btn">
         Back to teams
     </a>
 </div>
@@ -81,7 +85,7 @@
 {% endif %}
 
 <br>
-<a href="/teams">← Powrót do wszystkich drużyn</a>
+<a class="btn" href="/teams">← Powrót do wszystkich drużyn</a>
 
 </body>
 </html>
