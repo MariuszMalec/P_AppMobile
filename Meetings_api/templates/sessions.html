@@ -420,34 +420,13 @@
 ></div>
 
 
+<script src="{{ url_for('static', path='js/common.js') }}"></script>
+
 <!-- =======================================================
      JAVASCRIPT
      ======================================================= -->
 
 <script>
-
-
-// =========================================================
-// KOMUNIKAT
-// =========================================================
-
-const messageBox =
-    document.getElementById('message');
-
-
-function showMessage(text) {
-
-    messageBox.textContent = text;
-
-    messageBox.classList.add('show');
-
-    setTimeout(function() {
-
-        messageBox.classList.remove('show');
-
-    }, 2500);
-
-}
 
 
 let currentCell = null;
