@@ -24,3 +24,17 @@ function showMessage(text) {
 
     }, 2500);
 }
+
+
+// =========================================================
+// ESCAPOWANIE HTML
+// =========================================================
+
+function escapeHtml(value) {
+
+    const div = document.createElement('div');
+
+    div.textContent = value ?? '';
+
+    return div.innerHTML;
+}
