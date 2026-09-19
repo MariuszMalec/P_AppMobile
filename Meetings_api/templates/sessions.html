@@ -410,11 +410,45 @@
 </div>
 
 
+<!-- =========================================================
+     KOMUNIKAT
+     ========================================================= -->
+
+<div
+    id="message"
+    class="message"
+></div>
+
+
 <!-- =======================================================
      JAVASCRIPT
      ======================================================= -->
 
 <script>
+
+
+// =========================================================
+// KOMUNIKAT
+// =========================================================
+
+const messageBox =
+    document.getElementById('message');
+
+
+function showMessage(text) {
+
+    messageBox.textContent = text;
+
+    messageBox.classList.add('show');
+
+    setTimeout(function() {
+
+        messageBox.classList.remove('show');
+
+    }, 2500);
+
+}
+
 
 let currentCell = null;
 let weekOffset = 0;
@@ -693,7 +727,15 @@ function saveEdit() {
 
         console.log("Edycja OK:", data);
 
-        location.reload();
+        showMessage(
+            data.message || "Sesja zaktualizowana"
+        );
+
+        closePreview();
+
+        setTimeout(() => {
+            location.reload();
+        }, 800);
 
     })
     .catch(err => {
@@ -779,7 +821,15 @@ async function deleteSession() {
 
         console.log("Usuwanie OK:", data);
 
-        location.reload();
+        showMessage(
+            data.message || "Sesja usunięta"
+        );
+
+        closePreview();
+
+        setTimeout(() => {
+            location.reload();
+        }, 800);
 
     })
     .catch(err => {
@@ -1308,9 +1358,17 @@ function createSession() {
 
     })
 
-    .then(() => {
+    .then(data => {
 
-        location.reload();
+        showMessage(
+            data.message || "Sesja utworzona"
+        );
+
+        closePreview();
+
+        setTimeout(() => {
+            location.reload();
+        }, 800);
 
     })
 

@@ -1321,3 +1321,49 @@ body.light-mode .mobile-session-cell .empty {
         min-height: 46px;
     }
 }
+
+/* =========================================================
+   KOMUNIKAT
+   ========================================================= */
+
+.message {
+
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 18px;
+
+    z-index: 2000;
+
+    display: none;
+
+    transform: translateX(-50%);
+
+    max-width: calc(100% - 24px);
+
+    box-sizing: border-box;
+
+    padding: 10px 14px;
+
+    border-radius: 10px;
+
+    background: #111827;
+
+    color: #fff;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    text-align: center;
+
+    box-shadow:
+        0 6px 18px rgba(0,0,0,.35);
+}
+
+
+.message.show {
+
+    display: block;
+}
