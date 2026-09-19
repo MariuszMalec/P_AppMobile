@@ -3,6 +3,7 @@ import sqlite3
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 
 from db import (
     init_db_if_not_exists,
@@ -46,6 +47,17 @@ async def lifespan(app: FastAPI):
 
 # ⬅️ TU PODPINAMY LIFESPAN
 app = FastAPI(lifespan=lifespan)
+
+# =========================
+# STATIC
+# =========================
+STATIC_DIR = Path(__file__).parent / "static"
+
+app.mount(
+    "/static",
+    StaticFiles(directory=STATIC_DIR),
+    name="static"
+)
 
 
 # ---------- MAIN PAGE ----------
