@@ -68,6 +68,7 @@ tasks.register("copyMeetingsApiPython") {
             include "validators.py"
             include "routers/**"
             include "templates/**"
+            include "static/**"
         }
     }
 }
