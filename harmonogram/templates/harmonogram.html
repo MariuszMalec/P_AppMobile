@@ -1619,6 +1619,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (shouldFix && !isFixed) {
 
+            const rect = header.getBoundingClientRect();
+
+            headerLeft =
+                rect.left + window.scrollX;
+
             isFixed = true;
 
             header.classList.add(
@@ -1647,7 +1652,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (isFixed) {
 
             header.style.left =
-                (headerLeft - calendar.scrollLeft) + "px";
+                headerLeft + "px";
 
             header.style.width =
                 headerWidth + "px";
