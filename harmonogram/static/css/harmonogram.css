@@ -470,7 +470,7 @@ body {
 
     .calendar-header,
     .calendar-grid {
-        grid-template-columns: 140px repeat(var(--days-count), 70px);
+        grid-template-columns: 90px repeat(var(--days-count), 70px);
     }
 
     .day {
