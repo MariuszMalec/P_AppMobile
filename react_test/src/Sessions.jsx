@@ -9,6 +9,17 @@ function Sessions({ onBack }) {
   const [editStart, setEditStart] = useState('')
   const [editEnd, setEditEnd] = useState('')
   const [editDescription, setEditDescription] = useState('')
+  const [editDate, setEditDate] = useState('')
+  const [editScope, setEditScope] = useState('single')
+  const [editSeriesCount, setEditSeriesCount] = useState(1)
+  const [createMode, setCreateMode] = useState(false)
+  const [createStart, setCreateStart] = useState('')
+  const [createEnd, setCreateEnd] = useState('')
+  const [createClientId, setCreateClientId] = useState('')
+  const [createDescription, setCreateDescription] = useState('')
+  const [createDate, setCreateDate] = useState('')
+  const [createRecurring, setCreateRecurring] = useState(false)
+  const [createSeriesCount, setCreateSeriesCount] = useState(2)
 
   useEffect(() => {
     setError('')
@@ -50,11 +61,16 @@ function Sessions({ onBack }) {
     formData.append('description', editDescription)
     formData.append(
       'day_of_week',
-      new Date(selectedSession.session_date + 'T00:00:00').getDay() || 7
+      new Date(editDate + 'T00:00:00').getDay() || 7
     )
-    formData.append('session_date', selectedSession.session_date)
-    formData.append('edit_scope', 'single')
-    formData.append('recurring_weeks', '1')
+    formData.append('session_date', editDate)
+    formData.append('edit_scope', editScope)
+    formData.append(
+      'recurring_weeks',
+      editScope === 'series'
+        ? String(editSeriesCount - 1)
+        : '1'
+    )
 
     fetch(
       `http://127.0.0.1:8001/sessions/edit/${selectedSession.session_id}`,
@@ -101,6 +117,190 @@ function Sessions({ onBack }) {
       })
   }
 
+  function createSession() {
+    setError('')
+
+    if (!createDate) {
+      setError('Wybierz datę')
+      return
+    }
+
+    if (!createClientId) {
+      setError('Wybierz klienta')
+      return
+    }
+
+    if (!createStart) {
+      setError('Wybierz godzinę rozpoczęcia')
+      return
+    }
+
+    if (!createEnd) {
+      setError('Wybierz godzinę zakończenia')
+      return
+    }
+
+    if (createEnd <= createStart) {
+      setError('Godzina zakończenia musi być późniejsza od rozpoczęcia')
+      return
+    }
+
+    if (createRecurring && (createSeriesCount < 2 || createSeriesCount > 53)) {
+      setError('Liczba sesji w serii musi być od 2 do 53')
+      return
+    }
+
+    const formData = new FormData()
+
+    formData.append('start', createStart)
+    formData.append('end', createEnd)
+    formData.append('client_id', createClientId)
+    formData.append('description', createDescription)
+    formData.append(
+      'day_of_week',
+      new Date(createDate + 'T00:00:00').getDay() || 7
+    )
+    formData.append('session_date', createDate)
+    formData.append('recurring', createRecurring ? 'true' : 'false')
+    formData.append(
+      'recurring_weeks',
+      createRecurring
+        ? String(createSeriesCount - 1)
+        : '0'
+    )
+
+    fetch('http://127.0.0.1:8001/sessions/create', {
+      method: 'POST',
+      body: formData,
+    })
+      .then(async (response) => {
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.detail || `HTTP ${response.status}`)
+        }
+
+        return data
+      })
+      .then(() =>
+        fetch(
+          `http://127.0.0.1:8001/sessions/api?week_offset=${weekOffset}`
+        )
+      )
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        return response.json()
+      })
+      .then((freshData) => {
+        setData(freshData)
+        setCreateMode(false)
+      })
+      .catch((error) => setError(error.message))
+  }
+
+  if (createMode) {
+    return (
+      <main className="clients-page sessions-page">
+        <button
+          className="back-button"
+          onClick={() => setCreateMode(false)}
+        >
+          ← Anuluj
+        </button>
+
+        <h1>Dodaj sesję</h1>
+
+        <div className="edit-form">
+          <label>
+            Data
+            <input
+              type="date"
+              value={createDate}
+              onChange={(event) => setCreateDate(event.target.value)}
+            />
+          </label>
+
+          <label>
+            Klient
+            <select
+              value={createClientId}
+              onChange={(event) => setCreateClientId(event.target.value)}
+            >
+              <option value="">Wybierz klienta</option>
+              {data.clients
+                .filter((client) => client.Id)
+                .map((client) => (
+                  <option key={client.Id} value={client.Id}>
+                    {client.FirstName} {client.LastName}
+                  </option>
+                ))}
+            </select>
+          </label>
+
+          <label>
+            Godzina rozpoczęcia
+            <input
+              type="time"
+              value={createStart}
+              onChange={(event) => setCreateStart(event.target.value)}
+            />
+          </label>
+
+          <label>
+            Godzina zakończenia
+            <input
+              type="time"
+              value={createEnd}
+              onChange={(event) => setCreateEnd(event.target.value)}
+            />
+          </label>
+
+          <label>
+            Opis
+            <textarea
+              value={createDescription}
+              onChange={(event) => setCreateDescription(event.target.value)}
+            />
+          </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={createRecurring}
+              onChange={(event) => setCreateRecurring(event.target.checked)}
+            />
+            {' '}Sesja cykliczna
+          </label>
+
+          {createRecurring && (
+            <label>
+              Liczba sesji w serii
+              <input
+                type="number"
+                min="2"
+                max="53"
+                value={createSeriesCount}
+                onChange={(event) =>
+                  setCreateSeriesCount(Number(event.target.value))
+                }
+              />
+            </label>
+          )}
+
+          <button
+            className="save-button"
+            onClick={createSession}
+          >
+            Zapisz
+          </button>
+        </div>
+      </main>
+    )
+  }
+
   if (selectedSession && editMode) {
     return (
       <main className="clients-page sessions-page">
@@ -114,6 +314,43 @@ function Sessions({ onBack }) {
         <h1>Edytuj sesję</h1>
 
         <div className="edit-form">
+          <label>
+            Data
+            <input
+              type="date"
+              value={editDate}
+              onChange={(event) => setEditDate(event.target.value)}
+            />
+          </label>
+
+          {selectedSession.is_recurring && (
+            <label>
+              Zakres edycji
+              <select
+                value={editScope}
+                onChange={(event) => setEditScope(event.target.value)}
+              >
+                <option value="single">Tylko tę sesję</option>
+                <option value="series">Całą serię</option>
+              </select>
+            </label>
+          )}
+
+          {selectedSession.is_recurring && editScope === 'series' && (
+            <label>
+              Liczba sesji w serii
+              <input
+                type="number"
+                min="1"
+                max="53"
+                value={editSeriesCount}
+                onChange={(event) =>
+                  setEditSeriesCount(Number(event.target.value))
+                }
+              />
+            </label>
+          )}
+
           <label>
             Godzina rozpoczęcia
             <input
@@ -195,6 +432,30 @@ function Sessions({ onBack }) {
             setEditStart(selectedSession.start)
             setEditEnd(selectedSession.end)
             setEditDescription(selectedSession.description)
+            setEditDate(selectedSession.session_date)
+            setEditScope('single')
+
+            if (selectedSession.is_recurring) {
+              fetch(
+                `http://127.0.0.1:8001/sessions/recurring-count/${selectedSession.recurring_group_id}`
+              )
+                .then((response) => {
+                  if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`)
+                  }
+
+                  return response.json()
+                })
+                .then((data) => {
+                  setEditSeriesCount(data.count)
+                })
+                .catch((error) => {
+                  setError(error.message)
+                })
+            } else {
+              setEditSeriesCount(1)
+            }
+
             setEditMode(true)
           }}
         >
@@ -211,6 +472,24 @@ function Sessions({ onBack }) {
       </button>
 
       <h1>Sesje</h1>
+
+      <button
+        className="edit-button"
+        onClick={() => {
+          setCreateStart('')
+          setCreateEnd('')
+          setCreateClientId('')
+          setCreateDescription('')
+          setCreateDate('')
+          setCreateRecurring(false)
+          setCreateSeriesCount(2)
+          setError('')
+          setCreateMode(true)
+        }}
+      >
+        + Dodaj sesję
+      </button>
+
 
       <div className="week-navigation">
         <button
