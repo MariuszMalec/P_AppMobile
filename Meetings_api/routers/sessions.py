@@ -141,6 +141,117 @@ def home_page(
         }
     )
 
+@router.get("/api")
+def sessions_api(
+    db=Depends(get_db),
+    week_offset: int = Query(0)
+):
+    cursor = db.cursor()
+
+    now = datetime.now()
+    current_time = now.strftime("%H:%M")
+    current_day = now.isoweekday()
+
+    monday = (
+        now
+        - timedelta(days=now.weekday())
+        + timedelta(weeks=week_offset)
+    )
+    sunday = monday + timedelta(days=6)
+
+    week_start = monday.date().isoformat()
+    week_end = sunday.date().isoformat()
+
+    rows = cursor.execute("""
+        SELECT
+            s.Id,
+            s.StartTime,
+            s.EndTime,
+            s.Description,
+            s.DayOfWeek,
+            s.SessionDate,
+            s.RecurringGroupId,
+            c.Id AS ClientId,
+            c.FirstName,
+            c.LastName
+        FROM Session s
+        LEFT JOIN Client c
+            ON s.ClientId = c.Id
+        WHERE s.SessionDate BETWEEN ? AND ?
+        AND c.IsActive = 1
+        ORDER BY s.StartTime, s.DayOfWeek
+    """, (week_start, week_end)).fetchall()
+
+    days = {
+        1: "Poniedziałek",
+        2: "Wtorek",
+        3: "Środa",
+        4: "Czwartek",
+        5: "Piątek",
+        6: "Sobota",
+        7: "Niedziela"
+    }
+
+    table = {}
+
+    for r in rows:
+        session_day = datetime.strptime(
+            r["SessionDate"],
+            "%Y-%m-%d"
+        ).isoweekday()
+
+        time_key = f'{r["StartTime"]} – {r["EndTime"]}'
+
+        if time_key not in table:
+            table[time_key] = {
+                day: None for day in range(1, 8)
+            }
+
+        table[time_key][session_day] = {
+            "session_id": r["Id"],
+            "client_id": r["ClientId"],
+            "client": (
+                f'{r["FirstName"] or ""} '
+                f'{r["LastName"] or ""}'
+            ).strip(),
+            "description": r["Description"] or "",
+            "start": r["StartTime"] or "",
+            "end": r["EndTime"] or "",
+            "session_date": r["SessionDate"],
+            "recurring_group_id": r["RecurringGroupId"],
+            "is_recurring": r["RecurringGroupId"] is not None,
+            "is_live": (
+                r["DayOfWeek"] == current_day
+                and r["StartTime"] <= current_time <= r["EndTime"]
+            )
+        }
+
+    clients = cursor.execute("""
+        SELECT Id, FirstName, LastName
+        FROM Client
+        ORDER BY FirstName, LastName
+    """).fetchall()
+
+    db.close()
+
+    return {
+        "table": table,
+        "days": days,
+        "current_day": current_day,
+        "current_time": current_time,
+        "week_offset": week_offset,
+        "week_start": week_start,
+        "clients": [
+            {
+                "Id": c["Id"],
+                "FirstName": c["FirstName"],
+                "LastName": c["LastName"]
+            }
+            for c in clients
+        ]
+    }
+
+
 @router.get("/recurring-count/{recurring_group_id}")
 def get_recurring_count(
     recurring_group_id: int,

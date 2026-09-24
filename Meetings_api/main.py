@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 import sqlite3
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
@@ -14,6 +15,7 @@ from db import (
 from routers.home import router as home_router
 from routers.clients import router as clients_router
 from routers.sessions import router as sessions_router
+from api_test import router as api_test_router
 
 
 
@@ -48,6 +50,14 @@ async def lifespan(app: FastAPI):
 # ⬅️ TU PODPINAMY LIFESPAN
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # =========================
 # STATIC
 # =========================
@@ -70,4 +80,5 @@ def root_redirect():
 app.include_router(home_router)
 app.include_router(clients_router)
 app.include_router(sessions_router)
+app.include_router(api_test_router)
 
