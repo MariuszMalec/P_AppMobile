@@ -421,6 +421,7 @@
 
 
 <script src="{{ url_for('static', path='js/common.js') }}"></script>
+<script src="{{ url_for('static', path='js/sessions.js') }}"></script>
 
 <!-- =======================================================
      JAVASCRIPT
@@ -666,14 +667,59 @@ function saveEdit() {
         document.getElementById('p-desc').value
     );
 
+    const dayOfWeek =
+        parseInt(
+            document.getElementById('p-day').value,
+            10
+        );
+
+    const baseDate =
+        currentCell.dataset.sessionDate;
+
+    const date =
+        new Date(
+            baseDate +
+            "T12:00:00"
+        );
+
+    const jsDay =
+        date.getDay();
+
+    const mondayOffset =
+        jsDay === 0
+            ? -6
+            : 1 - jsDay;
+
+    date.setDate(
+        date.getDate() +
+        mondayOffset +
+        (dayOfWeek - 1)
+    );
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    const sessionDate =
+        `${year}-${month}-${day}`;
+
     formData.append(
         "day_of_week",
-        document.getElementById('p-day').value
+        dayOfWeek
     );
 
     formData.append(
         "session_date",
-        currentCell.dataset.sessionDate
+        sessionDate
     );
 
     formData.append(
