@@ -275,6 +275,8 @@ function Sessions({ onBack }) {
 
         <h1>Dodaj sesję</h1>
 
+        {error && <p className="error">Błąd: {error}</p>}
+
         <div className="edit-form">
           <label>
             Data

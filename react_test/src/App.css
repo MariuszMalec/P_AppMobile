@@ -291,14 +291,35 @@ h1 {
    ========================= */
 
 .success {
-  padding: 13px 15px;
-  margin-bottom: 16px;
-  border: 1px solid #bbf7d0;
-  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  margin: 12px 0 18px;
+  border: 1px solid #86efac;
+  border-left: 5px solid #16a34a;
+  border-radius: 12px;
   background: #f0fdf4;
-  color: #15803d;
+  color: #166534;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
+  line-height: 1.5;
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.08);
+}
+
+.success::before {
+  content: "✓";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
 }
 
 .error {
@@ -334,3 +355,266 @@ h1 {
     padding: 16px;
   }
 }
+
+/* =========================================================
+   NOWOCZESNY WYGLĄD - SESJE
+   ========================================================= */
+
+.sessions-page {
+  max-width: 1100px;
+}
+
+/* Nagłówek strony */
+
+.sessions-page h1 {
+  margin-bottom: 14px;
+}
+
+/* Przyciski nawigacji tygodnia */
+
+.week-navigation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 16px;
+}
+
+.week-button,
+.today-button {
+  height: 44px;
+  border: 1px solid #dbe1e8;
+  border-radius: 12px;
+  background: white;
+  color: #1f2937;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.week-button {
+  width: 48px;
+  font-size: 22px;
+}
+
+.today-button {
+  flex: 1;
+  max-width: 180px;
+}
+
+.week-button:active,
+.today-button:active {
+  transform: scale(0.97);
+}
+
+.week-button:hover,
+.today-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Informacja o tygodniu */
+
+.week-info {
+  margin: 0 0 14px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background: #eef4ff;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.week-info strong {
+  color: #1d4ed8;
+}
+
+/* Obudowa kalendarza */
+
+.sessions-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.07);
+}
+
+/* Tabela */
+
+.sessions-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+}
+
+/* Nagłówki dni */
+
+.sessions-table thead th {
+  padding: 13px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sessions-table thead th:first-child {
+  width: 72px;
+  color: #94a3b8;
+}
+
+/* Dzisiejszy dzień */
+
+.sessions-table thead th.today-column {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Komórki */
+
+.sessions-table td {
+  border-bottom: 1px solid #edf1f5;
+  border-right: 1px solid #edf1f5;
+  vertical-align: top;
+}
+
+.sessions-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sessions-table td:last-child,
+.sessions-table th:last-child {
+  border-right: none;
+}
+
+/* Godzina */
+
+.session-time {
+  width: 72px;
+  min-width: 72px;
+  padding: 10px 6px;
+  background: #fafbfc;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Puste komórki */
+
+.session-cell {
+  min-width: 95px;
+  height: 58px;
+  padding: 5px;
+}
+
+/* Karta sesji */
+
+.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 48px;
+  padding: 8px 9px;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #3b82f6;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(30, 64, 175, 0.08);
+  transition: 0.15s ease;
+}
+
+.session-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(30, 64, 175, 0.12);
+}
+
+.session-card:active {
+  transform: scale(0.98);
+}
+
+.session-card strong {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.session-card span {
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.session-card small {
+  font-size: 12px;
+}
+
+/* Sesja LIVE */
+
+.live-session .session-card {
+  border-color: #86efac;
+  border-left-color: #16a34a;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+/* Brak sesji */
+
+.empty-sessions {
+  padding: 40px 20px !important;
+  color: #94a3b8;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+
+  .sessions-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .week-navigation {
+    margin-top: 14px;
+  }
+
+  .week-button {
+    width: 46px;
+  }
+
+  .today-button {
+    max-width: none;
+  }
+
+  .sessions-table-wrap {
+    border-radius: 13px;
+  }
+
+  .sessions-table {
+    min-width: 700px;
+  }
+
+  .sessions-table thead th {
+    padding: 11px 6px;
+    font-size: 12px;
+  }
+
+  .session-card {
+    padding: 7px;
+  }
+
+  .session-card strong {
+    font-size: 12px;
+  }
+}
+
