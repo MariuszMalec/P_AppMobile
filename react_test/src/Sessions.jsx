@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 function Sessions({ onBack }) {
   const [data, setData] = useState(null)
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
   const [weekOffset, setWeekOffset] = useState(0)
   const [selectedSession, setSelectedSession] = useState(null)
   const [editMode, setEditMode] = useState(false)
@@ -20,6 +21,8 @@ function Sessions({ onBack }) {
   const [createDate, setCreateDate] = useState('')
   const [createRecurring, setCreateRecurring] = useState(false)
   const [createSeriesCount, setCreateSeriesCount] = useState(2)
+  const [deleteMode, setDeleteMode] = useState(false)
+  const [deleteScope, setDeleteScope] = useState('single')
 
   useEffect(() => {
     setError('')
@@ -103,6 +106,12 @@ function Sessions({ onBack }) {
       .then((freshData) => {
         setData(freshData)
 
+        setMessage(
+          editScope === 'series'
+            ? 'Seria została zmieniona'
+            : 'Sesja została zmieniona'
+        )
+
         setSelectedSession({
           ...selectedSession,
           start: editStart,
@@ -115,6 +124,54 @@ function Sessions({ onBack }) {
       .catch((error) => {
         setError(error.message)
       })
+  }
+
+  function deleteSession(scope) {
+    setError('')
+
+    const formData = new FormData()
+    formData.append('delete_scope', scope)
+
+    fetch(
+      `http://127.0.0.1:8001/sessions/delete/${selectedSession.session_id}`,
+      {
+        method: 'POST',
+        body: formData,
+      }
+    )
+      .then(async (response) => {
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(data.detail || `HTTP ${response.status}`)
+        }
+
+        return data
+      })
+      .then(() =>
+        fetch(
+          `http://127.0.0.1:8001/sessions/api?week_offset=${weekOffset}`
+        )
+      )
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        return response.json()
+      })
+      .then((freshData) => {
+        setData(freshData)
+        setMessage(
+          scope === 'series'
+            ? 'Cała seria została usunięta'
+            : 'Sesja usunięta'
+        )
+        setSelectedSession(null)
+        setDeleteMode(false)
+        setDeleteScope('single')
+      })
+      .catch((error) => setError(error.message))
   }
 
   function createSession() {
@@ -196,6 +253,11 @@ function Sessions({ onBack }) {
       })
       .then((freshData) => {
         setData(freshData)
+        setMessage(
+          createRecurring
+            ? 'Seria została dodana'
+            : 'Sesja została dodana'
+        )
         setCreateMode(false)
       })
       .catch((error) => setError(error.message))
@@ -296,6 +358,84 @@ function Sessions({ onBack }) {
           >
             Zapisz
           </button>
+        </div>
+      </main>
+    )
+  }
+
+  if (selectedSession && deleteMode) {
+    return (
+      <main className="clients-page sessions-page">
+        <button
+          className="back-button"
+          onClick={() => setDeleteMode(false)}
+        >
+          ← Anuluj
+        </button>
+
+        <h1>Usuń sesję</h1>
+
+        <div className="client-details">
+          <p>
+            <strong>Klient:</strong> {selectedSession.client}
+          </p>
+
+          <p>
+            <strong>Data:</strong> {selectedSession.session_date}
+          </p>
+
+          <p>
+            <strong>Godziny:</strong> {selectedSession.start} – {selectedSession.end}
+          </p>
+
+          {selectedSession.is_recurring ? (
+            <>
+              <p>
+                Ta sesja należy do serii cyklicznej.
+              </p>
+
+              <button
+                className="delete-button"
+                onClick={() => {
+                  setDeleteScope('single')
+                  deleteSession('single')
+                }}
+              >
+                Usuń tylko tę sesję
+              </button>
+
+              <button
+                className="delete-button"
+                onClick={() => {
+                  setDeleteScope('series')
+                  deleteSession('series')
+                }}
+              >
+                Usuń całą serię
+              </button>
+            </>
+          ) : (
+            <button
+              className="delete-button"
+              onClick={() => {
+                setDeleteScope('single')
+                deleteSession('single')
+              }}
+            >
+              Usuń sesję
+            </button>
+          )}
+
+          {deleteScope && (
+            <p>
+              Wybrano:{' '}
+              <strong>
+                {deleteScope === 'series'
+                  ? 'całą serię'
+                  : 'tylko tę sesję'}
+              </strong>
+            </p>
+          )}
         </div>
       </main>
     )
@@ -461,6 +601,16 @@ function Sessions({ onBack }) {
         >
           ✎ Edytuj
         </button>
+
+        <button
+          className="delete-button"
+          onClick={() => {
+            setDeleteScope('single')
+            setDeleteMode(true)
+          }}
+        >
+          🗑 Usuń
+        </button>
       </main>
     )
   }
@@ -514,6 +664,7 @@ function Sessions({ onBack }) {
         </button>
       </div>
 
+      {message && <p className="success">{message}</p>}
       {error && <p className="error">Błąd: {error}</p>}
 
       {!error && !data && <p>Ładowanie...</p>}
