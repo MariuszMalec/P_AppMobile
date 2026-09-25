@@ -1,0 +1,327 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f5f5;
+  color: #212529;
+}
+
+button {
+  font: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   NAVBAR
+   ========================= */
+
+.navbar {
+  background: #212529;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-buttons button {
+  border: 0;
+  background: transparent;
+  color: #ddd;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.nav-buttons button:hover,
+.nav-buttons button.active {
+  background: #495057;
+  color: white;
+}
+
+/* =========================
+   CONTENT
+   ========================= */
+
+.content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  flex: 1;
+}
+
+.page-header {
+  margin-bottom: 15px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.result-count {
+  margin: 5px 0 0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* =========================
+   TABLE
+   ========================= */
+
+.table-card {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.teams-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.teams-table th,
+.teams-table td {
+  border: 1px solid #dee2e6;
+}
+
+.teams-table th {
+  background: #343a40;
+  color: white;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.teams-table td {
+  padding: 10px 14px;
+  height: 62px;
+  vertical-align: middle;
+}
+
+.teams-table tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.teams-table tbody tr:hover {
+  background: #e9ecef;
+}
+
+/* =========================
+   COLUMNS
+   ========================= */
+
+.teams-table th:nth-child(1),
+.teams-table td:nth-child(1) {
+  min-width: 180px;
+}
+
+.teams-table th:nth-child(2),
+.teams-table td:nth-child(2) {
+  width: 90px;
+  text-align: center;
+}
+
+.teams-table th:nth-child(3),
+.teams-table td:nth-child(3) {
+  min-width: 280px;
+}
+
+.teams-table th:nth-child(4),
+.teams-table td:nth-child(4) {
+  min-width: 220px;
+}
+
+/* =========================
+   TEAM NAME
+   ========================= */
+
+.team-name {
+  font-weight: 500;
+}
+
+/* =========================
+   RESULT
+   ========================= */
+
+.result {
+  white-space: nowrap;
+}
+
+/* =========================
+   TROPHY
+   ========================= */
+
+.trophy-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 60px;
+}
+
+.trophy-picture {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.trophy-cell span {
+  font-weight: 500;
+}
+
+/* =========================
+   MESSAGES
+   ========================= */
+
+.message {
+  background: white;
+  border: 1px solid #dee2e6;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.message.error {
+  color: #b02a37;
+  border-color: #f1aeb5;
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+
+footer {
+  margin-top: 30px;
+  padding: 18px;
+  text-align: center;
+  color: #6c757d;
+  font-size: 13px;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 700px) {
+  .navbar {
+    padding: 10px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .navbar-brand {
+    text-align: center;
+  }
+
+  .nav-buttons {
+    width: 100%;
+  }
+
+  .nav-buttons button {
+    flex: 1;
+  }
+
+  .content {
+    padding: 14px 8px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .table-card {
+    border-radius: 4px;
+  }
+
+  .teams-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .teams-table th,
+  .teams-table td {
+    padding: 7px 5px;
+    font-size: 12px;
+  }
+
+  .teams-table th:nth-child(1),
+  .teams-table td:nth-child(1) {
+    width: 22%;
+    min-width: 0;
+  }
+
+  .teams-table th:nth-child(2),
+  .teams-table td:nth-child(2) {
+    width: 13%;
+    min-width: 0;
+  }
+
+  .teams-table th:nth-child(3),
+  .teams-table td:nth-child(3) {
+    width: 40%;
+    min-width: 0;
+  }
+
+  .teams-table th:nth-child(4),
+  .teams-table td:nth-child(4) {
+    width: 25%;
+    min-width: 0;
+  }
+
+  .result {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .trophy-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 45px;
+  }
+
+  .trophy-picture {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+  }
+
+  .trophy-cell span {
+    font-size: 9px;
+    line-height: 1.1;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+}
