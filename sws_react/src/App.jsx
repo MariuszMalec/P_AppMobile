@@ -12,6 +12,14 @@ function App() {
   const [filterResult, setFilterResult] = useState('')
   const [sort, setSort] = useState('')
 
+  const [selectedTeam, setSelectedTeam] = useState(null)
+  const [teamPicture, setTeamPicture] = useState('')
+  const [pictureLoading, setPictureLoading] = useState(false)
+
+  const [trophiesTeam, setTrophiesTeam] = useState(null)
+  const [teamTrophies, setTeamTrophies] = useState([])
+  const [trophiesLoading, setTrophiesLoading] = useState(false)
+
   const loadTeams = () => {
     setLoading(true)
     setError('')
@@ -64,6 +72,74 @@ function App() {
     setFilterTrophy('')
     setFilterResult('')
     setSort('')
+  }
+
+  const openTeamPicture = (team) => {
+    setSelectedTeam(team)
+    setTeamPicture('')
+    setPictureLoading(true)
+
+    fetch(`${API_URL}/teams/${team.Id}/picture`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        return response.json()
+      })
+      .then(data => {
+        setTeamPicture(data.picture || '')
+        setPictureLoading(false)
+      })
+      .catch(() => {
+        setTeamPicture('')
+        setPictureLoading(false)
+      })
+  }
+
+  const closeTeamPicture = () => {
+    setSelectedTeam(null)
+    setTeamPicture('')
+  }
+
+  const openTeamTrophies = (team) => {
+    setTrophiesTeam(team)
+    setTeamTrophies([])
+    setTrophiesLoading(true)
+
+    fetch(`${API_URL}/api/teams/${team.Id}/trophies_by_season`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        return response.json()
+      })
+      .then(data => {
+        setTeamTrophies(data)
+        setTrophiesLoading(false)
+      })
+      .catch(() => {
+        setTeamTrophies([])
+        setTrophiesLoading(false)
+      })
+  }
+
+  const closeTeamTrophies = () => {
+    setTrophiesTeam(null)
+    setTeamTrophies([])
+  }
+
+  const getImageUrl = (picture) => {
+    if (!picture) {
+      return ''
+    }
+
+    if (picture.startsWith('http')) {
+      return picture
+    }
+
+    return `${API_URL}${picture}`
   }
 
   return (
@@ -120,6 +196,7 @@ function App() {
             onChange={event => setSort(event.target.value)}
           >
             <option value="">Sortowanie</option>
+            <option value="name_asc">Nazwa ↑</option>
             <option value="name_desc">Nazwa ↓</option>
             <option value="season_asc">Sezon ↑</option>
             <option value="season_desc">Sezon ↓</option>
@@ -165,9 +242,12 @@ function App() {
                     <tr key={team.Id}>
 
                       <td>
-                        <div className="team-name">
+                        <button
+                          className="team-name-button"
+                          onClick={() => openTeamPicture(team)}
+                        >
                           {team.Name}
-                        </div>
+                        </button>
                       </td>
 
                       <td>
@@ -181,15 +261,14 @@ function App() {
                       </td>
 
                       <td>
-                        <div className="trophy-cell">
+                        <button
+                          className="trophy-cell trophy-cell-button"
+                          onClick={() => openTeamTrophies(team)}
+                        >
 
                           {team.TrophyPicture && (
                             <img
-                              src={
-                                team.TrophyPicture.startsWith('http')
-                                  ? team.TrophyPicture
-                                  : `${API_URL}${team.TrophyPicture}`
-                              }
+                              src={getImageUrl(team.TrophyPicture)}
                               alt=""
                               className="trophy-picture"
                             />
@@ -199,7 +278,7 @@ function App() {
                             {team.TrophyWin || 'No'}
                           </span>
 
-                        </div>
+                        </button>
                       </td>
 
                     </tr>
@@ -216,6 +295,136 @@ function App() {
       <footer>
         © 2026 Sports Manager • React + FastAPI
       </footer>
+
+      {trophiesTeam && (
+        <div
+          className="modal-backdrop"
+          onClick={closeTeamTrophies}
+        >
+          <div
+            className="team-modal trophies-modal"
+            onClick={event => event.stopPropagation()}
+          >
+
+            <button
+              className="modal-close"
+              onClick={closeTeamTrophies}
+            >
+              ×
+            </button>
+
+            <h2>
+              {trophiesTeam.Name} — Trophies by Season
+            </h2>
+
+            {trophiesLoading && (
+              <div className="modal-message">
+                Ładowanie...
+              </div>
+            )}
+
+            {!trophiesLoading && teamTrophies.length === 0 && (
+              <div className="modal-message">
+                Brak pucharów
+              </div>
+            )}
+
+            {!trophiesLoading && teamTrophies.length > 0 && (
+              <div className="trophies-by-season">
+
+                {teamTrophies.map(season => (
+                  <div
+                    className="season-block"
+                    key={season.Season}
+                  >
+
+                    <h3>
+                      {season.Season}
+                    </h3>
+
+                    <div className="season-trophies">
+
+                      {season.Trophies.map(trophy => (
+                        <div
+                          className="season-trophy"
+                          key={trophy.Id}
+                        >
+
+                          {trophy.Picture && (
+                            <img
+                              src={getImageUrl(trophy.Picture)}
+                              alt={trophy.Name}
+                            />
+                          )}
+
+                          <div className="season-trophy-name">
+                            {trophy.Name}
+                          </div>
+
+                          {trophy.Lose && trophy.LoserPicture && (
+                            <img
+                              src={getImageUrl(trophy.LoserPicture)}
+                              alt="Loser"
+                              className="loser-picture"
+                            />
+                          )}
+
+                        </div>
+                      ))}
+
+                    </div>
+                  </div>
+                ))}
+
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
+
+      {selectedTeam && (
+        <div
+          className="modal-backdrop"
+          onClick={closeTeamPicture}
+        >
+          <div
+            className="team-modal"
+            onClick={event => event.stopPropagation()}
+          >
+
+            <button
+              className="modal-close"
+              onClick={closeTeamPicture}
+            >
+              ×
+            </button>
+
+            <h2>{selectedTeam.Name}</h2>
+
+            {pictureLoading && (
+              <div className="modal-message">
+                Ładowanie...
+              </div>
+            )}
+
+            {!pictureLoading && teamPicture && (
+              <img
+                src={getImageUrl(teamPicture)}
+                alt={selectedTeam.Name}
+                className="team-modal-picture"
+              />
+            )}
+
+            {!pictureLoading && !teamPicture && (
+              <div className="modal-message">
+                Brak zdjęcia
+              </div>
+            )}
+
+          </div>
+        </div>
+      )}
 
     </div>
   )
