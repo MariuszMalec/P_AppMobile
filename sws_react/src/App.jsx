@@ -7,8 +7,37 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    fetch(`${API_URL}/api/teams`)
+  const [filterName, setFilterName] = useState('')
+  const [filterTrophy, setFilterTrophy] = useState('')
+  const [filterResult, setFilterResult] = useState('')
+  const [sort, setSort] = useState('')
+
+  const loadTeams = () => {
+    setLoading(true)
+    setError('')
+
+    const params = new URLSearchParams()
+
+    if (filterName.trim()) {
+      params.set('filter_name', filterName.trim())
+    }
+
+    if (filterTrophy.trim()) {
+      params.set('filter_trophy', filterTrophy.trim())
+    }
+
+    if (filterResult.trim()) {
+      params.set('filter_result', filterResult.trim())
+    }
+
+    if (sort) {
+      params.set('sort', sort)
+    }
+
+    const query = params.toString()
+    const url = `${API_URL}/api/teams${query ? `?${query}` : ''}`
+
+    fetch(url)
       .then(response => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`)
@@ -24,7 +53,18 @@ function App() {
         setError(error.message)
         setLoading(false)
       })
-  }, [])
+  }
+
+  useEffect(() => {
+    loadTeams()
+  }, [filterName, filterTrophy, filterResult, sort])
+
+  const clearFilters = () => {
+    setFilterName('')
+    setFilterTrophy('')
+    setFilterResult('')
+    setSort('')
+  }
 
   return (
     <div className="app">
@@ -50,6 +90,48 @@ function App() {
               {loading ? 'Ładowanie...' : `${teams.length} wyników`}
             </p>
           </div>
+        </div>
+
+        <div className="filters">
+
+          <input
+            type="text"
+            placeholder="Nazwa drużyny"
+            value={filterName}
+            onChange={event => setFilterName(event.target.value)}
+          />
+
+          <input
+            type="text"
+            placeholder="Puchar"
+            value={filterTrophy}
+            onChange={event => setFilterTrophy(event.target.value)}
+          />
+
+          <input
+            type="text"
+            placeholder="Final Result"
+            value={filterResult}
+            onChange={event => setFilterResult(event.target.value)}
+          />
+
+          <select
+            value={sort}
+            onChange={event => setSort(event.target.value)}
+          >
+            <option value="">Sortowanie</option>
+            <option value="name_desc">Nazwa ↓</option>
+            <option value="season_asc">Sezon ↑</option>
+            <option value="season_desc">Sezon ↓</option>
+          </select>
+
+          <button
+            className="clear-button"
+            onClick={clearFilters}
+          >
+            Wyczyść
+          </button>
+
         </div>
 
         {loading && (
@@ -84,7 +166,7 @@ function App() {
 
                       <td>
                         <div className="team-name">
-                          <span>{team.Name}</span>
+                          {team.Name}
                         </div>
                       </td>
 
