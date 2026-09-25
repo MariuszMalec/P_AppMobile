@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import API_URL from './api'
 import './App.css'
 import Sessions from './Sessions'
 
@@ -25,7 +26,7 @@ function App() {
   useEffect(() => {
     setError('')
 
-    fetch(`http://127.0.0.1:8001/clients/list?active=${active}`)
+    fetch(`${API_URL}/clients/list?active=${active}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`)
@@ -46,7 +47,7 @@ function App() {
     setMessage('')
     setEditMode(false)
 
-    fetch(`http://127.0.0.1:8001/clients/${clientId}`)
+    fetch(`${API_URL}/clients/${clientId}`)
       .then((response) => {
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}`)
@@ -92,7 +93,7 @@ function App() {
     formData.append('gender', newClient.Gender)
     formData.append('is_active', newClient.IsActive ? '1' : '0')
 
-    fetch('http://127.0.0.1:8001/clients/create', {
+    fetch(`${API_URL}/clients/create`, {
       method: 'POST',
       body: formData,
     })
@@ -110,7 +111,7 @@ function App() {
         setCreateMode(false)
 
         return fetch(
-          `http://127.0.0.1:8001/clients/list?active=${active}`
+          `${API_URL}/clients/list?active=${active}`
         )
       })
       .then((response) => {
@@ -155,7 +156,7 @@ function App() {
     formData.append('gender', selectedClient.Gender || '')
     formData.append('is_active', selectedClient.IsActive ? '1' : '0')
 
-    fetch(`http://127.0.0.1:8001/clients/edit/${selectedClient.Id}`, {
+    fetch(`${API_URL}/clients/edit/${selectedClient.Id}`, {
       method: 'PUT',
       body: formData,
     })
@@ -173,7 +174,7 @@ function App() {
         setEditMode(false)
 
         return fetch(
-          `http://127.0.0.1:8001/clients/${selectedClient.Id}`
+          `${API_URL}/clients/${selectedClient.Id}`
         )
       })
       .then((response) => {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import API_URL from './api'
 
 function Sessions({ onBack }) {
   const [data, setData] = useState(null)
@@ -29,7 +30,7 @@ function Sessions({ onBack }) {
     setData(null)
 
     fetch(
-      `http://127.0.0.1:8001/sessions/api?week_offset=${weekOffset}`
+      `${API_URL}/sessions/api?week_offset=${weekOffset}`
     )
       .then((response) => {
         if (!response.ok) {
@@ -76,7 +77,7 @@ function Sessions({ onBack }) {
     )
 
     fetch(
-      `http://127.0.0.1:8001/sessions/edit/${selectedSession.session_id}`,
+      `${API_URL}/sessions/edit/${selectedSession.session_id}`,
       {
         method: 'PUT',
         body: formData,
@@ -93,7 +94,7 @@ function Sessions({ onBack }) {
       })
       .then(() => {
         return fetch(
-          `http://127.0.0.1:8001/sessions/api?week_offset=${weekOffset}`
+          `${API_URL}/sessions/api?week_offset=${weekOffset}`
         )
       })
       .then(async (response) => {
@@ -133,7 +134,7 @@ function Sessions({ onBack }) {
     formData.append('delete_scope', scope)
 
     fetch(
-      `http://127.0.0.1:8001/sessions/delete/${selectedSession.session_id}`,
+      `${API_URL}/sessions/delete/${selectedSession.session_id}`,
       {
         method: 'POST',
         body: formData,
@@ -150,7 +151,7 @@ function Sessions({ onBack }) {
       })
       .then(() =>
         fetch(
-          `http://127.0.0.1:8001/sessions/api?week_offset=${weekOffset}`
+          `${API_URL}/sessions/api?week_offset=${weekOffset}`
         )
       )
       .then(async (response) => {
@@ -226,7 +227,7 @@ function Sessions({ onBack }) {
         : '0'
     )
 
-    fetch('http://127.0.0.1:8001/sessions/create', {
+    fetch(`${API_URL}/sessions/create`, {
       method: 'POST',
       body: formData,
     })
@@ -241,7 +242,7 @@ function Sessions({ onBack }) {
       })
       .then(() =>
         fetch(
-          `http://127.0.0.1:8001/sessions/api?week_offset=${weekOffset}`
+          `${API_URL}/sessions/api?week_offset=${weekOffset}`
         )
       )
       .then(async (response) => {
@@ -579,7 +580,7 @@ function Sessions({ onBack }) {
 
             if (selectedSession.is_recurring) {
               fetch(
-                `http://127.0.0.1:8001/sessions/recurring-count/${selectedSession.recurring_group_id}`
+                `${API_URL}/sessions/recurring-count/${selectedSession.recurring_group_id}`
               )
                 .then((response) => {
                   if (!response.ok) {

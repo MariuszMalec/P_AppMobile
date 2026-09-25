@@ -48,9 +48,7 @@ android {
 }
 
 def meetingsApiDir = file("../../Meetings_api")
-def reactDistDir = file("../../Meetings_react/dist")
 def apkPythonDir = file("src/main/python")
-def reactApkDir = file("src/main/python/static/react")
 
 tasks.register("copyMeetingsApiPython") {
     doLast {
@@ -64,6 +62,7 @@ tasks.register("copyMeetingsApiPython") {
             from meetingsApiDir
             into apkPythonDir
 
+            include "main.py"
             include "db.py"
             include "templates.py"
             include "validators.py"
@@ -74,26 +73,10 @@ tasks.register("copyMeetingsApiPython") {
     }
 }
 
-tasks.register("copyReactDist") {
-    doLast {
-        println "========================================"
-        println "KOPIOWANIE React dist -> APK"
-        println "Źródło:  ${reactDistDir}"
-        println "Cel:     ${reactApkDir}"
-        println "========================================"
-
-        copy {
-            from reactDistDir
-            into reactApkDir
-        }
-    }
-}
-
 tasks.configureEach {
     if (name == "generateDebugPythonSourceAssets" ||
         name == "generateReleasePythonSourceAssets") {
         dependsOn("copyMeetingsApiPython")
-        dependsOn("copyReactDist")
     }
 }
 

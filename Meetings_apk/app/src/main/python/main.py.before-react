@@ -1,7 +1,7 @@
 from contextlib import asynccontextmanager
 import sqlite3
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse, FileResponse
+from fastapi.responses import RedirectResponse
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 
@@ -52,7 +52,6 @@ app = FastAPI(lifespan=lifespan)
 # STATIC
 # =========================
 STATIC_DIR = Path(__file__).parent / "static"
-REACT_DIR = STATIC_DIR / "react"
 
 app.mount(
     "/static",
@@ -60,22 +59,11 @@ app.mount(
     name="static"
 )
 
-app.mount(
-    "/assets",
-    StaticFiles(directory=REACT_DIR / "assets"),
-    name="react-assets"
-)
 
-
-# ---------- REACT MAIN PAGE ----------
-@app.get("/favicon.svg")
-def react_favicon():
-    return FileResponse(REACT_DIR / "favicon.svg")
-
-
+# ---------- MAIN PAGE ----------
 @app.get("/")
-def react_index():
-    return FileResponse(REACT_DIR / "index.html")
+def root_redirect():
+    return RedirectResponse("/sessions", status_code=302)
 
 
 # ---------- ROUTERS ----------
