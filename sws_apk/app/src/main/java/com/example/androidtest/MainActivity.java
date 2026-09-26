@@ -253,30 +253,46 @@ public class MainActivity extends Activity {
     private void showWebView() {
         WebView webView = new WebView(this);
 
-        webView.setWebViewClient(
-            new WebViewClient()
-        );
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onReceivedError(
+                    WebView view,
+                    int errorCode,
+                    String description,
+                    String failingUrl
+            ) {
+                TextView error = new TextView(MainActivity.this);
+                error.setText(
+                        "BŁĄD WEBVIEW\\n\\n" +
+                        "Kod: " + errorCode + "\\n" +
+                        "Opis: " + description + "\\n" +
+                        "URL: " + failingUrl
+                );
+                error.setTextSize(18);
+                error.setPadding(30, 30, 30, 30);
+                setContentView(error);
+            }
 
-        webView.setWebChromeClient(
-            new WebChromeClient()
-        );
+            @Override
+            public void onPageFinished(
+                    WebView view,
+                    String url
+            ) {
+                appendLog("WEBVIEW PAGE FINISHED: " + url);
+            }
+        });
 
-        webView.getSettings()
-            .setJavaScriptEnabled(true);
+        webView.setWebChromeClient(new WebChromeClient());
 
-        webView.getSettings()
-            .setDomStorageEnabled(true);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
 
-        webView.loadUrl(
-            "http://127.0.0.1:8000/"
-        );
+        appendLog("WEBVIEW: próba otwarcia http://127.0.0.1:8000/");
+
+        webView.loadUrl("http://127.0.0.1:8000/");
 
         setContentView(webView);
     }
-
-    // =================================================
-    // LOG
-    // =================================================
 
     private void refreshLog() {
 

@@ -33,10 +33,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file('../meetings-release.jks')
-            storePassword 'Alicja@@13!!!'
-            keyAlias 'meetings'
-            keyPassword 'Alicja@@13!!!'
+            storeFile file('../sws-release.jks')
+            storePassword project.findProperty("SWS_KEYSTORE_PASSWORD")
+            keyAlias 'sws'
+            keyPassword project.findProperty("SWS_KEY_PASSWORD")
         }
     }
 
@@ -87,8 +87,6 @@ tasks.register("copySwsApiPython") {
             include "static/**"
             include "sws.db"
         }
-
-
     }
 }
 
@@ -112,5 +110,3 @@ chaquopy {
         }
     }
 }
-
-
