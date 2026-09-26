@@ -20,6 +20,25 @@ function App() {
   const [teamTrophies, setTeamTrophies] = useState([])
   const [trophiesLoading, setTrophiesLoading] = useState(false)
 
+  const [editTeamOpen, setEditTeamOpen] = useState(false)
+  const [editTeam, setEditTeam] = useState(null)
+  const [editTeamError, setEditTeamError] = useState('')
+
+  const [createTeamOpen, setCreateTeamOpen] = useState(false)
+  const [createTeamError, setCreateTeamError] = useState('')
+  const [trophyOptions, setTrophyOptions] = useState([])
+
+  const [createTeamForm, setCreateTeamForm] = useState({
+    Name: '',
+    Description: 'Example description',
+    NationalityName: 'Unknown',
+    Season: 2026,
+    TopScorer: 'John Doe',
+    FinalResult: '2nd place',
+    TrophyModelId: '',
+    Picture: 'http://127.0.0.1:8001/static/images/Team_2026.png',
+  })
+
   const loadTeams = () => {
     setLoading(true)
     setError('')
@@ -72,6 +91,107 @@ function App() {
     setFilterTrophy('')
     setFilterResult('')
     setSort('')
+  }
+
+  const openEditTeam = (team) => {
+    setEditTeamError('')
+    setEditTeam({
+      ...team,
+      Season: team.Season ?? '',
+      FinalResult: team.FinalResult ?? '',
+      TrophyModelId: team.TrophyModelId ?? '',
+    })
+    setEditTeamOpen(true)
+
+    fetch(`${API_URL}/teams/trophies/options`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+        return response.json()
+      })
+      .then(data => {
+        setTrophyOptions(data)
+      })
+      .catch(() => {
+        setTrophyOptions([])
+        setEditTeamError('Nie można pobrać listy pucharów')
+      })
+  }
+
+  const deleteTeam = (team) => {
+    const confirmed = window.confirm(
+      `Czy na pewno usunąć drużynę "${team.Name}"?`
+    )
+
+    if (!confirmed) {
+      return
+    }
+
+    fetch(`${API_URL}/api/teams/${team.Id}`, {
+      method: 'DELETE',
+    })
+      .then(async response => {
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(
+            data.detail || `HTTP ${response.status}`
+          )
+        }
+
+        return data
+      })
+      .then(() => {
+        loadTeams()
+      })
+      .catch(error => {
+        window.alert(`Nie udało się usunąć drużyny: ${error.message}`)
+      })
+  }
+
+  const saveEditTeam = () => {
+    setEditTeamError('')
+
+    const payload = {
+      ...editTeam,
+      Season: Number(editTeam.Season),
+      TrophyModelId: editTeam.TrophyModelId
+        ? Number(editTeam.TrophyModelId)
+        : null,
+    }
+
+    fetch(`${API_URL}/api/teams/${editTeam.Id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(async response => {
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(
+            data.detail || `HTTP ${response.status}`
+          )
+        }
+
+        return data
+      })
+      .then(() => {
+        closeEditTeam()
+        loadTeams()
+      })
+      .catch(error => {
+        setEditTeamError(error.message)
+      })
+  }
+
+  const closeEditTeam = () => {
+    setEditTeamOpen(false)
+    setEditTeam(null)
+    setEditTeamError('')
   }
 
   const openTeamPicture = (team) => {
@@ -130,6 +250,71 @@ function App() {
     setTeamTrophies([])
   }
 
+  const openCreateTeam = () => {
+    setCreateTeamError('')
+
+    fetch(`${API_URL}/teams/trophies/options`)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        return response.json()
+      })
+      .then(data => {
+        setTrophyOptions(data)
+        setCreateTeamOpen(true)
+      })
+      .catch(() => {
+        setTrophyOptions([])
+        setCreateTeamError('Nie można pobrać listy pucharów')
+        setCreateTeamOpen(true)
+      })
+  }
+
+  const closeCreateTeam = () => {
+    setCreateTeamOpen(false)
+    setCreateTeamError('')
+  }
+
+  const createTeam = () => {
+    setCreateTeamError('')
+
+    const payload = {
+      ...createTeamForm,
+      Season: Number(createTeamForm.Season),
+      TrophyModelId: createTeamForm.TrophyModelId
+        ? Number(createTeamForm.TrophyModelId)
+        : null,
+    }
+
+    fetch(`${API_URL}/api/teams`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    })
+      .then(async response => {
+        const data = await response.json()
+
+        if (!response.ok) {
+          throw new Error(
+            data.detail || `HTTP ${response.status}`
+          )
+        }
+
+        return data
+      })
+      .then(() => {
+        closeCreateTeam()
+        loadTeams()
+      })
+      .catch(error => {
+        setCreateTeamError(error.message)
+      })
+  }
+
   const getImageUrl = (picture) => {
     if (!picture) {
       return ''
@@ -166,6 +351,13 @@ function App() {
               {loading ? 'Ładowanie...' : `${teams.length} wyników`}
             </p>
           </div>
+
+          <button
+            className="create-team-button"
+            onClick={openCreateTeam}
+          >
+            + Create Team
+          </button>
         </div>
 
         <div className="filters">
@@ -242,13 +434,29 @@ function App() {
                     <tr key={team.Id}>
 
                       <td>
+                      <button
+                        className="team-name-button"
+                        onClick={() => openTeamPicture(team)}
+                      >
+                        {team.Name}
+                      </button>
+
+                      <div className="team-actions">
                         <button
-                          className="team-name-button"
-                          onClick={() => openTeamPicture(team)}
+                          className="team-edit-button"
+                          onClick={() => openEditTeam(team)}
                         >
-                          {team.Name}
+                          ✏️
                         </button>
-                      </td>
+
+                        <button
+                          className="team-delete-button"
+                          onClick={() => deleteTeam(team)}
+                        >
+                          🗑
+                        </button>
+                      </div>
+                    </td>
 
                       <td>
                         {team.Season}
@@ -378,6 +586,361 @@ function App() {
 
               </div>
             )}
+
+          </div>
+        </div>
+      )}
+
+      {editTeamOpen && editTeam && (
+        <div
+          className="modal-backdrop"
+          onClick={closeEditTeam}
+        >
+          <div
+            className="team-modal create-team-modal"
+            onClick={event => event.stopPropagation()}
+          >
+            <button
+              className="modal-close"
+              onClick={closeEditTeam}
+            >
+              ×
+            </button>
+
+            <h2>Edit Team</h2>
+
+            {editTeamError && (
+              <div className="create-team-error">
+                ⚠️ {editTeamError}
+              </div>
+            )}
+
+            <div className="create-team-form">
+
+              <label>
+                Name *
+                <input
+                  value={editTeam.Name || ''}
+                  onChange={event =>
+                    setEditTeam({
+                      ...editTeam,
+                      Name: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Description
+                <input
+                  value={editTeam.Description || ''}
+                  onChange={event =>
+                    setEditTeam({
+                      ...editTeam,
+                      Description: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Nationality *
+                <input
+                  value={editTeam.NationalityName || ''}
+                  onChange={event =>
+                    setEditTeam({
+                      ...editTeam,
+                      NationalityName: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Season
+                <input
+                  type="number"
+                  value={editTeam.Season}
+                  onChange={event =>
+                    setEditTeam({
+                      ...editTeam,
+                      Season: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Top Scorer
+                <input
+                  value={editTeam.TopScorer || ''}
+                  onChange={event =>
+                    setEditTeam({
+                      ...editTeam,
+                      TopScorer: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Final Result
+                <input
+                  value={editTeam.FinalResult || ''}
+                  onChange={event =>
+                    setEditTeam({
+                      ...editTeam,
+                      FinalResult: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Trophy Win
+                <select
+                  value={editTeam.TrophyModelId || ''}
+                  onChange={event =>
+                    setEditTeam({
+                      ...editTeam,
+                      TrophyModelId: event.target.value
+                    })
+                  }
+                >
+                  <option value="">No</option>
+
+                  {trophyOptions.map(trophy => (
+                    <option
+                      key={trophy.Id}
+                      value={trophy.Id}
+                    >
+                      {trophy.Name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label>
+                Trophy Model ID
+                <input
+                  type="number"
+                  value={editTeam.TrophyModelId || ''}
+                  readOnly
+                />
+              </label>
+
+              <label>
+                Picture (URL or filename)
+                <input
+                  value={editTeam.Picture || ''}
+                  onChange={event =>
+                    setEditTeam({
+                      ...editTeam,
+                      Picture: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+            </div>
+
+            <div className="create-team-footer">
+
+              <button
+                type="button"
+                className="create-team-cancel"
+                onClick={closeEditTeam}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="create-team-submit"
+                onClick={saveEditTeam}
+              >
+                Save
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {createTeamOpen && (
+        <div
+          className="modal-backdrop"
+          onClick={closeCreateTeam}
+        >
+          <div
+            className="team-modal create-team-modal"
+            onClick={event => event.stopPropagation()}
+          >
+
+            <button
+              className="modal-close"
+              onClick={closeCreateTeam}
+            >
+              ×
+            </button>
+
+            <h2>Create Team</h2>
+
+            {createTeamError && (
+              <div className="create-team-error">
+                ⚠️ {createTeamError}
+              </div>
+            )}
+
+            <div className="create-team-form">
+
+              <label>
+                Name *
+                <input
+                  value={createTeamForm.Name}
+                  onChange={event =>
+                    setCreateTeamForm({
+                      ...createTeamForm,
+                      Name: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Description
+                <input
+                  value={createTeamForm.Description}
+                  onChange={event =>
+                    setCreateTeamForm({
+                      ...createTeamForm,
+                      Description: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Nationality *
+                <input
+                  value={createTeamForm.NationalityName}
+                  onChange={event =>
+                    setCreateTeamForm({
+                      ...createTeamForm,
+                      NationalityName: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Season
+                <input
+                  type="number"
+                  value={createTeamForm.Season}
+                  onChange={event =>
+                    setCreateTeamForm({
+                      ...createTeamForm,
+                      Season: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Top Scorer
+                <input
+                  value={createTeamForm.TopScorer}
+                  onChange={event =>
+                    setCreateTeamForm({
+                      ...createTeamForm,
+                      TopScorer: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Final Result
+                <input
+                  value={createTeamForm.FinalResult}
+                  onChange={event =>
+                    setCreateTeamForm({
+                      ...createTeamForm,
+                      FinalResult: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+              <label>
+                Trophy Win
+                <select
+                  value={createTeamForm.TrophyModelId}
+                  onChange={event =>
+                    setCreateTeamForm({
+                      ...createTeamForm,
+                      TrophyModelId: event.target.value
+                    })
+                  }
+                >
+                  <option value="">No</option>
+
+                  {trophyOptions.map(trophy => (
+                    <option
+                      key={trophy.Id}
+                      value={trophy.Id}
+                    >
+                      {trophy.Name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label>
+                Trophy Model ID
+                <input
+                  type="number"
+                  value={createTeamForm.TrophyModelId}
+                  readOnly
+                />
+              </label>
+
+              <label>
+                Picture (URL or filename)
+                <input
+                  value={createTeamForm.Picture}
+                  onChange={event =>
+                    setCreateTeamForm({
+                      ...createTeamForm,
+                      Picture: event.target.value
+                    })
+                  }
+                />
+              </label>
+
+            </div>
+
+            <div className="create-team-footer">
+
+              <button
+                type="button"
+                className="create-team-cancel"
+                onClick={closeCreateTeam}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                className="create-team-submit"
+                onClick={createTeam}
+              >
+                Create
+              </button>
+
+            </div>
 
           </div>
         </div>

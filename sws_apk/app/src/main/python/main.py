@@ -1,8 +1,10 @@
 from contextlib import asynccontextmanager
 import sqlite3
+
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from pathlib import Path
 
 from db import (
@@ -15,6 +17,12 @@ from routers.home import router as home_router
 from routers.trophies import router as trophies_router
 from routers.teams import router as teams_router
 
+from routers.api_teams import router as api_teams_router
+from routers.api_teams_create import router as api_teams_create_router
+from routers.api_teams_edit import router as api_teams_edit_router
+from routers.api_teams_delete import router as api_teams_delete_router
+from routers.api_team_trophies import router as api_team_trophies_router
+
 
 # =========================
 # PATHS
@@ -22,6 +30,7 @@ from routers.teams import router as teams_router
 BASE_DIR = Path(__file__).parent
 DB_PATH = BASE_DIR / "sws.db"
 STATIC_DIR = BASE_DIR / "static"
+REACT_DIR = STATIC_DIR / "react"
 
 
 # =========================
@@ -44,6 +53,7 @@ async def lifespan(app: FastAPI):
         conn.close()
 
         yield
+
     finally:
         conn.close()
 
@@ -53,17 +63,72 @@ async def lifespan(app: FastAPI):
 # =========================
 app = FastAPI(lifespan=lifespan)
 
-# ⬇️ TU PODPINASZ STATIC (WAŻNE: po app = FastAPI)
-app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+# =========================
+# CORS
+# =========================
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-# ---------- MAIN PAGE ----------
+# =========================
+# STATIC
+# =========================
+app.mount(
+    "/static",
+    StaticFiles(directory=STATIC_DIR),
+    name="static"
+)
+
+app.mount(
+    "/assets",
+    StaticFiles(directory=REACT_DIR / "assets"),
+    name="react-assets"
+)
+
+
+# =========================
+# REACT MAIN PAGE
+# =========================
+@app.get("/favicon.svg")
+def react_favicon():
+    return FileResponse(REACT_DIR / "favicon.svg")
+
+
 @app.get("/")
-def root_redirect():
-    return RedirectResponse("/home", status_code=302)
+def react_index():
+    return FileResponse(REACT_DIR / "index.html")
 
 
-# ---------- ROUTERS ----------
+# =========================
+# HTML ROUTERS
+# =========================
 app.include_router(home_router)
 app.include_router(trophies_router)
 app.include_router(teams_router)
+
+
+# =========================
+# API ROUTERS
+# =========================
+app.include_router(api_teams_router)
+app.include_router(api_teams_create_router)
+app.include_router(api_teams_edit_router)
+app.include_router(api_teams_delete_router)
+app.include_router(api_team_trophies_router)
+
+
+# =========================
+# TEST
+# =========================
+@app.get("/api/test")
+def api_test():
+    return {
+        "status": "ok",
+        "message": "SWS API działa"
+    }

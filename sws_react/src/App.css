@@ -547,3 +547,192 @@ footer {
     font-size: 10px;
   }
 }
+
+/* ===== CREATE TEAM BUTTON ===== */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.create-team-button {
+  background: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.create-team-button:hover {
+  background: #0b5ed7;
+}
+
+@media (max-width: 500px) {
+  .create-team-button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .page-header {
+    gap: 8px;
+  }
+}
+
+/* ===== CREATE TEAM MODAL ===== */
+
+.create-team-modal {
+  width: 600px;
+  max-width: 94vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  text-align: left;
+}
+
+.create-team-modal h2 {
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.create-team-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.create-team-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.create-team-form input,
+.create-team-form select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 14px;
+  background: white;
+}
+
+.create-team-form input:focus,
+.create-team-form select:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+.create-team-form input[readonly] {
+  background: #f1f3f5;
+  color: #6c757d;
+}
+
+.create-team-error {
+  background: #f8d7da;
+  color: #000;
+  border: 2px solid #dc3545;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.create-team-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 15px;
+  border-top: 1px solid #dee2e6;
+}
+
+.create-team-footer button {
+  border: none;
+  border-radius: 6px;
+  padding: 9px 18px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.create-team-cancel {
+  background: #6c757d;
+  color: white;
+}
+
+.create-team-submit {
+  background: #0d6efd;
+  color: white;
+}
+
+.create-team-cancel:hover {
+  background: #5c636a;
+}
+
+.create-team-submit:hover {
+  background: #0b5ed7;
+}
+
+@media (max-width: 500px) {
+
+  .create-team-modal {
+    width: auto;
+    max-width: 94vw;
+    max-height: 90vh;
+    padding: 15px;
+  }
+
+  .create-team-modal h2 {
+    font-size: 20px;
+  }
+
+  .create-team-form {
+    gap: 11px;
+  }
+
+  .create-team-form label {
+    font-size: 13px;
+  }
+
+  .create-team-form input,
+  .create-team-form select {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  .create-team-footer button {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+
+/* Poprawka widoczności tekstu w formularzu Create Team */
+.create-team-form input,
+.create-team-form select {
+  color: #212529 !important;
+  background-color: #ffffff !important;
+  caret-color: #212529 !important;
+  -webkit-text-fill-color: #212529 !important;
+}
+
+.create-team-form input::placeholder {
+  color: #6c757d !important;
+  -webkit-text-fill-color: #6c757d !important;
+}
+
+.create-team-form input[readonly] {
+  background-color: #f1f3f5 !important;
+  color: #495057 !important;
+  -webkit-text-fill-color: #495057 !important;
+}

@@ -48,7 +48,24 @@ android {
 }
 
 def swsApiDir = file("../../sws_api")
+def swsReactDir = file("../../sws_react/dist")
+def reactDistDir = file("src/main/python/static/react")
 def apkPythonDir = file("src/main/python")
+
+tasks.register("copySwsReact") {
+    doLast {
+        println "========================================"
+        println "KOPIOWANIE sws_react/dist -> APK"
+        println "Źródło:  ${swsReactDir}"
+        println "Cel:     ${reactDistDir}"
+        println "========================================"
+
+        copy {
+            from swsReactDir
+            into reactDistDir
+        }
+    }
+}
 
 tasks.register("copySwsApiPython") {
     doLast {
@@ -62,7 +79,6 @@ tasks.register("copySwsApiPython") {
             from swsApiDir
             into apkPythonDir
 
-            include "main.py"
             include "db.py"
             include "templates.py"
             include "validators.py"
@@ -80,6 +96,7 @@ tasks.configureEach {
     if (name == "generateDebugPythonSourceAssets" ||
         name == "generateReleasePythonSourceAssets") {
         dependsOn("copySwsApiPython")
+        dependsOn("copySwsReact")
     }
 }
 
