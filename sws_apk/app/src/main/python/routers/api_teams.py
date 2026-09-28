@@ -1,5 +1,8 @@
 from fastapi import APIRouter, Depends, Query
+
 from db import get_db
+from services.results import get_result_status
+
 
 router = APIRouter(prefix="/api/teams", tags=["api-teams"])
 
@@ -43,16 +46,34 @@ def get_teams(
 
         if sort == "name_desc":
             query += " ORDER BY Teams.Name DESC, Teams.Season DESC"
+
         elif sort == "season_asc":
             query += " ORDER BY Teams.Season ASC, Teams.Name ASC"
+
         elif sort == "season_desc":
             query += " ORDER BY Teams.Season DESC, Teams.Name ASC"
+
         else:
             query += " ORDER BY Teams.Name ASC, Teams.Season ASC"
 
         teams = db.execute(query, params).fetchall()
 
-        return [dict(team) for team in teams]
+        result = []
+
+        for team in teams:
+            team_data = dict(team)
+
+            status = get_result_status(
+                team_data.get("FinalResult"),
+                team_data.get("Name", ""),
+            )
+
+            team_data["DisplayResult"] = status["display_result"]
+            team_data["Lose"] = status["lose"]
+
+            result.append(team_data)
+
+        return result
 
     finally:
         db.close()

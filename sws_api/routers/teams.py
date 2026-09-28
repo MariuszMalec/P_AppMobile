@@ -4,6 +4,8 @@ from starlette.status import HTTP_303_SEE_OTHER
 from typing import List, Dict
 from templates import templates
 from db import get_db
+from services.results import get_result_status
+from services.teams import delete_team as delete_team_service
 import sqlite3
 from urllib.parse import urlencode
 
@@ -214,65 +216,12 @@ def get_team_trophies_by_season(team_id: int, db=Depends(get_db)):
         if not trophy:
             continue
 
-        result = r["FinalResult"] or ""
-        result_lower = result.lower()
+        result_status = get_result_status(
+            r["FinalResult"],
+            team_name,
+        )
 
-        # Domyślnie wygrana tylko wtedy,
-        # gdy nie stwierdzimy przegranej.
-        lose = False
-
-        # Winner = wygrana
-        if "winner" in result_lower:
-            lose = False
-
-        # round / 2rd / brak wyniku = przegrana
-        elif "round" in result_lower or ":" not in result:
-            lose = True
-
-        else:
-            try:
-                import re
-
-                # Rzuty karne
-                pen_match = re.search(
-                    r"\(PEN\s+(\d+):(\d+)\)",
-                    result,
-                    re.IGNORECASE
-                )
-
-                if pen_match:
-                    pen_a = int(pen_match.group(1))
-                    pen_b = int(pen_match.group(2))
-
-                    teams_part = result.split()[0]
-                    team_a, team_b = teams_part.split(":", 1)
-
-                    if team_name.strip().lower() == team_a.strip().lower():
-                        lose = pen_a < pen_b
-                    elif team_name.strip().lower() == team_b.strip().lower():
-                        lose = pen_b < pen_a
-
-                else:
-                    # Zwykły wynik
-                    match = re.search(
-                        r"(.+):(.+?)\s+(\d+):(\d+)",
-                        result
-                    )
-
-                    if match:
-                        team_a = match.group(1).strip()
-                        team_b = match.group(2).strip()
-                        score_a = int(match.group(3))
-                        score_b = int(match.group(4))
-
-                        if team_name.strip().lower() == team_a.lower():
-                            lose = score_a < score_b
-
-                        elif team_name.strip().lower() == team_b.lower():
-                            lose = score_b < score_a
-
-            except Exception:
-                lose = False
+        lose = result_status["lose"]
 
         season_map[r["Season"]].append({
             "TeamName": team_name,
@@ -350,174 +299,7 @@ def create_team(
     sort: str = Form(None),
     db=Depends(get_db)
 ):
-    if not Name.strip():
-        return templates.TemplateResponse(
-            request,
-            "teams.html",
-            {
-                "error": "Team name cannot be empty"
-            }
-        )
-
-    # ============================================================
-    # POPRAWA FORMATU FINAL RESULT
-    # ============================================================
-
-    if FinalResult:
-        FinalResult = FinalResult.strip()
-
-        # Jeżeli wynik ma postać np. Parma:Ajax2:0
-        # poprawiamy go na Parma:Ajax 2:0
-        if ":" in FinalResult:
-            parts = FinalResult.rsplit(":", 2)
-
-            if len(parts) == 3:
-                team_part = parts[0].strip()
-                goals_a = parts[1].strip()
-                goals_b = parts[2].strip()
-
-                if (
-                    team_part
-                    and goals_a.isdigit()
-                    and goals_b.isdigit()
-                ):
-                    if not team_part.endswith(" "):
-                        FinalResult = (
-                            f"{team_part} "
-                            f"{goals_a}:{goals_b}"
-                        )
-
-    # Jeżeli FinalResult jest puste,
-    # zapisujemy pusty tekst zamiast NULL.
-    if not FinalResult:
-        FinalResult = ""
-
-    try:
-        cursor = db.cursor()
-
-        # ============================================================
-        # SPRAWDZENIE TROFEUM
-        # ============================================================
-
-        if TrophyModelId:
-            trophy = cursor.execute(
-                """
-                SELECT Id, Name
-                FROM Trophies
-                WHERE Id = ?
-                """,
-                (TrophyModelId,)
-            ).fetchone()
-
-            if not trophy:
-                TrophyModelId = None
-            else:
-                # Nazwa TrophyWin zawsze odpowiada wybranemu trofeum
-                TrophyWin = trophy["Name"]
-
-        # Jeżeli nie wybrano trofeum
-        if not TrophyWin:
-            TrophyWin = "No"
-            TrophyModelId = None
-
-        # ============================================================
-        # SPRAWDZENIE DUPLIKATU
-        # ============================================================
-
-        existing = cursor.execute(
-            """
-            SELECT Id FROM Teams
-            WHERE Name = ? AND Season = ? AND TrophyWin = ?
-            """,
-            (Name, Season, TrophyWin)
-        ).fetchone()
-
-        if existing:
-
-            base_query = """
-                SELECT
-                    Teams.*,
-                    Trophies.Picture AS TrophyPicture,
-                    Trophies.Name AS TrophyName
-                FROM Teams
-                LEFT JOIN Trophies
-                    ON Trophies.Id = Teams.TrophyModelId
-            """
-
-            filters = []
-            params = []
-
-            if filter_name and filter_name.strip():
-                filters.append("Teams.Name LIKE ?")
-                params.append(f"%{filter_name.strip()}%")
-
-            if filter_trophy and filter_trophy.strip():
-                filters.append("Teams.TrophyWin LIKE ?")
-                params.append(f"%{filter_trophy.strip()}%")
-
-            if filter_result and filter_result.strip():
-                filters.append("Teams.FinalResult LIKE ?")
-                params.append(f"%{filter_result.strip()}%")
-
-            if filters:
-                base_query += " WHERE " + " AND ".join(filters)
-
-            if sort == "name_desc":
-                base_query += " ORDER BY Teams.Name DESC, Teams.Season DESC"
-            else:
-                base_query += " ORDER BY Teams.Name ASC, Teams.Season ASC"
-
-            teams = cursor.execute(
-                base_query,
-                params
-            ).fetchall()
-
-            return templates.TemplateResponse(
-                request,
-                "teams.html",
-                {
-                    "teams": teams,
-                    "filter_name": filter_name,
-                    "filter_trophy": filter_trophy,
-                    "filter_result": filter_result,
-                    "sort": sort,
-                    "error": "Team with this Name + Season + Trophy already exists!",
-                    "open_create_team_modal": True
-                }
-            )
-
-        # ============================================================
-        # INSERT
-        # ============================================================
-
-        cursor.execute(
-            """
-            INSERT INTO Teams
-            (Name, Description, NationalityName, Season, TopScorer,
-             Picture, FinalResult, TrophyWin, TrophyModelId)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-            (
-                Name,
-                Description,
-                NationalityName,
-                Season,
-                TopScorer,
-                Picture,
-                FinalResult,
-                TrophyWin,
-                TrophyModelId
-            )
-        )
-
-        db.commit()
-
-    except Exception as e:
-        db.rollback()
-        db.close()
-        raise HTTPException(status_code=500, detail=str(e))
-
-    db.close()
+    from services.teams import create_team as create_team_service
 
     params = {}
 
@@ -534,15 +316,93 @@ def create_team(
         params["sort"] = sort
 
     redirect_url = "/teams"
-
     if params:
         redirect_url += "?" + urlencode(params)
+
+    try:
+        create_team_service(
+            db,
+            name=Name,
+            description=Description,
+            nationality_name=NationalityName,
+            season=Season,
+            top_scorer=TopScorer,
+            picture=Picture,
+            final_result=FinalResult,
+            trophy_model_id=TrophyModelId,
+        )
+
+    except HTTPException as e:
+        db.rollback()
+
+        if e.status_code == 409:
+            cursor = db.cursor()
+
+            base_query = """
+                SELECT
+                    Teams.*,
+                    Trophies.Picture AS TrophyPicture,
+                    Trophies.Name AS TrophyName
+                FROM Teams
+                LEFT JOIN Trophies
+                    ON Trophies.Id = Teams.TrophyModelId
+            """
+
+            filters = []
+            query_params = []
+
+            if filter_name and filter_name.strip():
+                filters.append("Teams.Name LIKE ?")
+                query_params.append(f"%{filter_name.strip()}%")
+
+            if filter_trophy and filter_trophy.strip():
+                filters.append("Teams.TrophyWin LIKE ?")
+                query_params.append(f"%{filter_trophy.strip()}%")
+
+            if filter_result and filter_result.strip():
+                filters.append("Teams.FinalResult LIKE ?")
+                query_params.append(f"%{filter_result.strip()}%")
+
+            if filters:
+                base_query += " WHERE " + " AND ".join(filters)
+
+            if sort == "name_desc":
+                base_query += " ORDER BY Teams.Name DESC, Teams.Season DESC"
+            else:
+                base_query += " ORDER BY Teams.Name ASC, Teams.Season ASC"
+
+            teams = cursor.execute(
+                base_query,
+                query_params
+            ).fetchall()
+
+            return templates.TemplateResponse(
+                request,
+                "teams.html",
+                {
+                    "teams": teams,
+                    "filter_name": filter_name,
+                    "filter_trophy": filter_trophy,
+                    "filter_result": filter_result,
+                    "sort": sort,
+                    "error": "Team with this Name + Season + Trophy already exists!",
+                    "open_create_team_modal": True
+                }
+            )
+
+        raise
+
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        db.close()
 
     return RedirectResponse(
         url=redirect_url,
         status_code=HTTP_303_SEE_OTHER
     )
-
 
 
 @router.post("/{team_id}/delete")
@@ -556,25 +416,7 @@ def delete_team(
     db=Depends(get_db)
 ):
     try:
-        cursor = db.cursor()
-
-        team = cursor.execute(
-            "SELECT * FROM Teams WHERE Id = ?",
-            (team_id,)
-        ).fetchone()
-
-        if not team:
-            raise HTTPException(
-                status_code=404,
-                detail="Team not found"
-            )
-
-        cursor.execute(
-            "DELETE FROM Teams WHERE Id = ?",
-            (team_id,)
-        )
-
-        db.commit()
+        delete_team_service(db, team_id)
 
     except HTTPException:
         # Nie zamykamy bazy przed rollbackiem.

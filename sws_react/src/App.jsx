@@ -2,174 +2,7 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import API_URL from './api'
 
-function getResultStatus(result, teamName) {
-  const value = result || ''
-  let lose = false
-  let displayResult = value
 
-  if (value && value.toLowerCase().includes('winner')) {
-    lose = false
-  } else if (value && !value.includes(':')) {
-    lose = true
-  } else if (value && value.toLowerCase().includes('round')) {
-    lose = true
-  }
-
-  if (value && !value.includes(':')) {
-    lose = true
-  }
-
-  if (value && value.toLowerCase().includes('round')) {
-    lose = true
-  }
-
-  // Wynik z karnymi
-  if (value.includes('PEN') && value.includes(':')) {
-    const mainPart = value.split('(', 1)[0].trim()
-    const penPart = value
-      .split('PEN', 2)[1]
-      .replace('(', '')
-      .replace(')', '')
-      .trim()
-
-    const spaceIndex = mainPart.indexOf(' ')
-
-    if (spaceIndex !== -1) {
-      const teamsPart = mainPart.slice(0, spaceIndex).trim()
-      const scorePart = mainPart.slice(spaceIndex + 1).trim()
-
-      const teams = teamsPart.split(':', 2)
-      const scores = scorePart.split(':', 2)
-      const pens = penPart.split(':', 2)
-
-      if (teams.length === 2 && scores.length === 2 && pens.length === 2) {
-        const teamA = teams[0].trim()
-        const teamB = teams[1].trim()
-        const goalsA = scores[0].trim()
-        const goalsB = scores[1].trim()
-        const penA = pens[0].trim()
-        const penB = pens[1].trim()
-
-        if (
-          /^\d+$/.test(goalsA) &&
-          /^\d+$/.test(goalsB) &&
-          /^\d+$/.test(penA) &&
-          /^\d+$/.test(penB)
-        ) {
-          if (teamName === teamA && Number(penA) < Number(penB)) {
-            lose = true
-          } else if (teamName === teamB && Number(penB) < Number(penA)) {
-            lose = true
-          }
-        }
-      }
-    }
-  }
-
-  // Wynik po dogrywce
-  else if (value.includes('A.E.T') && value.includes(':')) {
-    const mainPart = value.split('(', 1)[0].trim()
-    const spaceIndex = mainPart.indexOf(' ')
-
-    if (spaceIndex !== -1) {
-      const teams = mainPart.slice(0, spaceIndex).trim().split(':', 2)
-      const scores = mainPart.slice(spaceIndex + 1).trim().split(':', 2)
-
-      if (teams.length === 2 && scores.length === 2) {
-        const teamA = teams[0].trim()
-        const teamB = teams[1].trim()
-        const goalsA = scores[0].trim()
-        const goalsB = scores[1].trim()
-
-        if (/^\d+$/.test(goalsA) && /^\d+$/.test(goalsB)) {
-          if (teamName === teamA && Number(goalsA) < Number(goalsB)) {
-            lose = true
-          } else if (teamName === teamB && Number(goalsB) < Number(goalsA)) {
-            lose = true
-          }
-        }
-      }
-    }
-  }
-
-  // Normalny wynik
-  else if (value.includes(' ') && value.includes(':')) {
-    const spaceIndex = value.indexOf(' ')
-    const teams = value.slice(0, spaceIndex).trim().split(':', 2)
-    const scores = value.slice(spaceIndex + 1).trim().split(':', 2)
-
-    if (teams.length === 2 && scores.length === 2) {
-      const teamA = teams[0].trim()
-      const teamB = teams[1].trim()
-      const goalsA = scores[0].trim()
-      const goalsB = scores[1].trim()
-
-      if (/^\d+$/.test(goalsA) && /^\d+$/.test(goalsB)) {
-        if (teamName === teamA && Number(goalsA) < Number(goalsB)) {
-          lose = true
-        } else if (teamName === teamB && Number(goalsB) < Number(goalsA)) {
-          lose = true
-        }
-      }
-    }
-  }
-
-  // Stary format, np. Parma:Ajax2:0
-  else if (value.includes(':')) {
-    const parts = value.split(':')
-
-    if (parts.length === 3) {
-      const possibleTeamA = parts[0].trim()
-      const possibleTeamBWithScore = parts[1].trim()
-      const goalsB = parts[2].trim()
-
-      if (/^\d+$/.test(goalsB)) {
-        if (teamName === possibleTeamA) {
-          const goalsA = possibleTeamBWithScore.slice(-1)
-
-          if (/^\d$/.test(goalsA)) {
-            const teamB = possibleTeamBWithScore.slice(0, -1).trim()
-
-            displayResult =
-              `${possibleTeamA}:${teamB} ${Number(goalsA)}:${Number(goalsB)}`
-
-            if (Number(goalsA) < Number(goalsB)) {
-              lose = true
-            }
-          }
-        } else if (possibleTeamBWithScore.endsWith(teamName)) {
-          const scoreText =
-            possibleTeamBWithScore
-              .slice(0, -teamName.length)
-              .trim()
-
-          if (/^\d+$/.test(scoreText)) {
-            displayResult =
-              `${possibleTeamA}:${teamName} ${Number(scoreText)}:${Number(goalsB)}`
-
-            if (Number(goalsB) < Number(scoreText)) {
-              lose = true
-            }
-          }
-        }
-      }
-    }
-  }
-
-  // Ostateczne ustalenie statusu
-  if (value && value.toLowerCase().includes('winner')) {
-    lose = false
-  } else if (value && value.toLowerCase().includes('round')) {
-    lose = true
-  } else if (value && !value.includes(':')) {
-    lose = true
-  }
-
-  return {
-    displayResult,
-    lose,
-  }
-}
 
 function App() {
   const [teams, setTeams] = useState([])
@@ -600,10 +433,10 @@ function App() {
 
                 <tbody>
                   {teams.map(team => {
-                    const resultStatus = getResultStatus(
-                      team.FinalResult,
-                      team.Name
-                    )
+                    const resultStatus = {
+                      displayResult: team.DisplayResult,
+                      lose: team.Lose
+                    }
 
                     return (
                       <tr key={team.Id}>
@@ -760,10 +593,16 @@ function App() {
                           key={trophy.Id}
                         >
 
-                          {trophy.Picture && (
+                          {(trophy.Lose && trophy.LoserPicture
+                            ? trophy.LoserPicture
+                            : trophy.Picture) && (
                             <img
-                              src={getImageUrl(trophy.Picture)}
-                              alt={trophy.Name}
+                              src={getImageUrl(
+                                trophy.Lose && trophy.LoserPicture
+                                  ? trophy.LoserPicture
+                                  : trophy.Picture
+                              )}
+                              alt={trophy.Lose ? "Loser" : trophy.Name}
                             />
                           )}
 
@@ -771,13 +610,7 @@ function App() {
                             {trophy.Name}
                           </div>
 
-                          {trophy.Lose && trophy.LoserPicture && (
-                            <img
-                              src={getImageUrl(trophy.LoserPicture)}
-                              alt="Loser"
-                              className="loser-picture"
-                            />
-                          )}
+                          
 
                         </div>
                       ))}

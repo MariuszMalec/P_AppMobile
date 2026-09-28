@@ -1,0 +1,112 @@
+plugins {
+    id 'com.android.application'
+    id 'com.chaquo.python'
+}
+
+android {
+    namespace 'com.example.androidtest'
+    compileSdk 35
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig {
+        applicationId 'com.example.sws'
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+    }
+
+    sourceSets {
+        main {
+            python.srcDirs = [
+                "src/main/python"
+            ]
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('../sws-release.jks')
+            storePassword project.findProperty("SWS_KEYSTORE_PASSWORD")
+            keyAlias 'sws'
+            keyPassword project.findProperty("SWS_KEY_PASSWORD")
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+def swsApiDir = file("../../sws_api")
+def swsReactDir = file("../../sws_react/dist")
+def reactDistDir = file("src/main/python/static/react")
+def apkPythonDir = file("src/main/python")
+
+tasks.register("copySwsReact") {
+    doLast {
+        println "========================================"
+        println "KOPIOWANIE sws_react/dist -> APK"
+        println "Źródło:  ${swsReactDir}"
+        println "Cel:     ${reactDistDir}"
+        println "========================================"
+
+        copy {
+            from swsReactDir
+            into reactDistDir
+        }
+    }
+}
+
+tasks.register("copySwsApiPython") {
+    doLast {
+        println "========================================"
+        println "KOPIOWANIE sws_api -> APK Python"
+        println "Źródło:  ${swsApiDir}"
+        println "Cel:     ${apkPythonDir}"
+        println "========================================"
+
+        copy {
+            from swsApiDir
+            into apkPythonDir
+
+            include "db.py"
+            include "templates.py"
+            include "validators.py"
+            include "routers/**"
+            include "templates/**"
+            include "static/**"
+            include "sws.db"
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name == "generateDebugPythonSourceAssets" ||
+        name == "generateReleasePythonSourceAssets") {
+        dependsOn("copySwsApiPython")
+        dependsOn("copySwsReact")
+    }
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.12"
+
+        pip {
+            install "fastapi==0.109.2"
+            install "uvicorn==0.41.0"
+            install "jinja2==3.0.3"
+            install "python-multipart==0.0.22"
+        }
+    }
+}

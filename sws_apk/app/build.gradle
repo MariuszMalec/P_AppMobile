@@ -83,6 +83,7 @@ tasks.register("copySwsApiPython") {
             include "templates.py"
             include "validators.py"
             include "routers/**"
+                                    include "services/**"
             include "templates/**"
             include "static/**"
             include "sws.db"
