@@ -117,6 +117,15 @@
       value="{{ request.query_params.get('filter_result') or '' }}"
     >
 
+    <button
+      type="button"
+      id="lossesFilterBtn"
+      class="btn btn-sm btn-outline-danger"
+      title="Show losses"
+    >
+      Porażki
+    </button>
+
     <button type="submit" class="btn btn-sm btn-primary">
       <i class="bi bi-funnel-fill"></i> Filter
     </button>
@@ -1370,6 +1379,30 @@ if (filterResultInput) {
     filterResultInput.addEventListener(
         "input",
         dynamicFilter
+    );
+
+}
+
+
+/* ============================================================
+   FILTR PORAŻKI
+   ============================================================ */
+
+const lossesFilterBtn =
+    document.getElementById("lossesFilterBtn");
+
+if (lossesFilterBtn) {
+
+    lossesFilterBtn.addEventListener(
+        "click",
+        () => {
+
+            filterResultInput.value = "Porażki";
+
+            clearTimeout(filterTimeout);
+
+            applyFilters();
+        }
     );
 
 }
