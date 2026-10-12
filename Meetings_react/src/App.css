@@ -447,7 +447,7 @@ h1 {
   min-width: 760px;
   border-collapse: separate;
   border-spacing: 0;
-  overflow: hidden;
+  overflow: visible;
 }
 
 /* Nagłówki dni */
@@ -2926,4 +2926,21 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 
 .sessions-page .sessions-table td.session-cell .session-card:hover {
   transform: translateY(-2px);
+}
+
+/* Godziny pozostają widoczne podczas poziomego przewijania tygodnia */
+.sessions-page .sessions-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #dce7f7 !important;
+  box-shadow: 2px 0 4px rgba(31, 58, 99, 0.10);
+}
+
+.sessions-page .sessions-table tbody td.session-time {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #f1f5fb !important;
+  box-shadow: 2px 0 4px rgba(31, 58, 99, 0.08);
 }
