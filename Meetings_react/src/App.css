@@ -2756,3 +2756,174 @@ input[type="time"]::-webkit-calendar-picker-indicator {
     margin-top: 3px;
   }
 }
+
+/* === NOWOCZESNE KARTY SESJI === */
+
+.sessions-page .sessions-table td.session-cell {
+  padding: 7px 5px !important;
+  vertical-align: top !important;
+}
+
+.sessions-page .session-card {
+  position: relative;
+  min-height: 64px;
+  padding: 11px 9px !important;
+  border: 1px solid #d5e3fa !important;
+  border-left: 4px solid #3976e8 !important;
+  border-radius: 13px !important;
+  background: linear-gradient(145deg, #ffffff 0%, #eaf2ff 100%) !important;
+  box-shadow: 0 3px 8px rgba(37, 77, 145, 0.09) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card strong {
+  display: block;
+  color: #183d78 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1.4 !important;
+  margin-bottom: 5px !important;
+}
+
+.sessions-page .session-card span {
+  display: block;
+  color: #526782 !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  margin-top: 3px !important;
+}
+
+.sessions-page .session-card small {
+  display: inline-block;
+  margin-top: 6px !important;
+  padding: 3px 6px;
+  border-radius: 7px;
+  background: #dce9ff;
+  color: #2454a6;
+  font-size: 11px;
+}
+
+.sessions-page .session-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 16px rgba(37, 77, 145, 0.16) !important;
+}
+
+/* Sesja aktualnie trwająca */
+
+.sessions-page .live-session .session-card {
+  border: 1px solid #b8e6c8 !important;
+  border-left: 4px solid #20a05a !important;
+  background: linear-gradient(145deg, #ffffff 0%, #e4f9eb 100%) !important;
+  box-shadow: 0 3px 8px rgba(22, 130, 70, 0.09) !important;
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #126238 !important;
+}
+
+.sessions-page .live-session .session-card span {
+  color: #397052 !important;
+}
+
+/* Czytelniejsza kolumna godzin */
+
+.sessions-page .sessions-table td.session-time {
+  padding: 12px 4px !important;
+  color: #526782 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  background: #f1f5fb !important;
+  border-right: 1px solid #e0e8f3 !important;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .sessions-page .sessions-table td.session-cell {
+    padding: 6px 4px !important;
+  }
+
+  .sessions-page .session-card {
+    min-height: 62px;
+    padding: 9px 6px !important;
+    border-radius: 10px !important;
+  }
+
+  .sessions-page .session-card strong {
+    font-size: 11px !important;
+  }
+
+  .sessions-page .session-card span {
+    font-size: 10px !important;
+  }
+}
+
+
+/* === KOLORY SESJI WEDŁUG KLIENTA === */
+
+.sessions-page .sessions-table td.session-cell:not(.live-session) .session-card {
+  border-radius: 13px !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sessions-page .sessions-table td.session-cell.client-color-1:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #e4eeff 100%) !important;
+  border: 1px solid #c4d7fb !important;
+  border-left: 5px solid #3976e8 !important;
+  box-shadow: 0 4px 10px rgba(57, 118, 232, 0.13) !important;
+}
+.sessions-page .sessions-table td.session-cell.client-color-1:not(.live-session) .session-card strong { color: #244b88 !important; }
+
+.sessions-page .sessions-table td.session-cell.client-color-2:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #fff0df 100%) !important;
+  border: 1px solid #f2d6b6 !important;
+  border-left: 5px solid #d97706 !important;
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.13) !important;
+}
+.sessions-page .sessions-table td.session-cell.client-color-2:not(.live-session) .session-card strong { color: #914b08 !important; }
+
+.sessions-page .sessions-table td.session-cell.client-color-3:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f1e8ff 100%) !important;
+  border: 1px solid #ddccff !important;
+  border-left: 5px solid #8956c7 !important;
+  box-shadow: 0 4px 10px rgba(137, 86, 199, 0.13) !important;
+}
+.sessions-page .sessions-table td.session-cell.client-color-3:not(.live-session) .session-card strong { color: #63369a !important; }
+
+.sessions-page .sessions-table td.session-cell.client-color-4:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #ffe9ee 100%) !important;
+  border: 1px solid #f5cbd5 !important;
+  border-left: 5px solid #d94f70 !important;
+  box-shadow: 0 4px 10px rgba(217, 79, 112, 0.13) !important;
+}
+.sessions-page .sessions-table td.session-cell.client-color-4:not(.live-session) .session-card strong { color: #a52d4c !important; }
+
+.sessions-page .sessions-table td.session-cell.client-color-5:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #e0f7f3 100%) !important;
+  border: 1px solid #bde7df !important;
+  border-left: 5px solid #0f9688 !important;
+  box-shadow: 0 4px 10px rgba(15, 150, 136, 0.13) !important;
+}
+.sessions-page .sessions-table td.session-cell.client-color-5:not(.live-session) .session-card strong { color: #11675e !important; }
+
+.sessions-page .sessions-table td.session-cell.client-color-6:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #fff8d9 100%) !important;
+  border: 1px solid #eee1a6 !important;
+  border-left: 5px solid #b79a12 !important;
+  box-shadow: 0 4px 10px rgba(183, 154, 18, 0.13) !important;
+}
+.sessions-page .sessions-table td.session-cell.client-color-6:not(.live-session) .session-card strong { color: #78640b !important; }
+
+/* Aktywna sesja zawsze zielona, również cykliczna */
+.sessions-page .sessions-table td.session-cell.live-session .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #e4f9eb 100%) !important;
+  border: 1px solid #b8e6c8 !important;
+  border-left: 5px solid #20a05a !important;
+  box-shadow: 0 4px 10px rgba(32, 160, 90, 0.18) !important;
+}
+.sessions-page .sessions-table td.session-cell.live-session .session-card strong { color: #126238 !important; }
+
+.sessions-page .sessions-table td.session-cell .session-card:hover {
+  transform: translateY(-2px);
+}

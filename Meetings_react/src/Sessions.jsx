@@ -726,11 +726,13 @@ function Sessions({ onBack }) {
                         return (
                           <td
                             key={day}
-                            className={
-                              session?.is_live
-                                ? 'session-cell live-session'
-                                : 'session-cell'
-                            }
+                            className={[
+                              'session-cell',
+                              session?.is_live ? 'live-session' : '',
+                              session
+                                ? `client-color-${((Number(session.client_id) || 1) - 1) % 6 + 1}`
+                                : ''
+                            ].filter(Boolean).join(' ')}
                           >
                             {session && (
                               <div
