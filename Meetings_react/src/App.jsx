@@ -186,6 +186,18 @@ function App() {
       })
       .then((data) => {
         setSelectedClient(data)
+
+        return fetch(`${API_URL}/clients/list?active=${active}`)
+      })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+
+        return response.json()
+      })
+      .then((data) => {
+        setClients(data)
       })
       .catch((error) => {
         setError(error.message)
