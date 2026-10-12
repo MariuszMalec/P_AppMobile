@@ -693,7 +693,16 @@ function Sessions({ onBack }) {
                           : ''
                       }
                     >
-                      {data.days[day]}
+                      <span className="session-day-name">
+                        {data.days[day]}
+                      </span>
+                      <span className="session-day-date">
+                        {(() => {
+                          const date = new Date(data.week_start + 'T00:00:00')
+                          date.setDate(date.getDate() + day - 1)
+                          return `${String(date.getDate()).padStart(2, '0')}.${String(date.getMonth() + 1).padStart(2, '0')}`
+                        })()}
+                      </span>
                     </th>
                   ))}
                 </tr>

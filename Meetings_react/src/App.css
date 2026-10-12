@@ -2730,3 +2730,29 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   }
 }
 
+
+/* Data pod nazwą dnia w nagłówku harmonogramu */
+.sessions-page .sessions-table thead th .session-day-name {
+  display: block;
+  white-space: nowrap;
+}
+
+.sessions-page .sessions-table thead th .session-day-date {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.sessions-page .sessions-table thead th.today-column .session-day-date {
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .sessions-page .sessions-table thead th .session-day-date {
+    font-size: 11px;
+    margin-top: 3px;
+  }
+}
