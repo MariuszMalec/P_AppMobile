@@ -3,6 +3,12 @@ import API_URL from './api'
 
 function Sessions({ onBack }) {
   const [data, setData] = useState(null)
+  const [currentTime, setCurrentTime] = useState(() => new Date())
+
+  useEffect(() => {
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
+    return () => clearInterval(timer)
+  }, [])
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const [weekOffset, setWeekOffset] = useState(0)
@@ -674,9 +680,18 @@ function Sessions({ onBack }) {
 
       {data && (
         <>
-          <p className="week-info">
-            Tydzień od: <strong>{data.week_start}</strong>
-          </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <p className="week-info" style={{ margin: 0 }}>
+              Tydzień od: <strong>{data.week_start}</strong>
+            </p>
+            <p style={{ margin: 0, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
+              🕒 {currentTime.toLocaleTimeString('pl-PL', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+              })}
+            </p>
+          </div>
 
           <div className="sessions-table-wrap">
             <table className="sessions-table">
