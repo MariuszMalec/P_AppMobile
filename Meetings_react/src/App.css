@@ -841,3 +841,1892 @@ h1 {
   }
 }
 
+
+/* ===== DODATKOWE UJEDNOLICENIE WYGLADU ===== */
+
+.clients-page {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+}
+
+.clients-page h1 {
+  color: #0f172a;
+  font-size: clamp(26px, 5vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.7px;
+  margin-bottom: 22px;
+}
+
+.new-client-button,
+.save-button {
+  min-height: 48px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.new-client-button:active,
+.save-button:active {
+  transform: scale(0.985);
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.15);
+}
+
+.active-filter-button,
+.search-input,
+.clients-page .edit-form,
+.clients-page .client-details,
+.sessions-page .sessions-table-wrap {
+  border-radius: 14px;
+}
+
+.active-filter-button {
+  min-height: 44px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.search-input {
+  min-height: 48px;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.03);
+}
+
+.search-input:focus,
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+}
+
+.clients-page .client-row {
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.clients-page .client-row:active {
+  transform: scale(0.99);
+}
+
+.clients-page .back-button,
+.sessions-page .week-button,
+.sessions-page .today-button,
+.clients-page .edit-button {
+  min-height: 42px;
+  border-radius: 11px;
+  font-weight: 700;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.sessions-page .week-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.sessions-page .week-info {
+  margin: 12px 0;
+  color: #475569;
+  font-weight: 700;
+}
+
+.sessions-page .sessions-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sessions-page .sessions-table th {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 800;
+}
+
+.sessions-page .sessions-table th,
+.sessions-page .sessions-table td {
+  padding: 10px;
+}
+
+.sessions-page .session-card {
+  border-radius: 10px;
+}
+
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea,
+.clients-page .edit-form input,
+.clients-page .edit-form select,
+.clients-page .edit-form textarea {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+input[type="date"],
+input[type="time"] {
+  min-height: 46px;
+  color: #1e293b;
+  background-color: #fff;
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .clients-page {
+    padding: 18px 14px 30px;
+  }
+
+  .clients-page h1 {
+    margin-bottom: 18px;
+  }
+
+  .sessions-page .week-navigation {
+    gap: 7px;
+  }
+
+  .sessions-page .sessions-table th,
+  .sessions-page .sessions-table td {
+    padding: 8px;
+  }
+
+  .sessions-page .edit-form input,
+  .sessions-page .edit-form select,
+  .sessions-page .edit-form textarea,
+  .clients-page .edit-form input,
+  .clients-page .edit-form select,
+  .clients-page .edit-form textarea {
+    font-size: 16px;
+  }
+}
+
+/* ==========================================
+   MEETINGS REACT — NOWOCZESNY INTERFEJS
+   ========================================== */
+
+:root {
+  --mr-navy: #142b4a;
+  --mr-blue: #2563eb;
+  --mr-blue-light: #eff6ff;
+  --mr-page: #f3f6fb;
+  --mr-card: #ffffff;
+  --mr-text: #172b46;
+  --mr-muted: #64748b;
+  --mr-line: #e2e8f0;
+}
+
+body {
+  background: var(--mr-page);
+  color: var(--mr-text);
+}
+
+#root {
+  background: var(--mr-page);
+}
+
+/* Wspolna szerokosc i odstepy */
+
+.clients-page {
+  max-width: 760px;
+  padding: 28px 20px 48px;
+}
+
+.clients-page h1 {
+  color: var(--mr-navy);
+  font-size: clamp(30px, 5vw, 38px);
+  font-weight: 850;
+  letter-spacing: -1.2px;
+  line-height: 1.15;
+  margin: 20px 0 26px;
+}
+
+/* Przyciski glowne na ekranie klientow */
+
+.clients-page:not(.sessions-page) > .new-client-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  margin-bottom: 12px;
+  padding: 15px 18px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.13);
+}
+
+.clients-page:not(.sessions-page) > .new-client-button:first-of-type {
+  background: var(--mr-navy);
+  color: #fff;
+  box-shadow: 0 7px 18px rgba(20, 43, 74, 0.16);
+}
+
+.clients-page:not(.sessions-page) > .new-client-button:last-of-type {
+  background: #fff;
+  color: var(--mr-blue);
+  border-color: #bfdbfe;
+  box-shadow: none;
+}
+
+.clients-page > .new-client-button:active {
+  transform: scale(0.985);
+}
+
+/* Filtry klientow */
+
+.active-filter {
+  gap: 9px;
+  margin: 24px 0 14px;
+  padding: 5px;
+  border: 1px solid var(--mr-line);
+  border-radius: 15px;
+  background: #e9eef6;
+}
+
+.active-filter-button {
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #52647b;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.active-filter-button.selected {
+  background: #fff;
+  border-color: #fff;
+  color: var(--mr-navy);
+  box-shadow: 0 2px 7px rgba(15, 23, 42, 0.09);
+}
+
+/* Wyszukiwarka */
+
+.search-input {
+  min-height: 54px;
+  margin-bottom: 20px;
+  padding: 15px 17px;
+  border: 1px solid #dbe4ef;
+  border-radius: 15px;
+  background: #fff;
+  color: var(--mr-text);
+  font-size: 16px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
+}
+
+.search-input::placeholder {
+  color: #94a3b8;
+}
+
+.search-input:focus {
+  border-color: var(--mr-blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
+}
+
+/* Karty klientow */
+
+.clients-list {
+  display: grid;
+  gap: 11px;
+}
+
+.clients-list .client-row {
+  display: flex;
+  width: 100%;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 17px 19px;
+  border: 1px solid #e0e8f2;
+  border-radius: 17px;
+  background: #fff;
+  color: var(--mr-navy);
+  text-align: left;
+  font-size: 16px;
+  font-weight: 750;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.035);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.clients-list .client-row:active {
+  transform: scale(0.99);
+  border-color: #93c5fd;
+  box-shadow: 0 3px 9px rgba(37, 99, 235, 0.09);
+}
+
+.clients-list .client-row > span:first-child {
+  overflow-wrap: anywhere;
+}
+
+.clients-list .client-row .arrow {
+  display: flex;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: var(--mr-blue-light);
+  color: var(--mr-blue);
+  font-size: 27px;
+  line-height: 1;
+}
+
+/* Powrot, edycja i formularze */
+
+.clients-page .back-button,
+.sessions-page .back-button {
+  min-height: 44px;
+  padding: 10px 15px;
+  border: 1px solid #dbe4ef;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--mr-navy);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.clients-page .edit-form,
+.sessions-page .edit-form,
+.clients-page .client-details,
+.sessions-page .client-details {
+  padding: 23px;
+  border: 1px solid #e0e8f2;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 8px 26px rgba(15, 35, 65, 0.055);
+}
+
+.clients-page .edit-form label,
+.sessions-page .edit-form label {
+  color: #334b68;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.clients-page .edit-form input,
+.clients-page .edit-form select,
+.clients-page .edit-form textarea,
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea {
+  width: 100%;
+  max-width: 100%;
+  min-height: 47px;
+  padding: 12px 14px;
+  border: 1px solid #cbd8e8;
+  border-radius: 12px;
+  background-color: #fff;
+  color: #172b46;
+  font-size: 16px;
+}
+
+.clients-page .edit-form input:focus,
+.clients-page .edit-form select:focus,
+.clients-page .edit-form textarea:focus,
+.sessions-page .edit-form input:focus,
+.sessions-page .edit-form select:focus,
+.sessions-page .edit-form textarea:focus {
+  outline: none;
+  border-color: var(--mr-blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
+}
+
+input[type="date"],
+input[type="time"] {
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.clients-page .save-button,
+.sessions-page .save-button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 850;
+  box-shadow: 0 6px 15px rgba(37, 99, 235, 0.19);
+}
+
+/* Szczegoly klienta */
+
+.clients-page .client-details,
+.sessions-page .client-details {
+  margin-top: 18px;
+  line-height: 1.8;
+}
+
+.clients-page .client-details strong,
+.sessions-page .client-details strong {
+  color: var(--mr-navy);
+}
+
+/* Ekran sesji */
+
+.sessions-page h1 {
+  margin-top: 22px;
+  margin-bottom: 22px;
+}
+
+.sessions-page > .edit-button {
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 850;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.18);
+}
+
+.sessions-page .week-navigation {
+  display: grid;
+  grid-template-columns: 54px minmax(100px, 1fr) 54px;
+  gap: 10px;
+  margin: 19px 0;
+}
+
+.sessions-page .week-button,
+.sessions-page .today-button {
+  min-height: 48px;
+  border: 1px solid #dbe4ef;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--mr-navy);
+  font-size: 16px;
+  font-weight: 850;
+}
+
+.sessions-page .today-button {
+  border-color: var(--mr-navy);
+  background: var(--mr-navy);
+  color: #fff;
+}
+
+.sessions-page .week-info {
+  margin: 20px 0 12px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.sessions-page .week-info strong {
+  color: var(--mr-navy);
+  font-weight: 850;
+}
+
+/* Tabela harmonogramu */
+
+.sessions-page .sessions-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #dce5f0;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 6px 22px rgba(15, 35, 65, 0.055);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+
+.sessions-page .sessions-table thead th {
+  padding: 13px 9px;
+  border-bottom: 1px solid #dce5f0;
+  background: #edf4ff;
+  color: #24446c;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sessions-page .sessions-table thead th.today-column {
+  background: #dbeafe;
+  color: #1d4ed8;
+  box-shadow: inset 0 -3px 0 #2563eb;
+}
+
+.sessions-page .sessions-table td {
+  padding: 7px 5px;
+  border-bottom: 1px solid #edf1f6;
+  border-right: 1px solid #edf1f6;
+  vertical-align: top;
+}
+
+.sessions-page .sessions-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.sessions-page .sessions-table th:last-child,
+.sessions-page .sessions-table td:last-child {
+  border-right: 0;
+}
+
+.sessions-page .session-time {
+  background: #f8fafc;
+  color: #52647b;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.sessions-page .session-cell {
+  min-width: 86px;
+}
+
+.sessions-page .session-card {
+  padding: 9px 8px;
+  border: 1px solid #bfdbfe;
+  border-left: 3px solid #3b82f6;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.sessions-page .session-card:active {
+  transform: scale(0.97);
+  background: #dbeafe;
+}
+
+.sessions-page .session-card strong {
+  display: block;
+  color: #1e40af;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.sessions-page .session-card span {
+  display: block;
+  margin-top: 4px;
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.sessions-page .session-card small {
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.sessions-page .live-session .session-card {
+  border-color: #86efac;
+  border-left-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #166534;
+}
+
+.sessions-page .empty-sessions {
+  padding: 24px 12px;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Komunikaty */
+
+.clients-page .success,
+.sessions-page .success {
+  padding: 13px 15px;
+  border: 1px solid #bbf7d0;
+  border-radius: 13px;
+  background: #f0fdf4;
+  color: #166534;
+  font-weight: 750;
+}
+
+.clients-page .error,
+.sessions-page .error {
+  border-radius: 13px;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .clients-page {
+    padding: 20px 14px 32px;
+  }
+
+  .clients-page h1 {
+    font-size: 31px;
+    margin: 20px 0 22px;
+  }
+
+  .clients-page .edit-form,
+  .sessions-page .edit-form,
+  .clients-page .client-details,
+  .sessions-page .client-details {
+    padding: 17px;
+    border-radius: 17px;
+  }
+
+  .clients-list .client-row {
+    min-height: 70px;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .sessions-page .sessions-table th {
+    padding: 11px 7px;
+  }
+
+  .sessions-page .sessions-table td {
+    padding: 6px 4px;
+  }
+
+  .sessions-page .session-cell {
+    min-width: 78px;
+  }
+
+  .sessions-page .session-card {
+    padding: 7px 6px;
+  }
+
+  .sessions-page .session-card strong {
+    font-size: 11px;
+  }
+}
+
+/* =====================================================
+   MEETINGS REACT — PROFESSIONAL UI
+   Warstwa wizualna — bez zmian logiki aplikacji
+   ===================================================== */
+
+:root {
+  --mr-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --mr-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.07);
+  --mr-radius: 18px;
+}
+
+/* Główna powierzchnia */
+
+.clients-page {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding: 30px 24px 44px;
+  color: #172b4d;
+}
+
+.clients-page h1 {
+  margin: 26px 0;
+  color: #102a43;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 800;
+  letter-spacing: -1.1px;
+  line-height: 1.2;
+}
+
+/* Przyciski */
+
+.clients-page button,
+.sessions-page button {
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.clients-page button:focus-visible,
+.sessions-page button:focus-visible,
+.clients-page input:focus-visible,
+.clients-page select:focus-visible,
+.clients-page textarea:focus-visible,
+.sessions-page input:focus-visible,
+.sessions-page select:focus-visible,
+.sessions-page textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.22);
+  outline-offset: 2px;
+}
+
+.clients-page .new-client-button,
+.sessions-page .edit-button,
+.clients-page .save-button,
+.sessions-page .save-button {
+  min-height: 44px;
+  border-radius: 12px;
+  font-weight: 750;
+  letter-spacing: 0.1px;
+  box-shadow: var(--mr-shadow-sm);
+}
+
+.clients-page .new-client-button:hover,
+.sessions-page .edit-button:hover,
+.clients-page .save-button:hover,
+.sessions-page .save-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--mr-shadow-md);
+}
+
+/* Filtry i wyszukiwarka */
+
+.clients-page .active-filter {
+  gap: 9px;
+  margin-bottom: 18px;
+}
+
+.clients-page .active-filter-button {
+  min-height: 39px;
+  padding: 9px 16px;
+  border: 1px solid #dbe4f0;
+  border-radius: 999px;
+  background: #fff;
+  color: #52657d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.clients-page .active-filter-button:hover {
+  border-color: #93b4f8;
+  background: #f5f8ff;
+}
+
+.clients-page .active-filter-button.selected {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(29, 78, 216, 0.18);
+}
+
+.clients-page .search-input {
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid #dbe4f0;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: var(--mr-shadow-sm);
+  color: #172b4d;
+}
+
+.clients-page .search-input:focus {
+  border-color: #6095f7;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.09);
+}
+
+/* Lista klientów */
+
+.clients-page .clients-list {
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.clients-page .clients-list .client-row {
+  position: relative;
+  min-height: 76px;
+  padding: 17px 20px;
+  border: 1px solid #e4eaf2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--mr-shadow-sm);
+}
+
+.clients-page .clients-list .client-row:hover {
+  border-color: #b7cdfb;
+  background: #fbfdff;
+  box-shadow: var(--mr-shadow-md);
+  transform: translateY(-2px);
+}
+
+.clients-page .client-row .arrow {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #eff5ff;
+  color: #2459bc;
+  font-size: 20px;
+}
+
+/* Formularze i szczegóły */
+
+.clients-page .edit-form,
+.sessions-page .edit-form,
+.clients-page .client-details,
+.sessions-page .client-details {
+  border: 1px solid #e4eaf2;
+  border-radius: var(--mr-radius);
+  background: #fff;
+  box-shadow: var(--mr-shadow-md);
+}
+
+.clients-page .edit-form label,
+.sessions-page .edit-form label {
+  color: #405570;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.clients-page .edit-form input,
+.clients-page .edit-form select,
+.clients-page .edit-form textarea,
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea {
+  min-height: 44px;
+  border: 1px solid #d7e0ec;
+  border-radius: 11px;
+  background: #fff;
+  color: #172b4d;
+}
+
+.clients-page .edit-form input:focus,
+.clients-page .edit-form select:focus,
+.clients-page .edit-form textarea:focus,
+.sessions-page .edit-form input:focus,
+.sessions-page .edit-form select:focus,
+.sessions-page .edit-form textarea:focus {
+  border-color: #6095f7;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.09);
+  outline: none;
+}
+
+/* Powrót */
+
+.clients-page .back-button,
+.sessions-page .back-button {
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 11px;
+  background: #fff;
+  color: #34506f;
+  font-weight: 700;
+}
+
+.clients-page .back-button:hover,
+.sessions-page .back-button:hover {
+  border-color: #a9c3f7;
+  background: #f3f7ff;
+}
+
+/* Harmonogram */
+
+.sessions-page .week-navigation {
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.sessions-page .week-button,
+.sessions-page .today-button {
+  min-height: 41px;
+  padding: 9px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 11px;
+  background: #fff;
+  color: #34506f;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.sessions-page .week-button:hover {
+  border-color: #9dbbf5;
+  background: #f3f7ff;
+}
+
+.sessions-page .today-button {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.sessions-page .today-button:hover {
+  background: #1e40af;
+}
+
+.sessions-page .week-info {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+/* Tabela tygodnia — zachowujemy jej układ i przewijanie */
+
+.sessions-page .sessions-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e1e8f1;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--mr-shadow-md);
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sessions-page .sessions-table th {
+  background: #f4f7fc;
+  color: #52657d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+}
+
+.sessions-page .sessions-table td {
+  border-color: #edf1f7;
+  vertical-align: top;
+}
+
+.sessions-page .sessions-table .today-column {
+  background-color: #f2f7ff;
+}
+
+.sessions-page .session-card {
+  border: 1px solid #d8e5fb;
+  border-left: 4px solid #3975e8;
+  border-radius: 11px;
+  background: #edf4ff;
+  box-shadow: 0 2px 5px rgba(30, 64, 175, 0.05);
+}
+
+.sessions-page .session-card strong {
+  color: #173f8a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sessions-page .session-card span {
+  color: #52657d;
+  font-size: 11px;
+}
+
+.sessions-page .live-session .session-card {
+  border-color: #a7e6bd;
+  border-left-color: #16a34a;
+  background: #effcf4;
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #166534;
+}
+
+/* Komunikaty */
+
+.clients-page .success,
+.sessions-page .success {
+  border-radius: 12px;
+  box-shadow: var(--mr-shadow-sm);
+}
+
+.clients-page .error,
+.sessions-page .error {
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #fff5f5;
+  color: #b91c1c;
+}
+
+/* Mniejsze ekrany */
+
+@media (max-width: 600px) {
+  .clients-page {
+    padding: 20px 14px 30px;
+  }
+
+  .clients-page h1 {
+    margin: 22px 0;
+    font-size: 29px;
+    letter-spacing: -0.7px;
+  }
+
+  .clients-page .clients-list {
+    gap: 10px;
+  }
+
+  .clients-page .clients-list .client-row {
+    min-height: 68px;
+    padding: 14px;
+  }
+
+  .sessions-page .week-navigation {
+    gap: 7px;
+  }
+
+  .sessions-page .week-button,
+  .sessions-page .today-button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .sessions-page .sessions-table-wrap {
+    border-radius: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clients-page button,
+  .sessions-page button,
+  .clients-page .client-row {
+    transition: none;
+  }
+}
+
+
+/* ===== NOWA LISTA KLIENTÓW — PREMIUM ===== */
+
+.clients-page:not(.sessions-page) {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 960px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 30px 24px 48px;
+  color: #172b4d;
+  background:
+    radial-gradient(ellipse at top left, #e4edff 0, transparent 42%),
+    #f5f7fc;
+}
+
+/* Nagłówek */
+
+.clients-page:not(.sessions-page) h1 {
+  margin: 24px 0 28px;
+  color: #132747;
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 850;
+  letter-spacing: -1.4px;
+  line-height: 1.15;
+}
+
+/* Przyciski na górze */
+
+.clients-page:not(.sessions-page) .new-client-button {
+  min-height: 48px;
+  padding: 12px 19px;
+  border: 1px solid #1d4ed8;
+  border-radius: 14px;
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 7px 16px rgba(29, 78, 216, .20);
+}
+
+.clients-page:not(.sessions-page) .new-client-button:hover {
+  background: #173ea9;
+  box-shadow: 0 9px 22px rgba(29, 78, 216, .25);
+  transform: translateY(-1px);
+}
+
+.clients-page:not(.sessions-page) .new-client-button:first-child {
+  border-color: #d9e3f2;
+  background: #fff;
+  color: #24466f;
+  box-shadow: 0 2px 7px rgba(15, 23, 42, .04);
+}
+
+/* Filtry */
+
+.clients-page:not(.sessions-page) .active-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 24px 0 16px;
+}
+
+.clients-page:not(.sessions-page) .active-filter-button {
+  min-height: 40px;
+  padding: 9px 17px;
+  border: 1px solid #dce5f1;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .85);
+  color: #52657d;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.clients-page:not(.sessions-page) .active-filter-button.selected {
+  border-color: #244fc1;
+  background: #244fc1;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(36, 79, 193, .18);
+}
+
+/* Wyszukiwanie */
+
+.clients-page:not(.sessions-page) .search-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 54px;
+  padding: 15px 18px;
+  border: 1px solid #dce5f1;
+  border-radius: 15px;
+  background: #fff;
+  color: #172b4d;
+  font-size: 15px;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, .035);
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.clients-page:not(.sessions-page) .search-input:focus {
+  border-color: #5687ed;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
+}
+
+/* Lista jako nowoczesne karty */
+
+.clients-page:not(.sessions-page) .clients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-top: 20px;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 82px;
+  padding: 15px 18px;
+  border: 1px solid #e4eaf3;
+  border-radius: 17px;
+  background: #fff;
+  color: #203653;
+  text-align: left;
+  box-shadow: 0 3px 10px rgba(21, 43, 77, .035);
+  transition: border-color .18s, box-shadow .18s, transform .18s;
+}
+
+/* Ozdobny awatar — bez zmiany danych klienta */
+
+.clients-page:not(.sessions-page) .clients-list .client-row::before {
+  content: "♙";
+  display: inline-flex;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d9e6ff;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #edf4ff, #dce8ff);
+  color: #2459bc;
+  font-size: 25px;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row:hover {
+  border-color: #a9c5fb;
+  background: #fff;
+  box-shadow: 0 9px 23px rgba(29, 78, 216, .09);
+  transform: translateY(-2px);
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row .arrow {
+  display: inline-flex;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  border: 1px solid #e4ebf6;
+  border-radius: 11px;
+  background: #f5f8fe;
+  color: #2858b6;
+  font-size: 20px;
+}
+
+/* Formularze na ekranie klientów zachowują dotychczasową logikę */
+
+.clients-page:not(.sessions-page) .edit-form,
+.clients-page:not(.sessions-page) .client-details {
+  border: 1px solid #e1e8f2;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(21, 43, 77, .07);
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .clients-page:not(.sessions-page) {
+    padding: 20px 14px 32px;
+  }
+
+  .clients-page:not(.sessions-page) h1 {
+    margin: 22px 0;
+    font-size: 32px;
+  }
+
+  .clients-page:not(.sessions-page) .clients-list .client-row {
+    min-height: 74px;
+    gap: 12px;
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  .clients-page:not(.sessions-page) .clients-list .client-row::before {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+  }
+
+  .clients-page:not(.sessions-page) .new-client-button {
+    padding: 11px 13px;
+  }
+}
+
+
+/* Różne minki klientów — bez obrazków */
+
+.clients-page:not(.sessions-page) .clients-list .client-row::before {
+  content: "☺";
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #c9dcff;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #e8f1ff, #cbdcff);
+  color: #2454a6;
+  font-family: Arial, sans-serif;
+  font-size: 31px;
+  line-height: 1;
+}
+
+/* Naprzemienne minki i kolory */
+
+.clients-page:not(.sessions-page) .clients-list .client-row:nth-child(4n + 1)::before {
+  content: "☺";
+  color: #2454a6;
+  background: linear-gradient(145deg, #e8f1ff, #cbdcff);
+  border-color: #c9dcff;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row:nth-child(4n + 2)::before {
+  content: "😊";
+  background: #e1f7ed;
+  border-color: #b6e8d0;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row:nth-child(4n + 3)::before {
+  content: "😎";
+  background: #fff0d5;
+  border-color: #f5d9a2;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row:nth-child(4n)::before {
+  content: "🙂";
+  background: #f1e8ff;
+  border-color: #ddccff;
+}
+
+@media (max-width: 600px) {
+  .clients-page:not(.sessions-page) .clients-list .client-row::before {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+    font-size: 27px;
+  }
+}
+
+
+/* ==========================================
+   MEETINGS REACT — PROFESJONALNY HARMONOGRAM
+   Tylko wygląd ekranu Sesje
+   ========================================== */
+
+.sessions-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 26px 22px 42px;
+  color: #172b4d;
+}
+
+/* Nagłówek */
+
+.sessions-page h1 {
+  margin: 24px 0;
+  color: #132747;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 850;
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+
+/* Przyciski */
+
+.sessions-page .back-button {
+  min-height: 42px;
+  padding: 10px 15px;
+  border: 1px solid #dce5f1;
+  border-radius: 12px;
+  background: #fff;
+  color: #34506f;
+  font-weight: 750;
+}
+
+.sessions-page .back-button:hover {
+  background: #f2f6ff;
+  border-color: #b7cdfb;
+}
+
+.sessions-page .edit-button {
+  min-height: 46px;
+  padding: 11px 18px;
+  border: 1px solid #1d4ed8;
+  border-radius: 13px;
+  background: #1d4ed8;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 6px 15px rgba(29, 78, 216, .18);
+}
+
+.sessions-page .edit-button:hover {
+  background: #173ea9;
+  box-shadow: 0 9px 20px rgba(29, 78, 216, .22);
+  transform: translateY(-1px);
+}
+
+/* Nawigacja tygodnia */
+
+.sessions-page .week-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin: 18px 0 12px;
+  padding: 13px;
+  border: 1px solid #e1e8f2;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(21, 43, 77, .04);
+}
+
+.sessions-page .week-button,
+.sessions-page .today-button {
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid #dce5f1;
+  border-radius: 11px;
+  background: #f8faff;
+  color: #34506f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.sessions-page .week-button:hover {
+  border-color: #9dbbf5;
+  background: #edf4ff;
+}
+
+.sessions-page .today-button {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.sessions-page .today-button:hover {
+  background: #173ea9;
+}
+
+.sessions-page .week-info {
+  margin: 12px 0 16px;
+  color: #52657d;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+/* Tabela harmonogramu */
+
+.sessions-page .sessions-table-wrap {
+  overflow: auto;
+  border: 1px solid #dfe7f2;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 7px 22px rgba(21, 43, 77, .055);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+
+.sessions-page .sessions-table th {
+  padding: 14px 9px;
+  border-bottom: 1px solid #dfe7f2;
+  background: #f1f5fb;
+  color: #435875;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .35px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.sessions-page .sessions-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #edf1f7;
+  border-right: 1px solid #edf1f7;
+  vertical-align: top;
+}
+
+.sessions-page .sessions-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.sessions-page .sessions-table td:last-child,
+.sessions-page .sessions-table th:last-child {
+  border-right: 0;
+}
+
+/* Bieżący dzień */
+
+.sessions-page .sessions-table th.today-column,
+.sessions-page .sessions-table td.today-column {
+  background-color: #edf5ff;
+}
+
+.sessions-page .sessions-table th.today-column {
+  color: #1d4ed8;
+  box-shadow: inset 0 -3px 0 #3975e8;
+}
+
+/* Karty pojedynczych sesji */
+
+.sessions-page .session-card {
+  padding: 10px 9px;
+  border: 1px solid #d5e3fb;
+  border-left: 4px solid #3975e8;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #f5f8ff, #eaf2ff);
+  box-shadow: 0 3px 8px rgba(30, 64, 175, .06);
+  cursor: pointer;
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+
+.sessions-page .session-card:hover {
+  box-shadow: 0 6px 14px rgba(30, 64, 175, .12);
+  transform: translateY(-1px);
+}
+
+.sessions-page .session-card strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #173f8a;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card span {
+  display: block;
+  margin-top: 4px;
+  color: #4b607c;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card small {
+  display: inline-block;
+  margin-top: 6px;
+  color: #52657d;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Sesja trwająca */
+
+.sessions-page .live-session .session-card {
+  border-color: #a7e6bd;
+  border-left-color: #16a34a;
+  background: linear-gradient(145deg, #f0fdf4, #dcfce7);
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #166534;
+}
+
+/* Puste dni */
+
+.sessions-page .empty-sessions {
+  padding: 24px 12px;
+  color: #8391a5;
+  text-align: center;
+}
+
+/* Formularze sesji */
+
+.sessions-page .edit-form,
+.sessions-page .client-details {
+  border: 1px solid #e1e8f2;
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: 0 9px 28px rgba(21, 43, 77, .07);
+}
+
+/* Komunikaty */
+
+.sessions-page .success {
+  border: 1px solid #b7ebc9;
+  border-radius: 12px;
+  background: #effcf4;
+  color: #166534;
+}
+
+.sessions-page .error {
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #fff5f5;
+  color: #b91c1c;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .sessions-page {
+    padding: 18px 10px 30px;
+  }
+
+  .sessions-page h1 {
+    margin: 20px 0;
+    font-size: 29px;
+  }
+
+  .sessions-page .week-navigation {
+    gap: 7px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .sessions-page .week-button,
+  .sessions-page .today-button {
+    min-height: 39px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .sessions-page .sessions-table-wrap {
+    border-radius: 12px;
+  }
+
+  .sessions-page .sessions-table th {
+    padding: 11px 6px;
+    font-size: 10px;
+  }
+
+  .sessions-page .sessions-table td {
+    padding: 5px 3px;
+  }
+
+  .sessions-page .session-card {
+    padding: 7px 5px;
+    border-radius: 9px;
+  }
+
+  .sessions-page .session-card strong {
+    font-size: 11px;
+  }
+
+  .sessions-page .session-card span {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sessions-page .session-card,
+  .sessions-page button {
+    transition: none;
+  }
+}
+
+
+/* === SESJE: WYRAŹNA METAMORFOZA HARMONOGRAMU === */
+
+.sessions-page {
+  background: #f3f6fc !important;
+  border-radius: 22px;
+  padding: 24px 18px 36px !important;
+}
+
+.sessions-page > h1 {
+  color: #102a43 !important;
+  font-size: 34px !important;
+  font-weight: 850 !important;
+  letter-spacing: -1px !important;
+  text-align: left;
+  margin: 22px 0 18px !important;
+}
+
+/* Pasek nawigacji tygodnia */
+
+.sessions-page .week-navigation {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px !important;
+  padding: 12px !important;
+  margin: 20px 0 14px !important;
+  border: 1px solid #dce6f5 !important;
+  border-radius: 18px !important;
+  background: #fff !important;
+  box-shadow: 0 7px 22px rgba(31, 58, 99, .07) !important;
+}
+
+.sessions-page .week-button {
+  min-width: 46px;
+  min-height: 46px !important;
+  border-radius: 13px !important;
+  background: #edf3ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #d8e5ff !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+}
+
+.sessions-page .today-button {
+  flex: 1;
+  min-height: 46px !important;
+  border-radius: 13px !important;
+  background: #1d4ed8 !important;
+  color: #fff !important;
+  border: 1px solid #1d4ed8 !important;
+  font-weight: 800 !important;
+}
+
+.sessions-page .week-info {
+  padding: 13px 15px !important;
+  margin: 14px 0 !important;
+  border: 1px solid #dce6f5;
+  border-radius: 13px;
+  background: #e9f1ff;
+  color: #355477 !important;
+  text-align: left;
+}
+
+.sessions-page .week-info strong {
+  color: #173f8a !important;
+}
+
+/* Kalendarz */
+
+.sessions-page .sessions-table-wrap {
+  border: 1px solid #d9e3f0 !important;
+  border-radius: 17px !important;
+  background: #fff !important;
+  box-shadow: 0 8px 26px rgba(31, 58, 99, .08) !important;
+}
+
+.sessions-page .sessions-table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  background: #fff !important;
+}
+
+.sessions-page .sessions-table thead th {
+  padding: 14px 7px !important;
+  background: #eaf0fa !important;
+  color: #344e70 !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  border-bottom: 2px solid #d8e3f2 !important;
+  text-align: center !important;
+}
+
+.sessions-page .sessions-table thead th:first-child {
+  background: #dce7f7 !important;
+  color: #25466f !important;
+}
+
+.sessions-page .sessions-table thead th.today-column {
+  background: #2457c5 !important;
+  color: #fff !important;
+  box-shadow: inset 0 -4px 0 #8db6ff;
+}
+
+.sessions-page .sessions-table td {
+  padding: 7px 5px !important;
+  border-right: 1px solid #e8eef7 !important;
+  border-bottom: 1px solid #e8eef7 !important;
+  vertical-align: top !important;
+}
+
+.sessions-page .sessions-table tbody tr:nth-child(even) td {
+  background-color: #fafcff;
+}
+
+.sessions-page .sessions-table td.today-column {
+  background: #f0f6ff !important;
+}
+
+/* Godziny */
+
+.sessions-page .sessions-table td.session-time {
+  min-width: 54px;
+  padding: 10px 5px !important;
+  background: #f0f4fa !important;
+  color: #526782 !important;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Karty sesji — większe, z wyraźnym akcentem */
+
+.sessions-page .session-card {
+  min-height: 56px;
+  box-sizing: border-box;
+  padding: 10px 8px !important;
+  border: 1px solid #cbdcf8 !important;
+  border-left: 4px solid #3674e8 !important;
+  border-radius: 11px !important;
+  background: linear-gradient(145deg, #f1f6ff, #e2edff) !important;
+  box-shadow: 0 3px 9px rgba(34, 78, 155, .09) !important;
+  cursor: pointer;
+}
+
+.sessions-page .session-card strong {
+  display: block;
+  margin: 0 0 5px !important;
+  color: #153d83 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1.4 !important;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card span {
+  display: block;
+  margin-top: 4px !important;
+  color: #465f80 !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card small {
+  display: inline-block;
+  margin-top: 5px !important;
+}
+
+.sessions-page .session-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 15px rgba(34, 78, 155, .15) !important;
+}
+
+/* Sesja aktualnie trwająca */
+
+.sessions-page .live-session .session-card {
+  border-color: #9bdab1 !important;
+  border-left-color: #159447 !important;
+  background: linear-gradient(145deg, #effdf4, #d9f8e4) !important;
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #126333 !important;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .sessions-page {
+    padding: 18px 9px 28px !important;
+    border-radius: 15px;
+  }
+
+  .sessions-page > h1 {
+    font-size: 30px !important;
+  }
+
+  .sessions-page .week-navigation {
+    padding: 9px !important;
+    gap: 8px !important;
+  }
+
+  .sessions-page .week-button,
+  .sessions-page .today-button {
+    min-height: 43px !important;
+  }
+
+  .sessions-page .sessions-table-wrap {
+    border-radius: 12px !important;
+  }
+
+  .sessions-page .sessions-table {
+    min-width: 570px;
+  }
+
+  .sessions-page .sessions-table thead th {
+    padding: 12px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .sessions-page .sessions-table td {
+    padding: 6px 4px !important;
+  }
+
+  .sessions-page .sessions-table td.session-time {
+    min-width: 48px;
+    font-size: 10px;
+  }
+
+  .sessions-page .session-card {
+    min-height: 58px;
+    padding: 8px 5px !important;
+  }
+
+  .sessions-page .session-card strong {
+    font-size: 11px !important;
+  }
+
+  .sessions-page .session-card span {
+    font-size: 10px !important;
+  }
+}
+

@@ -1,0 +1,1016 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f3f6;
+  color: #1f2937;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+.clients-page {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+}
+
+h1 {
+  margin: 0 0 22px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* =========================
+   NEW CLIENT
+   ========================= */
+
+.new-client-button {
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 12px;
+  background: #2563eb;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+}
+
+.new-client-button:active {
+  transform: scale(0.99);
+}
+
+/* =========================
+   ACTIVE FILTER
+   ========================= */
+
+.active-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.active-filter-button {
+  flex: 1;
+  padding: 12px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: white;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.active-filter-button.selected {
+  background: #1f2937;
+  color: white;
+  border-color: #1f2937;
+}
+
+/* =========================
+   SEARCH
+   ========================= */
+
+.search-input {
+  width: 100%;
+  padding: 14px 15px;
+  margin-bottom: 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 11px;
+  background: white;
+  color: #1f2937;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* =========================
+   CLIENT LIST
+   ========================= */
+
+.clients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.client-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 17px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  color: #1f2937;
+  font-size: 17px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.client-row:active {
+  transform: scale(0.99);
+}
+
+.arrow {
+  margin-left: 12px;
+  color: #9ca3af;
+  font-size: 28px;
+  line-height: 20px;
+}
+
+/* =========================
+   BACK BUTTON
+   ========================= */
+
+.back-button {
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  background: white;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* =========================
+   CLIENT DETAILS
+   ========================= */
+
+.client-details {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.client-details p {
+  margin: 0;
+  padding: 13px 0;
+  border-bottom: 1px solid #edf0f2;
+  line-height: 1.5;
+}
+
+.client-details p:first-child {
+  padding-top: 0;
+}
+
+.client-details p:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* =========================
+   EDIT BUTTON
+   ========================= */
+
+.edit-button {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* =========================
+   EDIT / CREATE FORM
+   ========================= */
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.edit-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.edit-form input,
+.edit-form textarea,
+.edit-form select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  background: #fafafa;
+  color: #1f2937;
+  font-size: 16px;
+  outline: none;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus,
+.edit-form select:focus {
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.edit-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* =========================
+   ACTIVE CHECKBOX
+   ========================= */
+
+.active-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px !important;
+  padding: 4px 0;
+}
+
+.active-checkbox input {
+  width: 20px;
+  height: 20px;
+}
+
+/* =========================
+   SAVE / CREATE
+   ========================= */
+
+.save-button {
+  width: 100%;
+  margin-top: 2px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #16a34a;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.save-button:active {
+  transform: scale(0.99);
+}
+
+/* =========================
+   MESSAGES
+   ========================= */
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  margin: 12px 0 18px;
+  border: 1px solid #86efac;
+  border-left: 5px solid #16a34a;
+  border-radius: 12px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.08);
+}
+
+.success::before {
+  content: "✓";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.error {
+  padding: 13px 15px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 480px) {
+  .clients-page {
+    padding: 18px 14px 30px;
+  }
+
+  h1 {
+    font-size: 27px;
+  }
+
+  .client-row {
+    padding: 15px;
+    font-size: 16px;
+  }
+
+  .edit-form,
+  .client-details {
+    padding: 16px;
+  }
+}
+
+/* =========================================================
+   NOWOCZESNY WYGLĄD - SESJE
+   ========================================================= */
+
+.sessions-page {
+  max-width: 1100px;
+}
+
+/* Nagłówek strony */
+
+.sessions-page h1 {
+  margin-bottom: 14px;
+}
+
+/* Przyciski nawigacji tygodnia */
+
+.week-navigation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 16px;
+}
+
+.week-button,
+.today-button {
+  height: 44px;
+  border: 1px solid #dbe1e8;
+  border-radius: 12px;
+  background: white;
+  color: #1f2937;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.week-button {
+  width: 48px;
+  font-size: 22px;
+}
+
+.today-button {
+  flex: 1;
+  max-width: 180px;
+}
+
+.week-button:active,
+.today-button:active {
+  transform: scale(0.97);
+}
+
+.week-button:hover,
+.today-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Informacja o tygodniu */
+
+.week-info {
+  margin: 0 0 14px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background: #eef4ff;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.week-info strong {
+  color: #1d4ed8;
+}
+
+/* Obudowa kalendarza */
+
+.sessions-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.07);
+}
+
+/* Tabela */
+
+.sessions-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
+}
+
+/* Nagłówki dni */
+
+.sessions-table thead th {
+  padding: 13px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sessions-table thead th:first-child {
+  width: 72px;
+  color: #94a3b8;
+}
+
+/* Dzisiejszy dzień */
+
+.sessions-table thead th.today-column {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Komórki */
+
+.sessions-table td {
+  border-bottom: 1px solid #edf1f5;
+  border-right: 1px solid #edf1f5;
+  vertical-align: top;
+}
+
+.sessions-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sessions-table td:last-child,
+.sessions-table th:last-child {
+  border-right: none;
+}
+
+/* Godzina */
+
+.session-time {
+  width: 72px;
+  min-width: 72px;
+  padding: 10px 6px;
+  background: #fafbfc;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Puste komórki */
+
+.session-cell {
+  min-width: 95px;
+  height: 58px;
+  padding: 5px;
+}
+
+/* Karta sesji */
+
+.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 48px;
+  padding: 8px 9px;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #3b82f6;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(30, 64, 175, 0.08);
+  transition: 0.15s ease;
+}
+
+.session-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(30, 64, 175, 0.12);
+}
+
+.session-card:active {
+  transform: scale(0.98);
+}
+
+.session-card strong {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.session-card span {
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.session-card small {
+  font-size: 12px;
+}
+
+/* Sesja LIVE */
+
+.live-session .session-card {
+  border-color: #86efac;
+  border-left-color: #16a34a;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+/* Brak sesji */
+
+.empty-sessions {
+  padding: 40px 20px !important;
+  color: #94a3b8;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+
+  .sessions-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .week-navigation {
+    margin-top: 14px;
+  }
+
+  .week-button {
+    width: 46px;
+  }
+
+  .today-button {
+    max-width: none;
+  }
+
+  .sessions-table-wrap {
+    border-radius: 13px;
+  }
+
+  .sessions-table {
+    min-width: 700px;
+  }
+
+  .sessions-table thead th {
+    padding: 11px 6px;
+    font-size: 12px;
+  }
+
+  .session-card {
+    padding: 7px;
+  }
+
+  .session-card strong {
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   NOWOCZESNE FORMULARZE SESJI
+   ========================================================= */
+
+.sessions-page .edit-form {
+  margin-top: 16px;
+  padding: 22px;
+  gap: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.07);
+}
+
+/* Etykiety */
+
+.sessions-page .edit-form label {
+  gap: 8px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Pola */
+
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea {
+  padding: 14px 15px;
+  border: 1px solid #d8dee7;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #1e293b;
+  font-size: 16px;
+  transition: border-color 0.15s ease,
+              box-shadow 0.15s ease,
+              background 0.15s ease;
+}
+
+.sessions-page .edit-form input:focus,
+.sessions-page .edit-form select:focus,
+.sessions-page .edit-form textarea:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.11);
+}
+
+/* Opis */
+
+.sessions-page .edit-form textarea {
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+/* Checkbox */
+
+.sessions-page .active-checkbox {
+  margin-top: 2px;
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.sessions-page .active-checkbox input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: #2563eb;
+}
+
+/* Liczba sesji w serii */
+
+.sessions-page .edit-form input[type="number"] {
+  max-width: 180px;
+}
+
+/* Przycisk Zapisz */
+
+.sessions-page .save-button {
+  margin-top: 4px;
+  padding: 15px 18px;
+  border-radius: 12px;
+  background: #16a34a;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.18);
+  font-size: 16px;
+  font-weight: 800;
+  transition: 0.15s ease;
+}
+
+.sessions-page .save-button:hover {
+  background: #15803d;
+  box-shadow: 0 6px 14px rgba(22, 163, 74, 0.22);
+}
+
+.sessions-page .save-button:active {
+  transform: scale(0.98);
+}
+
+/* Przycisk Dodaj sesję */
+
+.sessions-page > .edit-button {
+  margin-bottom: 4px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #2563eb;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.18);
+  transition: 0.15s ease;
+}
+
+.sessions-page > .edit-button:hover {
+  background: #1d4ed8;
+}
+
+.sessions-page > .edit-button:active {
+  transform: scale(0.98);
+}
+
+/* Przycisk powrotu */
+
+.sessions-page .back-button {
+  border-color: #dbe1e8;
+  border-radius: 11px;
+  background: white;
+  color: #475569;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  transition: 0.15s ease;
+}
+
+.sessions-page .back-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.sessions-page .back-button:active {
+  transform: scale(0.98);
+}
+
+/* Komunikat błędu */
+
+.sessions-page .error {
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border-left: 5px solid #dc2626;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #991b1b;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+/* Szczegóły sesji */
+
+.sessions-page .client-details {
+  margin-top: 16px;
+  padding: 22px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.07);
+}
+
+.sessions-page .client-details p {
+  color: #475569;
+}
+
+.sessions-page .client-details strong {
+  color: #1e293b;
+}
+
+/* Przyciski usuwania */
+
+.sessions-page .delete-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 11px;
+  background: #fff;
+  color: #b91c1c;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.sessions-page .delete-button:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.sessions-page .delete-button:active {
+  transform: scale(0.98);
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+
+  .sessions-page .edit-form {
+    padding: 17px;
+    gap: 16px;
+    border-radius: 16px;
+  }
+
+  .sessions-page .client-details {
+    padding: 17px;
+    border-radius: 16px;
+  }
+
+  .sessions-page .edit-form input,
+  .sessions-page .edit-form select,
+  .sessions-page .edit-form textarea {
+    padding: 13px;
+  }
+
+  .sessions-page .save-button {
+    padding: 14px;
+  }
+}
+
+
+/* ===== DODATKOWE UJEDNOLICENIE WYGLADU ===== */
+
+.clients-page {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+}
+
+.clients-page h1 {
+  color: #0f172a;
+  font-size: clamp(26px, 5vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.7px;
+  margin-bottom: 22px;
+}
+
+.new-client-button,
+.save-button {
+  min-height: 48px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.new-client-button:active,
+.save-button:active {
+  transform: scale(0.985);
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.15);
+}
+
+.active-filter-button,
+.search-input,
+.clients-page .edit-form,
+.clients-page .client-details,
+.sessions-page .sessions-table-wrap {
+  border-radius: 14px;
+}
+
+.active-filter-button {
+  min-height: 44px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.search-input {
+  min-height: 48px;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.03);
+}
+
+.search-input:focus,
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+}
+
+.clients-page .client-row {
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.clients-page .client-row:active {
+  transform: scale(0.99);
+}
+
+.clients-page .back-button,
+.sessions-page .week-button,
+.sessions-page .today-button,
+.clients-page .edit-button {
+  min-height: 42px;
+  border-radius: 11px;
+  font-weight: 700;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.sessions-page .week-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.sessions-page .week-info {
+  margin: 12px 0;
+  color: #475569;
+  font-weight: 700;
+}
+
+.sessions-page .sessions-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sessions-page .sessions-table th {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 800;
+}
+
+.sessions-page .sessions-table th,
+.sessions-page .sessions-table td {
+  padding: 10px;
+}
+
+.sessions-page .session-card {
+  border-radius: 10px;
+}
+
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea,
+.clients-page .edit-form input,
+.clients-page .edit-form select,
+.clients-page .edit-form textarea {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+input[type="date"],
+input[type="time"] {
+  min-height: 46px;
+  color: #1e293b;
+  background-color: #fff;
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .clients-page {
+    padding: 18px 14px 30px;
+  }
+
+  .clients-page h1 {
+    margin-bottom: 18px;
+  }
+
+  .sessions-page .week-navigation {
+    gap: 7px;
+  }
+
+  .sessions-page .sessions-table th,
+  .sessions-page .sessions-table td {
+    padding: 8px;
+  }
+
+  .sessions-page .edit-form input,
+  .sessions-page .edit-form select,
+  .sessions-page .edit-form textarea,
+  .clients-page .edit-form input,
+  .clients-page .edit-form select,
+  .clients-page .edit-form textarea {
+    font-size: 16px;
+  }
+}
