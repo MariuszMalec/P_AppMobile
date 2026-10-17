@@ -626,30 +626,7 @@ function Sessions({ onBack }) {
 
   return (
     <main className="clients-page sessions-page">
-      <button className="back-button" onClick={onBack}>
-        ← Klienci
-      </button>
-
-      <h1>Sesje</h1>
-
-      <button
-        className="edit-button"
-        onClick={() => {
-          setCreateStart('')
-          setCreateEnd('')
-          setCreateClientId('')
-          setCreateDescription('')
-          setCreateDate('')
-          setCreateRecurring(false)
-          setCreateSeriesCount(2)
-          setError('')
-          setCreateMode(true)
-        }}
-      >
-        + Dodaj sesję
-      </button>
-
-
+     
       <div className="week-navigation">
         <button
           className="week-button"
@@ -684,6 +661,33 @@ function Sessions({ onBack }) {
             <p className="week-info" style={{ margin: 0 }}>
               Tydzień od: <strong>{data.week_start}</strong>
             </p>
+
+            <div className="sessions-week-actions">
+              <button
+                className="edit-button"
+                onClick={() => {
+                  setCreateStart('')
+                  setCreateEnd('')
+                  setCreateClientId('')
+                  setCreateDescription('')
+                  setCreateDate('')
+                  setCreateRecurring(false)
+                  setCreateSeriesCount(2)
+                  setError('')
+                  setCreateMode(true)
+                }}
+              >
+                + Dodaj sesję
+              </button>
+
+              <button
+                className="back-button sessions-clients-button"
+                onClick={onBack}
+              >
+                ← Klienci
+              </button>
+            </div>
+
             <p style={{ margin: 0, fontWeight: 600, fontVariantNumeric: 'tabular-nums' }}>
               🕒 {currentTime.toLocaleTimeString('pl-PL', {
                 hour: '2-digit',

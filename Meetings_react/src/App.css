@@ -2944,3 +2944,76 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   background: #f1f5fb !important;
   box-shadow: 2px 0 4px rgba(31, 58, 99, 0.08);
 }
+
+
+
+/* Przyciski nad widokiem sesji */
+.sessions-page .sessions-clients-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 18px;
+  white-space: nowrap;
+}
+
+.sessions-page > .edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  margin: 0 10px 18px 0;
+}
+
+.sessions-page .sessions-clients-button {
+  margin-bottom: 18px;
+}
+
+
+
+/* Tydzień — przyciski — zegar */
+.sessions-page .sessions-week-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.sessions-page .sessions-week-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sessions-page .sessions-week-actions .edit-button,
+.sessions-page .sessions-week-actions .sessions-clients-button {
+  width: auto;
+  min-height: 40px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.sessions-page .sessions-clock {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .sessions-page .sessions-week-bar {
+    gap: 10px;
+  }
+
+  .sessions-page .sessions-week-actions {
+    gap: 6px;
+  }
+}
+
+
