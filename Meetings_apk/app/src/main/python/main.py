@@ -75,7 +75,7 @@ def react_favicon():
 
 @app.get("/")
 def react_index():
-    return FileResponse(REACT_DIR / "index.html")
+    return FileResponse(REACT_DIR / "index.html", headers={"Cache-Control": "no-cache, no-store, must-revalidate"})
 
 
 # ---------- ROUTERS ----------

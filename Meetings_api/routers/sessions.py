@@ -261,7 +261,9 @@ def get_recurring_count(
 
     row = cursor.execute(
         """
-        SELECT COUNT(*) AS Count
+        SELECT
+            COUNT(*) AS Count,
+            COALESCE(MAX(RepeatEveryWeeks), 1) AS RepeatEveryWeeks
         FROM Session
         WHERE RecurringGroupId = ?
         """,
@@ -271,7 +273,8 @@ def get_recurring_count(
     db.close()
 
     return {
-        "count": row["Count"]
+        "count": row["Count"],
+        "repeat_every_weeks": row["RepeatEveryWeeks"]
     }
 
 
@@ -285,6 +288,7 @@ def edit_session(
     session_date: str = Form(...),
     edit_scope: str = Form("single"),
     recurring_weeks: int = Form(1),
+    repeat_every_weeks: int = Form(1),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
@@ -374,6 +378,22 @@ def edit_session(
         raise HTTPException(
             status_code=400,
             detail="Liczba kolejnych tygodni musi być od 1 do 52"
+        )
+
+    try:
+        repeat_every_weeks = int(repeat_every_weeks)
+    except (TypeError, ValueError):
+        db.close()
+        raise HTTPException(
+            status_code=400,
+            detail="Nieprawidłowy odstęp między sesjami"
+        )
+
+    if repeat_every_weeks not in (1, 2, 3):
+        db.close()
+        raise HTTPException(
+            status_code=400,
+            detail="Odstęp musi wynosić 1, 2 lub 3 tygodnie"
         )
 
     # =========================================================
@@ -509,30 +529,40 @@ def edit_session(
         "%Y-%m-%d"
     ).date()
 
-    date_difference = new_date - old_date
+    # Ustal pozycję edytowanej sesji w uporządkowanej serii.
+    selected_index = next(
+        (
+            index
+            for index, item in enumerate(series_sessions)
+            if item["Id"] == session_id
+        ),
+        None
+    )
 
-    # ---------------------------------------------------------
-    # WYLICZAMY DATY ISTNIEJĄCYCH SESJI
-    # ---------------------------------------------------------
+    if selected_index is None:
+        db.close()
+        raise HTTPException(
+            status_code=404,
+            detail="Nie znaleziono edytowanej sesji w serii"
+        )
 
+    # Data wskazanej sesji wyznacza datę początkową serii.
+    series_start_date = (
+        new_date
+        - timedelta(days=selected_index * repeat_every_weeks * 7)
+    )
+
+    # Wylicz daty według nowego odstępu.
     dates_to_update = []
 
-    for series_session in series_sessions:
-
-        old_series_date = datetime.strptime(
-            series_session["SessionDate"],
-            "%Y-%m-%d"
-        ).date()
-
+    for index, series_session in enumerate(series_sessions):
         new_series_date = (
-            old_series_date + date_difference
+            series_start_date
+            + timedelta(days=index * repeat_every_weeks * 7)
         ).isoformat()
 
         dates_to_update.append(
-            (
-                series_session["Id"],
-                new_series_date
-            )
+            (series_session["Id"], new_series_date)
         )
 
     # ---------------------------------------------------------
@@ -619,21 +649,11 @@ def edit_session(
     new_dates = []
 
     if target_count > current_count:
-
-        last_date = datetime.strptime(
-            dates_to_update[-1][1],
-            "%Y-%m-%d"
-        ).date()
-
-        missing_count = target_count - current_count
-
-        for i in range(1, missing_count + 1):
-
+        for i in range(current_count, target_count):
             next_date = (
-                last_date +
-                timedelta(days=i * 7)
+                series_start_date
+                + timedelta(days=i * repeat_every_weeks * 7)
             )
-
             new_dates.append(next_date)
 
     # ---------------------------------------------------------
@@ -697,7 +717,8 @@ def edit_session(
                     EndTime = ?,
                     Description = ?,
                     DayOfWeek = ?,
-                    SessionDate = ?
+                    SessionDate = ?,
+                    RepeatEveryWeeks = ?
                 WHERE Id = ?
                 """,
                 (
@@ -706,6 +727,7 @@ def edit_session(
                     description,
                     day_of_week,
                     new_series_date,
+                    repeat_every_weeks,
                     series_session_id
                 )
             )
@@ -722,9 +744,10 @@ def edit_session(
                     Description,
                     DayOfWeek,
                     SessionDate,
-                    RecurringGroupId
+                    RecurringGroupId,
+                    RepeatEveryWeeks
                 )
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                 (
                     start,
@@ -733,7 +756,8 @@ def edit_session(
                     description,
                     day_of_week,
                     new_date_obj.isoformat(),
-                    recurring_group_id
+                    recurring_group_id,
+                    repeat_every_weeks
                 )
             )
 
@@ -876,6 +900,7 @@ def create_session(
     session_date: str = Form(...),
     recurring: str = Form("false"),
     recurring_weeks: int = Form(1),
+    repeat_every_weeks: int = Form(1),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
@@ -934,6 +959,25 @@ def create_session(
     else:
         recurring_weeks = 0
 
+    try:
+        repeat_every_weeks = int(repeat_every_weeks)
+    except (TypeError, ValueError):
+        db.close()
+        raise HTTPException(
+            status_code=400,
+            detail="Nieprawidłowy odstęp między sesjami"
+        )
+
+    if repeat_every_weeks not in (1, 2, 3):
+        db.close()
+        raise HTTPException(
+            status_code=400,
+            detail="Odstęp musi wynosić 1, 2 lub 3 tygodnie"
+        )
+
+    if not recurring_bool:
+        repeat_every_weeks = 1
+
     # ---------------------------------
     # 3. Sprawdzenie klienta
     # ---------------------------------
@@ -978,7 +1022,8 @@ def create_session(
         for week in range(1, recurring_weeks + 1):
 
             dates.append(
-                base_date + timedelta(days=week * 7)
+                base_date
+                + timedelta(days=week * repeat_every_weeks * 7)
             )
 
     # ---------------------------------
@@ -1069,9 +1114,10 @@ def create_session(
                     Description,
                     DayOfWeek,
                     SessionDate,
-                    RecurringGroupId
+                    RecurringGroupId,
+                    RepeatEveryWeeks
                 )
-                VALUES (?, ?, ?, ?, ?, ?, NULL)
+                VALUES (?, ?, ?, ?, ?, ?, NULL, ?)
                 """,
                 (
                     start,
@@ -1079,7 +1125,8 @@ def create_session(
                     client_id,
                     description,
                     day_of_week,
-                    base_date.strftime("%Y-%m-%d")
+                    base_date.strftime("%Y-%m-%d"),
+                    repeat_every_weeks
                 )
             )
 
@@ -1100,9 +1147,10 @@ def create_session(
                     Description,
                     DayOfWeek,
                     SessionDate,
-                    RecurringGroupId
+                    RecurringGroupId,
+                    RepeatEveryWeeks
                 )
-                VALUES (?, ?, ?, ?, ?, ?, NULL)
+                VALUES (?, ?, ?, ?, ?, ?, NULL, ?)
                 """,
                 (
                     start,
@@ -1110,7 +1158,8 @@ def create_session(
                     client_id,
                     description,
                     day_of_week,
-                    dates[0].strftime("%Y-%m-%d")
+                    dates[0].strftime("%Y-%m-%d"),
+                    repeat_every_weeks
                 )
             )
 
@@ -1147,9 +1196,10 @@ def create_session(
                         Description,
                         DayOfWeek,
                         SessionDate,
-                        RecurringGroupId
+                        RecurringGroupId,
+                        RepeatEveryWeeks
                     )
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                     """,
                     (
                         start,
@@ -1158,7 +1208,8 @@ def create_session(
                         description,
                         day_of_week,
                         current_date.strftime("%Y-%m-%d"),
-                        recurring_group_id
+                        recurring_group_id,
+                        repeat_every_weeks
                     )
                 )
 

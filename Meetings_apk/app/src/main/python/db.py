@@ -122,6 +122,17 @@ def init_db_if_not_exists(conn):
 
         print("✅ Dodano kolumnę Session.RecurringGroupId")
 
+    # Odstęp między sesjami cyklicznymi: domyślnie co 1 tydzień.
+    # Istniejące rekordy zachowują dotychczasowe działanie.
+    if "RepeatEveryWeeks" not in column_names:
+
+        cur.execute("""
+            ALTER TABLE Session
+            ADD COLUMN RepeatEveryWeeks INTEGER NOT NULL DEFAULT 1
+        """)
+
+        print("✅ Dodano kolumnę Session.RepeatEveryWeeks")
+
     conn.commit()
 
     print("✅ Database initialized successfully")

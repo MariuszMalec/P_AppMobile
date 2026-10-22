@@ -1,0 +1,111 @@
+plugins {
+    id 'com.android.application'
+    id 'com.chaquo.python'
+}
+
+android {
+    namespace 'com.example.androidtest'
+    compileSdk 35
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    defaultConfig {
+        applicationId 'com.example.meetings'
+        minSdk 24
+        targetSdk 35
+        versionCode 2
+        versionName '1.0'
+
+        ndk {
+            abiFilters "arm64-v8a"
+        }
+    }
+
+    sourceSets {
+        main {
+            python.srcDirs = [
+                "src/main/python"
+            ]
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('../meetings-release.jks')
+            storePassword 'Alicja@@13!!!'
+            keyAlias 'meetings'
+            keyPassword 'Alicja@@13!!!'
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+        }
+    }
+}
+
+def meetingsApiDir = file("../../Meetings_api")
+def reactDistDir = file("../../Meetings_react/dist")
+def apkPythonDir = file("src/main/python")
+def reactApkDir = file("src/main/python/static/react")
+
+tasks.register("copyMeetingsApiPython") {
+    doLast {
+        println "========================================"
+        println "KOPIOWANIE Meetings_api -> APK Python"
+        println "Źródło:  ${meetingsApiDir}"
+        println "Cel:     ${apkPythonDir}"
+        println "========================================"
+
+        copy {
+            from meetingsApiDir
+            into apkPythonDir
+
+            include "db.py"
+            include "templates.py"
+            include "validators.py"
+            include "routers/**"
+            include "templates/**"
+            include "static/**"
+        }
+    }
+}
+
+tasks.register("copyReactDist") {
+    doLast {
+        println "========================================"
+        println "KOPIOWANIE React dist -> APK"
+        println "Źródło:  ${reactDistDir}"
+        println "Cel:     ${reactApkDir}"
+        println "========================================"
+
+        copy {
+            from reactDistDir
+            into reactApkDir
+        }
+    }
+}
+
+tasks.configureEach {
+    if (name == "generateDebugPythonSourceAssets" ||
+        name == "generateReleasePythonSourceAssets") {
+        dependsOn("copyMeetingsApiPython")
+        dependsOn("copyReactDist")
+    }
+}
+
+chaquopy {
+    defaultConfig {
+        version = "3.12"
+
+        pip {
+            install "fastapi==0.109.2"
+            install "uvicorn==0.42.0"
+            install "jinja2==3.1.6"
+            install "python-multipart==0.0.32"
+        }
+    }
+}

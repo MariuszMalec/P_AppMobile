@@ -30,6 +30,7 @@ function Sessions({ onBack }) {
   const [editDate, setEditDate] = useState('')
   const [editScope, setEditScope] = useState('single')
   const [editSeriesCount, setEditSeriesCount] = useState(1)
+  const [editRepeatEveryWeeks, setEditRepeatEveryWeeks] = useState(1)
   const [createMode, setCreateMode] = useState(false)
   const [createStart, setCreateStart] = useState('')
   const [createEnd, setCreateEnd] = useState('')
@@ -39,6 +40,7 @@ function Sessions({ onBack }) {
   const [createDate, setCreateDate] = useState('')
   const [createRecurring, setCreateRecurring] = useState(false)
   const [createSeriesCount, setCreateSeriesCount] = useState(2)
+  const [createRepeatEveryWeeks, setCreateRepeatEveryWeeks] = useState(1)
   const [deleteMode, setDeleteMode] = useState(false)
   const [deleteScope, setDeleteScope] = useState('single')
 
@@ -89,8 +91,12 @@ function Sessions({ onBack }) {
     formData.append(
       'recurring_weeks',
       editScope === 'series'
-        ? String(editSeriesCount - 1)
+        ? String(Number(editSeriesCount) - 1)
         : '1'
+    )
+    formData.append(
+      'repeat_every_weeks',
+      editScope === 'series' ? String(editRepeatEveryWeeks) : '1'
     )
 
     fetch(
@@ -130,12 +136,7 @@ function Sessions({ onBack }) {
             : 'Sesja została zmieniona'
         )
 
-        setSelectedSession({
-          ...selectedSession,
-          start: editStart,
-          end: editEnd,
-          description: editDescription,
-        })
+        setSelectedSession(null)
 
         setEditMode(false)
       })
@@ -220,7 +221,7 @@ function Sessions({ onBack }) {
       return
     }
 
-    if (createRecurring && (createSeriesCount < 2 || createSeriesCount > 53)) {
+    if (createRecurring && createSeriesCount !== '' && (!Number.isFinite(Number(createSeriesCount)) || Number(createSeriesCount) < 1 || Number(createSeriesCount) > 53)) {
       setError('Liczba sesji w serii musi być od 2 do 53')
       return
     }
@@ -240,8 +241,12 @@ function Sessions({ onBack }) {
     formData.append(
       'recurring_weeks',
       createRecurring
-        ? String(createSeriesCount - 1)
+        ? String(Number(createSeriesCount) - 1)
         : '0'
+    )
+    formData.append(
+      'repeat_every_weeks',
+      createRecurring ? String(createRepeatEveryWeeks) : '1'
     )
 
     fetch(`${API_URL}/sessions/create`, {
@@ -365,18 +370,34 @@ function Sessions({ onBack }) {
           </label>
 
           {createRecurring && (
-            <label>
-              Liczba sesji w serii
-              <input
-                type="number"
-                min="2"
-                max="53"
-                value={createSeriesCount}
-                onChange={(event) =>
-                  setCreateSeriesCount(Number(event.target.value))
-                }
-              />
-            </label>
+            <>
+              <label>
+                Liczba sesji w serii
+                <input
+                  type="number"
+                  min="1"
+                  max="53"
+                  value={createSeriesCount}
+                  onChange={(event) => {
+                    setCreateSeriesCount(event.target.value === '' ? '' : Number(event.target.value))
+                    if (event.target.value === '1') setCreateRecurring(false)
+                  }}
+                />
+              </label>
+              <label>
+                Powtarzaj co
+                <select
+                  value={createRepeatEveryWeeks}
+                  onChange={(event) =>
+                    setCreateRepeatEveryWeeks(Number(event.target.value))
+                  }
+                >
+                  <option value={1}>1 tydzień</option>
+                  <option value={2}>2 tygodnie</option>
+                  <option value={3}>3 tygodnie</option>
+                </select>
+              </label>
+            </>
           )}
 
           <button
@@ -504,18 +525,33 @@ function Sessions({ onBack }) {
           )}
 
           {selectedSession.is_recurring && editScope === 'series' && (
-            <label>
-              Liczba sesji w serii
-              <input
-                type="number"
-                min="1"
-                max="53"
-                value={editSeriesCount}
-                onChange={(event) =>
-                  setEditSeriesCount(Number(event.target.value))
-                }
-              />
-            </label>
+            <>
+              <label>
+                Liczba sesji w serii
+                <input
+                  type="number"
+                  min="1"
+                  max="53"
+                  value={editSeriesCount}
+                  onChange={(event) =>
+                    setEditSeriesCount(event.target.value === '' ? '' : Number(event.target.value))
+                  }
+                />
+              </label>
+              <label>
+                Powtarzaj co
+                <select
+                  value={editRepeatEveryWeeks}
+                  onChange={(event) =>
+                    setEditRepeatEveryWeeks(Number(event.target.value))
+                  }
+                >
+                  <option value={1}>1 tydzień</option>
+                  <option value={2}>2 tygodnie</option>
+                  <option value={3}>3 tygodnie</option>
+                </select>
+              </label>
+            </>
           )}
 
           <label>
@@ -609,6 +645,7 @@ function Sessions({ onBack }) {
             setEditDescription(selectedSession.description)
             setEditDate(selectedSession.session_date)
             setEditScope('single')
+            setEditRepeatEveryWeeks(1)
 
             if (selectedSession.is_recurring) {
               fetch(
@@ -623,6 +660,7 @@ function Sessions({ onBack }) {
                 })
                 .then((data) => {
                   setEditSeriesCount(data.count)
+                  setEditRepeatEveryWeeks(Number(data.repeat_every_weeks) || 1)
                 })
                 .catch((error) => {
                   setError(error.message)

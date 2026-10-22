@@ -290,8 +290,18 @@
 
         <div id="recurring-weeks-wrap" style="display:none;">
 
+            <label for="p-repeat-every-weeks">
+                Powtarzaj co ile tygodni?
+            </label>
+
+            <select id="p-repeat-every-weeks">
+                <option value="1" selected>Co 1 tydzień</option>
+                <option value="2">Co 2 tygodnie</option>
+                <option value="3">Co 3 tygodnie</option>
+            </select>
+
             <label for="p-recurring-weeks">
-                Ile kolejnych tygodni?
+                Ile dodatkowych sesji?
             </label>
 
             <input
@@ -506,6 +516,11 @@ function openPreview(el) {
     const recurringWeeksWrap =
         document.getElementById('recurring-weeks-wrap');
 
+    const repeatEveryWeeks =
+        document.getElementById('p-repeat-every-weeks');
+
+    repeatEveryWeeks.value = "1";
+
     const recurringGroupId =
         el.dataset.recurringGroupId;
 
@@ -542,6 +557,9 @@ function openPreview(el) {
             );
 
             recurringWeeks.value = weeks;
+            repeatEveryWeeks.value = String(
+                data.repeat_every_weeks || 1
+            );
 
         })
         .catch(err => {
@@ -730,6 +748,11 @@ function saveEdit() {
     formData.append(
         "recurring_weeks",
         document.getElementById('p-recurring-weeks').value
+    );
+
+    formData.append(
+        "repeat_every_weeks",
+        document.getElementById('p-repeat-every-weeks').value || "1"
     );
 
     fetch(`/sessions/edit/${id}`, {
@@ -1175,6 +1198,12 @@ function createSession() {
             10
         );
 
+    const repeatEveryWeeks =
+        parseInt(
+            document.getElementById('p-repeat-every-weeks').value || '1',
+            10
+        );
+
     const dayOfWeek =
         parseInt(
             document.getElementById(
@@ -1327,6 +1356,11 @@ function createSession() {
     formData.append(
         "recurring_weeks",
         recurringWeeks
+    );
+
+    formData.append(
+        "repeat_every_weeks",
+        recurring ? repeatEveryWeeks : 1
     );
 
     console.log(
