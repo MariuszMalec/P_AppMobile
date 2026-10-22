@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react'
 import API_URL from './api'
 
+function addOneHour(time) {
+  if (!time || !/^\d{2}:\d{2}$/.test(time)) return ''
+
+  const [hours, minutes] = time.split(':').map(Number)
+  const total = (hours * 60 + minutes + 60) % (24 * 60)
+
+  return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
+}
+
 function Sessions({ onBack }) {
   const [data, setData] = useState(null)
   const [currentTime, setCurrentTime] = useState(() => new Date())
@@ -16,6 +25,7 @@ function Sessions({ onBack }) {
   const [editMode, setEditMode] = useState(false)
   const [editStart, setEditStart] = useState('')
   const [editEnd, setEditEnd] = useState('')
+  const [editEndManual, setEditEndManual] = useState(false)
   const [editDescription, setEditDescription] = useState('')
   const [editDate, setEditDate] = useState('')
   const [editScope, setEditScope] = useState('single')
@@ -23,6 +33,7 @@ function Sessions({ onBack }) {
   const [createMode, setCreateMode] = useState(false)
   const [createStart, setCreateStart] = useState('')
   const [createEnd, setCreateEnd] = useState('')
+  const [createEndManual, setCreateEndManual] = useState(false)
   const [createClientId, setCreateClientId] = useState('')
   const [createDescription, setCreateDescription] = useState('')
   const [createDate, setCreateDate] = useState('')
@@ -316,7 +327,11 @@ function Sessions({ onBack }) {
             <input
               type="time"
               value={createStart}
-              onChange={(event) => setCreateStart(event.target.value)}
+              onChange={(event) => {
+                const value = event.target.value
+                setCreateStart(value)
+                if (!createEndManual) setCreateEnd(addOneHour(value))
+              }}
             />
           </label>
 
@@ -325,7 +340,10 @@ function Sessions({ onBack }) {
             <input
               type="time"
               value={createEnd}
-              onChange={(event) => setCreateEnd(event.target.value)}
+              onChange={(event) => {
+                setCreateEnd(event.target.value)
+                setCreateEndManual(true)
+              }}
             />
           </label>
 
@@ -505,7 +523,11 @@ function Sessions({ onBack }) {
             <input
               type="time"
               value={editStart}
-              onChange={(event) => setEditStart(event.target.value)}
+              onChange={(event) => {
+                const value = event.target.value
+                setEditStart(value)
+                if (!editEndManual) setEditEnd(addOneHour(value))
+              }}
             />
           </label>
 
@@ -514,7 +536,10 @@ function Sessions({ onBack }) {
             <input
               type="time"
               value={editEnd}
-              onChange={(event) => setEditEnd(event.target.value)}
+              onChange={(event) => {
+                setEditEnd(event.target.value)
+                setEditEndManual(true)
+              }}
             />
           </label>
 
@@ -580,6 +605,7 @@ function Sessions({ onBack }) {
           onClick={() => {
             setEditStart(selectedSession.start)
             setEditEnd(selectedSession.end)
+            setEditEndManual(false)
             setEditDescription(selectedSession.description)
             setEditDate(selectedSession.session_date)
             setEditScope('single')
@@ -668,6 +694,7 @@ function Sessions({ onBack }) {
                 onClick={() => {
                   setCreateStart('')
                   setCreateEnd('')
+   setCreateEndManual(false)
                   setCreateClientId('')
                   setCreateDescription('')
                   setCreateDate('')
