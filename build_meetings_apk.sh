@@ -16,6 +16,7 @@ if [ -z "$n" ]; then
 fi
 new=$((n+1))
 sed -i "s/versionCode $n/versionCode $new/" "$GRADLE_FILE"
+sed -i "s/versionName '[^']*'/versionName '1.0.$new'/" "$GRADLE_FILE"
 echo "versionCode: $n -> $new"
 
 echo "=== 3/4 Build APK ==="
