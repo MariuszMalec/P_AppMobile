@@ -24,6 +24,14 @@ function App() {
   const [message, setMessage] = useState('')
 
   useEffect(() => {
+    if (!message) return
+    const t = setTimeout(() => {
+      setMessage('')
+    }, 4000)
+    return () => clearTimeout(t)
+  }, [message])
+
+  useEffect(() => {
     setError('')
 
     fetch(`${API_URL}/clients/list?active=${active}`)
@@ -172,6 +180,7 @@ function App() {
       .then((data) => {
         setMessage(data.message)
         setEditMode(false)
+        setSelectedClient(null)
 
         return fetch(
           `${API_URL}/clients/${selectedClient.Id}`
@@ -185,7 +194,7 @@ function App() {
         return response.json()
       })
       .then((data) => {
-        setSelectedClient(data)
+        setSelectedClient(null)
 
         return fetch(`${API_URL}/clients/list?active=${active}`)
       })
@@ -534,6 +543,7 @@ function App() {
 
   return (
     <main className="clients-page">
+        {message && <p className="success">{message}</p>}
       <h1>Klienci</h1>
 
       <button

@@ -19,6 +19,15 @@ sed -i "s/versionCode $n/versionCode $new/" "$GRADLE_FILE"
 sed -i "s/versionName '[^']*'/versionName '1.0.$new'/" "$GRADLE_FILE"
 echo "versionCode: $n -> $new"
 
+echo "=== 2b Kopiowanie API i Reacta do apki ==="
+PY="$ROOT/Meetings_apk/app/src/main/python"
+cd "$ROOT/Meetings_api"
+cp db.py templates.py validators.py "$PY/"
+cp -r routers templates static "$PY/"
+rm -rf "$PY/static/react"
+mkdir -p "$PY/static/react"
+cp -r "$ROOT/Meetings_react/dist/." "$PY/static/react/"
+
 echo "=== 3/4 Build APK ==="
 cd "$ROOT/Meetings_apk"
 bash gradlew assembleRelease --rerun-tasks
