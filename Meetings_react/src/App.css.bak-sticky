@@ -1,0 +1,3090 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f1f3f6;
+  color: #1f2937;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+.clients-page {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+}
+
+h1 {
+  margin: 0 0 22px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+/* =========================
+   NEW CLIENT
+   ========================= */
+
+.new-client-button {
+  width: 100%;
+  margin-bottom: 18px;
+  padding: 14px 18px;
+  border: none;
+  border-radius: 12px;
+  background: #2563eb;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(37, 99, 235, 0.25);
+}
+
+.new-client-button:active {
+  transform: scale(0.99);
+}
+
+/* =========================
+   ACTIVE FILTER
+   ========================= */
+
+.active-filter {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.active-filter-button {
+  flex: 1;
+  padding: 12px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: white;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.active-filter-button.selected {
+  background: #1f2937;
+  color: white;
+  border-color: #1f2937;
+}
+
+/* =========================
+   SEARCH
+   ========================= */
+
+.search-input {
+  width: 100%;
+  padding: 14px 15px;
+  margin-bottom: 18px;
+  border: 1px solid #d1d5db;
+  border-radius: 11px;
+  background: white;
+  color: #1f2937;
+  font-size: 16px;
+  outline: none;
+}
+
+.search-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+/* =========================
+   CLIENT LIST
+   ========================= */
+
+.clients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.client-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 17px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  color: #1f2937;
+  font-size: 17px;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.client-row:active {
+  transform: scale(0.99);
+}
+
+.arrow {
+  margin-left: 12px;
+  color: #9ca3af;
+  font-size: 28px;
+  line-height: 20px;
+}
+
+/* =========================
+   BACK BUTTON
+   ========================= */
+
+.back-button {
+  margin-bottom: 20px;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  background: white;
+  color: #374151;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* =========================
+   CLIENT DETAILS
+   ========================= */
+
+.client-details {
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.client-details p {
+  margin: 0;
+  padding: 13px 0;
+  border-bottom: 1px solid #edf0f2;
+  line-height: 1.5;
+}
+
+.client-details p:first-child {
+  padding-top: 0;
+}
+
+.client-details p:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+/* =========================
+   EDIT BUTTON
+   ========================= */
+
+.edit-button {
+  width: 100%;
+  margin-bottom: 16px;
+  padding: 13px;
+  border: none;
+  border-radius: 10px;
+  background: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* =========================
+   EDIT / CREATE FORM
+   ========================= */
+
+.edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  background: white;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+.edit-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #374151;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.edit-form input,
+.edit-form textarea,
+.edit-form select {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  background: #fafafa;
+  color: #1f2937;
+  font-size: 16px;
+  outline: none;
+}
+
+.edit-form input:focus,
+.edit-form textarea:focus,
+.edit-form select:focus {
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.edit-form textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+/* =========================
+   ACTIVE CHECKBOX
+   ========================= */
+
+.active-checkbox {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 10px !important;
+  padding: 4px 0;
+}
+
+.active-checkbox input {
+  width: 20px;
+  height: 20px;
+}
+
+/* =========================
+   SAVE / CREATE
+   ========================= */
+
+.save-button {
+  width: 100%;
+  margin-top: 2px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  background: #16a34a;
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.save-button:active {
+  transform: scale(0.99);
+}
+
+/* =========================
+   MESSAGES
+   ========================= */
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  margin: 12px 0 18px;
+  border: 1px solid #86efac;
+  border-left: 5px solid #16a34a;
+  border-radius: 12px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.08);
+}
+
+.success::before {
+  content: "✓";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #16a34a;
+  color: white;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.error {
+  padding: 13px 15px;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 480px) {
+  .clients-page {
+    padding: 18px 14px 30px;
+  }
+
+  h1 {
+    font-size: 27px;
+  }
+
+  .client-row {
+    padding: 15px;
+    font-size: 16px;
+  }
+
+  .edit-form,
+  .client-details {
+    padding: 16px;
+  }
+}
+
+/* =========================================================
+   NOWOCZESNY WYGLĄD - SESJE
+   ========================================================= */
+
+.sessions-page {
+  max-width: 1100px;
+}
+
+/* Nagłówek strony */
+
+.sessions-page h1 {
+  margin-bottom: 14px;
+}
+
+/* Przyciski nawigacji tygodnia */
+
+.week-navigation {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 18px 0 16px;
+}
+
+.week-button,
+.today-button {
+  height: 44px;
+  border: 1px solid #dbe1e8;
+  border-radius: 12px;
+  background: white;
+  color: #1f2937;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.week-button {
+  width: 48px;
+  font-size: 22px;
+}
+
+.today-button {
+  flex: 1;
+  max-width: 180px;
+}
+
+.week-button:active,
+.today-button:active {
+  transform: scale(0.97);
+}
+
+.week-button:hover,
+.today-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+/* Informacja o tygodniu */
+
+.week-info {
+  margin: 0 0 14px;
+  padding: 12px 15px;
+  border-radius: 12px;
+  background: #eef4ff;
+  color: #334155;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.week-info strong {
+  color: #1d4ed8;
+}
+
+/* Obudowa kalendarza */
+
+.sessions-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  background: white;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, 0.07);
+}
+
+/* Tabela */
+
+.sessions-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: visible;
+}
+
+/* Nagłówki dni */
+
+.sessions-table thead th {
+  padding: 13px 8px;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sessions-table thead th:first-child {
+  width: 72px;
+  color: #94a3b8;
+}
+
+/* Dzisiejszy dzień */
+
+.sessions-table thead th.today-column {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Komórki */
+
+.sessions-table td {
+  border-bottom: 1px solid #edf1f5;
+  border-right: 1px solid #edf1f5;
+  vertical-align: top;
+}
+
+.sessions-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.sessions-table td:last-child,
+.sessions-table th:last-child {
+  border-right: none;
+}
+
+/* Godzina */
+
+.session-time {
+  width: 72px;
+  min-width: 72px;
+  padding: 10px 6px;
+  background: #fafbfc;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Puste komórki */
+
+.session-cell {
+  min-width: 95px;
+  height: 58px;
+  padding: 5px;
+}
+
+/* Karta sesji */
+
+.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: 48px;
+  padding: 8px 9px;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #3b82f6;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(30, 64, 175, 0.08);
+  transition: 0.15s ease;
+}
+
+.session-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(30, 64, 175, 0.12);
+}
+
+.session-card:active {
+  transform: scale(0.98);
+}
+
+.session-card strong {
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.session-card span {
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.session-card small {
+  font-size: 12px;
+}
+
+/* Sesja LIVE */
+
+.live-session .session-card {
+  border-color: #86efac;
+  border-left-color: #16a34a;
+  background: #f0fdf4;
+  color: #166534;
+}
+
+/* Brak sesji */
+
+.empty-sessions {
+  padding: 40px 20px !important;
+  color: #94a3b8;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+
+  .sessions-page {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .week-navigation {
+    margin-top: 14px;
+  }
+
+  .week-button {
+    width: 46px;
+  }
+
+  .today-button {
+    max-width: none;
+  }
+
+  .sessions-table-wrap {
+    border-radius: 13px;
+  }
+
+  .sessions-table {
+    min-width: 700px;
+  }
+
+  .sessions-table thead th {
+    padding: 11px 6px;
+    font-size: 12px;
+  }
+
+  .session-card {
+    padding: 7px;
+  }
+
+  .session-card strong {
+    font-size: 12px;
+  }
+}
+
+
+/* =========================================================
+   NOWOCZESNE FORMULARZE SESJI
+   ========================================================= */
+
+.sessions-page .edit-form {
+  margin-top: 16px;
+  padding: 22px;
+  gap: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.07);
+}
+
+/* Etykiety */
+
+.sessions-page .edit-form label {
+  gap: 8px;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+/* Pola */
+
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea {
+  padding: 14px 15px;
+  border: 1px solid #d8dee7;
+  border-radius: 12px;
+  background: #f8fafc;
+  color: #1e293b;
+  font-size: 16px;
+  transition: border-color 0.15s ease,
+              box-shadow 0.15s ease,
+              background 0.15s ease;
+}
+
+.sessions-page .edit-form input:focus,
+.sessions-page .edit-form select:focus,
+.sessions-page .edit-form textarea:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.11);
+}
+
+/* Opis */
+
+.sessions-page .edit-form textarea {
+  min-height: 120px;
+  line-height: 1.5;
+}
+
+/* Checkbox */
+
+.sessions-page .active-checkbox {
+  margin-top: 2px;
+  padding: 12px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.sessions-page .active-checkbox input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: #2563eb;
+}
+
+/* Liczba sesji w serii */
+
+.sessions-page .edit-form input[type="number"] {
+  max-width: 180px;
+}
+
+/* Przycisk Zapisz */
+
+.sessions-page .save-button {
+  margin-top: 4px;
+  padding: 15px 18px;
+  border-radius: 12px;
+  background: #16a34a;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.18);
+  font-size: 16px;
+  font-weight: 800;
+  transition: 0.15s ease;
+}
+
+.sessions-page .save-button:hover {
+  background: #15803d;
+  box-shadow: 0 6px 14px rgba(22, 163, 74, 0.22);
+}
+
+.sessions-page .save-button:active {
+  transform: scale(0.98);
+}
+
+/* Przycisk Dodaj sesję */
+
+.sessions-page > .edit-button {
+  margin-bottom: 4px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #2563eb;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.18);
+  transition: 0.15s ease;
+}
+
+.sessions-page > .edit-button:hover {
+  background: #1d4ed8;
+}
+
+.sessions-page > .edit-button:active {
+  transform: scale(0.98);
+}
+
+/* Przycisk powrotu */
+
+.sessions-page .back-button {
+  border-color: #dbe1e8;
+  border-radius: 11px;
+  background: white;
+  color: #475569;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  transition: 0.15s ease;
+}
+
+.sessions-page .back-button:hover {
+  background: #f8fafc;
+  border-color: #cbd5e1;
+}
+
+.sessions-page .back-button:active {
+  transform: scale(0.98);
+}
+
+/* Komunikat błędu */
+
+.sessions-page .error {
+  margin: 14px 0 0;
+  padding: 14px 16px;
+  border-left: 5px solid #dc2626;
+  border-radius: 12px;
+  background: #fef2f2;
+  color: #991b1b;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+/* Szczegóły sesji */
+
+.sessions-page .client-details {
+  margin-top: 16px;
+  padding: 22px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.07);
+}
+
+.sessions-page .client-details p {
+  color: #475569;
+}
+
+.sessions-page .client-details strong {
+  color: #1e293b;
+}
+
+/* Przyciski usuwania */
+
+.sessions-page .delete-button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 16px;
+  border: 1px solid #fecaca;
+  border-radius: 11px;
+  background: #fff;
+  color: #b91c1c;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.sessions-page .delete-button:hover {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.sessions-page .delete-button:active {
+  transform: scale(0.98);
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+
+  .sessions-page .edit-form {
+    padding: 17px;
+    gap: 16px;
+    border-radius: 16px;
+  }
+
+  .sessions-page .client-details {
+    padding: 17px;
+    border-radius: 16px;
+  }
+
+  .sessions-page .edit-form input,
+  .sessions-page .edit-form select,
+  .sessions-page .edit-form textarea {
+    padding: 13px;
+  }
+
+  .sessions-page .save-button {
+    padding: 14px;
+  }
+}
+
+
+/* ===== DODATKOWE UJEDNOLICENIE WYGLADU ===== */
+
+.clients-page {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 24px 18px 40px;
+}
+
+.clients-page h1 {
+  color: #0f172a;
+  font-size: clamp(26px, 5vw, 32px);
+  line-height: 1.2;
+  letter-spacing: -0.7px;
+  margin-bottom: 22px;
+}
+
+.new-client-button,
+.save-button {
+  min-height: 48px;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.18);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.new-client-button:active,
+.save-button:active {
+  transform: scale(0.985);
+  box-shadow: 0 2px 5px rgba(37, 99, 235, 0.15);
+}
+
+.active-filter-button,
+.search-input,
+.clients-page .edit-form,
+.clients-page .client-details,
+.sessions-page .sessions-table-wrap {
+  border-radius: 14px;
+}
+
+.active-filter-button {
+  min-height: 44px;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.search-input {
+  min-height: 48px;
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.03);
+}
+
+.search-input:focus,
+.edit-form input:focus,
+.edit-form select:focus,
+.edit-form textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.14);
+}
+
+.clients-page .client-row {
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.clients-page .client-row:active {
+  transform: scale(0.99);
+}
+
+.clients-page .back-button,
+.sessions-page .week-button,
+.sessions-page .today-button,
+.clients-page .edit-button {
+  min-height: 42px;
+  border-radius: 11px;
+  font-weight: 700;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.sessions-page .week-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 16px 0;
+}
+
+.sessions-page .week-info {
+  margin: 12px 0;
+  color: #475569;
+  font-weight: 700;
+}
+
+.sessions-page .sessions-table-wrap {
+  overflow-x: auto;
+  max-width: 100%;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.05);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sessions-page .sessions-table th {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 800;
+}
+
+.sessions-page .sessions-table th,
+.sessions-page .sessions-table td {
+  padding: 10px;
+}
+
+.sessions-page .session-card {
+  border-radius: 10px;
+}
+
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea,
+.clients-page .edit-form input,
+.clients-page .edit-form select,
+.clients-page .edit-form textarea {
+  max-width: 100%;
+  border-radius: 10px;
+}
+
+input[type="date"],
+input[type="time"] {
+  min-height: 46px;
+  color: #1e293b;
+  background-color: #fff;
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .clients-page {
+    padding: 18px 14px 30px;
+  }
+
+  .clients-page h1 {
+    margin-bottom: 18px;
+  }
+
+  .sessions-page .week-navigation {
+    gap: 7px;
+  }
+
+  .sessions-page .sessions-table th,
+  .sessions-page .sessions-table td {
+    padding: 8px;
+  }
+
+  .sessions-page .edit-form input,
+  .sessions-page .edit-form select,
+  .sessions-page .edit-form textarea,
+  .clients-page .edit-form input,
+  .clients-page .edit-form select,
+  .clients-page .edit-form textarea {
+    font-size: 16px;
+  }
+}
+
+/* ==========================================
+   MEETINGS REACT — NOWOCZESNY INTERFEJS
+   ========================================== */
+
+:root {
+  --mr-navy: #142b4a;
+  --mr-blue: #2563eb;
+  --mr-blue-light: #eff6ff;
+  --mr-page: #f3f6fb;
+  --mr-card: #ffffff;
+  --mr-text: #172b46;
+  --mr-muted: #64748b;
+  --mr-line: #e2e8f0;
+}
+
+body {
+  background: var(--mr-page);
+  color: var(--mr-text);
+}
+
+#root {
+  background: var(--mr-page);
+}
+
+/* Wspolna szerokosc i odstepy */
+
+.clients-page {
+  max-width: 760px;
+  padding: 28px 20px 48px;
+}
+
+.clients-page h1 {
+  color: var(--mr-navy);
+  font-size: clamp(30px, 5vw, 38px);
+  font-weight: 850;
+  letter-spacing: -1.2px;
+  line-height: 1.15;
+  margin: 20px 0 26px;
+}
+
+/* Przyciski glowne na ekranie klientow */
+
+.clients-page:not(.sessions-page) > .new-client-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  margin-bottom: 12px;
+  padding: 15px 18px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.1px;
+  box-shadow: 0 7px 18px rgba(37, 99, 235, 0.13);
+}
+
+.clients-page:not(.sessions-page) > .new-client-button:first-of-type {
+  background: var(--mr-navy);
+  color: #fff;
+  box-shadow: 0 7px 18px rgba(20, 43, 74, 0.16);
+}
+
+.clients-page:not(.sessions-page) > .new-client-button:last-of-type {
+  background: #fff;
+  color: var(--mr-blue);
+  border-color: #bfdbfe;
+  box-shadow: none;
+}
+
+.clients-page > .new-client-button:active {
+  transform: scale(0.985);
+}
+
+/* Filtry klientow */
+
+.active-filter {
+  gap: 9px;
+  margin: 24px 0 14px;
+  padding: 5px;
+  border: 1px solid var(--mr-line);
+  border-radius: 15px;
+  background: #e9eef6;
+}
+
+.active-filter-button {
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  background: transparent;
+  color: #52647b;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.active-filter-button.selected {
+  background: #fff;
+  border-color: #fff;
+  color: var(--mr-navy);
+  box-shadow: 0 2px 7px rgba(15, 23, 42, 0.09);
+}
+
+/* Wyszukiwarka */
+
+.search-input {
+  min-height: 54px;
+  margin-bottom: 20px;
+  padding: 15px 17px;
+  border: 1px solid #dbe4ef;
+  border-radius: 15px;
+  background: #fff;
+  color: var(--mr-text);
+  font-size: 16px;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
+}
+
+.search-input::placeholder {
+  color: #94a3b8;
+}
+
+.search-input:focus {
+  border-color: var(--mr-blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
+}
+
+/* Karty klientow */
+
+.clients-list {
+  display: grid;
+  gap: 11px;
+}
+
+.clients-list .client-row {
+  display: flex;
+  width: 100%;
+  min-height: 76px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 17px 19px;
+  border: 1px solid #e0e8f2;
+  border-radius: 17px;
+  background: #fff;
+  color: var(--mr-navy);
+  text-align: left;
+  font-size: 16px;
+  font-weight: 750;
+  line-height: 1.4;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.035);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.clients-list .client-row:active {
+  transform: scale(0.99);
+  border-color: #93c5fd;
+  box-shadow: 0 3px 9px rgba(37, 99, 235, 0.09);
+}
+
+.clients-list .client-row > span:first-child {
+  overflow-wrap: anywhere;
+}
+
+.clients-list .client-row .arrow {
+  display: flex;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  background: var(--mr-blue-light);
+  color: var(--mr-blue);
+  font-size: 27px;
+  line-height: 1;
+}
+
+/* Powrot, edycja i formularze */
+
+.clients-page .back-button,
+.sessions-page .back-button {
+  min-height: 44px;
+  padding: 10px 15px;
+  border: 1px solid #dbe4ef;
+  border-radius: 12px;
+  background: #fff;
+  color: var(--mr-navy);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.clients-page .edit-form,
+.sessions-page .edit-form,
+.clients-page .client-details,
+.sessions-page .client-details {
+  padding: 23px;
+  border: 1px solid #e0e8f2;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 8px 26px rgba(15, 35, 65, 0.055);
+}
+
+.clients-page .edit-form label,
+.sessions-page .edit-form label {
+  color: #334b68;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.clients-page .edit-form input,
+.clients-page .edit-form select,
+.clients-page .edit-form textarea,
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea {
+  width: 100%;
+  max-width: 100%;
+  min-height: 47px;
+  padding: 12px 14px;
+  border: 1px solid #cbd8e8;
+  border-radius: 12px;
+  background-color: #fff;
+  color: #172b46;
+  font-size: 16px;
+}
+
+.clients-page .edit-form input:focus,
+.clients-page .edit-form select:focus,
+.clients-page .edit-form textarea:focus,
+.sessions-page .edit-form input:focus,
+.sessions-page .edit-form select:focus,
+.sessions-page .edit-form textarea:focus {
+  outline: none;
+  border-color: var(--mr-blue);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.11);
+}
+
+input[type="date"],
+input[type="time"] {
+  color-scheme: light;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.clients-page .save-button,
+.sessions-page .save-button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 850;
+  box-shadow: 0 6px 15px rgba(37, 99, 235, 0.19);
+}
+
+/* Szczegoly klienta */
+
+.clients-page .client-details,
+.sessions-page .client-details {
+  margin-top: 18px;
+  line-height: 1.8;
+}
+
+.clients-page .client-details strong,
+.sessions-page .client-details strong {
+  color: var(--mr-navy);
+}
+
+/* Ekran sesji */
+
+.sessions-page h1 {
+  margin-top: 22px;
+  margin-bottom: 22px;
+}
+
+.sessions-page > .edit-button {
+  width: 100%;
+  min-height: 54px;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 15px;
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 850;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.18);
+}
+
+.sessions-page .week-navigation {
+  display: grid;
+  grid-template-columns: 54px minmax(100px, 1fr) 54px;
+  gap: 10px;
+  margin: 19px 0;
+}
+
+.sessions-page .week-button,
+.sessions-page .today-button {
+  min-height: 48px;
+  border: 1px solid #dbe4ef;
+  border-radius: 14px;
+  background: #fff;
+  color: var(--mr-navy);
+  font-size: 16px;
+  font-weight: 850;
+}
+
+.sessions-page .today-button {
+  border-color: var(--mr-navy);
+  background: var(--mr-navy);
+  color: #fff;
+}
+
+.sessions-page .week-info {
+  margin: 20px 0 12px;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.sessions-page .week-info strong {
+  color: var(--mr-navy);
+  font-weight: 850;
+}
+
+/* Tabela harmonogramu */
+
+.sessions-page .sessions-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #dce5f0;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 6px 22px rgba(15, 35, 65, 0.055);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+
+.sessions-page .sessions-table thead th {
+  padding: 13px 9px;
+  border-bottom: 1px solid #dce5f0;
+  background: #edf4ff;
+  color: #24446c;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.sessions-page .sessions-table thead th.today-column {
+  background: #dbeafe;
+  color: #1d4ed8;
+  box-shadow: inset 0 -3px 0 #2563eb;
+}
+
+.sessions-page .sessions-table td {
+  padding: 7px 5px;
+  border-bottom: 1px solid #edf1f6;
+  border-right: 1px solid #edf1f6;
+  vertical-align: top;
+}
+
+.sessions-page .sessions-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.sessions-page .sessions-table th:last-child,
+.sessions-page .sessions-table td:last-child {
+  border-right: 0;
+}
+
+.sessions-page .session-time {
+  background: #f8fafc;
+  color: #52647b;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.sessions-page .session-cell {
+  min-width: 86px;
+}
+
+.sessions-page .session-card {
+  padding: 9px 8px;
+  border: 1px solid #bfdbfe;
+  border-left: 3px solid #3b82f6;
+  border-radius: 10px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.sessions-page .session-card:active {
+  transform: scale(0.97);
+  background: #dbeafe;
+}
+
+.sessions-page .session-card strong {
+  display: block;
+  color: #1e40af;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.sessions-page .session-card span {
+  display: block;
+  margin-top: 4px;
+  color: #475569;
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.sessions-page .session-card small {
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.sessions-page .live-session .session-card {
+  border-color: #86efac;
+  border-left-color: #16a34a;
+  background: #f0fdf4;
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #166534;
+}
+
+.sessions-page .empty-sessions {
+  padding: 24px 12px;
+  color: #64748b;
+  text-align: center;
+}
+
+/* Komunikaty */
+
+.clients-page .success,
+.sessions-page .success {
+  padding: 13px 15px;
+  border: 1px solid #bbf7d0;
+  border-radius: 13px;
+  background: #f0fdf4;
+  color: #166534;
+  font-weight: 750;
+}
+
+.clients-page .error,
+.sessions-page .error {
+  border-radius: 13px;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .clients-page {
+    padding: 20px 14px 32px;
+  }
+
+  .clients-page h1 {
+    font-size: 31px;
+    margin: 20px 0 22px;
+  }
+
+  .clients-page .edit-form,
+  .sessions-page .edit-form,
+  .clients-page .client-details,
+  .sessions-page .client-details {
+    padding: 17px;
+    border-radius: 17px;
+  }
+
+  .clients-list .client-row {
+    min-height: 70px;
+    padding: 15px;
+    border-radius: 15px;
+  }
+
+  .sessions-page .sessions-table th {
+    padding: 11px 7px;
+  }
+
+  .sessions-page .sessions-table td {
+    padding: 6px 4px;
+  }
+
+  .sessions-page .session-cell {
+    min-width: 78px;
+  }
+
+  .sessions-page .session-card {
+    padding: 7px 6px;
+  }
+
+  .sessions-page .session-card strong {
+    font-size: 11px;
+  }
+}
+
+/* =====================================================
+   MEETINGS REACT — PROFESSIONAL UI
+   Warstwa wizualna — bez zmian logiki aplikacji
+   ===================================================== */
+
+:root {
+  --mr-shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.04);
+  --mr-shadow-md: 0 8px 24px rgba(15, 23, 42, 0.07);
+  --mr-radius: 18px;
+}
+
+/* Główna powierzchnia */
+
+.clients-page {
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  padding: 30px 24px 44px;
+  color: #172b4d;
+}
+
+.clients-page h1 {
+  margin: 26px 0;
+  color: #102a43;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 800;
+  letter-spacing: -1.1px;
+  line-height: 1.2;
+}
+
+/* Przyciski */
+
+.clients-page button,
+.sessions-page button {
+  transition:
+    background-color 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.clients-page button:focus-visible,
+.sessions-page button:focus-visible,
+.clients-page input:focus-visible,
+.clients-page select:focus-visible,
+.clients-page textarea:focus-visible,
+.sessions-page input:focus-visible,
+.sessions-page select:focus-visible,
+.sessions-page textarea:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.22);
+  outline-offset: 2px;
+}
+
+.clients-page .new-client-button,
+.sessions-page .edit-button,
+.clients-page .save-button,
+.sessions-page .save-button {
+  min-height: 44px;
+  border-radius: 12px;
+  font-weight: 750;
+  letter-spacing: 0.1px;
+  box-shadow: var(--mr-shadow-sm);
+}
+
+.clients-page .new-client-button:hover,
+.sessions-page .edit-button:hover,
+.clients-page .save-button:hover,
+.sessions-page .save-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--mr-shadow-md);
+}
+
+/* Filtry i wyszukiwarka */
+
+.clients-page .active-filter {
+  gap: 9px;
+  margin-bottom: 18px;
+}
+
+.clients-page .active-filter-button {
+  min-height: 39px;
+  padding: 9px 16px;
+  border: 1px solid #dbe4f0;
+  border-radius: 999px;
+  background: #fff;
+  color: #52657d;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.clients-page .active-filter-button:hover {
+  border-color: #93b4f8;
+  background: #f5f8ff;
+}
+
+.clients-page .active-filter-button.selected {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(29, 78, 216, 0.18);
+}
+
+.clients-page .search-input {
+  min-height: 48px;
+  padding: 12px 16px;
+  border: 1px solid #dbe4f0;
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: var(--mr-shadow-sm);
+  color: #172b4d;
+}
+
+.clients-page .search-input:focus {
+  border-color: #6095f7;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.09);
+}
+
+/* Lista klientów */
+
+.clients-page .clients-list {
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.clients-page .clients-list .client-row {
+  position: relative;
+  min-height: 76px;
+  padding: 17px 20px;
+  border: 1px solid #e4eaf2;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--mr-shadow-sm);
+}
+
+.clients-page .clients-list .client-row:hover {
+  border-color: #b7cdfb;
+  background: #fbfdff;
+  box-shadow: var(--mr-shadow-md);
+  transform: translateY(-2px);
+}
+
+.clients-page .client-row .arrow {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #eff5ff;
+  color: #2459bc;
+  font-size: 20px;
+}
+
+/* Formularze i szczegóły */
+
+.clients-page .edit-form,
+.sessions-page .edit-form,
+.clients-page .client-details,
+.sessions-page .client-details {
+  border: 1px solid #e4eaf2;
+  border-radius: var(--mr-radius);
+  background: #fff;
+  box-shadow: var(--mr-shadow-md);
+}
+
+.clients-page .edit-form label,
+.sessions-page .edit-form label {
+  color: #405570;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.clients-page .edit-form input,
+.clients-page .edit-form select,
+.clients-page .edit-form textarea,
+.sessions-page .edit-form input,
+.sessions-page .edit-form select,
+.sessions-page .edit-form textarea {
+  min-height: 44px;
+  border: 1px solid #d7e0ec;
+  border-radius: 11px;
+  background: #fff;
+  color: #172b4d;
+}
+
+.clients-page .edit-form input:focus,
+.clients-page .edit-form select:focus,
+.clients-page .edit-form textarea:focus,
+.sessions-page .edit-form input:focus,
+.sessions-page .edit-form select:focus,
+.sessions-page .edit-form textarea:focus {
+  border-color: #6095f7;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.09);
+  outline: none;
+}
+
+/* Powrót */
+
+.clients-page .back-button,
+.sessions-page .back-button {
+  min-height: 40px;
+  padding: 9px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 11px;
+  background: #fff;
+  color: #34506f;
+  font-weight: 700;
+}
+
+.clients-page .back-button:hover,
+.sessions-page .back-button:hover {
+  border-color: #a9c3f7;
+  background: #f3f7ff;
+}
+
+/* Harmonogram */
+
+.sessions-page .week-navigation {
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.sessions-page .week-button,
+.sessions-page .today-button {
+  min-height: 41px;
+  padding: 9px 14px;
+  border: 1px solid #dbe4f0;
+  border-radius: 11px;
+  background: #fff;
+  color: #34506f;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.sessions-page .week-button:hover {
+  border-color: #9dbbf5;
+  background: #f3f7ff;
+}
+
+.sessions-page .today-button {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.sessions-page .today-button:hover {
+  background: #1e40af;
+}
+
+.sessions-page .week-info {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+/* Tabela tygodnia — zachowujemy jej układ i przewijanie */
+
+.sessions-page .sessions-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e1e8f1;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: var(--mr-shadow-md);
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.sessions-page .sessions-table th {
+  background: #f4f7fc;
+  color: #52657d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.35px;
+  text-transform: uppercase;
+}
+
+.sessions-page .sessions-table td {
+  border-color: #edf1f7;
+  vertical-align: top;
+}
+
+.sessions-page .sessions-table .today-column {
+  background-color: #f2f7ff;
+}
+
+.sessions-page .session-card {
+  border: 1px solid #d8e5fb;
+  border-left: 4px solid #3975e8;
+  border-radius: 11px;
+  background: #edf4ff;
+  box-shadow: 0 2px 5px rgba(30, 64, 175, 0.05);
+}
+
+.sessions-page .session-card strong {
+  color: #173f8a;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.sessions-page .session-card span {
+  color: #52657d;
+  font-size: 11px;
+}
+
+.sessions-page .live-session .session-card {
+  border-color: #a7e6bd;
+  border-left-color: #16a34a;
+  background: #effcf4;
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #166534;
+}
+
+/* Komunikaty */
+
+.clients-page .success,
+.sessions-page .success {
+  border-radius: 12px;
+  box-shadow: var(--mr-shadow-sm);
+}
+
+.clients-page .error,
+.sessions-page .error {
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #fff5f5;
+  color: #b91c1c;
+}
+
+/* Mniejsze ekrany */
+
+@media (max-width: 600px) {
+  .clients-page {
+    padding: 20px 14px 30px;
+  }
+
+  .clients-page h1 {
+    margin: 22px 0;
+    font-size: 29px;
+    letter-spacing: -0.7px;
+  }
+
+  .clients-page .clients-list {
+    gap: 10px;
+  }
+
+  .clients-page .clients-list .client-row {
+    min-height: 68px;
+    padding: 14px;
+  }
+
+  .sessions-page .week-navigation {
+    gap: 7px;
+  }
+
+  .sessions-page .week-button,
+  .sessions-page .today-button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .sessions-page .sessions-table-wrap {
+    border-radius: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clients-page button,
+  .sessions-page button,
+  .clients-page .client-row {
+    transition: none;
+  }
+}
+
+
+/* ===== NOWA LISTA KLIENTÓW — PREMIUM ===== */
+
+.clients-page:not(.sessions-page) {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 960px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 30px 24px 48px;
+  color: #172b4d;
+  background:
+    radial-gradient(ellipse at top left, #e4edff 0, transparent 42%),
+    #f5f7fc;
+}
+
+/* Nagłówek */
+
+.clients-page:not(.sessions-page) h1 {
+  margin: 24px 0 28px;
+  color: #132747;
+  font-size: clamp(30px, 5vw, 40px);
+  font-weight: 850;
+  letter-spacing: -1.4px;
+  line-height: 1.15;
+}
+
+/* Przyciski na górze */
+
+.clients-page:not(.sessions-page) .new-client-button {
+  min-height: 48px;
+  padding: 12px 19px;
+  border: 1px solid #1d4ed8;
+  border-radius: 14px;
+  background: #1d4ed8;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 800;
+  box-shadow: 0 7px 16px rgba(29, 78, 216, .20);
+}
+
+.clients-page:not(.sessions-page) .new-client-button:hover {
+  background: #173ea9;
+  box-shadow: 0 9px 22px rgba(29, 78, 216, .25);
+  transform: translateY(-1px);
+}
+
+.clients-page:not(.sessions-page) .new-client-button:first-child {
+  border-color: #d9e3f2;
+  background: #fff;
+  color: #24466f;
+  box-shadow: 0 2px 7px rgba(15, 23, 42, .04);
+}
+
+/* Filtry */
+
+.clients-page:not(.sessions-page) .active-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 24px 0 16px;
+}
+
+.clients-page:not(.sessions-page) .active-filter-button {
+  min-height: 40px;
+  padding: 9px 17px;
+  border: 1px solid #dce5f1;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, .85);
+  color: #52657d;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.clients-page:not(.sessions-page) .active-filter-button.selected {
+  border-color: #244fc1;
+  background: #244fc1;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(36, 79, 193, .18);
+}
+
+/* Wyszukiwanie */
+
+.clients-page:not(.sessions-page) .search-input {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 54px;
+  padding: 15px 18px;
+  border: 1px solid #dce5f1;
+  border-radius: 15px;
+  background: #fff;
+  color: #172b4d;
+  font-size: 15px;
+  box-shadow: 0 3px 10px rgba(15, 23, 42, .035);
+  transition: border-color .2s, box-shadow .2s;
+}
+
+.clients-page:not(.sessions-page) .search-input:focus {
+  border-color: #5687ed;
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
+}
+
+/* Lista jako nowoczesne karty */
+
+.clients-page:not(.sessions-page) .clients-list {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  margin-top: 20px;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 82px;
+  padding: 15px 18px;
+  border: 1px solid #e4eaf3;
+  border-radius: 17px;
+  background: #fff;
+  color: #203653;
+  text-align: left;
+  box-shadow: 0 3px 10px rgba(21, 43, 77, .035);
+  transition: border-color .18s, box-shadow .18s, transform .18s;
+}
+
+/* Ozdobny awatar — bez zmiany danych klienta */
+
+.clients-page:not(.sessions-page) .clients-list .client-row::before {
+  content: "♙";
+  display: inline-flex;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d9e6ff;
+  border-radius: 15px;
+  background: linear-gradient(145deg, #edf4ff, #dce8ff);
+  color: #2459bc;
+  font-size: 25px;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row:hover {
+  border-color: #a9c5fb;
+  background: #fff;
+  box-shadow: 0 9px 23px rgba(29, 78, 216, .09);
+  transform: translateY(-2px);
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row .arrow {
+  display: inline-flex;
+  flex: 0 0 34px;
+  width: 34px;
+  height: 34px;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  border: 1px solid #e4ebf6;
+  border-radius: 11px;
+  background: #f5f8fe;
+  color: #2858b6;
+  font-size: 20px;
+}
+
+/* Formularze na ekranie klientów zachowują dotychczasową logikę */
+
+.clients-page:not(.sessions-page) .edit-form,
+.clients-page:not(.sessions-page) .client-details {
+  border: 1px solid #e1e8f2;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(21, 43, 77, .07);
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .clients-page:not(.sessions-page) {
+    padding: 20px 14px 32px;
+  }
+
+  .clients-page:not(.sessions-page) h1 {
+    margin: 22px 0;
+    font-size: 32px;
+  }
+
+  .clients-page:not(.sessions-page) .clients-list .client-row {
+    min-height: 74px;
+    gap: 12px;
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  .clients-page:not(.sessions-page) .clients-list .client-row::before {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 13px;
+  }
+
+  .clients-page:not(.sessions-page) .new-client-button {
+    padding: 11px 13px;
+  }
+}
+
+
+/* Różne minki klientów — bez obrazków */
+
+.clients-page:not(.sessions-page) .clients-list .client-row::before {
+  content: "☺";
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #c9dcff;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #e8f1ff, #cbdcff);
+  color: #2454a6;
+  font-family: Arial, sans-serif;
+  font-size: 31px;
+  line-height: 1;
+}
+
+/* Naprzemienne minki i kolory */
+
+.clients-page:not(.sessions-page) .clients-list .client-row:nth-child(4n + 1)::before {
+  content: "☺";
+  color: #2454a6;
+  background: linear-gradient(145deg, #e8f1ff, #cbdcff);
+  border-color: #c9dcff;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row:nth-child(4n + 2)::before {
+  content: "😊";
+  background: #e1f7ed;
+  border-color: #b6e8d0;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row:nth-child(4n + 3)::before {
+  content: "😎";
+  background: #fff0d5;
+  border-color: #f5d9a2;
+}
+
+.clients-page:not(.sessions-page) .clients-list .client-row:nth-child(4n)::before {
+  content: "🙂";
+  background: #f1e8ff;
+  border-color: #ddccff;
+}
+
+@media (max-width: 600px) {
+  .clients-page:not(.sessions-page) .clients-list .client-row::before {
+    flex-basis: 42px;
+    width: 42px;
+    height: 42px;
+    font-size: 27px;
+  }
+}
+
+
+/* ==========================================
+   MEETINGS REACT — PROFESJONALNY HARMONOGRAM
+   Tylko wygląd ekranu Sesje
+   ========================================== */
+
+.sessions-page {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 26px 22px 42px;
+  color: #172b4d;
+}
+
+/* Nagłówek */
+
+.sessions-page h1 {
+  margin: 24px 0;
+  color: #132747;
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 850;
+  letter-spacing: -1px;
+  line-height: 1.2;
+}
+
+/* Przyciski */
+
+.sessions-page .back-button {
+  min-height: 42px;
+  padding: 10px 15px;
+  border: 1px solid #dce5f1;
+  border-radius: 12px;
+  background: #fff;
+  color: #34506f;
+  font-weight: 750;
+}
+
+.sessions-page .back-button:hover {
+  background: #f2f6ff;
+  border-color: #b7cdfb;
+}
+
+.sessions-page .edit-button {
+  min-height: 46px;
+  padding: 11px 18px;
+  border: 1px solid #1d4ed8;
+  border-radius: 13px;
+  background: #1d4ed8;
+  color: #fff;
+  font-weight: 800;
+  box-shadow: 0 6px 15px rgba(29, 78, 216, .18);
+}
+
+.sessions-page .edit-button:hover {
+  background: #173ea9;
+  box-shadow: 0 9px 20px rgba(29, 78, 216, .22);
+  transform: translateY(-1px);
+}
+
+/* Nawigacja tygodnia */
+
+.sessions-page .week-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 9px;
+  margin: 18px 0 12px;
+  padding: 13px;
+  border: 1px solid #e1e8f2;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(21, 43, 77, .04);
+}
+
+.sessions-page .week-button,
+.sessions-page .today-button {
+  min-height: 42px;
+  padding: 10px 14px;
+  border: 1px solid #dce5f1;
+  border-radius: 11px;
+  background: #f8faff;
+  color: #34506f;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.sessions-page .week-button:hover {
+  border-color: #9dbbf5;
+  background: #edf4ff;
+}
+
+.sessions-page .today-button {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
+  color: #fff;
+}
+
+.sessions-page .today-button:hover {
+  background: #173ea9;
+}
+
+.sessions-page .week-info {
+  margin: 12px 0 16px;
+  color: #52657d;
+  font-size: 14px;
+  font-weight: 750;
+}
+
+/* Tabela harmonogramu */
+
+.sessions-page .sessions-table-wrap {
+  overflow: auto;
+  border: 1px solid #dfe7f2;
+  border-radius: 17px;
+  background: #fff;
+  box-shadow: 0 7px 22px rgba(21, 43, 77, .055);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sessions-page .sessions-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+}
+
+.sessions-page .sessions-table th {
+  padding: 14px 9px;
+  border-bottom: 1px solid #dfe7f2;
+  background: #f1f5fb;
+  color: #435875;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: .35px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.sessions-page .sessions-table td {
+  padding: 8px 6px;
+  border-bottom: 1px solid #edf1f7;
+  border-right: 1px solid #edf1f7;
+  vertical-align: top;
+}
+
+.sessions-page .sessions-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.sessions-page .sessions-table td:last-child,
+.sessions-page .sessions-table th:last-child {
+  border-right: 0;
+}
+
+/* Bieżący dzień */
+
+.sessions-page .sessions-table th.today-column,
+.sessions-page .sessions-table td.today-column {
+  background-color: #edf5ff;
+}
+
+.sessions-page .sessions-table th.today-column {
+  color: #1d4ed8;
+  box-shadow: inset 0 -3px 0 #3975e8;
+}
+
+/* Karty pojedynczych sesji */
+
+.sessions-page .session-card {
+  padding: 10px 9px;
+  border: 1px solid #d5e3fb;
+  border-left: 4px solid #3975e8;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #f5f8ff, #eaf2ff);
+  box-shadow: 0 3px 8px rgba(30, 64, 175, .06);
+  cursor: pointer;
+  transition: transform .16s ease, box-shadow .16s ease;
+}
+
+.sessions-page .session-card:hover {
+  box-shadow: 0 6px 14px rgba(30, 64, 175, .12);
+  transform: translateY(-1px);
+}
+
+.sessions-page .session-card strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #173f8a;
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card span {
+  display: block;
+  margin-top: 4px;
+  color: #4b607c;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card small {
+  display: inline-block;
+  margin-top: 6px;
+  color: #52657d;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* Sesja trwająca */
+
+.sessions-page .live-session .session-card {
+  border-color: #a7e6bd;
+  border-left-color: #16a34a;
+  background: linear-gradient(145deg, #f0fdf4, #dcfce7);
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #166534;
+}
+
+/* Puste dni */
+
+.sessions-page .empty-sessions {
+  padding: 24px 12px;
+  color: #8391a5;
+  text-align: center;
+}
+
+/* Formularze sesji */
+
+.sessions-page .edit-form,
+.sessions-page .client-details {
+  border: 1px solid #e1e8f2;
+  border-radius: 19px;
+  background: #fff;
+  box-shadow: 0 9px 28px rgba(21, 43, 77, .07);
+}
+
+/* Komunikaty */
+
+.sessions-page .success {
+  border: 1px solid #b7ebc9;
+  border-radius: 12px;
+  background: #effcf4;
+  color: #166534;
+}
+
+.sessions-page .error {
+  padding: 12px 14px;
+  border: 1px solid #fecaca;
+  border-radius: 12px;
+  background: #fff5f5;
+  color: #b91c1c;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .sessions-page {
+    padding: 18px 10px 30px;
+  }
+
+  .sessions-page h1 {
+    margin: 20px 0;
+    font-size: 29px;
+  }
+
+  .sessions-page .week-navigation {
+    gap: 7px;
+    padding: 10px;
+    border-radius: 14px;
+  }
+
+  .sessions-page .week-button,
+  .sessions-page .today-button {
+    min-height: 39px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .sessions-page .sessions-table-wrap {
+    border-radius: 12px;
+  }
+
+  .sessions-page .sessions-table th {
+    padding: 11px 6px;
+    font-size: 10px;
+  }
+
+  .sessions-page .sessions-table td {
+    padding: 5px 3px;
+  }
+
+  .sessions-page .session-card {
+    padding: 7px 5px;
+    border-radius: 9px;
+  }
+
+  .sessions-page .session-card strong {
+    font-size: 11px;
+  }
+
+  .sessions-page .session-card span {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sessions-page .session-card,
+  .sessions-page button {
+    transition: none;
+  }
+}
+
+
+/* === SESJE: WYRAŹNA METAMORFOZA HARMONOGRAMU === */
+
+.sessions-page {
+  background: #f3f6fc !important;
+  border-radius: 22px;
+  padding: 24px 18px 36px !important;
+}
+
+.sessions-page > h1 {
+  color: #102a43 !important;
+  font-size: 34px !important;
+  font-weight: 850 !important;
+  letter-spacing: -1px !important;
+  text-align: left;
+  margin: 22px 0 18px !important;
+}
+
+/* Pasek nawigacji tygodnia */
+
+.sessions-page .week-navigation {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px !important;
+  padding: 12px !important;
+  margin: 20px 0 14px !important;
+  border: 1px solid #dce6f5 !important;
+  border-radius: 18px !important;
+  background: #fff !important;
+  box-shadow: 0 7px 22px rgba(31, 58, 99, .07) !important;
+}
+
+.sessions-page .week-button {
+  min-width: 46px;
+  min-height: 46px !important;
+  border-radius: 13px !important;
+  background: #edf3ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #d8e5ff !important;
+  font-size: 22px !important;
+  font-weight: 800 !important;
+}
+
+.sessions-page .today-button {
+  flex: 1;
+  min-height: 46px !important;
+  border-radius: 13px !important;
+  background: #1d4ed8 !important;
+  color: #fff !important;
+  border: 1px solid #1d4ed8 !important;
+  font-weight: 800 !important;
+}
+
+.sessions-page .week-info {
+  padding: 13px 15px !important;
+  margin: 14px 0 !important;
+  border: 1px solid #dce6f5;
+  border-radius: 13px;
+  background: #e9f1ff;
+  color: #355477 !important;
+  text-align: left;
+}
+
+.sessions-page .week-info strong {
+  color: #173f8a !important;
+}
+
+/* Kalendarz */
+
+.sessions-page .sessions-table-wrap {
+  border: 1px solid #d9e3f0 !important;
+  border-radius: 17px !important;
+  background: #fff !important;
+  box-shadow: 0 8px 26px rgba(31, 58, 99, .08) !important;
+}
+
+.sessions-page .sessions-table {
+  width: 100%;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  background: #fff !important;
+}
+
+.sessions-page .sessions-table thead th {
+  padding: 14px 7px !important;
+  background: #eaf0fa !important;
+  color: #344e70 !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  border-bottom: 2px solid #d8e3f2 !important;
+  text-align: center !important;
+}
+
+.sessions-page .sessions-table thead th:first-child {
+  background: #dce7f7 !important;
+  color: #25466f !important;
+}
+
+.sessions-page .sessions-table thead th.today-column {
+  background: #2457c5 !important;
+  color: #fff !important;
+  box-shadow: inset 0 -4px 0 #8db6ff;
+}
+
+.sessions-page .sessions-table td {
+  padding: 7px 5px !important;
+  border-right: 1px solid #e8eef7 !important;
+  border-bottom: 1px solid #e8eef7 !important;
+  vertical-align: top !important;
+}
+
+.sessions-page .sessions-table tbody tr:nth-child(even) td {
+  background-color: #fafcff;
+}
+
+.sessions-page .sessions-table td.today-column {
+  background: #f0f6ff !important;
+}
+
+/* Godziny */
+
+.sessions-page .sessions-table td.session-time {
+  min-width: 54px;
+  padding: 10px 5px !important;
+  background: #f0f4fa !important;
+  color: #526782 !important;
+  font-size: 11px;
+  font-weight: 800;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Karty sesji — większe, z wyraźnym akcentem */
+
+.sessions-page .session-card {
+  min-height: 56px;
+  box-sizing: border-box;
+  padding: 10px 8px !important;
+  border: 1px solid #cbdcf8 !important;
+  border-left: 4px solid #3674e8 !important;
+  border-radius: 11px !important;
+  background: linear-gradient(145deg, #f1f6ff, #e2edff) !important;
+  box-shadow: 0 3px 9px rgba(34, 78, 155, .09) !important;
+  cursor: pointer;
+}
+
+.sessions-page .session-card strong {
+  display: block;
+  margin: 0 0 5px !important;
+  color: #153d83 !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1.4 !important;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card span {
+  display: block;
+  margin-top: 4px !important;
+  color: #465f80 !important;
+  font-size: 11px !important;
+  line-height: 1.45 !important;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card small {
+  display: inline-block;
+  margin-top: 5px !important;
+}
+
+.sessions-page .session-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 15px rgba(34, 78, 155, .15) !important;
+}
+
+/* Sesja aktualnie trwająca */
+
+.sessions-page .live-session .session-card {
+  border-color: #9bdab1 !important;
+  border-left-color: #159447 !important;
+  background: linear-gradient(145deg, #effdf4, #d9f8e4) !important;
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #126333 !important;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .sessions-page {
+    padding: 18px 9px 28px !important;
+    border-radius: 15px;
+  }
+
+  .sessions-page > h1 {
+    font-size: 30px !important;
+  }
+
+  .sessions-page .week-navigation {
+    padding: 9px !important;
+    gap: 8px !important;
+  }
+
+  .sessions-page .week-button,
+  .sessions-page .today-button {
+    min-height: 43px !important;
+  }
+
+  .sessions-page .sessions-table-wrap {
+    border-radius: 12px !important;
+  }
+
+  .sessions-page .sessions-table {
+    min-width: 570px;
+  }
+
+  .sessions-page .sessions-table thead th {
+    padding: 12px 6px !important;
+    font-size: 10px !important;
+  }
+
+  .sessions-page .sessions-table td {
+    padding: 6px 4px !important;
+  }
+
+  .sessions-page .sessions-table td.session-time {
+    min-width: 48px;
+    font-size: 10px;
+  }
+
+  .sessions-page .session-card {
+    min-height: 58px;
+    padding: 8px 5px !important;
+  }
+
+  .sessions-page .session-card strong {
+    font-size: 11px !important;
+  }
+
+  .sessions-page .session-card span {
+    font-size: 10px !important;
+  }
+}
+
+
+/* Data pod nazwą dnia w nagłówku harmonogramu */
+.sessions-page .sessions-table thead th .session-day-name {
+  display: block;
+  white-space: nowrap;
+}
+
+.sessions-page .sessions-table thead th .session-day-date {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.sessions-page .sessions-table thead th.today-column .session-day-date {
+  color: #ffffff;
+}
+
+@media (max-width: 600px) {
+  .sessions-page .sessions-table thead th .session-day-date {
+    font-size: 11px;
+    margin-top: 3px;
+  }
+}
+
+/* === NOWOCZESNE KARTY SESJI === */
+
+.sessions-page .sessions-table td.session-cell {
+  padding: 7px 5px !important;
+  vertical-align: top !important;
+}
+
+.sessions-page .session-card {
+  position: relative;
+  min-height: 64px;
+  padding: 11px 9px !important;
+  border: 1px solid #d5e3fa !important;
+  border-left: 4px solid #3976e8 !important;
+  border-radius: 13px !important;
+  background: linear-gradient(145deg, #ffffff 0%, #eaf2ff 100%) !important;
+  box-shadow: 0 3px 8px rgba(37, 77, 145, 0.09) !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  overflow-wrap: anywhere;
+}
+
+.sessions-page .session-card strong {
+  display: block;
+  color: #183d78 !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  line-height: 1.4 !important;
+  margin-bottom: 5px !important;
+}
+
+.sessions-page .session-card span {
+  display: block;
+  color: #526782 !important;
+  font-size: 11px !important;
+  line-height: 1.4 !important;
+  margin-top: 3px !important;
+}
+
+.sessions-page .session-card small {
+  display: inline-block;
+  margin-top: 6px !important;
+  padding: 3px 6px;
+  border-radius: 7px;
+  background: #dce9ff;
+  color: #2454a6;
+  font-size: 11px;
+}
+
+.sessions-page .session-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 16px rgba(37, 77, 145, 0.16) !important;
+}
+
+/* Sesja aktualnie trwająca */
+
+.sessions-page .live-session .session-card {
+  border: 1px solid #b8e6c8 !important;
+  border-left: 4px solid #20a05a !important;
+  background: linear-gradient(145deg, #ffffff 0%, #e4f9eb 100%) !important;
+  box-shadow: 0 3px 8px rgba(22, 130, 70, 0.09) !important;
+}
+
+.sessions-page .live-session .session-card strong {
+  color: #126238 !important;
+}
+
+.sessions-page .live-session .session-card span {
+  color: #397052 !important;
+}
+
+/* Czytelniejsza kolumna godzin */
+
+.sessions-page .sessions-table td.session-time {
+  padding: 12px 4px !important;
+  color: #526782 !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  background: #f1f5fb !important;
+  border-right: 1px solid #e0e8f3 !important;
+}
+
+/* Telefon */
+
+@media (max-width: 600px) {
+  .sessions-page .sessions-table td.session-cell {
+    padding: 6px 4px !important;
+  }
+
+  .sessions-page .session-card {
+    min-height: 62px;
+    padding: 9px 6px !important;
+    border-radius: 10px !important;
+  }
+
+  .sessions-page .session-card strong {
+    font-size: 11px !important;
+  }
+
+  .sessions-page .session-card span {
+    font-size: 10px !important;
+  }
+}
+
+
+/* === KOLORY SESJI WEDŁUG KLIENTA === */
+
+.sessions-page .sessions-table td.session-cell:not(.live-session) .session-card {
+  border-radius: 13px !important;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sessions-page .sessions-table .session-cell.client-color-1:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #e4eeff 100%) !important;
+  border: 1px solid #c4d7fb !important;
+  border-left: 5px solid #3976e8 !important;
+  box-shadow: 0 4px 10px rgba(57, 118, 232, 0.13) !important;
+}
+.sessions-page .sessions-table .session-cell.client-color-1:not(.live-session) .session-card strong { color: #244b88 !important; }
+
+.sessions-page .sessions-table .session-cell.client-color-2:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #fff0df 100%) !important;
+  border: 1px solid #f2d6b6 !important;
+  border-left: 5px solid #d97706 !important;
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.13) !important;
+}
+.sessions-page .sessions-table .session-cell.client-color-2:not(.live-session) .session-card strong { color: #914b08 !important; }
+
+.sessions-page .sessions-table .session-cell.client-color-3:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f1e8ff 100%) !important;
+  border: 1px solid #ddccff !important;
+  border-left: 5px solid #8956c7 !important;
+  box-shadow: 0 4px 10px rgba(137, 86, 199, 0.13) !important;
+}
+.sessions-page .sessions-table .session-cell.client-color-3:not(.live-session) .session-card strong { color: #63369a !important; }
+
+.sessions-page .sessions-table .session-cell.client-color-4:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #ffe9ee 100%) !important;
+  border: 1px solid #f5cbd5 !important;
+  border-left: 5px solid #d94f70 !important;
+  box-shadow: 0 4px 10px rgba(217, 79, 112, 0.13) !important;
+}
+.sessions-page .sessions-table .session-cell.client-color-4:not(.live-session) .session-card strong { color: #a52d4c !important; }
+
+.sessions-page .sessions-table .session-cell.client-color-5:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #e0f7f3 100%) !important;
+  border: 1px solid #bde7df !important;
+  border-left: 5px solid #0f9688 !important;
+  box-shadow: 0 4px 10px rgba(15, 150, 136, 0.13) !important;
+}
+.sessions-page .sessions-table .session-cell.client-color-5:not(.live-session) .session-card strong { color: #11675e !important; }
+
+.sessions-page .sessions-table .session-cell.client-color-6:not(.live-session) .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #fff8d9 100%) !important;
+  border: 1px solid #eee1a6 !important;
+  border-left: 5px solid #b79a12 !important;
+  box-shadow: 0 4px 10px rgba(183, 154, 18, 0.13) !important;
+}
+.sessions-page .sessions-table .session-cell.client-color-6:not(.live-session) .session-card strong { color: #78640b !important; }
+
+/* Aktywna sesja zawsze zielona, również cykliczna */
+.sessions-page .sessions-table td.session-cell.live-session .session-card {
+  background: linear-gradient(145deg, #ffffff 0%, #e4f9eb 100%) !important;
+  border: 1px solid #b8e6c8 !important;
+  border-left: 5px solid #20a05a !important;
+  box-shadow: 0 4px 10px rgba(32, 160, 90, 0.18) !important;
+}
+.sessions-page .sessions-table td.session-cell.live-session .session-card strong { color: #126238 !important; }
+
+.sessions-page .sessions-table td.session-cell .session-card:hover {
+  transform: translateY(-2px);
+}
+
+/* Godziny pozostają widoczne podczas poziomego przewijania tygodnia */
+.sessions-page .sessions-table thead th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: #dce7f7 !important;
+  box-shadow: 2px 0 4px rgba(31, 58, 99, 0.10);
+}
+
+.sessions-page .sessions-table tbody td.session-time {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: #f1f5fb !important;
+  box-shadow: 2px 0 4px rgba(31, 58, 99, 0.08);
+}
+
+
+
+/* Przyciski nad widokiem sesji */
+.sessions-page .sessions-clients-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  margin: 0;
+  padding: 10px 18px;
+  white-space: nowrap;
+}
+
+.sessions-page > .edit-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-height: 44px;
+  margin: 0 10px 18px 0;
+}
+
+.sessions-page .sessions-clients-button {
+  margin-bottom: 18px;
+}
+
+
+
+/* Tydzień — przyciski — zegar */
+.sessions-page .sessions-week-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.sessions-page .sessions-week-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.sessions-page .sessions-week-actions .edit-button,
+.sessions-page .sessions-week-actions .sessions-clients-button {
+  width: auto;
+  min-height: 40px;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.sessions-page .sessions-clock {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  .sessions-page .sessions-week-bar {
+    gap: 10px;
+  }
+
+  .sessions-page .sessions-week-actions {
+    gap: 6px;
+  }
+}
+
+
+
+/* ===== Telefon: zadzwoń / SMS ===== */
+.phone-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.phone-btn {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.05);
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+/* ===== Stała siatka 8:00-21:00 ===== */
+.sessions-table td.time-col,
+.sessions-table td.day-col {
+  padding: 0;
+  vertical-align: top;
+}
+
+.sessions-table td.time-col {
+  width: 56px;
+  min-width: 56px;
+  background: #fafbfc;
+}
+
+.hour-label {
+  box-sizing: border-box;
+  padding-top: 4px;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.day-grid {
+  position: relative;
+  min-width: 95px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(var(--h) - 1px),
+    #e2e8f0 calc(var(--h) - 1px),
+    #e2e8f0 var(--h)
+  );
+}
+
+.session-cell.session-block {
+  position: absolute;
+  box-sizing: border-box;
+  min-width: 0;
+  height: auto;
+  padding: 2px;
+}
+
+.session-block .session-card {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding: 4px 7px;
+  gap: 1px;
+}

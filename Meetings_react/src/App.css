@@ -2928,25 +2928,6 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   transform: translateY(-2px);
 }
 
-/* Godziny pozostają widoczne podczas poziomego przewijania tygodnia */
-.sessions-page .sessions-table thead th:first-child {
-  position: sticky;
-  left: 0;
-  z-index: 3;
-  background: #dce7f7 !important;
-  box-shadow: 2px 0 4px rgba(31, 58, 99, 0.10);
-}
-
-.sessions-page .sessions-table tbody td.session-time {
-  position: sticky;
-  left: 0;
-  z-index: 2;
-  background: #f1f5fb !important;
-  box-shadow: 2px 0 4px rgba(31, 58, 99, 0.08);
-}
-
-
-
 /* Przyciski nad widokiem sesji */
 .sessions-page .sessions-clients-button {
   display: inline-flex;
@@ -3087,4 +3068,60 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   overflow: hidden;
   padding: 4px 7px;
   gap: 1px;
+}
+
+/* ===== Przyklejone dni i godziny (jedno miejsce) ===== */
+.sessions-page .sessions-table-wrap {
+  overflow: auto !important;
+  max-height: calc(100dvh - 190px);
+  -webkit-overflow-scrolling: touch;
+}
+
+.sessions-page .sessions-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: #f8fafc !important;
+}
+
+.sessions-page .sessions-table thead th.today-column {
+  background: #dbeafe !important;
+}
+
+.sessions-page .sessions-table thead th:first-child {
+  left: 0;
+  z-index: 7;
+  width: 56px;
+  min-width: 56px;
+  background: #dce7f7 !important;
+}
+
+.sessions-page .sessions-table tbody td.time-col {
+  position: sticky;
+  left: 0;
+  z-index: 4;
+  background: #f1f5fb !important;
+  box-shadow: 2px 0 4px rgba(31, 58, 99, 0.08);
+}
+
+/* ===== Poprawka sticky: wysokość w vh (bez dvh) ===== */
+.sessions-page .sessions-table-wrap {
+  max-height: 70vh !important;
+  overflow: auto !important;
+}
+
+.sessions-page .sessions-table thead th {
+  position: sticky !important;
+  top: 0 !important;
+}
+
+.sessions-page .sessions-table thead th:first-child {
+  left: 0 !important;
+  z-index: 7 !important;
+}
+
+.sessions-page .sessions-table tbody td.time-col {
+  position: sticky !important;
+  left: 0 !important;
+  z-index: 4 !important;
 }
