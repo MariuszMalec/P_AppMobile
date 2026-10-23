@@ -74,6 +74,75 @@ function Sessions({ onBack }) {
       )
     : []
 
+  const START_HOUR = 8
+  const END_HOUR = 21
+  const HOUR_H = 64
+  const hourLabels = Array.from(
+    { length: END_HOUR - START_HOUR },
+    (_, i) => START_HOUR + i
+  )
+
+  function toMin(t) {
+    const [h, m] = String(t).split(':').map(Number)
+    return h * 60 + m
+  }
+
+  const sessionsByDay = {}
+  days.forEach((d) => {
+    sessionsByDay[d] = []
+  })
+  if (data) {
+    Object.values(data.table).forEach((daySessions) => {
+      days.forEach((d) => {
+        const sess = daySessions[String(d)]
+        if (sess) sessionsByDay[d].push(sess)
+      })
+    })
+  }
+
+  function layoutDay(list) {
+    const items = list
+      .map((sess) => ({
+        s: sess,
+        a: Math.max(toMin(sess.start), START_HOUR * 60),
+        b: Math.min(toMin(sess.end), END_HOUR * 60),
+      }))
+      .filter((x) => x.b > x.a)
+      .sort((x, y) => x.a - y.a || x.b - y.b)
+
+    const out = []
+    let cluster = []
+    let clusterEnd = 0
+
+    const flush = () => {
+      const lanes = []
+      cluster.forEach((it) => {
+        let l = lanes.findIndex((end) => end <= it.a)
+        if (l === -1) {
+          l = lanes.length
+          lanes.push(0)
+        }
+        lanes[l] = it.b
+        it.lane = l
+      })
+      cluster.forEach((it) => {
+        it.lanes = lanes.length
+        out.push(it)
+      })
+      cluster = []
+      clusterEnd = 0
+    }
+
+    items.forEach((it) => {
+      if (cluster.length && it.a >= clusterEnd) flush()
+      cluster.push(it)
+      clusterEnd = Math.max(clusterEnd, it.b)
+    })
+    if (cluster.length) flush()
+
+    return out
+  }
+
   function saveSession() {
     setError('')
 
@@ -793,55 +862,64 @@ function Sessions({ onBack }) {
               </thead>
 
               <tbody>
-                {rows.length === 0 ? (
-                  <tr>
-                    <td colSpan="8" className="empty-sessions">
-                      Brak sesji w tym tygodniu
-                    </td>
-                  </tr>
-                ) : (
-                  rows.map(([time, daySessions]) => (
-                    <tr key={time}>
-                      <td className="session-time">{time}</td>
+                <tr>
+                  <td className="time-col">
+                    {hourLabels.map((h) => (
+                      <div
+                        key={h}
+                        className="hour-label"
+                        style={{ height: HOUR_H }}
+                      >
+                        {String(h).padStart(2, '0')}:00
+                      </div>
+                    ))}
+                  </td>
 
-                      {days.map((day) => {
-                        const session = daySessions[String(day)]
-
-                        return (
-                          <td
-                            key={day}
-                            className={[
-                              'session-cell',
-                              session?.is_live ? 'live-session' : '',
-                              session
-                                ? `client-color-${((Number(session.client_id) || 1) - 1) % 6 + 1}`
-                                : ''
-                            ].filter(Boolean).join(' ')}
-                          >
-                            {session && (
+                  {days.map((day) => (
+                    <td key={day} className="day-col">
+                      <div
+                        className="day-grid"
+                        style={{
+                          '--h': HOUR_H + 'px',
+                          height: HOUR_H * hourLabels.length,
+                        }}
+                      >
+                        {layoutDay(sessionsByDay[day]).map(
+                          ({ s: session, a, b, lane, lanes }) => (
+                            <div
+                              key={session.session_id}
+                              className={[
+                                'session-cell',
+                                'session-block',
+                                session.is_live ? 'live-session' : '',
+                                `client-color-${((Number(session.client_id) || 1) - 1) % 6 + 1}`,
+                              ].filter(Boolean).join(' ')}
+                              style={{
+                                top: ((a - START_HOUR * 60) / 60) * HOUR_H,
+                                height: ((b - a) / 60) * HOUR_H,
+                                left: `${(lane / lanes) * 100}%`,
+                                width: `${100 / lanes}%`,
+                              }}
+                            >
                               <div
-                                  className="session-card"
-                                  onClick={() => setSelectedSession(session)}
-                                >
+                                className="session-card"
+                                onClick={() => setSelectedSession(session)}
+                              >
                                 <strong>{session.client}</strong>
 
                                 {session.description && (
-                                  <span>
-                                    {session.description}
-                                  </span>
+                                  <span>{session.description}</span>
                                 )}
 
-                                {session.is_recurring && (
-                                  <small>🔁</small>
-                                )}
+                                {session.is_recurring && <small>🔁</small>}
                               </div>
-                            )}
-                          </td>
-                        )
-                      })}
-                    </tr>
-                  ))
-                )}
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
               </tbody>
             </table>
           </div>
