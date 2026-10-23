@@ -491,7 +491,26 @@ function App() {
           </p>
 
           <p>
-            <strong>Telefon:</strong> {selectedClient.Phone || '—'}
+            <strong>Telefon:</strong>{' '}
+            {selectedClient.Phone ? (
+              <span className="phone-actions">
+                {selectedClient.Phone}
+                <a
+                  className="phone-btn"
+                  href={`tel:${String(selectedClient.Phone).replace(/[^\d+]/g, '')}`}
+                >
+                  📞 Zadzwoń
+                </a>
+                <a
+                  className="phone-btn"
+                  href={`sms:${String(selectedClient.Phone).replace(/[^\d+]/g, '')}`}
+                >
+                  💬 SMS
+                </a>
+              </span>
+            ) : (
+              '—'
+            )}
           </p>
 
           <p>

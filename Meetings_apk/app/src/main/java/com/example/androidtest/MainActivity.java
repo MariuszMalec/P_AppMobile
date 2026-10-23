@@ -254,7 +254,33 @@ public class MainActivity extends Activity {
         WebView webView = new WebView(this);
 
         webView.setWebViewClient(
-            new WebViewClient()
+            new WebViewClient() {
+                @Override
+                public boolean shouldOverrideUrlLoading(
+                        WebView view,
+                        android.webkit.WebResourceRequest request
+                ) {
+                    String url = request.getUrl().toString();
+
+                    if (url.startsWith("tel:")
+                            || url.startsWith("sms:")
+                            || url.startsWith("smsto:")
+                            || url.startsWith("mailto:")) {
+                        try {
+                            android.content.Intent intent =
+                                new android.content.Intent(
+                                    android.content.Intent.ACTION_VIEW,
+                                    android.net.Uri.parse(url)
+                                );
+                            startActivity(intent);
+                        } catch (Exception ignored) {
+                        }
+                        return true;
+                    }
+
+                    return false;
+                }
+            }
         );
 
         webView.setWebChromeClient(
@@ -266,6 +292,9 @@ public class MainActivity extends Activity {
 
         webView.getSettings()
             .setDomStorageEnabled(true);
+
+        webView.getSettings()
+            .setCacheMode(android.webkit.WebSettings.LOAD_NO_CACHE);
 
         webView.loadUrl(
             "http://127.0.0.1:8000/"
