@@ -49,33 +49,12 @@ android {
 
 def activityApiDir = file("../../activity_api")
 def apkPythonDir = file("src/main/python")
+def reactDistDir = file("../../activity_react/dist")
+def reactApkDir = file("src/main/python/static/react")
 
 tasks.register("copyActivityApiPython") {
-    inputs.files(
-        fileTree(activityApiDir) {
-            include "main.py"
-            include "db.py"
-            include "enums.py"
-            include "templates.py"
-            include "validators.py"
-            include "activity.db"
-            include "routers/**"
-            include "templates/**"
-            include "static/**"
-
-            exclude "**/__pycache__/**"
-            exclude "**/*.pyc"
-        }
-    )
-
-    outputs.dir(apkPythonDir)
-
     doLast {
-        println "========================================"
         println "KOPIOWANIE activity_api -> APK Python"
-        println "Źródło:  ${activityApiDir}"
-        println "Cel:     ${apkPythonDir}"
-        println "========================================"
 
         copy {
             from activityApiDir
@@ -97,11 +76,31 @@ tasks.register("copyActivityApiPython") {
     }
 }
 
+tasks.register("copyReactDist") {
+    dependsOn("copyActivityApiPython")
+
+    doLast {
+        if (!file("${reactDistDir}/index.html").exists()) {
+            throw new GradleException(
+                "Brak gotowego Reacta w ${reactDistDir}. Najpierw wykonaj npm run build."
+            )
+        }
+
+        println "KOPIOWANIE gotowego Reacta -> APK"
+
+        delete reactApkDir
+
+        copy {
+            from reactDistDir
+            into reactApkDir
+        }
+    }
+}
+
 tasks.configureEach {
     if (name == "mergeDebugPythonSources" ||
         name == "mergeReleasePythonSources") {
-
-        dependsOn("copyActivityApiPython")
+        dependsOn("copyReactDist")
     }
 }
 
@@ -117,3 +116,5 @@ chaquopy {
         }
     }
 }
+
+

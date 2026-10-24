@@ -246,3 +246,4 @@ def start_server(log_path):
         return f"START ERROR: {repr(e)}"
 
     return "SERVER STOPPED"
+

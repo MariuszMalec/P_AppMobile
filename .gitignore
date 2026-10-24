@@ -119,3 +119,6 @@ Desktop.ini
 
 # Gradle cache
 .gradle/
+
+# Android SDK - osobna konfiguracja na PC i Termux
+local.properties

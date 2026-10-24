@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
 import sqlite3
 from fastapi import FastAPI
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
 
 from db import (
     init_db_if_not_exists,
@@ -18,6 +19,11 @@ from routers.mainmenu import router as mainmenu_router
 from routers.livenow import router as livenow_router
 from routers.pictureactivity import router as pictureactivity_router
 from routers.persons import router as persons_router
+from routers.api_activity import router as api_activity_router
+from routers.api_live import router as api_live_router
+from routers.api_persons import router as api_persons_router
+from routers.api_pictureactivities import router as api_pictureactivities_router
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # =========================
@@ -55,6 +61,25 @@ async def lifespan(app: FastAPI):
 # =========================
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost",
+        "https://localhost",
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # =========================
 # STATIC
 # =========================
@@ -68,12 +93,25 @@ app.mount(
 
 
 # ---------- MAIN PAGE ----------
-@app.get("/")
-def root_redirect():
-    return RedirectResponse(
-        "/live/statusall",
-        status_code=302
-    )
+REACT_DIR = STATIC_DIR / "react"
+
+if (REACT_DIR / "index.html").exists():
+    app.mount("/assets", StaticFiles(directory=REACT_DIR / "assets"), name="react-assets")
+
+    @app.get("/favicon.svg")
+    def react_favicon():
+        return FileResponse(REACT_DIR / "favicon.svg")
+
+    @app.get("/")
+    def react_index():
+        return FileResponse(
+            REACT_DIR / "index.html",
+            headers={"Cache-Control": "no-cache, no-store, must-revalidate"},
+        )
+else:
+    @app.get("/")
+    def root_redirect():
+        return RedirectResponse("/live/statusall", status_code=302)
 
 
 # ---------- ROUTERS ----------
@@ -83,3 +121,9 @@ app.include_router(activity_router)
 app.include_router(livenow_router)
 app.include_router(pictureactivity_router)
 app.include_router(persons_router)
+app.include_router(api_activity_router)
+app.include_router(api_live_router)
+app.include_router(api_persons_router)
+app.include_router(api_pictureactivities_router)
+
+
