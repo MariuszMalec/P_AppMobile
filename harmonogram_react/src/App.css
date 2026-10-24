@@ -1277,3 +1277,43 @@ button:disabled {
     min-height: 82px;
   }
 }
+
+/* ===== LEPIEJ WIDOCZNY KURSOR NAD KALENDARZEM ===== */
+
+.calendar-scroll {
+  cursor: grab;
+}
+
+.calendar-scroll:hover {
+  cursor: grab;
+}
+
+.calendar-scroll.is-dragging {
+  cursor: grabbing;
+}
+
+/* Kontrastowy kursor podczas chwytania zlecenia */
+.calendar-order {
+  cursor: grab;
+}
+
+.calendar-order:active {
+  cursor: grabbing;
+}
+
+/* Widoczny obrys klawiatury i elementów interaktywnych */
+.calendar-scroll button:focus-visible,
+.calendar-scroll .calendar-order:focus-visible {
+  outline: 3px solid #145db8;
+  outline-offset: 2px;
+}
+
+/* Wyraźny kursor nad pustym polem kalendarza */
+.calendar-day-cell {
+  cursor: default;
+}
+
+.day-add-button,
+.machine-add-button {
+  cursor: pointer;
+}
