@@ -4,6 +4,7 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
 
 from db import (
     init_db_if_not_exists,
@@ -18,6 +19,8 @@ from routers.mainmenu import router as mainmenu_router
 from routers.livenow import router as livenow_router
 from routers.pictureactivity import router as pictureactivity_router
 from routers.persons import router as persons_router
+from routers.api_activity import router as api_activity_router
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # =========================
@@ -55,6 +58,25 @@ async def lifespan(app: FastAPI):
 # =========================
 app = FastAPI(lifespan=lifespan)
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost",
+        "https://localhost",
+    ],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # =========================
 # STATIC
 # =========================
@@ -83,3 +105,5 @@ app.include_router(activity_router)
 app.include_router(livenow_router)
 app.include_router(pictureactivity_router)
 app.include_router(persons_router)
+app.include_router(api_activity_router)
+
