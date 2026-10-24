@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { getActivities, deleteActivity, imageUrl } from "./api";
 import ActivityForm from "./ActivityForm";
+import { useConfirm } from "./Confirm";
 
 const hhmm = (t) => (t ? t.slice(0, 5) : "");
 const pretty = (s) => (s ?? "").replaceAll("_", " ");
 
 export default function Activities() {
+  const confirm = useConfirm();
   const [items, setItems] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -22,7 +24,7 @@ export default function Activities() {
   }, []);
 
   const remove = async (id) => {
-    if (!confirm("Usunąć aktywność?")) return;
+    if (!(await confirm({ title: "Usunąć aktywność?", message: "Tej operacji nie można cofnąć.", confirmText: "Usuń", danger: true }))) return;
     try {
       await deleteActivity(id);
       load();
@@ -91,3 +93,4 @@ export default function Activities() {
     </>
   );
 }
+

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useConfirm } from "./Confirm";
 import { getPersons, createPerson, updatePerson, deletePerson, imageUrl } from "./api";
 
 function PersonForm({ person, onSaved, onCancel }) {
@@ -54,6 +55,7 @@ function PersonForm({ person, onSaved, onCancel }) {
 }
 
 export default function Persons() {
+  const confirm = useConfirm();
   const [items, setItems] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -71,7 +73,7 @@ export default function Persons() {
     const extra = p.activityCount
       ? `\n\n${p.activityCount} aktywności zostanie bez przypisanej osoby.`
       : "";
-    if (!confirm(`Usunąć osobę ${p.name}?${extra}`)) return;
+    if (!(await confirm({ title: `Usunąć osobę ${p.name}?`, message: extra.trim(), confirmText: "Usuń", danger: true }))) return;
     try {
       await deletePerson(p.id);
       load();
@@ -133,3 +135,4 @@ export default function Persons() {
     </>
   );
 }
+

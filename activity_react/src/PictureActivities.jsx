@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useConfirm } from "./Confirm";
 import {
   getPictureActivities, getPictureTypes, createPictureActivity,
   updatePictureActivity, deletePictureActivity, imageUrl,
@@ -84,6 +85,7 @@ function PictureForm({ item, onSaved, onCancel }) {
 }
 
 export default function PictureActivities() {
+  const confirm = useConfirm();
   const [items, setItems] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -101,7 +103,7 @@ export default function PictureActivities() {
     const extra = p.usageCount
       ? `\n\n${p.usageCount} aktywności w harmonogramie zostanie bez rodzaju.`
       : "";
-    if (!confirm(`Usunąć rodzaj ${pretty(p.name)}?${extra}`)) return;
+    if (!(await confirm({ title: `Usunąć rodzaj ${pretty(p.name)}?`, message: extra.trim(), confirmText: "Usuń", danger: true }))) return;
     try {
       await deletePictureActivity(p.id);
       load();
@@ -156,3 +158,4 @@ export default function PictureActivities() {
     </>
   );
 }
+
