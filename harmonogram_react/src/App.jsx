@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import './App.css'
 
 const MONTHS = [
@@ -377,7 +377,38 @@ function App() {
             </div>
 
             {data.machines?.length ? (
-              <div className="calendar-scroll">
+              <div
+                className="calendar-scroll"
+                onMouseDown={(event) => {
+                  if (event.button !== 0 || event.target.closest('.calendar-order, button, input, select, a')) return
+                  const element = event.currentTarget
+                  element.dataset.dragScroll = 'true'
+                  element.dataset.dragStartX = String(event.clientX)
+                  element.dataset.dragStartLeft = String(element.scrollLeft)
+                  element.classList.add('is-dragging')
+                }}
+                onMouseMove={(event) => {
+                  const element = event.currentTarget
+                  if (element.dataset.dragScroll !== 'true' || event.buttons !== 1) return
+                  event.preventDefault()
+                  element.scrollLeft =
+                    Number(element.dataset.dragStartLeft) -
+                    (event.clientX - Number(element.dataset.dragStartX))
+                }}
+                onMouseUp={(event) => {
+                  delete event.currentTarget.dataset.dragScroll
+                  event.currentTarget.classList.remove('is-dragging')
+                }}
+                onMouseLeave={(event) => {
+                  delete event.currentTarget.dataset.dragScroll
+                  event.currentTarget.classList.remove('is-dragging')
+                }}
+                onWheel={(event) => {
+                  if (!event.shiftKey) return
+                  event.preventDefault()
+                  event.currentTarget.scrollLeft += event.deltaY
+                }}
+              >
                 <div className="schedule-calendar" style={{ '--days-count': days.length }}>
                   <div className="calendar-header">
                     <div className="machine-heading">Maszyna</div>

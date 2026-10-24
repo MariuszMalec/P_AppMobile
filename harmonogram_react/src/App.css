@@ -225,6 +225,12 @@ select {
   border: 1px solid #dfe3da;
   border-radius: 9px;
   overscroll-behavior-x: contain;
+  cursor: grab;
+}
+
+.calendar-scroll.is-dragging {
+  cursor: grabbing;
+  user-select: none;
 }
 
 .schedule-calendar {
