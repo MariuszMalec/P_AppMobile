@@ -41,3 +41,12 @@ export const updatePerson = (id, p) =>
   request(`/api/persons/${id}`, { method: "PUT", body: JSON.stringify(p) });
 export const deletePerson = (id) =>
   request(`/api/persons/${id}`, { method: "DELETE" });
+
+export const getPictureActivities = () => request("/api/pictureactivities");
+export const getPictureTypes = () => request("/api/pictureactivities/types");
+export const createPictureActivity = (p) =>
+  request("/api/pictureactivities", { method: "POST", body: JSON.stringify(p) });
+export const updatePictureActivity = (id, p) =>
+  request(`/api/pictureactivities/${id}`, { method: "PUT", body: JSON.stringify(p) });
+export const deletePictureActivity = (id) =>
+  request(`/api/pictureactivities/${id}`, { method: "DELETE" });

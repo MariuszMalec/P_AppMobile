@@ -3,6 +3,7 @@ import LiveStatus from "./LiveStatus";
 import LiveNow from "./LiveNow";
 import Activities from "./Activities";
 import Persons from "./Persons";
+import PictureActivities from "./PictureActivities";
 import ThemeToggle from "./ThemeToggle";
 import "./App.css";
 
@@ -11,6 +12,7 @@ const TABS = [
   ["now", "🟢 Teraz"],
   ["list", "📋 Aktywności"],
   ["persons", "👤 Osoby"],
+  ["pics", "🖼 Rodzaje"],
 ];
 
 export default function App() {
@@ -29,6 +31,7 @@ export default function App() {
       {tab === "now" && <LiveNow />}
       {tab === "list" && <Activities />}
       {tab === "persons" && <Persons />}
+      {tab === "pics" && <PictureActivities />}
     </main>
   );
 }
