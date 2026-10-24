@@ -2,6 +2,7 @@ import { useState } from "react";
 import LiveStatus from "./LiveStatus";
 import LiveNow from "./LiveNow";
 import Activities from "./Activities";
+import ThemeToggle from "./ThemeToggle";
 import "./App.css";
 
 export default function App() {
@@ -12,6 +13,7 @@ export default function App() {
         <button className={tab === "live" ? "active" : ""} onClick={() => setTab("live")}>⚡ Na żywo</button>
         <button className={tab === "now" ? "active" : ""} onClick={() => setTab("now")}>🟢 Teraz</button>
         <button className={tab === "list" ? "active" : ""} onClick={() => setTab("list")}>📋 Aktywności</button>
+        <ThemeToggle />
       </nav>
       {tab === "live" && <LiveStatus />}
       {tab === "now" && <LiveNow />}

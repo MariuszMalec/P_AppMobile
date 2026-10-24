@@ -201,3 +201,7 @@ main { max-width: 760px; margin: 0 auto; padding: 1.25rem 1rem 6rem; }
 @media (prefers-reduced-motion: reduce) {
   .gcell.live, .gcell.live img, .gcell.live .gtext, .now-tile::after { animation: none; }
 }
+
+.tabs .theme-toggle { flex: 0 0 auto; width: 44px; font-size: 1.1rem; padding: .4rem;
+  background: var(--bg); color: var(--text); }
+.tabs .theme-toggle:hover { background: var(--border); }
