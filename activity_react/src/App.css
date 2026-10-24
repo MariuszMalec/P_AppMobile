@@ -171,3 +171,33 @@ main { max-width: 760px; margin: 0 auto; padding: 1.25rem 1rem 6rem; }
   border: 2px solid #22c55e; background: #000; }
 .now-time { font-weight: 600; font-variant-numeric: tabular-nums; opacity: .9; }
 .now-title { font-size: 1.35rem; font-weight: 700; line-height: 1.2; }
+
+/* pulsowanie aktywnych kafelków */
+@keyframes livePulse {
+  0%, 100% { opacity: 1;   outline-color: #22c55e; }
+  50%      { opacity: .6;  outline-color: #22c55e44; }
+}
+@keyframes liveBg {
+  0%, 100% { background-color: #22c55e22; }
+  50%      { background-color: #22c55e50; }
+}
+@keyframes tileGlow {
+  0%, 100% { opacity: 1;  box-shadow: 0 0 18px 2px #22c55e88; }
+  50%      { opacity: .35; box-shadow: 0 0 4px 0 #22c55e22; }
+}
+
+/* Na żywo (tabela) */
+.gcell.live { animation: liveBg 2s ease-in-out infinite; }
+.gcell.live img,
+.gcell.live:not(:has(img)) .gtext { animation: livePulse 2s ease-in-out infinite; }
+
+/* Teraz (kafelki) */
+.now-tile::after {
+  content: ""; position: absolute; inset: 0; border-radius: 18px;
+  border: 3px solid #22c55e; pointer-events: none;
+  animation: tileGlow 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gcell.live, .gcell.live img, .gcell.live .gtext, .now-tile::after { animation: none; }
+}
