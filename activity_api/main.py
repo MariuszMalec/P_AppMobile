@@ -22,6 +22,7 @@ from routers.persons import router as persons_router
 from routers.api_activity import router as api_activity_router
 from routers.api_live import router as api_live_router
 from routers.api_persons import router as api_persons_router
+from routers.api_pictureactivities import router as api_pictureactivities_router
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -110,4 +111,5 @@ app.include_router(persons_router)
 app.include_router(api_activity_router)
 app.include_router(api_live_router)
 app.include_router(api_persons_router)
+app.include_router(api_pictureactivities_router)
 
