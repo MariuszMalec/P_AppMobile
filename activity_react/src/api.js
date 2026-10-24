@@ -33,3 +33,11 @@ export const getLive = (day) =>
   request(`/api/live/status${day ? `?day=${day}` : ""}`);
 
 export const getNow = () => request("/api/live/now");
+
+export const getPersons = () => request("/api/persons");
+export const createPerson = (p) =>
+  request("/api/persons", { method: "POST", body: JSON.stringify(p) });
+export const updatePerson = (id, p) =>
+  request(`/api/persons/${id}`, { method: "PUT", body: JSON.stringify(p) });
+export const deletePerson = (id) =>
+  request(`/api/persons/${id}`, { method: "DELETE" });

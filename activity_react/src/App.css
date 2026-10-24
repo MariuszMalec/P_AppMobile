@@ -205,3 +205,20 @@ main { max-width: 760px; margin: 0 auto; padding: 1.25rem 1rem 6rem; }
 .tabs .theme-toggle { flex: 0 0 auto; width: 44px; font-size: 1.1rem; padding: .4rem;
   background: var(--bg); color: var(--text); }
 .tabs .theme-toggle:hover { background: var(--border); }
+
+/* zakładki: na wąskim ekranie przewijane poziomo */
+.tabs { overflow-x: auto; }
+.tabs button { white-space: nowrap; }
+
+/* osoby */
+.persons-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: .9rem; }
+.person-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden; box-shadow: var(--shadow); }
+.person-pic { position: relative; height: 160px; background: var(--border);
+  display: flex; align-items: center; justify-content: center; }
+.person-pic img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+.person-fallback { font-size: 3rem; opacity: .35; }
+.person-body { padding: .85rem; }
+.person-name .chip { margin-left: 0; font-size: .85rem; padding: .2rem .7rem; }
+.person-preview { grid-column: 1 / -1; max-height: 180px; width: 100%; object-fit: cover; border-radius: 12px; }
+.activity-form input:disabled { opacity: .6; cursor: not-allowed; }
