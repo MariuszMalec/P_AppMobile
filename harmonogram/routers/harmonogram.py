@@ -159,7 +159,7 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
         data.get("ProjectName", ""),
         data.get("Zlecenie", ""),
         data.get("Hours", 8),
-        data.get("Exw"),
+        data.get("Exw") or "",
         data.get("ExistNC", 0),
         data.get("ExistCMM", 0),
         data.get("ExistMaterial", 0),
@@ -217,7 +217,7 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     """, (
         new_machine,
         new_start,
-        data.get("Exw", None),
+        data.get("Exw") or "",
         new_hours,
         data.get("ExistNC", 0),
         data.get("ExistCMM", 0),
@@ -240,15 +240,25 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    # Sprawdzamy, ile godzin są już zaplanowane w danym dniu na tej maszynie
+
+    # Pobieramy rzeczywiste godziny przenoszonego zlecenia
+    order = cursor.execute(
+        "SELECT Hours FROM Orders WHERE Id = ?", (order_id,)
+    ).fetchone()
+
+    if not order:
+        return {"status": "error", "message": "Order nie istnieje!"}
+
+    order_hours = order[0] or 0
+
+    # Pomijamy przenoszone zlecenie przy obliczaniu zajętych godzin
     existing_hours = cursor.execute("""
         SELECT SUM(Hours)
         FROM Orders
-        WHERE MachineId = ? AND StartDate = ?
-    """, (data["MachineId"], data["StartDate"])).fetchone()[0] or 0
+        WHERE MachineId = ? AND StartDate = ? AND Id != ?
+    """, (data["MachineId"], data["StartDate"], order_id)).fetchone()[0] or 0
 
-    # Sprawdzamy, czy dostępne godziny w danym dniu pozwalają na przeniesienie orderu
-    if existing_hours + data.get("Hours", 0) > 24:
+    if existing_hours + order_hours > 24:
         return {"status": "error", "message": "Nie ma wystarczającej liczby godzin w tym dniu!"}
 
     # Jeśli w dniu jest wystarczająco miejsca, to wykonujemy przeniesienie orderu
@@ -278,3 +288,31 @@ def delete_order(order_id: int, db=Depends(get_db)):
     cursor.execute("DELETE FROM Orders WHERE Id = ?", (order_id,))
     db.commit()
     return {"status": "ok"}
+
+# =====================================================
+# ODCZYT HARMONOGRAMU DLA REACT
+# =====================================================
+@router.get("/api")
+def harmonogram_api(db=Depends(get_db)):
+    cursor = db.cursor()
+
+    machines = cursor.execute("""
+        SELECT Id, Name, Description, Picture
+        FROM Machines
+        ORDER BY Id
+    """).fetchall()
+
+    orders = cursor.execute("""
+        SELECT
+            Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
+            StartDate, Exw, Hours, MachineId,
+            ExistNC, ExistCMM, ExistMaterial, Color
+        FROM Orders
+        ORDER BY StartDate, Id
+    """).fetchall()
+
+    return {
+        "status": "ok",
+        "machines": [dict(machine) for machine in machines],
+        "orders": [dict(order) for order in orders]
+    }

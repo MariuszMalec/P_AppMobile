@@ -1,0 +1,320 @@
+import { useEffect, useMemo, useState } from 'react'
+import './App.css'
+
+const MONTHS = [
+  'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+  'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień',
+]
+
+const WEEKDAYS = ['Nd', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob']
+
+function parseDate(value) {
+  if (!value) return null
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (!match) return null
+
+  const [, year, month, day] = match
+  return new Date(Number(year), Number(month) - 1, Number(day))
+}
+
+function dateKey(date) {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function App() {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [month, setMonth] = useState(() => new Date().getMonth())
+  const [year, setYear] = useState(() => new Date().getFullYear())
+
+  useEffect(() => {
+    let active = true
+
+    async function loadSchedule() {
+      try {
+        const response = await fetch('/harmonogram/api')
+
+        if (!response.ok) {
+          throw new Error(`Błąd API: ${response.status}`)
+        }
+
+        const result = await response.json()
+
+        if (active) {
+          setData(result)
+          setError('')
+        }
+      } catch (err) {
+        if (active) {
+          setError(`Nie udało się pobrać harmonogramu. ${err.message}`)
+        }
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+
+    loadSchedule()
+    return () => {
+      active = false
+    }
+  }, [])
+
+  const days = useMemo(() => {
+    const count = new Date(year, month + 1, 0).getDate()
+
+    return Array.from({ length: count }, (_, index) => {
+      const date = new Date(year, month, index + 1)
+      return {
+        date,
+        key: dateKey(date),
+        number: index + 1,
+        weekday: WEEKDAYS[date.getDay()],
+        today: dateKey(date) === dateKey(new Date()),
+      }
+    })
+  }, [month, year])
+
+  const schedule = useMemo(() => {
+    const result = {}
+    const machines = data?.machines ?? []
+    const orders = [...(data?.orders ?? [])].sort((a, b) => {
+      const dateA = parseDate(a.StartDate)?.getTime() ?? 0
+      const dateB = parseDate(b.StartDate)?.getTime() ?? 0
+      return dateA - dateB || Number(a.Id) - Number(b.Id)
+    })
+
+    for (const machine of machines) {
+      result[machine.Id] = {}
+    }
+
+    for (const order of orders) {
+      const startDate = parseDate(order.StartDate)
+      const totalHours = Math.max(0, Number(order.Hours) || 0)
+      const machineId = order.MachineId
+
+      if (!startDate || !result[machineId] || totalHours <= 0) continue
+
+      let remaining = totalHours
+      const current = new Date(startDate)
+      let safety = 0
+
+      while (remaining > 0 && safety < 5000) {
+        const key = dateKey(current)
+        const dayOrders = result[machineId][key] ?? []
+        const usedHours = dayOrders.reduce(
+          (sum, item) => sum + item.DayHours,
+          0,
+        )
+        const available = Math.max(0, 24 - usedHours)
+
+        if (available > 0) {
+          const dayHours = Math.min(available, remaining)
+          dayOrders.push({
+            ...order,
+            DayHours: dayHours,
+            TotalHours: totalHours,
+            ScheduleColor: order.Color || `#${String(order.Id).padStart(6, '0').slice(-6)}`,
+          })
+          result[machineId][key] = dayOrders
+          remaining -= dayHours
+        }
+
+        current.setDate(current.getDate() + 1)
+        safety += 1
+      }
+    }
+
+    return result
+  }, [data])
+
+  function changeMonth(amount) {
+    const next = new Date(year, month + amount, 1)
+    setMonth(next.getMonth())
+    setYear(next.getFullYear())
+  }
+
+  return (
+    <main className="schedule-app calendar-app">
+      <header className="schedule-header">
+        <div>
+          <h1>Harmonogram</h1>
+          <p>Planowanie zleceń i maszyn</p>
+        </div>
+        <button
+          type="button"
+          className="refresh-button"
+          onClick={() => window.location.reload()}
+        >
+          Odśwież dane
+        </button>
+      </header>
+
+      {loading && <p className="status-message">Pobieranie danych...</p>}
+      {error && <p className="error-message">{error}</p>}
+
+      {data && (
+        <>
+          <section className="summary-cards">
+            <article className="summary-card">
+              <span>Maszyny</span>
+              <strong>{data.machines?.length ?? 0}</strong>
+            </article>
+            <article className="summary-card">
+              <span>Wszystkie zlecenia</span>
+              <strong>{data.orders?.length ?? 0}</strong>
+            </article>
+          </section>
+
+          <section className="calendar-section">
+            <div className="calendar-toolbar">
+              <div>
+                <h2>Plan maszyn</h2>
+                <p>Wybierz miesiąc, aby przeglądać harmonogram.</p>
+              </div>
+
+              <div className="calendar-navigation">
+                <button type="button" onClick={() => changeMonth(-1)}>
+                  ←
+                </button>
+                <label>
+                  <span className="visually-hidden">Miesiąc</span>
+                  <select
+                    value={month}
+                    onChange={(event) => setMonth(Number(event.target.value))}
+                  >
+                    {MONTHS.map((name, index) => (
+                      <option key={name} value={index}>{name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span className="visually-hidden">Rok</span>
+                  <select
+                    value={year}
+                    onChange={(event) => setYear(Number(event.target.value))}
+                  >
+                    {Array.from(
+                      { length: 11 },
+                      (_, index) => new Date().getFullYear() - 5 + index,
+                    ).map((value) => (
+                      <option key={value} value={value}>{value}</option>
+                    ))}
+                  </select>
+                </label>
+                <button type="button" onClick={() => changeMonth(1)}>
+                  →
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMonth(new Date().getMonth())
+                    setYear(new Date().getFullYear())
+                  }}
+                >
+                  Dzisiaj
+                </button>
+              </div>
+            </div>
+
+            <div className="calendar-legend">
+              <span><i className="legend-dot nc-dot" /> NC</span>
+              <span><i className="legend-dot cmm-dot" /> CMM</span>
+              <span><i className="legend-dot mat-dot" /> Materiał</span>
+              <span className="legend-today">Dzisiejszy dzień</span>
+            </div>
+
+            {data.machines?.length ? (
+              <div className="calendar-scroll">
+                <div
+                  className="schedule-calendar"
+                  style={{ '--days-count': days.length }}
+                >
+                  <div className="calendar-header">
+                    <div className="machine-heading">Maszyna</div>
+                    {days.map((day) => (
+                      <div
+                        key={day.key}
+                        className={`calendar-day-heading ${day.today ? 'today' : ''}`}
+                      >
+                        <strong>{day.number}</strong>
+                        <span>{day.weekday}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {data.machines.map((machine) => (
+                    <div className="calendar-row" key={machine.Id}>
+                      <div className="calendar-machine">
+                        <strong>{machine.Name}</strong>
+                        {machine.Description && (
+                          <span>{machine.Description}</span>
+                        )}
+                      </div>
+
+                      {days.map((day) => {
+                        const items = schedule[machine.Id]?.[day.key] ?? []
+                        const hours = items.reduce(
+                          (sum, item) => sum + item.DayHours,
+                          0,
+                        )
+
+                        return (
+                          <div
+                            key={day.key}
+                            className={[
+                              'calendar-day-cell',
+                              day.today ? 'today' : '',
+                              hours >= 24 ? 'full-day' : '',
+                            ].filter(Boolean).join(' ')}
+                            title={`${machine.Name} — ${day.key}: ${hours} godz.`}
+                          >
+                            {items.map((order, index) => (
+                              <article
+                                className="calendar-order"
+                                key={`${order.Id}-${index}`}
+                                style={{
+                                  '--order-color': order.ScheduleColor,
+                                }}
+                                title={[
+                                  `Zlecenie: ${order.Zlecenie ?? order.Name ?? order.Id}`,
+                                  `Projekt: ${order.ProjectName ?? '—'}`,
+                                  `Godziny w dniu: ${order.DayHours}`,
+                                  `Godziny łącznie: ${order.TotalHours}`,
+                                ].join('\n')}
+                              >
+                                <strong>#{order.Id} {order.Zlecenie ?? order.Name ?? ''}</strong>
+                                {order.ProjectName && (
+                                  <span className="order-project">{order.ProjectName}</span>
+                                )}
+                                <span className="order-statuses">
+                                  <i className={Number(order.ExistNC) ? 'status-on' : 'status-off'} title="NC" />
+                                  <i className={Number(order.ExistCMM) ? 'status-on' : 'status-off'} title="CMM" />
+                                  <i className={Number(order.ExistMaterial) ? 'status-on' : 'status-off'} title="Materiał" />
+                                </span>
+                                <span className="order-hours">
+                                  {order.DayHours} h / {order.TotalHours} h
+                                </span>
+                              </article>
+                            ))}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p>Brak maszyn.</p>
+            )}
+          </section>
+        </>
+      )}
+    </main>
+  )
+}
+
+export default App
