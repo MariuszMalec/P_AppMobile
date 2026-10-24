@@ -525,3 +525,581 @@ select {
     font-size: 9px;
   }
 }
+
+/* ===== NOWOCZESNY WYGLAD HARMONOGRAMU ===== */
+
+.schedule-app {
+  max-width: 2200px;
+  padding: clamp(12px, 2vw, 28px);
+  color: #202f40;
+  background: #f3f6fa;
+}
+
+.schedule-header {
+  position: relative;
+  overflow: hidden;
+  padding: 25px 28px;
+  background: linear-gradient(120deg, #ffffff 0%, #f1f6ff 100%);
+  border: 1px solid #dce5f0;
+  border-radius: 18px;
+  box-shadow: 0 8px 28px rgb(35 55 85 / 7%);
+}
+
+.schedule-header::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: #3478c8;
+}
+
+.schedule-header h1 {
+  color: #183b65;
+  letter-spacing: -0.7px;
+  font-weight: 750;
+}
+
+.schedule-header p,
+.calendar-toolbar p {
+  color: #718096;
+}
+
+.header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.add-order-button,
+.refresh-button,
+.save-order-button,
+.cancel-button,
+.delete-order-button {
+  min-height: 40px;
+  padding: 10px 16px;
+  border-radius: 9px;
+  font-weight: 650;
+  transition: background .18s ease, border-color .18s ease,
+    box-shadow .18s ease, transform .18s ease;
+}
+
+.add-order-button,
+.save-order-button {
+  color: #fff;
+  background: #2468b4;
+  border: 1px solid #2468b4;
+  box-shadow: 0 3px 8px rgb(36 104 180 / 18%);
+}
+
+.add-order-button:hover,
+.save-order-button:hover:not(:disabled) {
+  background: #185596;
+  border-color: #185596;
+  transform: translateY(-1px);
+}
+
+.refresh-button {
+  color: #244a75;
+  background: #fff;
+  border-color: #cfdae8;
+}
+
+.refresh-button:hover {
+  background: #eaf2fc;
+}
+
+.summary-card {
+  padding: 17px 20px;
+  background: #fff;
+  border: 1px solid #dfe7f0;
+  border-radius: 13px;
+  box-shadow: 0 4px 14px rgb(35 55 85 / 4%);
+}
+
+.summary-card span {
+  color: #718096;
+  font-weight: 550;
+}
+
+.summary-card strong {
+  color: #245f9f;
+  font-size: 28px;
+}
+
+.calendar-section {
+  padding: clamp(12px, 1.8vw, 24px);
+  background: #fff;
+  border: 1px solid #dce5ef;
+  border-radius: 16px;
+  box-shadow: 0 7px 24px rgb(35 55 85 / 5%);
+}
+
+.calendar-toolbar h2 {
+  color: #1c3f68;
+  font-weight: 750;
+  letter-spacing: -.3px;
+}
+
+.calendar-navigation button,
+.calendar-navigation select {
+  color: #294d73;
+  background: #f7f9fc;
+  border-color: #d5dfeb;
+  border-radius: 8px;
+}
+
+.calendar-navigation button:hover {
+  color: #174e8a;
+  background: #e8f1fc;
+  border-color: #9dbce0;
+}
+
+.calendar-scroll {
+  border: 1px solid #d5dfeb;
+  border-radius: 12px;
+  box-shadow: inset 0 1px 3px rgb(30 50 75 / 3%);
+  scrollbar-color: #9aafc8 #edf1f6;
+  scrollbar-width: thin;
+}
+
+.calendar-scroll::-webkit-scrollbar {
+  width: 11px;
+  height: 13px;
+}
+
+.calendar-scroll::-webkit-scrollbar-track {
+  background: #edf1f6;
+  border-radius: 8px;
+}
+
+.calendar-scroll::-webkit-scrollbar-thumb {
+  background: #9aafc8;
+  border: 3px solid #edf1f6;
+  border-radius: 8px;
+}
+
+.calendar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #6685a9;
+}
+
+.calendar-header {
+  background: #e9f0f8;
+  border-bottom: 2px solid #c8d7e8;
+}
+
+.machine-heading,
+.calendar-machine {
+  background: #edf3fa;
+  border-right: 2px solid #d2deeb;
+}
+
+.machine-heading {
+  color: #244a75;
+  font-size: 13px;
+  letter-spacing: .2px;
+}
+
+.calendar-day-heading {
+  color: #3b5571;
+  background: #edf3fa;
+  border-right-color: #dce5ef;
+}
+
+.calendar-day-heading strong {
+  font-size: 17px;
+}
+
+.calendar-day-heading.today {
+  color: #176337;
+  background: #d8f3df;
+  box-shadow: inset 0 -3px #2e9b59;
+}
+
+.calendar-row {
+  border-bottom-color: #e2e8f0;
+}
+
+.calendar-machine {
+  gap: 7px;
+  background: #f5f8fc;
+}
+
+.calendar-machine strong {
+  color: #24466d;
+  font-size: 14px;
+}
+
+.calendar-machine span {
+  color: #718096;
+}
+
+.machine-add-button {
+  align-self: flex-start;
+  padding: 5px 9px;
+  color: #245e9b;
+  background: #e7f0fc;
+  border: 1px solid #c9dcf4;
+  border-radius: 7px;
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.machine-add-button:hover {
+  background: #d6e7fb;
+}
+
+.calendar-day-cell {
+  position: relative;
+  background: #fff;
+  border-right-color: #e7ecf2;
+  transition: background .15s ease;
+}
+
+.calendar-day-cell:hover {
+  background-color: #f6f9fd;
+}
+
+.calendar-day-cell.today {
+  background-color: #f0faf2;
+  box-shadow: inset 0 0 0 1px #b2dfbd;
+}
+
+.calendar-day-cell.full-day {
+  background-image: linear-gradient(rgb(230 155 105 / 10%), rgb(230 155 105 / 10%));
+}
+
+.day-add-button {
+  align-self: flex-end;
+  width: 23px;
+  height: 23px;
+  padding: 0;
+  color: #4775a6;
+  background: #edf4fc;
+  border: 1px solid #d6e4f4;
+  border-radius: 7px;
+  font-size: 16px;
+  line-height: 1;
+  opacity: .75;
+}
+
+.day-add-button:hover {
+  color: #fff;
+  background: #3478c8;
+  border-color: #3478c8;
+  opacity: 1;
+}
+
+.calendar-order {
+  position: relative;
+  padding: 8px 7px;
+  border: 1px solid rgb(38 52 46 / 14%);
+  border-left: 4px solid rgb(38 52 46 / 40%);
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgb(30 45 60 / 6%);
+  cursor: grab;
+  transition: box-shadow .15s ease, filter .15s ease;
+}
+
+.calendar-order:hover {
+  filter: saturate(1.08);
+  box-shadow: 0 4px 10px rgb(30 45 60 / 13%);
+}
+
+.calendar-order:active {
+  cursor: grabbing;
+}
+
+.calendar-order strong {
+  color: #23374b;
+  font-size: 11px;
+}
+
+.order-project {
+  color: #42566c;
+}
+
+.order-hours {
+  color: #2e4964;
+  font-variant-numeric: tabular-nums;
+}
+
+.order-statuses i {
+  width: 9px;
+  height: 9px;
+}
+
+.status-message,
+.error-message,
+.success-message {
+  padding: 13px 16px;
+  border-radius: 10px;
+}
+
+.success-message {
+  color: #176337;
+  background: #eaf8ee;
+  border: 1px solid #b9e3c4;
+}
+
+/* Formularz dodawania i edycji */
+.order-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  overflow-y: auto;
+  background: rgb(18 32 49 / 54%);
+  backdrop-filter: blur(4px);
+}
+
+.order-modal {
+  width: min(100%, 700px);
+  max-height: calc(100vh - 36px);
+  overflow-y: auto;
+  color: #25364a;
+  background: #fff;
+  border: 1px solid #dce5ef;
+  border-radius: 16px;
+  box-shadow: 0 24px 75px rgb(0 0 0 / 24%);
+}
+
+.order-modal-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 20px 23px;
+  background: #f4f8fd;
+  border-bottom: 1px solid #dce5ef;
+}
+
+.order-modal-header h2 {
+  margin: 0;
+  color: #1c416b;
+  font-size: 22px;
+}
+
+.order-modal-header p {
+  margin: 6px 0 0;
+  color: #718096;
+  font-size: 13px;
+}
+
+.modal-close-button {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  color: #53677e;
+  background: #fff;
+  border: 1px solid #d6e0eb;
+  border-radius: 9px;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.modal-close-button:hover {
+  color: #9e3030;
+  background: #fff0f0;
+}
+
+.order-modal form {
+  padding: 22px;
+}
+
+.order-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 17px;
+}
+
+.order-form-grid > label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: #354b63;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.order-form-grid input:not([type="color"]),
+.order-form-grid select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 11px;
+  color: #24384d;
+  background: #fbfcfe;
+  border: 1px solid #d4deea;
+  border-radius: 8px;
+  outline: none;
+}
+
+.order-form-grid input:focus,
+.order-form-grid select:focus {
+  border-color: #4385cb;
+  box-shadow: 0 0 0 3px rgb(67 133 203 / 14%);
+}
+
+.color-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+}
+
+.color-input-row input[type="color"] {
+  width: 48px;
+  height: 38px;
+  padding: 3px;
+  background: #fff;
+  border: 1px solid #d4deea;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.color-input-row span {
+  color: #718096;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.order-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 21px 0;
+  padding: 14px 16px;
+  background: #f7f9fc;
+  border: 1px solid #dce5ef;
+  border-radius: 10px;
+}
+
+.order-flags legend {
+  padding: 0 6px;
+  color: #354b63;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.order-flags label {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: #40566e;
+  font-size: 13px;
+}
+
+.order-flags input {
+  accent-color: #3478c8;
+}
+
+.form-error-message {
+  padding: 11px 13px;
+  color: #9d2828;
+  background: #fff0ef;
+  border: 1px solid #efc7c3;
+  border-radius: 8px;
+  overflow-wrap: anywhere;
+}
+
+.order-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 9px;
+  padding-top: 17px;
+  border-top: 1px solid #e5ebf2;
+}
+
+.order-form-actions .delete-order-button {
+  margin-right: auto;
+  color: #a32e35 !important;
+  background: #fff1f1 !important;
+  border: 1px solid #edc7ca !important;
+}
+
+.order-form-actions .delete-order-button:hover {
+  background: #ffe1e2 !important;
+}
+
+.order-form-actions .cancel-button {
+  color: #40566e;
+  background: #fff;
+  border: 1px solid #d2dce8;
+}
+
+.order-form-actions .cancel-button:hover {
+  background: #f1f5fa;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: .6;
+}
+
+@media (max-width: 600px) {
+  .schedule-header {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions button {
+    flex: 1 1 auto;
+  }
+
+  .order-modal-backdrop {
+    align-items: flex-start;
+    padding: 9px;
+  }
+
+  .order-modal {
+    max-height: calc(100vh - 18px);
+    border-radius: 12px;
+  }
+
+  .order-modal-header {
+    padding: 16px;
+  }
+
+  .order-modal-header h2 {
+    font-size: 19px;
+  }
+
+  .order-modal form {
+    padding: 15px;
+  }
+
+  .order-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 13px;
+  }
+
+  .order-flags {
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .order-form-actions {
+    justify-content: stretch;
+  }
+
+  .order-form-actions button {
+    flex: 1 1 auto;
+  }
+
+  .order-form-actions .delete-order-button {
+    margin-right: 0;
+  }
+}
