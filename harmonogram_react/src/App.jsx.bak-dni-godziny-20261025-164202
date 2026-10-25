@@ -1,0 +1,615 @@
+import { useEffect, useMemo, useRef, useState } from 'react'
+import './App.css'
+
+const MONTHS = [
+  'Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+  'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień',
+]
+const WEEKDAYS = ['Nd', 'Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob']
+
+function parseDate(value) {
+  if (!value) return null
+  const match = String(value).match(/^(\d{4})-(\d{2})-(\d{2})/)
+  if (!match) return null
+  return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]))
+}
+
+function dateKey(date) {
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+function dateInputValue(value) {
+  const date = parseDate(value)
+  return date ? dateKey(date) : ''
+}
+
+function emptyForm(date, machineId) {
+  return {
+    Id: null,
+    MachineId: String(machineId ?? ''),
+    StartDate: date,
+    ProjectName: '',
+    Zlecenie: '',
+    Hours: '8',
+    Exw: '',
+    ExistNC: false,
+    ExistCMM: false,
+    ExistMaterial: false,
+    Color: '#ccffcc',
+  }
+}
+
+function App() {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [notice, setNotice] = useState('')
+  const [month, setMonth] = useState(() => new Date().getMonth())
+  const [year, setYear] = useState(() => new Date().getFullYear())
+  const [reloadToken, setReloadToken] = useState(0)
+  const [form, setForm] = useState(null)
+  const [saving, setSaving] = useState(false)
+  const [formError, setFormError] = useState('')
+
+  useEffect(() => {
+    let active = true
+
+    async function loadSchedule() {
+      setLoading(true)
+      try {
+        const response = await fetch('/harmonogram/api')
+        if (!response.ok) throw new Error(`Błąd API: ${response.status}`)
+        const result = await response.json()
+        if (result.status && result.status !== 'ok') {
+          throw new Error('API zwróciło nieprawidłowy status.')
+        }
+        if (active) {
+          setData(result)
+          setError('')
+        }
+      } catch (err) {
+        if (active) setError(`Nie udało się pobrać harmonogramu. ${err.message}`)
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+
+    loadSchedule()
+    return () => {
+      active = false
+    }
+  }, [reloadToken])
+
+  const days = useMemo(() => {
+    const count = new Date(year, month + 1, 0).getDate()
+    return Array.from({ length: count }, (_, index) => {
+      const date = new Date(year, month, index + 1)
+      return {
+        date,
+        key: dateKey(date),
+        number: index + 1,
+        weekday: WEEKDAYS[date.getDay()],
+        today: dateKey(date) === dateKey(new Date()),
+      }
+    })
+  }, [month, year])
+
+  const schedule = useMemo(() => {
+    const result = {}
+    const machines = data?.machines ?? []
+    const orders = [...(data?.orders ?? [])].sort((a, b) => {
+      const dateA = parseDate(a.StartDate)?.getTime() ?? 0
+      const dateB = parseDate(b.StartDate)?.getTime() ?? 0
+      return dateA - dateB || Number(a.Id) - Number(b.Id)
+    })
+
+    for (const machine of machines) result[machine.Id] = {}
+
+    for (const order of orders) {
+      const startDate = parseDate(order.StartDate)
+      const totalHours = Math.max(0, Number(order.Hours) || 0)
+      const machineId = order.MachineId
+      if (!startDate || !result[machineId] || totalHours <= 0) continue
+
+      let remaining = totalHours
+      const current = new Date(startDate)
+      let safety = 0
+
+      while (remaining > 0 && safety < 5000) {
+        const key = dateKey(current)
+        const dayOrders = result[machineId][key] ?? []
+        const usedHours = dayOrders.reduce((sum, item) => sum + item.DayHours, 0)
+        const available = Math.max(0, 24 - usedHours)
+
+        if (available > 0) {
+          const dayHours = Math.min(available, remaining)
+          dayOrders.push({
+            ...order,
+            DayHours: dayHours,
+            TotalHours: totalHours,
+            ScheduleColor: order.Color || '#e8eee7',
+          })
+          result[machineId][key] = dayOrders
+          remaining -= dayHours
+        }
+
+        current.setDate(current.getDate() + 1)
+        safety += 1
+      }
+    }
+
+    return result
+  }, [data])
+
+  function changeMonth(amount) {
+    const next = new Date(year, month + amount, 1)
+    setMonth(next.getMonth())
+    setYear(next.getFullYear())
+  }
+
+  function openAdd(date = dateKey(new Date()), machineId = data?.machines?.[0]?.Id) {
+    setForm(emptyForm(date, machineId))
+    setFormError('')
+    setNotice('')
+  }
+
+  function openEdit(order) {
+    setForm({
+      Id: order.Id,
+      MachineId: String(order.MachineId ?? ''),
+      StartDate: dateInputValue(order.StartDate),
+      ProjectName: order.ProjectName ?? '',
+      Zlecenie: order.Zlecenie ?? order.Name ?? '',
+      Hours: String(order.Hours ?? 8),
+      Exw: order.Exw == null ? '' : String(order.Exw),
+      ExistNC: Boolean(Number(order.ExistNC)),
+      ExistCMM: Boolean(Number(order.ExistCMM)),
+      ExistMaterial: Boolean(Number(order.ExistMaterial)),
+      Color: /^#[0-9a-fA-F]{6}$/.test(order.Color ?? '') ? order.Color : '#ccffcc',
+    })
+    setFormError('')
+    setNotice('')
+  }
+
+  function updateForm(field, value) {
+    setForm((current) => ({ ...current, [field]: value }))
+  }
+  async function moveOrder(orderId, machineId, startDate) {
+    if (!orderId || !machineId || !startDate) return
+
+    setNotice('')
+    setError('')
+
+    try {
+      const response = await fetch(`/harmonogram/move/${orderId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          MachineId: Number(machineId),
+          StartDate: startDate,
+        }),
+      })
+
+      if (!response.ok) throw new Error(`Błąd serwera: ${response.status}`)
+
+      const result = await response.json()
+      if (result.status !== 'ok') {
+        throw new Error(result.message || 'Nie udało się przenieść zlecenia.')
+      }
+
+      setNotice(`Zlecenie #${orderId} zostało przeniesione.`)
+      setReloadToken((value) => value + 1)
+    } catch (err) {
+      setNotice(`Nie udało się przenieść zlecenia: ${err.message}`)
+    }
+  }
+
+  async function deleteOrder() {
+    if (!form?.Id || saving) return
+
+    const orderId = form.Id
+    const confirmed = window.confirm(`Czy na pewno usunąć zlecenie #${orderId}? Tej operacji nie można cofnąć.`)
+    if (!confirmed) return
+
+    setSaving(true)
+    setFormError('')
+
+    try {
+      const response = await fetch(`/harmonogram/delete/${orderId}`, {
+        method: 'POST',
+      })
+
+      if (!response.ok) throw new Error(`Błąd serwera: ${response.status}`)
+
+      const result = await response.json()
+      if (result.status !== 'ok') {
+        throw new Error(result.message || 'Nie udało się usunąć zlecenia.')
+      }
+
+      setForm(null)
+      setNotice(`Zlecenie #${orderId} zostało usunięte.`)
+      setReloadToken((value) => value + 1)
+    } catch (err) {
+      setFormError(`Nie udało się usunąć zlecenia. ${err.message}`)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+
+  async function saveOrder(event) {
+    event.preventDefault()
+    setFormError('')
+
+    if (!form.StartDate || !form.MachineId) {
+      setFormError('Wybierz maszynę i datę rozpoczęcia.')
+      return
+    }
+
+    const hours = Number(form.Hours)
+    if (!Number.isFinite(hours) || hours < 1 || !Number.isInteger(hours)) {
+      setFormError('Liczba godzin musi być liczbą całkowitą większą lub równą 1.')
+      return
+    }
+
+    const payload = {
+      MachineId: Number(form.MachineId),
+      StartDate: form.StartDate,
+      ProjectName: form.ProjectName,
+      Zlecenie: form.Zlecenie,
+      Hours: hours,
+      Exw: form.Exw.trim() || null,
+      ExistNC: form.ExistNC ? 1 : 0,
+      ExistCMM: form.ExistCMM ? 1 : 0,
+      ExistMaterial: form.ExistMaterial ? 1 : 0,
+      Color: form.Color,
+    }
+
+    setSaving(true)
+    try {
+      const url = form.Id
+        ? `/harmonogram/edit/${form.Id}`
+        : '/harmonogram/add'
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+
+      if (!response.ok) throw new Error(`Błąd serwera: ${response.status}`)
+
+      const result = await response.json()
+      if (result.status !== 'ok') {
+        throw new Error(result.message || 'Nie udało się zapisać zlecenia.')
+      }
+
+      setForm(null)
+      setNotice(form.Id ? 'Zlecenie zostało zapisane.' : 'Zlecenie zostało dodane.')
+      setReloadToken((value) => value + 1)
+    } catch (err) {
+      setFormError(`Nie udało się zapisać zlecenia. ${err.message}`)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <main className="schedule-app calendar-app">
+      <header className="schedule-header">
+        <div>
+          <h1>Harmonogram</h1>
+          <p>Planowanie zleceń i maszyn</p>
+        </div>
+        <div className="header-actions">
+          <button type="button" className="add-order-button" onClick={() => openAdd()}>
+            + Dodaj zlecenie
+          </button>
+          <button
+            type="button"
+            className="refresh-button"
+            onClick={() => setReloadToken((value) => value + 1)}
+          >
+            Odśwież dane
+          </button>
+        </div>
+      </header>
+
+      {loading && <p className="status-message">Pobieranie danych...</p>}
+      {error && <p className="error-message">{error}</p>}
+      {notice && <p className="success-message">{notice}</p>}
+
+      {data && (
+        <>
+          <section className="summary-cards">
+            <article className="summary-card">
+              <span>Maszyny</span>
+              <strong>{data.machines?.length ?? 0}</strong>
+            </article>
+            <article className="summary-card">
+              <span>Wszystkie zlecenia</span>
+              <strong>{data.orders?.length ?? 0}</strong>
+            </article>
+          </section>
+
+          <section className="calendar-section">
+            <div className="calendar-toolbar">
+              <div>
+                <h2>Plan maszyn</h2>
+                <p>Wybierz miesiąc, aby przeglądać harmonogram.</p>
+              </div>
+              <div className="calendar-navigation">
+                <button type="button" onClick={() => changeMonth(-1)}>←</button>
+                <label>
+                  <span className="visually-hidden">Miesiąc</span>
+                  <select value={month} onChange={(event) => setMonth(Number(event.target.value))}>
+                    {MONTHS.map((name, index) => (
+                      <option key={name} value={index}>{name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span className="visually-hidden">Rok</span>
+                  <select value={year} onChange={(event) => setYear(Number(event.target.value))}>
+                    {Array.from({ length: 11 }, (_, index) => new Date().getFullYear() - 5 + index).map((value) => (
+                      <option key={value} value={value}>{value}</option>
+                    ))}
+                  </select>
+                </label>
+                <button type="button" onClick={() => changeMonth(1)}>→</button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMonth(new Date().getMonth())
+                    setYear(new Date().getFullYear())
+                  }}
+                >
+                  Dzisiaj
+                </button>
+              </div>
+            </div>
+
+            <div className="calendar-legend">
+              <span><i className="legend-dot nc-dot" /> NC</span>
+              <span><i className="legend-dot cmm-dot" /> CMM</span>
+              <span><i className="legend-dot mat-dot" /> Materiał</span>
+              <span className="legend-today">Dzisiejszy dzień</span>
+            </div>
+
+            {data.machines?.length ? (
+              <div
+                className="calendar-scroll"
+                onMouseDown={(event) => {
+                  if (event.button !== 0 || event.target.closest('.calendar-order, button, input, select, a')) return
+                  const element = event.currentTarget
+                  element.dataset.dragScroll = 'true'
+                  element.dataset.dragStartX = String(event.clientX)
+                  element.dataset.dragStartLeft = String(element.scrollLeft)
+                  element.classList.add('is-dragging')
+                }}
+                onMouseMove={(event) => {
+                  const element = event.currentTarget
+                  if (element.dataset.dragScroll !== 'true' || event.buttons !== 1) return
+                  event.preventDefault()
+                  element.scrollLeft =
+                    Number(element.dataset.dragStartLeft) -
+                    (event.clientX - Number(element.dataset.dragStartX))
+                }}
+                onMouseUp={(event) => {
+                  delete event.currentTarget.dataset.dragScroll
+                  event.currentTarget.classList.remove('is-dragging')
+                }}
+                onMouseLeave={(event) => {
+                  delete event.currentTarget.dataset.dragScroll
+                  event.currentTarget.classList.remove('is-dragging')
+                }}
+                onWheel={(event) => {
+                  if (!event.shiftKey) return
+                  event.preventDefault()
+                  event.currentTarget.scrollLeft += event.deltaY
+                }}
+              >
+                <div className="schedule-calendar" style={{ '--days-count': days.length }}>
+                  <div className="calendar-header">
+                    <div className="machine-heading">Maszyna</div>
+                    {days.map((day) => (
+                      <div key={day.key} className={`calendar-day-heading ${day.today ? 'today' : ''}`}>
+                        <strong>{day.number}</strong>
+                        <span>{day.weekday}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {data.machines.map((machine) => (
+                    <div className="calendar-row" key={machine.Id}>
+                      <div className="calendar-machine">
+                        <strong>{machine.Name}</strong>
+                        {machine.Description && <span>{machine.Description}</span>}
+                        <button
+                          type="button"
+                          className="machine-add-button"
+                          onClick={() => openAdd(dateKey(new Date(year, month, 1)), machine.Id)}
+                        >
+                          + Dodaj
+                        </button>
+                      </div>
+
+                      {days.map((day) => {
+                        const items = schedule[machine.Id]?.[day.key] ?? []
+                        const hours = items.reduce((sum, item) => sum + item.DayHours, 0)
+
+                        return (
+                          <div
+                            key={day.key}
+                            className={[
+                              'calendar-day-cell',
+                              day.today ? 'today' : '',
+                              hours >= 24 ? 'full-day' : '',
+                            ].filter(Boolean).join(' ')}
+                            title={`${machine.Name} — ${day.key}: ${hours} godz.`}
+                            onDragOver={(event) => event.preventDefault()}
+                            onDrop={(event) => {
+                              event.preventDefault()
+                              const orderId = Number(event.dataTransfer.getData('text/plain'))
+                              if (orderId) void moveOrder(orderId, machine.Id, day.key)
+                            }}
+                          >
+                            <button
+                              type="button"
+                              className="day-add-button"
+                              title={`Dodaj zlecenie: ${machine.Name}, ${day.key}`}
+                              onClick={() => openAdd(day.key, machine.Id)}
+                            >
+                              +
+                            </button>
+
+                            {items.map((order, index) => (
+                              <article
+                                className="calendar-order"
+                                key={`${order.Id}-${index}`}
+                                draggable
+                                onDragStart={(event) => {
+                                  event.dataTransfer.setData('text/plain', String(order.Id))
+                                  event.dataTransfer.effectAllowed = 'move'
+                                }}
+                                style={{ '--order-color': order.ScheduleColor }}
+                                title={`Zlecenie ${order.Zlecenie ?? order.Name ?? order.Id}\nPoczątek: ${order.StartDate}\nGodziny w dniu: ${order.DayHours} / ${order.TotalHours}`}
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => openEdit(order)}
+                                onKeyDown={(event) => {
+                                  if (event.key === 'Enter' || event.key === ' ') {
+                                    event.preventDefault()
+                                    openEdit(order)
+                                  }
+                                }}
+                              >
+                                <strong>#{order.Id} {order.Zlecenie ?? order.Name ?? ''}</strong>
+                                {order.ProjectName && <span className="order-project">{order.ProjectName}</span>}
+                                <span className="order-statuses">
+                                  <i className={Number(order.ExistNC) ? 'status-on' : 'status-off'} title="NC" />
+                                  <i className={Number(order.ExistCMM) ? 'status-on' : 'status-off'} title="CMM" />
+                                  <i className={Number(order.ExistMaterial) ? 'status-on' : 'status-off'} title="Materiał" />
+                                </span>
+                                <span className="order-hours">{order.DayHours} h / {order.TotalHours} h</span>
+                              </article>
+                            ))}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <p>Brak maszyn.</p>
+            )}
+          </section>
+        </>
+      )}
+
+      {form && (
+        <div className="order-modal-backdrop" onMouseDown={(event) => {
+          if (event.target === event.currentTarget && !saving) setForm(null)
+        }}>
+          <section
+            className="order-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="order-modal-title"
+          >
+            <div className="order-modal-header">
+              <div>
+                <h2 id="order-modal-title">{form.Id ? `Edycja zlecenia #${form.Id}` : 'Dodaj zlecenie'}</h2>
+                <p>Uzupełnij dane i zapisz zmiany.</p>
+              </div>
+              <button type="button" className="modal-close-button" onClick={() => setForm(null)} disabled={saving} aria-label="Zamknij">
+                ×
+              </button>
+            </div>
+
+            <form onSubmit={saveOrder}>
+              <div className="order-form-grid">
+                <label>
+                  Maszyna *
+                  <select value={form.MachineId} onChange={(event) => updateForm('MachineId', event.target.value)} required>
+                    <option value="">Wybierz maszynę</option>
+                    {(data?.machines ?? []).map((machine) => (
+                      <option key={machine.Id} value={machine.Id}>{machine.Name}</option>
+                    ))}
+                  </select>
+                </label>
+
+                <label>
+                  Data rozpoczęcia *
+                  <input type="date" value={form.StartDate} onChange={(event) => updateForm('StartDate', event.target.value)} required />
+                </label>
+
+                <label>
+                  Zlecenie
+                  <input value={form.Zlecenie} onChange={(event) => updateForm('Zlecenie', event.target.value)} />
+                </label>
+
+                <label>
+                  Projekt
+                  <input value={form.ProjectName} onChange={(event) => updateForm('ProjectName', event.target.value)} />
+                </label>
+
+                <label>
+                  Liczba godzin *
+                  <input type="number" min="1" step="1" value={form.Hours} onChange={(event) => updateForm('Hours', event.target.value)} required />
+                </label>
+
+                <label>
+                  EXW
+                  <input type="text" value={form.Exw} onChange={(event) => updateForm('Exw', event.target.value)} placeholder="Wartość EXW" />
+                </label>
+
+                <label>
+                  Kolor zlecenia
+                  <div className="color-input-row">
+                    <input type="color" value={form.Color} onChange={(event) => updateForm('Color', event.target.value)} />
+                    <span>{form.Color}</span>
+                  </div>
+                </label>
+              </div>
+
+              <fieldset className="order-flags">
+                <legend>Statusy zlecenia</legend>
+                <label><input type="checkbox" checked={form.ExistNC} onChange={(event) => updateForm('ExistNC', event.target.checked)} /> NC</label>
+                <label><input type="checkbox" checked={form.ExistCMM} onChange={(event) => updateForm('ExistCMM', event.target.checked)} /> CMM</label>
+                <label><input type="checkbox" checked={form.ExistMaterial} onChange={(event) => updateForm('ExistMaterial', event.target.checked)} /> Materiał</label>
+              </fieldset>
+
+              {formError && <p className="form-error-message">{formError}</p>}
+
+              <div className="order-form-actions">
+                {form.Id && (
+                  <button
+                    type="button"
+                    className="delete-order-button"
+                    style={{ background: '#a83232', color: '#fff', border: 0, borderRadius: 6, padding: '10px 12px', cursor: 'pointer' }}
+                    onClick={deleteOrder}
+                    disabled={saving}
+                  >
+                    Usuń zlecenie
+                  </button>
+                )}
+                <button type="button" className="cancel-button" onClick={() => setForm(null)} disabled={saving}>
+                  Anuluj
+                </button>
+                <button type="submit" className="save-order-button" disabled={saving}>
+                  {saving ? 'Zapisywanie...' : 'Zapisz zlecenie'}
+                </button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
+    </main>
+  )
+}
+
+export default App
+
+

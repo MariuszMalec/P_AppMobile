@@ -31,6 +31,8 @@ function emptyForm(date, machineId) {
     ProjectName: '',
     Zlecenie: '',
     Hours: '8',
+    Days: '1',
+    ManualHours: false,
     Exw: '',
     ExistNC: false,
     ExistCMM: false,
@@ -50,6 +52,8 @@ function App() {
   const [form, setForm] = useState(null)
   const [saving, setSaving] = useState(false)
   const [formError, setFormError] = useState('')
+  const [machineForm, setMachineForm] = useState(null)
+  const [machineError, setMachineError] = useState('')
 
   useEffect(() => {
     let active = true
@@ -161,6 +165,8 @@ function App() {
       ProjectName: order.ProjectName ?? '',
       Zlecenie: order.Zlecenie ?? order.Name ?? '',
       Hours: String(order.Hours ?? 8),
+      Days: String(Math.max(1, Math.ceil((Number(order.Hours) || 8) / 24))),
+      ManualHours: false,
       Exw: order.Exw == null ? '' : String(order.Exw),
       ExistNC: Boolean(Number(order.ExistNC)),
       ExistCMM: Boolean(Number(order.ExistCMM)),
@@ -302,6 +308,16 @@ function App() {
           <p>Planowanie zleceń i maszyn</p>
         </div>
         <div className="header-actions">
+          <button
+            type="button"
+            className="add-order-button"
+            onClick={() => {
+              setMachineError('')
+              setMachineForm({ Name: '', Description: '', Picture: '' })
+            }}
+          >
+            + Dodaj maszynę
+          </button>
           <button type="button" className="add-order-button" onClick={() => openAdd()}>
             + Dodaj zlecenie
           </button>
@@ -425,6 +441,48 @@ function App() {
                       <div className="calendar-machine">
                         <strong>{machine.Name}</strong>
                         {machine.Description && <span>{machine.Description}</span>}
+                        <div className="machine-actions">
+                          <button
+                            type="button"
+                            className="machine-add-button"
+                            onClick={() => {
+                              setMachineError('')
+                              setMachineForm({
+                                Id: machine.Id,
+                                Name: machine.Name ?? '',
+                                Description: machine.Description ?? '',
+                                Picture: machine.Picture ?? '',
+                              })
+                            }}
+                          >
+                            Edytuj
+                          </button>
+                          <button
+                            type="button"
+                            className="machine-add-button"
+                            disabled={saving}
+                            onClick={async () => {
+                              if (!window.confirm(`Czy na pewno usunąć maszynę „${machine.Name}”?`)) return
+                              setSaving(true)
+                              setError('')
+                              setNotice('')
+                              try {
+                                const response = await fetch(`/machines/delete/${machine.Id}`, { method: 'POST' })
+                                if (!response.ok) throw new Error(`Błąd serwera: ${response.status}`)
+                                const result = await response.json()
+                                if (result.status !== 'ok') throw new Error(result.message || 'Nie udało się usunąć maszyny.')
+                                setNotice(`Maszyna „${machine.Name}” została usunięta.`)
+                                setReloadToken((value) => value + 1)
+                              } catch (err) {
+                                setError(`Nie udało się usunąć maszyny. ${err.message}`)
+                              } finally {
+                                setSaving(false)
+                              }
+                            }}
+                          >
+                            Usuń
+                          </button>
+                        </div>
                         <button
                           type="button"
                           className="machine-add-button"
@@ -508,6 +566,72 @@ function App() {
         </>
       )}
 
+      {machineForm && (
+        <div className="order-modal-backdrop" onMouseDown={(event) => {
+          if (event.target === event.currentTarget && !saving) setMachineForm(null)
+        }}>
+          <section className="order-modal" role="dialog" aria-modal="true" aria-labelledby="machine-modal-title">
+            <div className="order-modal-header">
+              <div>
+                <h2 id="machine-modal-title">{machineForm.Id ? `Edycja maszyny #${machineForm.Id}` : "Dodaj maszynę"}</h2>
+                <p>Uzupełnij dane nowej maszyny.</p>
+              </div>
+              <button type="button" className="modal-close-button" onClick={() => setMachineForm(null)} disabled={saving} aria-label="Zamknij">×</button>
+            </div>
+            <form onSubmit={async (event) => {
+              event.preventDefault()
+              setMachineError('')
+              if (!machineForm.Name.trim()) {
+                setMachineError('Podaj nazwę maszyny.')
+                return
+              }
+              setSaving(true)
+              try {
+                const response = await fetch(machineForm.Id ? `/machines/edit/${machineForm.Id}` : '/machines/add', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    Name: machineForm.Name.trim(),
+                    Description: machineForm.Description.trim(),
+                    Picture: machineForm.Picture.trim(),
+                  }),
+                })
+                if (!response.ok) throw new Error(`Błąd serwera: ${response.status}`)
+                const result = await response.json()
+                if (result.status !== 'ok') throw new Error(result.message || 'Nie udało się dodać maszyny.')
+                setMachineForm(null)
+                setNotice(machineForm.Id ? 'Maszyna została zaktualizowana.' : 'Maszyna została dodana.')
+                setReloadToken((value) => value + 1)
+              } catch (err) {
+                setMachineError(`Nie udało się dodać maszyny. ${err.message}`)
+              } finally {
+                setSaving(false)
+              }
+            }}>
+              <div className="order-form-grid">
+                <label>
+                  Nazwa maszyny *
+                  <input value={machineForm.Name} onChange={(event) => setMachineForm((current) => ({ ...current, Name: event.target.value }))} required />
+                </label>
+                <label>
+                  Opis
+                  <input value={machineForm.Description} onChange={(event) => setMachineForm((current) => ({ ...current, Description: event.target.value }))} />
+                </label>
+                <label>
+                  Picture
+                  <input value={machineForm.Picture} onChange={(event) => setMachineForm((current) => ({ ...current, Picture: event.target.value }))} />
+                </label>
+              </div>
+              {machineError && <p className="form-error-message">{machineError}</p>}
+              <div className="order-form-actions">
+                <button type="button" className="cancel-button" onClick={() => setMachineForm(null)} disabled={saving}>Anuluj</button>
+                <button type="submit" className="save-order-button" disabled={saving}>{saving ? 'Zapisywanie...' : 'Zapisz maszynę'}</button>
+              </div>
+            </form>
+          </section>
+        </div>
+      )}
+
       {form && (
         <div className="order-modal-backdrop" onMouseDown={(event) => {
           if (event.target === event.currentTarget && !saving) setForm(null)
@@ -556,8 +680,31 @@ function App() {
                 </label>
 
                 <label>
+                  Liczba dni *
+                  <input type="number" min="1" step="1" value={form.Days} onChange={(event) => {
+                    const value = event.target.value
+                    const days = Number(value)
+                    setForm((current) => {
+                      if (current.ManualHours || value == "" || Number.isNaN(days) || days < 1 || Math.floor(days) != days) return { ...current, Days: value }
+                      return { ...current, Days: String(days), Hours: String(days * 24) }
+                    })
+                  }} required />
+                </label>
+
+                <label>
                   Liczba godzin *
-                  <input type="number" min="1" step="1" value={form.Hours} onChange={(event) => updateForm('Hours', event.target.value)} required />
+                  <input
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={form.Hours}
+                    onChange={(event) => setForm((current) => ({
+                      ...current,
+                      Hours: event.target.value,
+                      ManualHours: true,
+                    }))}
+                    required
+                  />
                 </label>
 
                 <label>
