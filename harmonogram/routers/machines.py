@@ -131,7 +131,7 @@ def add_machine(
 
 
 # =====================================================
-# USUWANIE MASZYNY
+# UKRYWANIE MASZYNY
 # =====================================================
 @router.post("/delete/{machine_id}")
 def delete_machine(
@@ -140,11 +140,10 @@ def delete_machine(
 ):
     cursor = db.cursor()
 
-    existing = cursor.execute("""
-        SELECT 1
-        FROM Machines
-        WHERE Id = ?
-    """, (machine_id,)).fetchone()
+    existing = cursor.execute(
+        "SELECT Id FROM Machines WHERE Id = ?",
+        (machine_id,)
+    ).fetchone()
 
     if not existing:
         return {
@@ -152,13 +151,41 @@ def delete_machine(
             "message": "Maszyna nie istnieje!"
         }
 
-    cursor.execute("""
-        DELETE FROM Machines
-        WHERE Id = ?
-    """, (machine_id,))
-
+    cursor.execute(
+        "UPDATE Machines SET IsActive = 0 WHERE Id = ?",
+        (machine_id,)
+    )
     db.commit()
 
-    return {
-        "status": "ok"
-    }
+    return {"status": "ok", "message": "Maszyna została ukryta."}
+
+
+# =====================================================
+# PRZYWRACANIE MASZYNY
+# =====================================================
+@router.post("/restore/{machine_id}")
+def restore_machine(
+    machine_id: int,
+    db=Depends(get_db)
+):
+    cursor = db.cursor()
+
+    existing = cursor.execute(
+        "SELECT Id FROM Machines WHERE Id = ?",
+        (machine_id,)
+    ).fetchone()
+
+    if not existing:
+        return {
+            "status": "error",
+            "message": "Maszyna nie istnieje!"
+        }
+
+    cursor.execute(
+        "UPDATE Machines SET IsActive = 1 WHERE Id = ?",
+        (machine_id,)
+    )
+    db.commit()
+
+    return {"status": "ok", "message": "Maszyna została przywrócona."}
+

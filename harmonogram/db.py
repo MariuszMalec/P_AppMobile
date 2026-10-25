@@ -68,8 +68,17 @@ def init_db_if_not_exists(conn):
     if "Color" not in columns:
         cur.execute("ALTER TABLE Orders ADD COLUMN Color TEXT NOT NULL DEFAULT '#f4f4f4'")
 
+    # Dodaj status aktywności maszyn bez zmieniania istniejących rekordów.
+    cur.execute("PRAGMA table_info(Machines)")
+    machine_columns = [col[1] for col in cur.fetchall()]
+
+    if "IsActive" not in machine_columns:
+        cur.execute(
+            "ALTER TABLE Machines ADD COLUMN IsActive INTEGER NOT NULL DEFAULT 1"
+        )
+
     conn.commit()
-    print("✅ Database initialized successfully with Color column")
+    print("✅ Database initialized successfully with Color and IsActive columns")
 
 
 
