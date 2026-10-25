@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import API_URL from './api'
 import './App.css'
 import Sessions from './Sessions'
@@ -22,6 +22,7 @@ function App() {
   })
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+  const importFileRef = useRef(null)
 
   useEffect(() => {
     if (!message) return
@@ -88,6 +89,52 @@ function App() {
       .catch((err) => {
         setError(`Nie udało się wyeksportować bazy: ${err.message}`)
       })
+  }
+
+  async function importDatabase(event) {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    setError('')
+    setMessage('')
+
+    if (!file.name.toLowerCase().endsWith('.db')) {
+      setError('Wybierz plik bazy danych z rozszerzeniem .db.')
+      return
+    }
+
+    if (!window.confirm(
+      'Import zastąpi obecną bazę klientów i sesji. ' +
+      'Najpierw zostanie utworzona kopia bezpieczeństwa. Kontynuować?'
+    )) return
+
+    setMessage('Sprawdzam bazę i przygotowuję import...')
+    try {
+      const data = new FormData()
+      data.append('file', file)
+      const response = await fetch(`${API_URL}/api/backup/import`, {
+        method: 'POST',
+        body: data,
+      })
+      const result = await response.json().catch(() => ({}))
+      if (!response.ok) throw new Error(result.detail || `HTTP ${response.status}`)
+
+      setSelectedClient(null)
+      setEditMode(false)
+      setCreateMode(false)
+      setSearch('')
+
+      const listResponse = await fetch(`${API_URL}/clients/list?active=${active}`)
+      if (!listResponse.ok) throw new Error(
+        'Import wykonano, ale nie udało się odświeżyć listy klientów. Odśwież widok.'
+      )
+      setClients(await listResponse.json())
+      setMessage(`Import zakończony. Kopia poprzedniej bazy: ${result.backup || 'utworzona'}.`)
+    } catch (err) {
+      setMessage('')
+      setError(`Import: ${err.message}`)
+    }
   }
 
   function openClient(clientId) {
@@ -610,6 +657,20 @@ function App() {
       >
         ⬇ Eksportuj bazę
       </button>
+      <button
+        className="new-client-button"
+        onClick={() => importFileRef.current?.click()}
+      >
+        ⬆ Importuj bazę
+      </button>
+
+      <input
+        ref={importFileRef}
+        type="file"
+        accept=".db,application/octet-stream"
+        onChange={importDatabase}
+        style={{ display: 'none' }}
+      />
 
       <div className="active-filter">
         <button

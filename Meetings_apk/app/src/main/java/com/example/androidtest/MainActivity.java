@@ -2,11 +2,13 @@ package com.example.androidtest;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.webkit.JavascriptInterface;
+import android.webkit.ValueCallback;
 import android.widget.Toast;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,6 +43,8 @@ public class MainActivity extends Activity {
     private Handler handler = new Handler();
     private TextView logView;
     private String logPath;
+    private ValueCallback<Uri[]> filePathCallback;
+    private static final int FILE_CHOOSER_REQUEST_CODE = 9124;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -299,7 +303,36 @@ public class MainActivity extends Activity {
         );
 
         webView.setWebChromeClient(
-            new WebChromeClient()
+            new WebChromeClient() {
+                @Override
+                public boolean onShowFileChooser(
+                        WebView view,
+                        ValueCallback<Uri[]> callback,
+                        WebChromeClient.FileChooserParams params
+                ) {
+                    if (filePathCallback != null) {
+                        filePathCallback.onReceiveValue(null);
+                    }
+                    filePathCallback = callback;
+
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("*/*");
+                        startActivityForResult(intent, FILE_CHOOSER_REQUEST_CODE);
+                        return true;
+                    } catch (Exception e) {
+                        filePathCallback = null;
+                        callback.onReceiveValue(null);
+                        Toast.makeText(
+                            MainActivity.this,
+                            "Nie można otworzyć wyboru pliku.",
+                            Toast.LENGTH_LONG
+                        ).show();
+                        return false;
+                    }
+                }
+            }
         );
 
         webView.getSettings()
@@ -323,6 +356,25 @@ public class MainActivity extends Activity {
         );
 
         setContentView(webView);
+    }
+
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data
+    ) {
+        if (requestCode == FILE_CHOOSER_REQUEST_CODE) {
+            if (filePathCallback != null) {
+                Uri[] results = WebChromeClient.FileChooserParams.parseResult(
+                    resultCode, data
+                );
+                filePathCallback.onReceiveValue(results);
+                filePathCallback = null;
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void exportDatabaseToDownloads() {
