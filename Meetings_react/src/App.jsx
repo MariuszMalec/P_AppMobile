@@ -310,6 +310,47 @@ function App() {
     return <Sessions onBack={() => setPage('clients')} />
   }
 
+  if (page === 'settings') {
+    return (
+      <main className="clients-page">
+        <button
+          className="back-button"
+          onClick={() => setPage('clients')}
+        >
+          ← Klienci
+        </button>
+
+        <h1>Ustawienia</h1>
+
+        {message && <p className="success">{message}</p>}
+        {error && <p className="error">Błąd: {error}</p>}
+
+        <button
+          className="new-client-button"
+          onClick={exportDatabase}
+        >
+          ⬇ Eksportuj bazę
+        </button>
+
+        <button
+          className="new-client-button"
+          onClick={() => importFileRef.current?.click()}
+        >
+          ⬆ Importuj bazę
+        </button>
+
+        <input
+          ref={importFileRef}
+          type="file"
+          accept=".db,application/octet-stream"
+          onChange={importDatabase}
+          style={{ display: 'none' }}
+        />
+      </main>
+    )
+  }
+
+
   if (createMode) {
     return (
       <main className="clients-page">
@@ -653,24 +694,14 @@ function App() {
 
       <button
         className="new-client-button"
-        onClick={exportDatabase}
+        onClick={() => {
+          setError('')
+          setMessage('')
+          setPage('settings')
+        }}
       >
-        ⬇ Eksportuj bazę
+        ⚙ Ustawienia
       </button>
-      <button
-        className="new-client-button"
-        onClick={() => importFileRef.current?.click()}
-      >
-        ⬆ Importuj bazę
-      </button>
-
-      <input
-        ref={importFileRef}
-        type="file"
-        accept=".db,application/octet-stream"
-        onChange={importDatabase}
-        style={{ display: 'none' }}
-      />
 
       <div className="active-filter">
         <button
