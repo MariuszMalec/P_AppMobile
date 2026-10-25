@@ -50,6 +50,46 @@ function App() {
       })
   }, [active])
 
+  function exportDatabase() {
+    setError('')
+    setMessage('')
+
+    if (
+      window.AndroidBridge &&
+      typeof window.AndroidBridge.exportDatabase === 'function'
+    ) {
+      setMessage('Przygotowuję kopię bazy...')
+      window.AndroidBridge.exportDatabase()
+      return
+    }
+
+    fetch(`${API_URL}/api/backup/export`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+        return response.blob()
+      })
+      .then((blob) => {
+        const url = URL.createObjectURL(blob)
+        const link = document.createElement('a')
+        const timestamp = new Date()
+          .toISOString()
+          .replace(/[:.]/g, '-')
+
+        link.href = url
+        link.download = `meetings-backup-${timestamp}.db`
+        document.body.appendChild(link)
+        link.click()
+        link.remove()
+        URL.revokeObjectURL(url)
+        setMessage('Kopia bazy została pobrana.')
+      })
+      .catch((err) => {
+        setError(`Nie udało się wyeksportować bazy: ${err.message}`)
+      })
+  }
+
   function openClient(clientId) {
     setError('')
     setMessage('')
@@ -562,6 +602,13 @@ function App() {
         }}
       >
         + Nowy klient
+      </button>
+
+      <button
+        className="new-client-button"
+        onClick={exportDatabase}
+      >
+        ⬇ Eksportuj bazę
       </button>
 
       <div className="active-filter">

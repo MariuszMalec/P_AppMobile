@@ -16,6 +16,7 @@ from routers.home import router as home_router
 from routers.clients import router as clients_router
 from routers.sessions import router as sessions_router
 from api_test import router as api_test_router
+from routers.backup import router as backup_router
 
 
 
@@ -81,4 +82,5 @@ app.include_router(home_router)
 app.include_router(clients_router)
 app.include_router(sessions_router)
 app.include_router(api_test_router)
+app.include_router(backup_router)
 

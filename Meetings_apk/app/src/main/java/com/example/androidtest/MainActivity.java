@@ -1,6 +1,21 @@
 package com.example.androidtest;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.webkit.JavascriptInterface;
+import android.widget.Toast;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import android.os.Bundle;
 import android.os.Handler;
 import android.webkit.WebView;
@@ -296,11 +311,172 @@ public class MainActivity extends Activity {
         webView.getSettings()
             .setCacheMode(android.webkit.WebSettings.LOAD_NO_CACHE);
 
+        webView.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public void exportDatabase() {
+                exportDatabaseToDownloads();
+            }
+        }, "AndroidBridge");
+
         webView.loadUrl(
             "http://127.0.0.1:8000/"
         );
 
         setContentView(webView);
+    }
+
+    private void exportDatabaseToDownloads() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            runOnUiThread(() ->
+                Toast.makeText(
+                    MainActivity.this,
+                    "Eksport do Pobranych wymaga Androida 10 lub nowszego.",
+                    Toast.LENGTH_LONG
+                ).show()
+            );
+            return;
+        }
+
+        new Thread(() -> {
+            Uri outputUri = null;
+            HttpURLConnection connection = null;
+            String fileName = "";
+
+            try {
+                URL url = new URL(
+                    "http://127.0.0.1:8000/api/backup/export"
+                );
+
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(15000);
+                connection.setReadTimeout(60000);
+
+                int status = connection.getResponseCode();
+                if (status != HttpURLConnection.HTTP_OK) {
+                    throw new IOException(
+                        "Serwer zwrócił HTTP " + status
+                    );
+                }
+
+                String timestamp = new SimpleDateFormat(
+                    "yyyyMMdd-HHmmss",
+                    Locale.US
+                ).format(new Date());
+
+                fileName = "meetings-backup-" + timestamp + ".db";
+
+                ContentValues values = new ContentValues();
+                values.put(
+                    MediaStore.MediaColumns.DISPLAY_NAME,
+                    fileName
+                );
+                values.put(
+                    MediaStore.MediaColumns.MIME_TYPE,
+                    "application/octet-stream"
+                );
+                values.put(
+                    MediaStore.MediaColumns.RELATIVE_PATH,
+                    Environment.DIRECTORY_DOWNLOADS
+                );
+                values.put(
+                    MediaStore.MediaColumns.IS_PENDING,
+                    1
+                );
+
+                outputUri = getContentResolver().insert(
+                    MediaStore.Downloads.EXTERNAL_CONTENT_URI,
+                    values
+                );
+
+                if (outputUri == null) {
+                    throw new IOException(
+                        "Android nie utworzył pliku w Pobranych."
+                    );
+                }
+
+                try (
+                    InputStream input = connection.getInputStream();
+                    OutputStream output =
+                        getContentResolver().openOutputStream(outputUri)
+                ) {
+                    if (output == null) {
+                        throw new IOException(
+                            "Nie można zapisać pliku."
+                        );
+                    }
+
+                    byte[] buffer = new byte[8192];
+                    int count;
+
+                    while ((count = input.read(buffer)) != -1) {
+                        output.write(buffer, 0, count);
+                    }
+
+                    output.flush();
+                }
+
+                ContentValues completed = new ContentValues();
+                completed.put(
+                    MediaStore.MediaColumns.IS_PENDING,
+                    0
+                );
+
+                int updated = getContentResolver().update(
+                    outputUri,
+                    completed,
+                    null,
+                    null
+                );
+
+                if (updated <= 0) {
+                    throw new IOException(
+                        "Nie udało się zakończyć zapisu pliku."
+                    );
+                }
+
+                String savedName = fileName;
+                runOnUiThread(() ->
+                    Toast.makeText(
+                        MainActivity.this,
+                        "Kopia zapisana w Pobranych: " + savedName,
+                        Toast.LENGTH_LONG
+                    ).show()
+                );
+
+            } catch (Exception exc) {
+                if (outputUri != null) {
+                    try {
+                        getContentResolver().delete(
+                            outputUri,
+                            null,
+                            null
+                        );
+                    } catch (Exception ignored) {
+                    }
+                }
+
+                String error = exc.getMessage();
+                if (error == null || error.trim().isEmpty()) {
+                    error = exc.getClass().getSimpleName();
+                }
+
+                final String message = "Eksport nieudany: " + error;
+
+                runOnUiThread(() ->
+                    Toast.makeText(
+                        MainActivity.this,
+                        message,
+                        Toast.LENGTH_LONG
+                    ).show()
+                );
+
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+            }
+        }).start();
     }
 
     // =================================================

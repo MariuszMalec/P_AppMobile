@@ -1,0 +1,18 @@
+[1mdiff --git a/Meetings_api/main.py b/Meetings_api/main.py[m
+[1mindex 3e60246..a0eab08 100644[m
+[1m--- a/Meetings_api/main.py[m
+[1m+++ b/Meetings_api/main.py[m
+[36m@@ -16,6 +16,7 @@[m [mfrom routers.home import router as home_router[m
+ from routers.clients import router as clients_router[m
+ from routers.sessions import router as sessions_router[m
+ from api_test import router as api_test_router[m
+[32m+[m[32mfrom routers.backup import router as backup_router[m
+ [m
+ [m
+ [m
+[36m@@ -81,4 +82,5 @@[m [mapp.include_router(home_router)[m
+ app.include_router(clients_router)[m
+ app.include_router(sessions_router)[m
+ app.include_router(api_test_router)[m
+[32m+[m[32mapp.include_router(backup_router)[m
+ [m
