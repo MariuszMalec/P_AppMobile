@@ -103,7 +103,7 @@ function checkDueActivities(activities, now, report) {
       const minutes = Math.max(0, Number(activity.reminderMinutes ?? 15));
       const reminderAt = new Date(start.getTime() - minutes * 60000);
       const beforeAt = new Date(start.getTime() - 60000);
-      const identity = `${id ?? nameForKey(activity)}:${occurrenceDate}`;
+      const identity = `${id ?? nameForKey(activity)}:${occurrenceDate}:${activity.start}:${minutes}`;
 
       sendOnce(`${identity}:reminder`, reminderAt, now, "reminder", activity, report);
 
@@ -141,7 +141,7 @@ function getAlarmDiagnostics(activities, now) {
         String(start.getDate()).padStart(2, "0"),
       ].join("-");
 
-      const identity = `${id}:${date}`;
+      const identity = `${id}:${date}:${activity.start}:${minutes}`;
       const events = [
         { kind: "REMINDER", time: new Date(start.getTime() - minutes * 60000), suffix: "reminder" },
         ...(minutes > 1
