@@ -259,56 +259,86 @@ export default function ReminderMonitor() {
     checkDueActivities([fake], now, report);
   };
 
+  const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
+
   return (
-    <aside
-      style={{
-        position: "fixed",
-        zIndex: 99999,
-        left: 8,
-        right: 8,
-        bottom: 8,
-        maxHeight: "36vh",
-        overflowY: "auto",
-        padding: 10,
-        background: "#fffbe8",
-        color: "#222",
-        border: "2px solid #b68a22",
-        borderRadius: 8,
-        boxShadow: "0 2px 12px #0003",
-        fontSize: 12,
-        lineHeight: 1.5,
-        overflowWrap: "anywhere",
-      }}
-    >
-      <strong>DIAGNOSTYKA ALARMÓW</strong>
+    <>
       <button
         type="button"
-        onClick={() => {
-          const report = (message) => {
-            const time = new Date().toLocaleTimeString();
-            setDebugLines((previous) => [`${time} — ${message}`, ...previous].slice(0, 8));
-          };
-          report("Test automatyczny uzbrojony: dźwięk za 60 sekund.");
-          window.setTimeout(() => {
-            report("TEST AUTOMATYCZNY: wywołuję dźwięk.");
-            playReminderSound("before");
-          }, 60000);
+        onClick={() => setDiagnosticsOpen((open) => !open)}
+        aria-expanded={diagnosticsOpen}
+        style={{
+          position: "fixed",
+          right: 10,
+          bottom: 10,
+          zIndex: 99999,
+          padding: "10px 12px",
+          background: "#fffbe8",
+          color: "#222",
+          border: "1px solid #b68a22",
+          borderRadius: 8,
+          fontSize: 13,
+          fontWeight: 600,
+          boxShadow: "0 2px 10px #0003",
         }}
-        style={{ display: "block", margin: "6px 0", padding: "8px" }}
       >
-        TEST AUTOMATYCZNY ZA 60 SEKUND
+        {diagnosticsOpen ? "✕ Zamknij diagnostykę" : "🔔 Diagnostyka alarmów"}
       </button>
 
-      <button
-        type="button"
-        onClick={simulateAlarm}
-        style={{ display: "block", margin: "6px 0", padding: "8px" }}
-      >
-        TESTUJ SYMULOWANY ALARM
-      </button>
-      {debugLines.map((line, index) => (
-        <div key={`${index}-${line}`}>{line}</div>
-      ))}
-    </aside>
+      {diagnosticsOpen && (
+        <aside
+          style={{
+            position: "fixed",
+            zIndex: 99998,
+            right: 10,
+            bottom: 58,
+            width: "calc(100vw - 20px)",
+            maxWidth: 420,
+            maxHeight: "45vh",
+            overflowY: "auto",
+            boxSizing: "border-box",
+            padding: 10,
+            background: "#fffbe8",
+            color: "#222",
+            border: "2px solid #b68a22",
+            borderRadius: 8,
+            boxShadow: "0 2px 12px #0003",
+            fontSize: 12,
+            lineHeight: 1.5,
+            overflowWrap: "anywhere",
+          }}
+        >
+          <strong>DIAGNOSTYKA ALARMÓW</strong>
+          <button
+            type="button"
+            onClick={() => {
+              const report = (message) => {
+                const time = new Date().toLocaleTimeString();
+                setDebugLines((previous) => [`${time} — ${message}`, ...previous].slice(0, 8));
+              };
+              report("Test automatyczny uzbrojony: dźwięk za 60 sekund.");
+              window.setTimeout(() => {
+                report("TEST AUTOMATYCZNY: wywołuję dźwięk.");
+                playReminderSound("before");
+              }, 60000);
+            }}
+            style={{ display: "block", margin: "6px 0", padding: "8px" }}
+          >
+            TEST AUTOMATYCZNY ZA 60 SEKUND
+          </button>
+
+          <button
+            type="button"
+            onClick={simulateAlarm}
+            style={{ display: "block", margin: "6px 0", padding: "8px" }}
+          >
+            TESTUJ SYMULOWANY ALARM
+          </button>
+          {debugLines.map((line, index) => (
+            <div key={`${index}-${line}`}>{line}</div>
+          ))}
+        </aside>
+      )}
+    </>
   );
 }
