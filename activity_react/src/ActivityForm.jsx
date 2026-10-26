@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMeta, createActivity, updateActivity } from "./api";
+import { getMeta, getActivity, createActivity, updateActivity } from "./api";
 
 const empty = {
   day_of_week: 2,
@@ -8,6 +8,8 @@ const empty = {
   description: "",
   person_id: 0,
   picture_id: "",
+  reminder_enabled: false,
+  reminder_minutes: 15,
 };
 
 export default function ActivityForm({ activity, defaults, onSaved, onCancel }) {
@@ -21,11 +23,33 @@ export default function ActivityForm({ activity, defaults, onSaved, onCancel }) 
           description: activity.description ?? "",
           person_id: activity.personId === 5 ? 0 : activity.personId,
           picture_id: activity.pictureId,
+          reminder_enabled: activity.reminderEnabled ?? false,
+          reminder_minutes: activity.reminderMinutes ?? 15,
         }
       : { ...empty, ...defaults }
   );
   const [error, setError] = useState("");
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (!activity?.id) return;
+
+    getActivity(activity.id)
+      .then((a) => {
+        setForm((f) => ({
+          ...f,
+          day_of_week: a.dayOfWeek,
+          start: a.start.slice(0, 5),
+          end: a.end.slice(0, 5),
+          description: a.description ?? "",
+          person_id: a.personId === 5 ? 0 : a.personId,
+          picture_id: a.pictureId,
+          reminder_enabled: a.reminderEnabled ?? false,
+          reminder_minutes: a.reminderMinutes ?? 15,
+        }));
+      })
+      .catch((e) => setError(e.message));
+  }, [activity?.id]);
 
   useEffect(() => {
     getMeta()
@@ -47,6 +71,8 @@ export default function ActivityForm({ activity, defaults, onSaved, onCancel }) 
       day_of_week: Number(form.day_of_week),
       person_id: Number(form.person_id),
       picture_id: Number(form.picture_id),
+      reminder_enabled: Boolean(form.reminder_enabled),
+      reminder_minutes: Number(form.reminder_minutes),
     };
     try {
       if (activity) await updateActivity(activity.id, payload);
@@ -94,6 +120,27 @@ export default function ActivityForm({ activity, defaults, onSaved, onCancel }) 
 
       <label>Opis
         <input value={form.description} onChange={set("description")} />
+      </label>
+
+      <label className="reminder-toggle">
+        <input
+          type="checkbox"
+          checked={Boolean(form.reminder_enabled)}
+          onChange={(e) => setForm((f) => ({ ...f, reminder_enabled: e.target.checked }))}
+        />
+        Włącz przypomnienie dla tej aktywności
+      </label>
+
+      <label>Przypomnij przed rozpoczęciem
+        <select
+          value={form.reminder_minutes}
+          onChange={set("reminder_minutes")}
+          disabled={!form.reminder_enabled}
+        >
+          {[5, 10, 15, 30, 60].map((minutes) => (
+            <option key={minutes} value={minutes}>{minutes} minut</option>
+          ))}
+        </select>
       </label>
 
       <div className="form-actions">

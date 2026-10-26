@@ -5,6 +5,7 @@ import Activities from "./Activities";
 import Persons from "./Persons";
 import PictureActivities from "./PictureActivities";
 import ThemeToggle from "./ThemeToggle";
+import ReminderSettings from "./ReminderSettings";
 import "./App.css";
 
 const TABS = [
@@ -13,6 +14,7 @@ const TABS = [
   ["list", "📋 Aktywności"],
   ["persons", "👤 Osoby"],
   ["pics", "🖼 Rodzaje"],
+  ["reminders", "🔔 Przypomnienia"],
 ];
 
 export default function App() {
@@ -32,6 +34,7 @@ export default function App() {
       {tab === "list" && <Activities />}
       {tab === "persons" && <Persons />}
       {tab === "pics" && <PictureActivities />}
+      {tab === "reminders" && <ReminderSettings />}
     </main>
   );
 }

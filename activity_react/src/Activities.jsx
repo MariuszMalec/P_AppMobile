@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getActivities, deleteActivity, imageUrl } from "./api";
+import { getActivities, getActivity, deleteActivity, imageUrl } from "./api";
 import ActivityForm from "./ActivityForm";
 import { useConfirm } from "./Confirm";
 
@@ -41,6 +41,7 @@ export default function Activities() {
   if (editing) {
     return (
       <ActivityForm
+        key={editing === "new" ? "new" : editing.id}
         activity={editing === "new" ? null : editing}
         onCancel={() => setEditing(null)}
         onSaved={() => {
@@ -80,7 +81,13 @@ export default function Activities() {
                   {a.description && <div className="desc">{a.description}</div>}
                 </div>
                 <div className="actions">
-                  <button className="btn small" onClick={() => setEditing(a)}>Edytuj</button>
+                  <button className="btn small" onClick={async () => {
+                    try {
+                      setEditing(await getActivity(a.id));
+                    } catch (e) {
+                      setError(e.message);
+                    }
+                  }}>Edytuj</button>
                   <button className="btn small danger" onClick={() => remove(a.id)}>Usuń</button>
                 </div>
               </li>

@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-
 from db import get_db
 from enums import DAY_NAMES
 from validators import validate_activity_form, validate_activity_edit_form
 
 router = APIRouter(prefix="/api/activities", tags=["api-activities"])
+
+ALLOWED_REMINDER_MINUTES = {5, 10, 15, 30, 60}
 
 
 class ActivityIn(BaseModel):
@@ -13,8 +14,22 @@ class ActivityIn(BaseModel):
     start: str
     end: str
     description: str = ""
-    person_id: int          # 0 = RODZINA (zapisywane jako 5)
+    person_id: int
     picture_id: int
+    reminder_enabled: bool | None = None
+    reminder_minutes: int | None = None
+
+
+class ReminderSettingsIn(BaseModel):
+    enabled: bool
+
+
+def _validate_reminder(minutes: int):
+    if minutes not in ALLOWED_REMINDER_MINUTES:
+        raise HTTPException(
+            status_code=400,
+            detail={"errors": ["Wybierz przypomnienie: 5, 10, 15, 30 lub 60 minut."]},
+        )
 
 
 def _row_to_dict(r):
@@ -30,12 +45,15 @@ def _row_to_dict(r):
         "pictureId": r["PictureId"],
         "pictureName": r["PictureName"],
         "picture": r["Picture"],
+        "reminderEnabled": bool(r["ReminderEnabled"]),
+        "reminderMinutes": r["ReminderMinutes"],
     }
 
 
 BASE_QUERY = """
     SELECT
         ad.Id, ad.DayOfWeek, ad.StartTime, ad.EndTime, ad.Description,
+        ad.ReminderEnabled, ad.ReminderMinutes,
         pf.Id AS PersonId, pf.PersonName,
         pa.Id AS PictureId, pa.Name AS PictureName, pa.Picture
     FROM ActiviesDays ad
@@ -46,29 +64,58 @@ BASE_QUERY = """
 
 @router.get("")
 def list_activities(db=Depends(get_db)):
-    rows = db.execute(BASE_QUERY + " ORDER BY ad.DayOfWeek, ad.StartTime").fetchall()
+    rows = db.execute(
+        BASE_QUERY + " ORDER BY ad.DayOfWeek, ad.StartTime"
+    ).fetchall()
     return [_row_to_dict(r) for r in rows]
 
 
-# UWAGA: /meta musi być przed /{activity_id}
 @router.get("/meta")
 def meta(db=Depends(get_db)):
     persons = [{"id": 0, "name": "RODZINA"}]
-    for p in db.execute("SELECT Id, PersonName FROM PersonFamilies ORDER BY Id"):
+    for p in db.execute(
+        "SELECT Id, PersonName FROM PersonFamilies ORDER BY Id"
+    ):
         if p["Id"] != 5:
             persons.append({"id": p["Id"], "name": p["PersonName"]})
 
     pictures = [
         {"id": p["Id"], "name": p["Name"], "picture": p["Picture"]}
-        for p in db.execute("SELECT Id, Name, Picture FROM PictureActivities ORDER BY Name")
+        for p in db.execute(
+            "SELECT Id, Name, Picture FROM PictureActivities ORDER BY Name"
+        )
     ]
     days = [{"id": k, "name": v} for k, v in DAY_NAMES.items() if k != 0]
     return {"persons": persons, "pictures": pictures, "days": days}
 
 
+@router.get("/settings/reminders")
+def get_reminder_settings(db=Depends(get_db)):
+    row = db.execute(
+        "SELECT Value FROM AppSettings WHERE Key = ?",
+        ("global_notifications_enabled",),
+    ).fetchone()
+    return {"enabled": bool(int(row["Value"])) if row else True}
+
+
+@router.put("/settings/reminders")
+def update_reminder_settings(
+    body: ReminderSettingsIn, db=Depends(get_db)
+):
+    db.execute(
+        """INSERT INTO AppSettings (Key, Value) VALUES (?, ?)
+           ON CONFLICT(Key) DO UPDATE SET Value = excluded.Value""",
+        ("global_notifications_enabled", "1" if body.enabled else "0"),
+    )
+    db.commit()
+    return {"enabled": body.enabled}
+
+
 @router.get("/{activity_id}")
 def get_activity(activity_id: int, db=Depends(get_db)):
-    r = db.execute(BASE_QUERY + " WHERE ad.Id = ?", (activity_id,)).fetchone()
+    r = db.execute(
+        BASE_QUERY + " WHERE ad.Id = ?", (activity_id,)
+    ).fetchone()
     if not r:
         raise HTTPException(404, "Nie znaleziono aktywności")
     return _row_to_dict(r)
@@ -76,14 +123,20 @@ def get_activity(activity_id: int, db=Depends(get_db)):
 
 @router.post("", status_code=201)
 def create_activity(body: ActivityIn, db=Depends(get_db)):
+    reminder_enabled = body.reminder_enabled if body.reminder_enabled is not None else False
+    reminder_minutes = body.reminder_minutes if body.reminder_minutes is not None else 15
+    _validate_reminder(reminder_minutes)
+
     pic = db.execute(
-        "SELECT Name FROM PictureActivities WHERE Id = ?", (body.picture_id,)
+        "SELECT Name FROM PictureActivities WHERE Id = ?",
+        (body.picture_id,),
     ).fetchone()
     if not pic:
         raise HTTPException(400, detail={"errors": ["Nieznana aktywność"]})
 
     errors, picture_id = validate_activity_form(
-        body.start, body.end, body.day_of_week, body.person_id, pic["Name"], db
+        body.start, body.end, body.day_of_week,
+        body.person_id, pic["Name"], db
     )
     if errors:
         raise HTTPException(400, detail={"errors": errors})
@@ -91,13 +144,16 @@ def create_activity(body: ActivityIn, db=Depends(get_db)):
     cur = db.execute(
         """INSERT INTO ActiviesDays
            (DayOfWeek, StartTime, EndTime, Description,
-            ModelPersonFamilyId, ModelPictureActivityId)
-           VALUES (?, ?, ?, ?, ?, ?)""",
+            ModelPersonFamilyId, ModelPictureActivityId,
+            ReminderEnabled, ReminderMinutes)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
         (
             body.day_of_week, body.start, body.end,
             body.description.strip() or None,
             5 if body.person_id == 0 else body.person_id,
             picture_id,
+            int(reminder_enabled),
+            reminder_minutes,
         ),
     )
     db.commit()
@@ -105,9 +161,24 @@ def create_activity(body: ActivityIn, db=Depends(get_db)):
 
 
 @router.put("/{activity_id}")
-def update_activity(activity_id: int, body: ActivityIn, db=Depends(get_db)):
-    if not db.execute("SELECT 1 FROM ActiviesDays WHERE Id = ?", (activity_id,)).fetchone():
+def update_activity(
+    activity_id: int, body: ActivityIn, db=Depends(get_db)
+):
+    existing = db.execute(
+        "SELECT ReminderEnabled, ReminderMinutes FROM ActiviesDays WHERE Id = ?",
+        (activity_id,),
+    ).fetchone()
+    if not existing:
         raise HTTPException(404, "Nie znaleziono aktywności")
+    reminder_enabled = (
+        body.reminder_enabled if body.reminder_enabled is not None
+        else bool(existing["ReminderEnabled"])
+    )
+    reminder_minutes = (
+        body.reminder_minutes if body.reminder_minutes is not None
+        else existing["ReminderMinutes"]
+    )
+    _validate_reminder(reminder_minutes)
 
     person_id = 5 if body.person_id == 0 else body.person_id
     errors = validate_activity_edit_form(
@@ -116,13 +187,22 @@ def update_activity(activity_id: int, body: ActivityIn, db=Depends(get_db)):
     if errors:
         raise HTTPException(400, detail={"errors": errors})
 
+    pic = db.execute(
+        "SELECT 1 FROM PictureActivities WHERE Id = ?", (body.picture_id,)
+    ).fetchone()
+    if not pic:
+        raise HTTPException(400, detail={"errors": ["Nieznana aktywność"]})
+
     db.execute(
-        """UPDATE ActiviesDays SET DayOfWeek=?, StartTime=?, EndTime=?, Description=?,
-           ModelPersonFamilyId=?, ModelPictureActivityId=? WHERE Id=?""",
+        """UPDATE ActiviesDays
+           SET DayOfWeek=?, StartTime=?, EndTime=?, Description=?,
+               ModelPersonFamilyId=?, ModelPictureActivityId=?,
+               ReminderEnabled=?, ReminderMinutes=?
+           WHERE Id=?""",
         (
             body.day_of_week, body.start, body.end,
-            body.description.strip() or None,
-            person_id, body.picture_id, activity_id,
+            body.description.strip() or None, person_id, body.picture_id,
+            int(reminder_enabled), reminder_minutes, activity_id,
         ),
     )
     db.commit()

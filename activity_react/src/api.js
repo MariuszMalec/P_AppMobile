@@ -15,6 +15,12 @@ async function request(path, options = {}) {
 }
 
 export const getActivities = () => request("/api/activities");
+export const getActivity = (id) => request(`/api/activities/${id}`);
+export const getReminderSettings = () => request("/api/activities/settings/reminders");
+export const updateReminderSettings = (enabled) =>
+  request("/api/activities/settings/reminders", {
+    method: "PUT", body: JSON.stringify({ enabled }),
+  });
 export const getMeta = () => request("/api/activities/meta");
 export const createActivity = (a) =>
   request("/api/activities", { method: "POST", body: JSON.stringify(a) });
