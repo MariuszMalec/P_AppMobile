@@ -1,0 +1,523 @@
+package com.example.activity;
+
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.webkit.JavascriptInterface;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.HashSet;
+import java.util.Set;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.os.Handler;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.webkit.WebChromeClient;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TextView;
+
+import com.chaquo.python.Python;
+import com.chaquo.python.android.AndroidPlatform;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+public class MainActivity extends Activity {
+
+    private Handler handler = new Handler();
+    private TextView logView;
+    private String logPath;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= 33 &&
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, 7101);
+        }
+
+        // ============================================
+        // LOG
+        // ============================================
+
+        File logFile = new File(getFilesDir(), "startup.log");
+        logPath = logFile.getAbsolutePath();
+
+        try {
+            PrintWriter writer = new PrintWriter(
+                    new FileOutputStream(logFile, false)
+            );
+            writer.close();
+        } catch (Exception ignored) {
+        }
+
+        // ============================================
+        // EKRAN KONTROLNY
+        // ============================================
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+
+        Button openButton = new Button(this);
+        openButton.setText("OTWÓRZ ACTIVITY");
+
+        openButton.setOnClickListener(v -> showWebView());
+
+        layout.addView(openButton);
+
+        Button deleteDbButton = new Button(this);
+        deleteDbButton.setText("USUŃ BAZĘ SQLITE");
+
+        deleteDbButton.setOnClickListener(v -> {
+
+            File dbFile = new File(
+                    getFilesDir(),
+                    "activity.db"
+            );
+
+            appendLog("");
+            appendLog("========================================");
+            appendLog("PRÓBA USUNIĘCIA BAZY SQLITE");
+            appendLog("========================================");
+            appendLog("Ścieżka:");
+            appendLog(dbFile.getAbsolutePath());
+
+            try {
+
+                if (dbFile.exists()) {
+
+                    appendLog("Baza istnieje.");
+                    appendLog("Rozmiar: " + dbFile.length() + " bajtów");
+
+                    boolean deleted = dbFile.delete();
+
+                    if (deleted) {
+                        appendLog("SUKCES!");
+                        appendLog("BAZA ZOSTAŁA FIZYCZNIE USUNIĘTA");
+                    } else {
+                        appendLog("BŁĄD!");
+                        appendLog("delete() zwróciło FALSE");
+                    }
+
+                } else {
+
+                    appendLog("BAZA NIE ISTNIEJE.");
+                    appendLog("Nie ma czego usuwać.");
+
+                }
+
+            } catch (Throwable e) {
+
+                appendLog("WYJĄTEK PODCZAS USUWANIA BAZY");
+                appendLog(e.toString());
+
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                appendLog(sw.toString());
+            }
+
+            if (!dbFile.exists()) {
+                appendLog("KONTROLA: activity.db NIE ISTNIEJE.");
+            } else {
+                appendLog("KONTROLA: activity.db NADAL ISTNIEJE.");
+            }
+        });
+
+        // Ukryj usuwanie bazy podczas diagnostyki.
+        deleteDbButton.setVisibility(android.view.View.GONE);
+        layout.addView(deleteDbButton);
+
+        Button refreshButton = new Button(this);
+        refreshButton.setText("ODŚWIEŻ LOG");
+
+        refreshButton.setOnClickListener(v -> refreshLog());
+
+        layout.addView(refreshButton);
+
+        Button copyLogButton = new Button(this);
+        copyLogButton.setText("KOPIUJ LOG");
+        copyLogButton.setOnClickListener(v -> {
+            try {
+                StringBuilder content = new StringBuilder();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(
+                                new FileInputStream(new File(logPath)),
+                                "UTF-8"
+                        )
+                );
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.append(line).append("\\n");
+                }
+                reader.close();
+
+                android.content.ClipboardManager clipboard =
+                        (android.content.ClipboardManager)
+                                getSystemService(CLIPBOARD_SERVICE);
+                clipboard.setPrimaryClip(
+                        android.content.ClipData.newPlainText(
+                                "startup.log", content.toString()
+                        )
+                );
+                android.widget.Toast.makeText(
+                        this, "Log skopiowany. Wklej go tutaj.",
+                        android.widget.Toast.LENGTH_LONG
+                ).show();
+            } catch (Throwable e) {
+                appendLog("Błąd kopiowania logu: " + e);
+            }
+        });
+        layout.addView(copyLogButton);
+
+
+        // ============================================
+        // LOG
+        // ============================================
+
+        logView = new TextView(this);
+        logView.setTextSize(14);
+        logView.setTextIsSelectable(true);
+        logView.setPadding(20, 20, 20, 20);
+
+        ScrollView scrollView = new ScrollView(this);
+        scrollView.addView(logView);
+
+        layout.addView(
+                scrollView,
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        0,
+                        1
+                )
+        );
+
+        // ============================================
+        // DEBUG / RELEASE
+        // ============================================
+
+        // Tymczasowo pokazujemy ekran diagnostyczny także w release.
+        setContentView(layout);
+
+        appendLog("========================================");
+        appendLog("ACTIVITY APK - START");
+        appendLog("========================================");
+        appendLog("Ekran uruchomiony.");
+        appendLog("Uruchamiam Python...");
+
+        // ============================================
+        // PYTHON
+        // ============================================
+
+        try {
+
+            if (!Python.isStarted()) {
+                Python.start(new AndroidPlatform(this));
+            }
+
+            appendLog("Python uruchomiony.");
+
+        } catch (Throwable e) {
+
+            appendLog("!!! BŁĄD URUCHAMIANIA PYTHON !!!");
+            appendLog(e.toString());
+
+            StringWriter sw = new StringWriter();
+            e.printStackTrace(new PrintWriter(sw));
+            appendLog(sw.toString());
+
+            return;
+        }
+
+        // ============================================
+        // START FASTAPI W TLE
+        // ============================================
+
+        Thread pythonThread = new Thread(() -> {
+
+            try {
+
+                appendLog("Pobieram instancję Python...");
+
+                Python py = Python.getInstance();
+
+                appendLog("Importuję moduł server...");
+
+                py.getModule("server")
+                        .callAttr(
+                                "start_server",
+                                logPath
+                        );
+
+            } catch (Throwable e) {
+
+                appendLog("!!! BŁĄD STARTU FASTAPI !!!");
+                appendLog(e.toString());
+
+                StringWriter sw = new StringWriter();
+                e.printStackTrace(new PrintWriter(sw));
+                appendLog(sw.toString());
+            }
+        });
+
+        pythonThread.start();
+
+        // ============================================
+        // AUTOMATYCZNE ODŚWIEŻANIE LOGU
+        // ============================================
+
+        handler.postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+
+                refreshLog();
+
+                handler.postDelayed(this, 1000);
+            }
+
+        }, 1000);
+
+        // ============================================
+        // RELEASE
+        // ============================================
+
+        // Tymczasowa diagnostyka: nie otwieramy automatycznie WebView.
+    }
+
+    // =================================================
+    // WEBVIEW
+    // =================================================
+
+    private void showWebView() {
+
+        WebView webView = new WebView(this);
+
+        webView.setWebViewClient(new WebViewClient());
+
+        webView.setWebChromeClient(new WebChromeClient());
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.addJavascriptInterface(new AndroidAlarmBridge(this), "AndroidAlarmBridge");
+
+        webView.loadUrl("http://127.0.0.1:8000/");
+
+        setContentView(webView);
+    }
+
+
+    // =================================================
+    // NATYWNE ALARMY ANDROIDA
+    // =================================================
+
+    private static class AndroidAlarmBridge {
+        private final Context context;
+
+        AndroidAlarmBridge(Context context) {
+            this.context = context.getApplicationContext();
+        }
+
+        @JavascriptInterface
+        public synchronized void scheduleAlarms(String json) {
+            try {
+                JSONArray alarms = new JSONArray(json);
+                AlarmManager manager =
+                        (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                SharedPreferences prefs =
+                        context.getSharedPreferences("activity_native_alarms", Context.MODE_PRIVATE);
+
+                Set<String> wanted = new HashSet<>();
+                long now = System.currentTimeMillis();
+
+                for (int i = 0; i < alarms.length(); i++) {
+                    JSONObject item = alarms.getJSONObject(i);
+                    String id = item.optString("id", "");
+                    long at = item.optLong("at", 0L);
+
+                    if (id.isEmpty() || at <= now) continue;
+                    wanted.add(id);
+
+                    String prefKey = "alarm:" + id;
+                    long oldAt = prefs.getLong(prefKey, -1L);
+
+                    // Nie resetuj alarmu przy każdym odświeżeniu Reacta.
+                    if (oldAt == at) continue;
+
+                    int requestCode = id.hashCode();
+                    Intent intent = new Intent(context, ReminderAlarmReceiver.class);
+                    intent.setAction("com.example.activity.REMINDER." + requestCode);
+                    intent.putExtra("alarm_id", id);
+                    intent.putExtra("title", item.optString("title", "Przypomnienie o aktywności"));
+                    intent.putExtra("body", item.optString("body", "Nadchodzi zaplanowana aktywność"));
+
+                    PendingIntent pending = PendingIntent.getBroadcast(
+                            context, requestCode, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+                    if (oldAt != -1L) manager.cancel(pending);
+
+                    if (Build.VERSION.SDK_INT >= 31 &&
+                            !manager.canScheduleExactAlarms()) {
+                        manager.setAndAllowWhileIdle(
+                                AlarmManager.RTC_WAKEUP, at, pending);
+                    } else {
+                        manager.setExactAndAllowWhileIdle(
+                                AlarmManager.RTC_WAKEUP, at, pending);
+                    }
+
+                    prefs.edit().putLong(prefKey, at).apply();
+                }
+
+                // Usuwaj alarmy, których nie ma już w aktualnym harmonogramie.
+                for (String key : new HashSet<>(prefs.getAll().keySet())) {
+                    if (!key.startsWith("alarm:")) continue;
+                    String id = key.substring("alarm:".length());
+                    if (wanted.contains(id)) continue;
+
+                    int requestCode = id.hashCode();
+                    Intent intent = new Intent(context, ReminderAlarmReceiver.class);
+                    intent.setAction("com.example.activity.REMINDER." + requestCode);
+                    PendingIntent pending = PendingIntent.getBroadcast(
+                            context, requestCode, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    manager.cancel(pending);
+                    prefs.edit().remove(key).apply();
+                }
+            } catch (Exception e) {
+                android.util.Log.e("ActivityAlarm", "Nie udało się zaplanować alarmów", e);
+            }
+        }
+
+        @JavascriptInterface
+        public boolean canScheduleExactAlarms() {
+            if (Build.VERSION.SDK_INT < 31) return true;
+            AlarmManager manager =
+                    (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            return manager.canScheduleExactAlarms();
+        }
+
+        @JavascriptInterface
+        public void openExactAlarmSettings() {
+            if (Build.VERSION.SDK_INT >= 31) {
+                try {
+                    Intent intent = new Intent(
+                            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                            Uri.parse("package:" + context.getPackageName()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } catch (Exception e) {
+                    android.util.Log.e("ActivityAlarm", "Nie można otworzyć ustawień alarmów", e);
+                }
+            }
+        }
+    }
+
+    // =================================================
+    // LOG
+    // =================================================
+
+    private void refreshLog() {
+
+        if (logView == null) {
+            return;
+        }
+
+        try {
+
+            File file = new File(logPath);
+
+            if (!file.exists()) {
+                return;
+            }
+
+            StringBuilder text = new StringBuilder();
+
+            BufferedReader reader =
+                    new BufferedReader(
+                            new InputStreamReader(
+                                    new FileInputStream(file),
+                                    "UTF-8"
+                            )
+                    );
+
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                text.append(line);
+                text.append("\n");
+            }
+
+            reader.close();
+
+            logView.setText(text.toString());
+
+            logView.post(() -> {
+
+                if (logView.getLayout() != null) {
+
+                    int scrollAmount =
+                            logView.getLayout()
+                                    .getLineTop(logView.getLineCount())
+                            - logView.getHeight();
+
+                    if (scrollAmount > 0) {
+                        logView.scrollTo(0, scrollAmount);
+                    }
+                }
+            });
+
+        } catch (Throwable e) {
+
+            logView.setText(
+                    "Błąd odczytu logu:\n" + e
+            );
+        }
+    }
+
+    // =================================================
+    // DODAJ WPIS DO LOGU
+    // =================================================
+
+    private void appendLog(String text) {
+
+        try {
+
+            File file = new File(logPath);
+
+            FileOutputStream output =
+                    new FileOutputStream(file, true);
+
+            output.write(
+                    (text + "\n").getBytes("UTF-8")
+            );
+
+            output.close();
+
+            if (logView != null) {
+                refreshLog();
+            }
+
+        } catch (Throwable ignored) {
+        }
+    }
+}
+

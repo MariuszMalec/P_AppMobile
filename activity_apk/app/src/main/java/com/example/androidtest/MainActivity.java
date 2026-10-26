@@ -142,6 +142,8 @@ public class MainActivity extends Activity {
             }
         });
 
+        // Ukryj usuwanie bazy podczas diagnostyki.
+        deleteDbButton.setVisibility(android.view.View.GONE);
         layout.addView(deleteDbButton);
 
         Button refreshButton = new Button(this);
@@ -150,6 +152,86 @@ public class MainActivity extends Activity {
         refreshButton.setOnClickListener(v -> refreshLog());
 
         layout.addView(refreshButton);
+
+        Button copyLogButton = new Button(this);
+        copyLogButton.setText("KOPIUJ LOG");
+        copyLogButton.setOnClickListener(v -> {
+            try {
+                StringBuilder content = new StringBuilder();
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(
+                                new FileInputStream(new File(logPath)),
+                                "UTF-8"
+                        )
+                );
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.append(line).append("\\n");
+                }
+                reader.close();
+
+                android.content.ClipboardManager clipboard =
+                        (android.content.ClipboardManager)
+                                getSystemService(CLIPBOARD_SERVICE);
+                clipboard.setPrimaryClip(
+                        android.content.ClipData.newPlainText(
+                                "startup.log", content.toString()
+                        )
+                );
+                android.widget.Toast.makeText(
+                        this, "Log skopiowany. Wklej go tutaj.",
+                        android.widget.Toast.LENGTH_LONG
+                ).show();
+            } catch (Throwable e) {
+                appendLog("Błąd kopiowania logu: " + e);
+            }
+        });
+        layout.addView(copyLogButton);
+
+        Button copyAlarmLogButton = new Button(this);
+        copyAlarmLogButton.setText("KOPIUJ LOG ALARMU");
+        copyAlarmLogButton.setOnClickListener(v -> {
+            File alarmLogFile = new File(getFilesDir(), "alarm-debug.log");
+            if (!alarmLogFile.isFile()) {
+                android.widget.Toast.makeText(
+                        this, "Brak logu alarmu — odbiornik jeszcze nie zapisał zdarzeń.",
+                        android.widget.Toast.LENGTH_LONG
+                ).show();
+                return;
+            }
+
+            try {
+                StringBuilder content = new StringBuilder();
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(alarmLogFile), "UTF-8"))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        content.append(line).append("\n");
+                    }
+                }
+
+                android.content.ClipboardManager clipboard =
+                        (android.content.ClipboardManager)
+                                getSystemService(CLIPBOARD_SERVICE);
+                clipboard.setPrimaryClip(
+                        android.content.ClipData.newPlainText(
+                                "alarm-debug.log", content.toString()
+                        )
+                );
+                android.widget.Toast.makeText(
+                        this, "Log alarmu skopiowany. Wklej go tutaj.",
+                        android.widget.Toast.LENGTH_LONG
+                ).show();
+            } catch (Throwable e) {
+                android.widget.Toast.makeText(
+                        this, "Błąd kopiowania logu alarmu: " + e,
+                        android.widget.Toast.LENGTH_LONG
+                ).show();
+            }
+        });
+        layout.addView(copyAlarmLogButton);
+
+
 
         // ============================================
         // LOG
@@ -176,9 +258,8 @@ public class MainActivity extends Activity {
         // DEBUG / RELEASE
         // ============================================
 
-        if (BuildConfig.DEBUG) {
-            setContentView(layout);
-        }
+        // Tymczasowo pokazujemy ekran diagnostyczny także w release.
+        setContentView(layout);
 
         appendLog("========================================");
         appendLog("ACTIVITY APK - START");
@@ -263,16 +344,7 @@ public class MainActivity extends Activity {
         // RELEASE
         // ============================================
 
-        if (!BuildConfig.DEBUG) {
-
-            // RELEASE:
-            // nie pokazujemy ekranu logu
-            // automatycznie otwieramy Activity
-
-            handler.postDelayed(() -> {
-                showWebView();
-            }, 1500);
-        }
+        // Tymczasowa diagnostyka: nie otwieramy automatycznie WebView.
     }
 
     // =================================================
