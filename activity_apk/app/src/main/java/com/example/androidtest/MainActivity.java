@@ -1,5 +1,21 @@
 package com.example.activity;
 
+import android.Manifest;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.Settings;
+import android.webkit.JavascriptInterface;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import java.util.HashSet;
+import java.util.Set;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +47,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (Build.VERSION.SDK_INT >= 33 &&
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS)
+                        != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(
+                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, 7101);
+        }
 
         // ============================================
         // LOG
@@ -266,10 +289,118 @@ public class MainActivity extends Activity {
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
+        webView.addJavascriptInterface(new AndroidAlarmBridge(this), "AndroidAlarmBridge");
 
         webView.loadUrl("http://127.0.0.1:8000/");
 
         setContentView(webView);
+    }
+
+
+    // =================================================
+    // NATYWNE ALARMY ANDROIDA
+    // =================================================
+
+    private static class AndroidAlarmBridge {
+        private final Context context;
+
+        AndroidAlarmBridge(Context context) {
+            this.context = context.getApplicationContext();
+        }
+
+        @JavascriptInterface
+        public synchronized void scheduleAlarms(String json) {
+            try {
+                JSONArray alarms = new JSONArray(json);
+                AlarmManager manager =
+                        (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                SharedPreferences prefs =
+                        context.getSharedPreferences("activity_native_alarms", Context.MODE_PRIVATE);
+
+                Set<String> wanted = new HashSet<>();
+                long now = System.currentTimeMillis();
+
+                for (int i = 0; i < alarms.length(); i++) {
+                    JSONObject item = alarms.getJSONObject(i);
+                    String id = item.optString("id", "");
+                    long at = item.optLong("at", 0L);
+
+                    if (id.isEmpty() || at <= now) continue;
+                    wanted.add(id);
+
+                    String prefKey = "alarm:" + id;
+                    long oldAt = prefs.getLong(prefKey, -1L);
+
+                    // Nie resetuj alarmu przy każdym odświeżeniu Reacta.
+                    if (oldAt == at) continue;
+
+                    int requestCode = id.hashCode();
+                    Intent intent = new Intent(context, ReminderAlarmReceiver.class);
+                    intent.setAction("com.example.activity.REMINDER." + requestCode);
+                    intent.putExtra("alarm_id", id);
+                    intent.putExtra("title", item.optString("title", "Przypomnienie o aktywności"));
+                    intent.putExtra("body", item.optString("body", "Nadchodzi zaplanowana aktywność"));
+
+                    PendingIntent pending = PendingIntent.getBroadcast(
+                            context, requestCode, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+                    if (oldAt != -1L) manager.cancel(pending);
+
+                    if (Build.VERSION.SDK_INT >= 31 &&
+                            !manager.canScheduleExactAlarms()) {
+                        manager.setAndAllowWhileIdle(
+                                AlarmManager.RTC_WAKEUP, at, pending);
+                    } else {
+                        manager.setExactAndAllowWhileIdle(
+                                AlarmManager.RTC_WAKEUP, at, pending);
+                    }
+
+                    prefs.edit().putLong(prefKey, at).apply();
+                }
+
+                // Usuwaj alarmy, których nie ma już w aktualnym harmonogramie.
+                for (String key : new HashSet<>(prefs.getAll().keySet())) {
+                    if (!key.startsWith("alarm:")) continue;
+                    String id = key.substring("alarm:".length());
+                    if (wanted.contains(id)) continue;
+
+                    int requestCode = id.hashCode();
+                    Intent intent = new Intent(context, ReminderAlarmReceiver.class);
+                    intent.setAction("com.example.activity.REMINDER." + requestCode);
+                    PendingIntent pending = PendingIntent.getBroadcast(
+                            context, requestCode, intent,
+                            PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                    manager.cancel(pending);
+                    prefs.edit().remove(key).apply();
+                }
+            } catch (Exception e) {
+                android.util.Log.e("ActivityAlarm", "Nie udało się zaplanować alarmów", e);
+            }
+        }
+
+        @JavascriptInterface
+        public boolean canScheduleExactAlarms() {
+            if (Build.VERSION.SDK_INT < 31) return true;
+            AlarmManager manager =
+                    (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            return manager.canScheduleExactAlarms();
+        }
+
+        @JavascriptInterface
+        public void openExactAlarmSettings() {
+            if (Build.VERSION.SDK_INT >= 31) {
+                try {
+                    Intent intent = new Intent(
+                            Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM,
+                            Uri.parse("package:" + context.getPackageName()));
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                } catch (Exception e) {
+                    android.util.Log.e("ActivityAlarm", "Nie można otworzyć ustawień alarmów", e);
+                }
+            }
+        }
     }
 
     // =================================================

@@ -59,6 +59,35 @@ def init_db_if_not_exists(conn):
         )
     """)
 
+
+    # Migracja przypomnień: zachowujemy wszystkie istniejące aktywności.
+    activity_columns = {
+        row[1] for row in cur.execute("PRAGMA table_info(ActiviesDays)")
+    }
+
+    if "ReminderEnabled" not in activity_columns:
+        cur.execute(
+            "ALTER TABLE ActiviesDays "
+            "ADD COLUMN ReminderEnabled INTEGER NOT NULL DEFAULT 0"
+        )
+
+    if "ReminderMinutes" not in activity_columns:
+        cur.execute(
+            "ALTER TABLE ActiviesDays "
+            "ADD COLUMN ReminderMinutes INTEGER NOT NULL DEFAULT 15"
+        )
+
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS AppSettings (
+            Key TEXT PRIMARY KEY,
+            Value TEXT NOT NULL
+        )
+    """)
+    cur.execute("""
+        INSERT OR IGNORE INTO AppSettings (Key, Value)
+        VALUES ('global_notifications_enabled', '1')
+    """)
+
     cur.execute("DROP TRIGGER IF EXISTS trg_no_time_overlap_insert;")
 
     cur.execute("""

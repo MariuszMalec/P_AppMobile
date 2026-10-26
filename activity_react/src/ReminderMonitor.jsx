@@ -181,6 +181,75 @@ function getAlarmDiagnostics(activities, now) {
   return results;
 }
 
+
+function syncNativeAlarms(activities, globallyEnabled, report) {
+  const bridge = window.AndroidAlarmBridge;
+  if (!bridge || typeof bridge.scheduleAlarms !== "function") return;
+
+  const now = new Date();
+  const alarms = [];
+
+  if (globallyEnabled) {
+    for (const activity of activities) {
+      if (!activity.reminderEnabled || !activity.start || activity.dayOfWeek == null) continue;
+
+      const [hour, minute] = String(activity.start).split(":").map(Number);
+      if (!Number.isFinite(hour) || !Number.isFinite(minute)) continue;
+
+      // API: niedziela=1, poniedziałek=2, ..., sobota=7.
+      const targetDay = (Number(activity.dayOfWeek) + 6) % 7;
+      const id = activity.id ?? activity.Id ?? nameForKey(activity);
+      const minutes = Math.max(0, Number(activity.reminderMinutes ?? 15));
+
+      for (let offset = 0; offset <= 7; offset++) {
+        const day = new Date(now);
+        day.setDate(day.getDate() + offset);
+        if (day.getDay() !== targetDay) continue;
+
+        const start = dateAt(offset, hour, minute, now);
+        const date = [
+          start.getFullYear(),
+          String(start.getMonth() + 1).padStart(2, "0"),
+          String(start.getDate()).padStart(2, "0"),
+        ].join("-");
+
+        const identity = `${id}:${date}:${activity.start}:${minutes}`;
+        const name = activity.description || activity.pictureName || "Aktywność";
+        const reminderAt = start.getTime() - minutes * 60000;
+        const beforeAt = start.getTime() - 60000;
+
+        if (reminderAt > now.getTime()) {
+          alarms.push({
+            id: `${identity}:reminder`,
+            at: reminderAt,
+            title: "Przypomnienie o aktywności",
+            body: name,
+          });
+        }
+
+        if (minutes > 1 && beforeAt > now.getTime()) {
+          alarms.push({
+            id: `${identity}:before`,
+            at: beforeAt,
+            title: "Aktywność za minutę",
+            body: name,
+          });
+        }
+      }
+    }
+  }
+
+  try {
+    bridge.scheduleAlarms(JSON.stringify(alarms));
+    if (typeof bridge.canScheduleExactAlarms === "function" &&
+        !bridge.canScheduleExactAlarms()) {
+      report("UWAGA: dokładne alarmy Androida nie są dozwolone; system może opóźnić sygnał.");
+    }
+  } catch (error) {
+    report(`BŁĄD planowania alarmów Androida: ${error?.message || error}`);
+  }
+}
+
 export default function ReminderMonitor() {
   const [debugLines, setDebugLines] = useState(["Uruchamianie monitora..."]);
 
@@ -215,7 +284,11 @@ export default function ReminderMonitor() {
           `API OK; przypomnienia ${settings?.enabled ? "WŁĄCZONE" : "WYŁĄCZONE"}; aktywności z alarmem: ${enabledActivities.length}`
         );
 
-        if (settings?.enabled) {
+        syncNativeAlarms(activities, Boolean(settings?.enabled), report);
+
+        // W APK sygnał obsługuje Android, aby nie odtwarzać go podwójnie.
+        // W zwykłej przeglądarce zachowujemy dotychczasowy mechanizm.
+        if (settings?.enabled && !window.AndroidAlarmBridge) {
           checkDueActivities(enabledActivities, new Date(), report);
         }
       } catch (error) {
