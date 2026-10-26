@@ -1,0 +1,134 @@
+import { useEffect } from "react";
+import { getActivities, getReminderSettings } from "./api";
+import { playReminderSound, showReminderNotification } from "./reminderSound";
+
+const SEEN_PREFIX = "activity-reminder-seen-v1:";
+
+function getList(data) {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.activities)) return data.activities;
+  if (Array.isArray(data?.items)) return data.items;
+  return [];
+}
+
+function dateAt(dayOffset, hour, minute, now) {
+  const result = new Date(now);
+  result.setDate(result.getDate() + dayOffset);
+  result.setHours(hour, minute, 0, 0);
+  return result;
+}
+
+function sendOnce(key, target, now, kind, activity) {
+  // Nie odtwarzaj spóźnionych alarmów, np. po długim zamknięciu strony.
+  const difference = now.getTime() - target.getTime();
+  if (difference < 0 || difference > 90000) return;
+
+  const storageKey = SEEN_PREFIX + key;
+  try {
+    if (localStorage.getItem(storageKey)) return;
+    localStorage.setItem(storageKey, "1");
+  } catch {
+    // Bez localStorage zapobieganie duplikatom może być ograniczone.
+  }
+
+  const name = activity.description || activity.pictureName || "Aktywność";
+
+  if (kind === "before") {
+    playReminderSound("before");
+    showReminderNotification("Aktywność za minutę", name);
+  } else {
+    playReminderSound("reminder");
+    showReminderNotification("Przypomnienie o aktywności", name);
+  }
+}
+
+function checkDueActivities(activities, now) {
+  for (const activity of activities) {
+    if (!activity.reminderEnabled) continue;
+    if (!activity.start || activity.dayOfWeek == null) continue;
+
+    const [hour, minute] = String(activity.start).split(":").map(Number);
+    if (!Number.isFinite(hour) || !Number.isFinite(minute)) continue;
+
+    // W API: niedziela=1, poniedziałek=2, ..., sobota=7.
+    const targetDay = (Number(activity.dayOfWeek) + 6) % 7;
+    const startToday = new Date(now);
+    startToday.setHours(hour, minute, 0, 0);
+
+    for (let offset = 0; offset <= 7; offset++) {
+      const day = new Date(now);
+      day.setDate(day.getDate() + offset);
+      if (day.getDay() !== targetDay) continue;
+
+      const start = dateAt(offset, hour, minute, now);
+      const occurrenceDate = [
+        start.getFullYear(),
+        String(start.getMonth() + 1).padStart(2, "0"),
+        String(start.getDate()).padStart(2, "0"),
+      ].join("-");
+
+      const id = activity.id ?? activity.Id;
+      const minutes = Math.max(0, Number(activity.reminderMinutes ?? 15));
+      const reminderAt = new Date(start.getTime() - minutes * 60000);
+      const beforeAt = new Date(start.getTime() - 60000);
+      const identity = `${id ?? nameForKey(activity)}:${occurrenceDate}`;
+
+      sendOnce(`${identity}:reminder`, reminderAt, now, "reminder", activity);
+
+      // Jeśli ustawione przypomnienie jest minutę przed startem lub później,
+      // nie odtwarzaj dwóch sygnałów niemal jednocześnie.
+      if (minutes > 1) {
+        sendOnce(`${identity}:before`, beforeAt, now, "before", activity);
+      }
+    }
+  }
+}
+
+function nameForKey(activity) {
+  return activity.description || activity.start || "activity";
+}
+
+export default function ReminderMonitor() {
+  useEffect(() => {
+    let stopped = false;
+    let running = false;
+
+    const check = async () => {
+      if (stopped || running) return;
+      running = true;
+
+      try {
+        const [activitiesData, settings] = await Promise.all([
+          getActivities(),
+          getReminderSettings(),
+        ]);
+
+        if (!stopped && settings?.enabled) {
+          checkDueActivities(
+            getList(activitiesData).filter((activity) => activity.reminderEnabled),
+            new Date(),
+          );
+        }
+      } catch (error) {
+        console.warn("Nie udało się sprawdzić przypomnień:", error);
+      } finally {
+        running = false;
+      }
+    };
+
+    check();
+    const interval = window.setInterval(check, 15000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") check();
+    };
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      stopped = true;
+      window.clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
+  }, []);
+
+  return null;
+}

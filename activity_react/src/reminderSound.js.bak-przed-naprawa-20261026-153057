@@ -1,0 +1,68 @@
+let audioContext;
+
+export async function enableReminderSound() {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return false;
+
+    audioContext ??= new AudioContextClass();
+    if (audioContext.state === "suspended") {
+      await audioContext.resume();
+    }
+
+    playReminderSound("test");
+
+    if ("Notification" in window && Notification.permission === "default") {
+      await Notification.requestPermission();
+    }
+
+    return true;
+  } catch (error) {
+    console.warn("Nie udało się włączyć dźwięku:", error);
+    return false;
+  }
+}
+
+export function playReminderSound(kind = "reminder") {
+  try {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContextClass) return;
+
+    audioContext ??= new AudioContextClass();
+
+    const ctx = audioContext;
+    const start = ctx.currentTime + 0.05;
+    const frequency = kind === "before" ? 1000 : 800;
+
+    for (let i = 0; i < 10; i++) {
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const at = start + i * 0.45;
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(frequency, at);
+
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(0.25, at + 0.025);
+      gain.gain.setValueAtTime(0.25, at + 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.24);
+
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+      oscillator.start(at);
+      oscillator.stop(at + 0.25);
+    }
+  } catch (error) {
+    console.warn("Błąd odtwarzania dźwięku:", error);
+  }
+}
+
+export function showReminderNotification(title, body) {
+  try {
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification(title, { body });
+    }
+  } catch (error) {
+    console.warn("Nie udało się pokazać powiadomienia:", error);
+  }
+}
