@@ -36,7 +36,7 @@ export async function enableReminderSound() {
 export async function playReminderSound(kind = "reminder") {
   try {
     const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) return;
+    if (!AudioContextClass) return false;
 
     if (!audioContext) audioContext = new AudioContextClass();
 
@@ -45,8 +45,10 @@ export async function playReminderSound(kind = "reminder") {
     }
 
     const ctx = audioContext;
+    if (ctx.state !== "running") return false;
+
     const isTest = kind === "test";
-    const frequency = kind === "before" ? 1000 : kind === "test" ? 660 : 800;
+    const frequency = kind === "before" ? 1000 : isTest ? 660 : 800;
     const count = isTest ? 1 : 10;
     const start = ctx.currentTime + 0.05;
 
@@ -68,8 +70,11 @@ export async function playReminderSound(kind = "reminder") {
       oscillator.start(at);
       oscillator.stop(at + 0.26);
     }
+
+    return true;
   } catch (error) {
     console.warn("Nie udało się odtworzyć dźwięku przypomnienia:", error);
+    return false;
   }
 }
 

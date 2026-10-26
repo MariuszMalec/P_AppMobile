@@ -6,6 +6,7 @@ import Persons from "./Persons";
 import PictureActivities from "./PictureActivities";
 import ThemeToggle from "./ThemeToggle";
 import ReminderSettings from "./ReminderSettings";
+import ReminderMonitor from "./ReminderMonitor";
 import "./App.css";
 
 const TABS = [
@@ -21,6 +22,7 @@ export default function App() {
   const [tab, setTab] = useState("live");
   return (
     <main>
+      <ReminderMonitor />
       <nav className="tabs">
         {TABS.map(([id, label]) => (
           <button key={id} className={tab === id ? "active" : ""} onClick={() => setTab(id)}>
