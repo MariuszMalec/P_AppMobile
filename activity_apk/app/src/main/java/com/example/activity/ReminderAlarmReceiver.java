@@ -26,6 +26,10 @@ public class ReminderAlarmReceiver extends BroadcastReceiver {
     private static final String LOG_FILE = "alarm-debug.log";
 
     private static synchronized void logEvent(Context context, String message, Throwable error) {
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
+
         String time = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()
         ).format(new Date());

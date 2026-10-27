@@ -334,8 +334,21 @@ export default function ReminderMonitor() {
 
   const [diagnosticsOpen, setDiagnosticsOpen] = useState(false);
 
+  // W APK diagnostyka jest widoczna wyłącznie w kompilacji debug.
+  // W zwykłej przeglądarce nadal pozostaje dostępna.
+  const showDiagnostics = (() => {
+    try {
+      const bridge = window.AndroidAlarmBridge;
+      if (!bridge) return true;
+      return typeof bridge.isDebugBuild !== "function" || bridge.isDebugBuild() === true;
+    } catch {
+      return false;
+    }
+  })();
+
   return (
     <>
+      {showDiagnostics && (
       <button
         type="button"
         onClick={() => setDiagnosticsOpen((open) => !open)}
@@ -357,8 +370,9 @@ export default function ReminderMonitor() {
       >
         {diagnosticsOpen ? "✕ Zamknij diagnostykę" : "🔔 Diagnostyka alarmów"}
       </button>
+      )}
 
-      {diagnosticsOpen && (
+      {showDiagnostics && diagnosticsOpen && (
         <aside
           style={{
             position: "fixed",

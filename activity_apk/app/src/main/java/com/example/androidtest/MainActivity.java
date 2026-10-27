@@ -62,12 +62,14 @@ public class MainActivity extends Activity {
         File logFile = new File(getFilesDir(), "startup.log");
         logPath = logFile.getAbsolutePath();
 
-        try {
-            PrintWriter writer = new PrintWriter(
-                    new FileOutputStream(logFile, false)
-            );
-            writer.close();
-        } catch (Exception ignored) {
+        if (BuildConfig.DEBUG) {
+            try {
+                PrintWriter writer = new PrintWriter(
+                        new FileOutputStream(logFile, false)
+                );
+                writer.close();
+            } catch (Exception ignored) {
+            }
         }
 
         // ============================================
@@ -258,8 +260,9 @@ public class MainActivity extends Activity {
         // DEBUG / RELEASE
         // ============================================
 
-        // Tymczasowo pokazujemy ekran diagnostyczny także w release.
-        setContentView(layout);
+        if (BuildConfig.DEBUG) {
+            setContentView(layout);
+        }
 
         appendLog("========================================");
         appendLog("ACTIVITY APK - START");
@@ -308,7 +311,8 @@ public class MainActivity extends Activity {
                 py.getModule("server")
                         .callAttr(
                                 "start_server",
-                                logPath
+                                logPath,
+                                BuildConfig.DEBUG
                         );
 
             } catch (Throwable e) {
@@ -328,23 +332,18 @@ public class MainActivity extends Activity {
         // AUTOMATYCZNE ODŚWIEŻANIE LOGU
         // ============================================
 
-        handler.postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-
-                refreshLog();
-
-                handler.postDelayed(this, 1000);
-            }
-
-        }, 1000);
-
-        // ============================================
-        // RELEASE
-        // ============================================
-
-        // Tymczasowa diagnostyka: nie otwieramy automatycznie WebView.
+        if (BuildConfig.DEBUG) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    refreshLog();
+                    handler.postDelayed(this, 1000);
+                }
+            }, 1000);
+        } else {
+            // Wersja release od razu przechodzi do normalnego interfejsu.
+            handler.postDelayed(this::showWebView, 1500);
+        }
     }
 
     // =================================================
@@ -378,6 +377,11 @@ public class MainActivity extends Activity {
 
         AndroidAlarmBridge(Context context) {
             this.context = context.getApplicationContext();
+        }
+
+        @JavascriptInterface
+        public boolean isDebugBuild() {
+            return BuildConfig.DEBUG;
         }
 
         @JavascriptInterface
@@ -481,7 +485,7 @@ public class MainActivity extends Activity {
 
     private void refreshLog() {
 
-        if (logView == null) {
+        if (!BuildConfig.DEBUG || logView == null) {
             return;
         }
 
@@ -542,6 +546,10 @@ public class MainActivity extends Activity {
     // =================================================
 
     private void appendLog(String text) {
+
+        if (!BuildConfig.DEBUG) {
+            return;
+        }
 
         try {
 

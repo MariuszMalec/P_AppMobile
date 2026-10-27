@@ -7,7 +7,13 @@ from pathlib import Path
 import uvicorn
 
 
+LOG_ENABLED = True
+
+
 def log_file(path, text):
+    if not LOG_ENABLED:
+        return
+
     try:
         with open(path, "a", encoding="utf-8") as f:
             f.write(text + "\n")
@@ -208,7 +214,9 @@ async def run_server(log_path):
         raise
 
 
-def start_server(log_path):
+def start_server(log_path, debug_logging=True):
+    global LOG_ENABLED
+    LOG_ENABLED = bool(debug_logging)
 
     log_file(
         log_path,
