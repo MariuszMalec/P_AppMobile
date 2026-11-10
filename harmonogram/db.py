@@ -39,8 +39,9 @@ def init_db_if_not_exists(conn):
         ExistNC INTEGER NOT NULL DEFAULT 0,
         ExistCMM INTEGER NOT NULL DEFAULT 0,
         ExistMaterial INTEGER NOT NULL DEFAULT 0,
-        MachineId INTEGER NOT NULL DEFAULT 1
-        -- 🔥 Kolumna Color dodamy niżej jeśli brak
+        MachineId INTEGER NOT NULL DEFAULT 1,
+        Color TEXT NOT NULL DEFAULT '#f4f4f4',
+        Position INTEGER NOT NULL DEFAULT 0
     );
     """)
 
@@ -57,7 +58,7 @@ def init_db_if_not_exists(conn):
     """)
 
     # =============================
-    # Sprawdź kolumny i dodaj brakujące
+    # Sprawdź kolumny i dodaj brakujące (migracja starych baz)
     # =============================
     cur.execute("PRAGMA table_info(Orders)")
     columns = [col[1] for col in cur.fetchall()]
@@ -67,6 +68,13 @@ def init_db_if_not_exists(conn):
 
     if "Color" not in columns:
         cur.execute("ALTER TABLE Orders ADD COLUMN Color TEXT NOT NULL DEFAULT '#f4f4f4'")
+
+    # Position = kolejność w kolejce (większa liczba = dalej w kolejce).
+    # Dla istniejących zleceń ustawiamy Position = Id, żeby zachować
+    # dotychczasową kolejność.
+    if "Position" not in columns:
+        cur.execute("ALTER TABLE Orders ADD COLUMN Position INTEGER NOT NULL DEFAULT 0")
+        cur.execute("UPDATE Orders SET Position = Id")
 
     # Dodaj status aktywności maszyn bez zmieniania istniejących rekordów.
     cur.execute("PRAGMA table_info(Machines)")
@@ -78,7 +86,7 @@ def init_db_if_not_exists(conn):
         )
 
     conn.commit()
-    print("✅ Database initialized successfully with Color and IsActive columns")
+    print("✅ Database initialized successfully with Color, Position and IsActive columns")
 
 
 
@@ -100,29 +108,30 @@ def insert_orders(conn):
             ExistCMM,
             ExistMaterial,
             MachineId,
-            Color
+            Color,
+            Position
         ) VALUES
         -- Projekty dla LINIA1
-        (1, 'IMR', '000001', '0', 'Projekt_A', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 72, 0, 0, 0, 1, '#ff9999'),
+        (1, 'IMR', '000001', '0', 'Projekt_A', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 72, 0, 0, 0, 1, '#ff9999', 1),
 
         -- Projekty dla LINIA2
-        (2, 'IMR', '000002', '0', 'Projekt_B', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 16, 1, 0, 0, 2, '#99ccff'),
+        (2, 'IMR', '000002', '0', 'Projekt_B', 'k1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 16, 1, 0, 0, 2, '#99ccff', 2),
 
         -- Projekty dla LINIA3
-        (3, 'IMR', '000003', '0', 'Projekt_C', 'k3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 3, '#99ff99'),
-                
+        (3, 'IMR', '000003', '0', 'Projekt_C', 'k3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 3, '#99ff99', 3),
+
         -- Projekty dla LINIA4
-        (4, 'IMR', '000004', '0', 'Projekt_D', 'K4', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 4, '#99ff99'),
-                
+        (4, 'IMR', '000004', '0', 'Projekt_D', 'K4', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 24, 1, 1, 0, 4, '#99ff99', 4),
+
         -- Projekty dla LINIA5
-        (5, 'IMR', '000005', '0', 'Projekt_E', 'L0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 128, 1, 1, 0, 5, '#99ff99'),
+        (5, 'IMR', '000005', '0', 'Projekt_E', 'L0', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 128, 1, 1, 0, 5, '#99ff99', 5),
 
         -- Projekty dla LINIA6
-        (6, 'IMR', '000006', '0', 'Projekt_F', 'A3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 32, 0, 1, 1, 6, '#ffcc99');
+        (6, 'IMR', '000006', '0', 'Projekt_F', 'A3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, 32, 0, 1, 1, 6, '#ffcc99', 6);
     """)
 
     conn.commit()
-    print("✅ DB seeded with initial Orders including Color")
+    print("✅ DB seeded with initial Orders including Color and Position")
 
 
 def insert_machines(conn):
@@ -136,7 +145,7 @@ def insert_machines(conn):
             Picture
         ) VALUES
         (1, 'LINIA1', '5-axis milling machine', 'hstm_01.png'),
-        (2, 'LINIA2', '5-axis milling machine', 'hstm_02.png'),
+        (2, 'LINIA2', '5-axis milling machine', 'hstm_01.png'),
         (3, 'LINIA3', 'Coordinate Measuring Machine', 'cmm_01.png'),
         (4, 'LINIA4', '5-axis milling machine', 'hstm_01.png'),
         (5, 'LINIA5', '5-axis milling machine', 'hstm_01.png'),

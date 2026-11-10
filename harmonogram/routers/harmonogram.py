@@ -13,6 +13,21 @@ router = APIRouter(
     tags=["harmonogram"]
 )
 
+
+def next_position(cursor):
+    """Pozycja na końcu kolejki (order wchodzi ostatni w swoim dniu)."""
+    return cursor.execute(
+        "SELECT COALESCE(MAX(Position), 0) + 1 FROM Orders"
+    ).fetchone()[0]
+
+
+def first_position(cursor):
+    """Pozycja przed wszystkimi innymi (order wchodzi pierwszy w swoim dniu)."""
+    return cursor.execute(
+        "SELECT COALESCE(MIN(Position), 0) - 1 FROM Orders"
+    ).fetchone()[0]
+
+
 # =====================================================
 # GŁÓWNA STRONA HARMONOGRAMU
 # =====================================================
@@ -23,7 +38,9 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
     # Pobranie maszyn
     machines = cursor.execute("SELECT * FROM Machines").fetchall()
 
-    # Pobranie zamówień
+    # Kolejność: najpierw data startu, w obrębie tego samego dnia Position.
+    # Order z niższą Position zajmuje godziny pierwszy, a pozostałe
+    # (z tego dnia i późniejsze) przesuwają się w prawo.
     orders = cursor.execute("""
         SELECT 
             Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
@@ -31,7 +48,7 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
             ExistNC, ExistCMM, ExistMaterial,
             Color
         FROM Orders
-        ORDER BY StartDate, Id
+        ORDER BY substr(StartDate, 1, 10), Position, Id
     """).fetchall()
 
     schedule = defaultdict(lambda: defaultdict(list))
@@ -41,7 +58,7 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
         return f"#{h[:6]}"
 
     # Lista orderów do wstawienia (kolejka)
-    pending_orders = orders.copy()
+    pending_orders = list(orders)
 
     # Wypełnianie harmonogramu
     while pending_orders:
@@ -55,7 +72,9 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
 
         while remaining_hours > 0:
             day_key = current_date.strftime("%Y-%m-%d")
-            already_scheduled = sum(item["DayHours"] for item in schedule[machine_id].get(day_key, []))
+            already_scheduled = sum(
+                item["DayHours"] for item in schedule[machine_id].get(day_key, [])
+            )
             available_hours = max(0, 24 - already_scheduled)
 
             if available_hours > 0:
@@ -101,7 +120,6 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
             "date_str": date_str
         })
 
-
     return templates.TemplateResponse(
         request,
         "harmonogram.html",
@@ -111,9 +129,6 @@ def harmonogram_page(request: Request, db=Depends(get_db)):
             "schedule": schedule,
         }
     )
-
-
-
 
 
 # =====================================================
@@ -150,9 +165,10 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
             ExistNC,
             ExistCMM,
             ExistMaterial,
-            Color
+            Color,
+            Position
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data["MachineId"],
         data["StartDate"],
@@ -163,12 +179,12 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
         data.get("ExistNC", 0),
         data.get("ExistCMM", 0),
         data.get("ExistMaterial", 0),
-        color
+        color,
+        next_position(cursor)
     ))
 
     db.commit()
     return {"status": "ok"}
-
 
 
 # =====================================================
@@ -178,9 +194,6 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
 def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-    # -------------------------------------------------
-    # Dane z formularza
-    # -------------------------------------------------
     new_machine = int(data["MachineId"])
     new_start = data["StartDate"]
     new_hours = int(data.get("Hours", 8))
@@ -190,17 +203,26 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 
     color = data.get("Color") or "#f4f4f4"
 
-    # -------------------------------------------------
-    # EDYCJA
-    #
-    # UWAGA:
-    # NIE sprawdzamy tutaj konfliktu godzinowego!
-    #
-    # Dokładnie tak samo działa Drag & Drop:
-    # zapisujemy nową maszynę i datę,
-    # a harmonogram_page() sam później
-    # rozłoży ordery i przesunie pozostałe w prawo.
-    # -------------------------------------------------
+    old = cursor.execute(
+        "SELECT MachineId, StartDate, Position FROM Orders WHERE Id = ?",
+        (order_id,)
+    ).fetchone()
+
+    if not old:
+        return {"status": "error", "message": "Order nie istnieje!"}
+
+    # Jeśli zmieniono maszynę lub datę startu, order działa jak przy
+    # drag & drop: wchodzi pierwszy w nowym dniu i przesuwa pozostałe
+    # w prawo. W przeciwnym razie (np. zmiana koloru, godzin)
+    # zostaje na swojej pozycji.
+    moved = (
+        old["MachineId"] != new_machine
+        or (old["StartDate"] or "")[:10] != new_start[:10]
+    )
+    position = first_position(cursor) if moved else old["Position"]
+
+    # Bez sprawdzania konfliktu godzinowego - harmonogram_page()
+    # sam rozłoży ordery i przesunie pozostałe w prawo.
     cursor.execute("""
         UPDATE Orders
         SET MachineId = ?,
@@ -212,7 +234,8 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
             ExistMaterial = ?,
             Zlecenie = ?,
             ProjectName = ?,
-            Color = ?
+            Color = ?,
+            Position = ?
         WHERE Id = ?
     """, (
         new_machine,
@@ -225,6 +248,7 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
         data.get("Zlecenie", ""),
         data.get("ProjectName", ""),
         color,
+        position,
         order_id
     ))
 
@@ -240,38 +264,26 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
 def move_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
     cursor = db.cursor()
 
-
-    # Pobieramy rzeczywiste godziny przenoszonego zlecenia
     order = cursor.execute(
-        "SELECT Hours FROM Orders WHERE Id = ?", (order_id,)
+        "SELECT 1 FROM Orders WHERE Id = ?", (order_id,)
     ).fetchone()
 
     if not order:
         return {"status": "error", "message": "Order nie istnieje!"}
 
-    order_hours = order[0] or 0
-
-    # Pomijamy przenoszone zlecenie przy obliczaniu zajętych godzin
-    existing_hours = cursor.execute("""
-        SELECT SUM(Hours)
-        FROM Orders
-        WHERE MachineId = ? AND StartDate = ? AND Id != ?
-    """, (data["MachineId"], data["StartDate"], order_id)).fetchone()[0] or 0
-
-    if existing_hours + order_hours > 24:
-        return {"status": "error", "message": "Nie ma wystarczającej liczby godzin w tym dniu!"}
-
-    # Jeśli w dniu jest wystarczająco miejsca, to wykonujemy przeniesienie orderu
+    # Przeniesiony order wchodzi PIERWSZY w dniu docelowym (najniższa
+    # Position). Ordery, które tam były, i wszystkie następne przesuwają
+    # się w prawo, bo harmonogram liczy kolejkę wg (data, Position).
+    # Brak limitu 24h: harmonogram sam rozkłada godziny (max 24h/dzień).
     cursor.execute("""
         UPDATE Orders
-        SET MachineId = ?, StartDate = ?
+        SET MachineId = ?, StartDate = ?, Position = ?
         WHERE Id = ?
-    """, (data["MachineId"], data["StartDate"], order_id))
+    """, (data["MachineId"], data["StartDate"], first_position(cursor), order_id))
 
     db.commit()
 
     return {"status": "ok"}
-
 
 
 # =====================================================
@@ -288,6 +300,7 @@ def delete_order(order_id: int, db=Depends(get_db)):
     cursor.execute("DELETE FROM Orders WHERE Id = ?", (order_id,))
     db.commit()
     return {"status": "ok"}
+
 
 # =====================================================
 # ODCZYT HARMONOGRAMU DLA REACT
@@ -306,9 +319,9 @@ def harmonogram_api(db=Depends(get_db)):
         SELECT
             Id, Name, Zlecenie, Haslo, ProjectName, TypeOfBlade,
             StartDate, Exw, Hours, MachineId,
-            ExistNC, ExistCMM, ExistMaterial, Color
+            ExistNC, ExistCMM, ExistMaterial, Color, Position
         FROM Orders
-        ORDER BY StartDate, Id
+        ORDER BY substr(StartDate, 1, 10), Position, Id
     """).fetchall()
 
     return {

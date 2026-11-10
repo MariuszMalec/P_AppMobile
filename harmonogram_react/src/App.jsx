@@ -101,10 +101,15 @@ function App() {
   const schedule = useMemo(() => {
     const result = {}
     const machines = data?.machines ?? []
+    // Ta sama kolejność co w Pythonie: data startu, potem Position, potem Id.
     const orders = [...(data?.orders ?? [])].sort((a, b) => {
       const dateA = parseDate(a.StartDate)?.getTime() ?? 0
       const dateB = parseDate(b.StartDate)?.getTime() ?? 0
-      return dateA - dateB || Number(a.Id) - Number(b.Id)
+      return (
+        dateA - dateB ||
+        (Number(a.Position) || 0) - (Number(b.Position) || 0) ||
+        Number(a.Id) - Number(b.Id)
+      )
     })
 
     for (const machine of machines) result[machine.Id] = {}
