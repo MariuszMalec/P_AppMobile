@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TYDZIEŃ SESJI</title>
-<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}?v=9">
+<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}?v=10">
 
 </head>
 
@@ -435,7 +435,7 @@
 {% endif %}
 
 <script src="{{ url_for('static', path='js/common.js') }}"></script>
-<script src="{{ url_for('static', path='js/sessions.js') }}?v=9"></script>
+<script src="{{ url_for('static', path='js/sessions.js') }}?v=10"></script>
 
 <!-- =======================================================
      JAVASCRIPT
@@ -961,8 +961,14 @@ function updateWeekDates() {
             th.textContent
               .split(' ')[0];
 
-        th.textContent =
-            `${baseName} (${dayNum}.${monthNum})`;
+        const shortNames =
+            ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
+
+        th.dataset.date = `${dayNum}.${monthNum}`;
+
+        th.innerHTML =
+            `<span class="dh-date">${dayNum}.${monthNum}</span>` +
+            `<span class="dh-name">${shortNames[index]}</span>`;
 
     });
 
@@ -1771,7 +1777,7 @@ function buildMobileWeekView() {
             'mobile-day-title';
 
         dayTitle.textContent =
-            `${dayNames[dayIndex]} ${dayHeader.textContent.trim()}`;
+            `${dayNames[dayIndex]} (${dayHeader.dataset.date})`;
 
         dayCard.appendChild(dayTitle);
 

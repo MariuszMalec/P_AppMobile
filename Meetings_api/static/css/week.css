@@ -1509,3 +1509,17 @@ body {
 .table-wrap {
     padding-bottom: 80px !important;
 }
+
+
+/* ===== NAGŁÓWEK DNIA: DATA + SKRÓT ===== */
+
+th.day-header .dh-date,
+th.day-header .dh-name {
+    display: block;
+    line-height: 1.25;
+}
+
+th.day-header .dh-name {
+    font-size: 0.85em;
+    opacity: 0.8;
+}
