@@ -1317,3 +1317,26 @@ button:disabled {
 .machine-add-button {
   cursor: pointer;
 }
+
+/* ===== STAŁY NAGŁÓWEK DNI PRZY PRZEWIJANIU W DÓŁ ===== */
+
+/* Kalendarz przewija się pionowo we własnym oknie,
+   dzięki temu sticky nagłówek z dniami zostaje na górze. */
+.calendar-scroll {
+  max-height: calc(100vh - 170px);
+  max-height: calc(100dvh - 170px);
+  min-height: 320px;
+}
+
+@media (max-width: 900px) {
+  .calendar-scroll {
+    max-height: calc(100dvh - 140px);
+  }
+}
+
+@media (max-width: 600px) {
+  .calendar-scroll {
+    max-height: calc(100dvh - 120px);
+    min-height: 260px;
+  }
+}
