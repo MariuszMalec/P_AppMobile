@@ -1318,25 +1318,108 @@ button:disabled {
   cursor: pointer;
 }
 
-/* ===== STAŁY NAGŁÓWEK DNI PRZY PRZEWIJANIU W DÓŁ ===== */
+/* ===== KOMPAKTOWY NAGŁÓWEK + KALENDARZ NA CAŁY EKRAN ===== */
+/* (zawiera też stały nagłówek dni przy przewijaniu w dół:
+   .calendar-scroll przewija się pionowo we własnym oknie) */
 
-/* Kalendarz przewija się pionowo we własnym oknie,
-   dzięki temu sticky nagłówek z dniami zostaje na górze. */
-.calendar-scroll {
-  max-height: calc(100vh - 170px);
-  max-height: calc(100dvh - 170px);
-  min-height: 320px;
+.schedule-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  max-width: none;
+  padding: 8px 10px;
 }
 
-@media (max-width: 900px) {
-  .calendar-scroll {
-    max-height: calc(100dvh - 140px);
-  }
+.schedule-header {
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-bottom: 8px;
+  padding: 10px 16px;
+}
+
+.header-title {
+  min-width: 0;
+}
+
+.header-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-right: auto;
+  margin-left: 6px;
+}
+
+.header-stat {
+  padding: 6px 12px;
+  color: #5b6b80;
+  background: #fff;
+  border: 1px solid #dfe7f0;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 550;
+  white-space: nowrap;
+}
+
+.header-stat strong {
+  margin-left: 4px;
+  color: #245f9f;
+  font-size: 17px;
+}
+
+.status-message,
+.error-message,
+.success-message {
+  flex: 0 0 auto;
+  margin: 0 0 8px;
+}
+
+/* Sekcja kalendarza wypełnia całą resztę wysokości */
+.calendar-section {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  padding: 8px 10px;
+}
+
+.calendar-toolbar,
+.calendar-legend {
+  flex: 0 0 auto;
+}
+
+.calendar-toolbar {
+  margin-bottom: 6px;
+}
+
+.calendar-legend {
+  margin-bottom: 6px;
+}
+
+/* Okno kalendarza przewija się samo, nagłówek dni zostaje na górze */
+.calendar-scroll {
+  flex: 1 1 auto;
+  min-height: 320px;
+  max-height: none;
 }
 
 @media (max-width: 600px) {
+  .schedule-app {
+    padding: 6px;
+  }
+
+  .header-stats {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .header-stat {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+
   .calendar-scroll {
-    max-height: calc(100dvh - 120px);
     min-height: 260px;
   }
 }

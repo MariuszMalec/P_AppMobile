@@ -342,10 +342,16 @@ function App() {
   return (
     <main className="schedule-app calendar-app">
       <header className="schedule-header">
-        <div>
+        <div className="header-title">
           <h1>Harmonogram</h1>
           <p>Planowanie zleceń i maszyn</p>
         </div>
+        {data && (
+          <div className="header-stats">
+            <span className="header-stat">Maszyny: <strong>{data.machines?.length ?? 0}</strong></span>
+            <span className="header-stat">Wszystkie zlecenia: <strong>{data.orders?.length ?? 0}</strong></span>
+          </div>
+        )}
         <div className="header-actions">
           <button
             type="button"
@@ -376,17 +382,6 @@ function App() {
 
       {data && (
         <>
-          <section className="summary-cards">
-            <article className="summary-card">
-              <span>Maszyny</span>
-              <strong>{data.machines?.length ?? 0}</strong>
-            </article>
-            <article className="summary-card">
-              <span>Wszystkie zlecenia</span>
-              <strong>{data.orders?.length ?? 0}</strong>
-            </article>
-          </section>
-
           <section className="calendar-section">
             <div className="calendar-toolbar">
               <div>
