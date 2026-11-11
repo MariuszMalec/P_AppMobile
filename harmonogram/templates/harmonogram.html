@@ -1789,6 +1789,37 @@ function saveHarmonogramScrollPosition() {
 }
 </script>
 
+
+<!-- Wyśrodkowanie na dzisiejszym dniu po otwarciu strony -->
+<script>
+window.addEventListener("load", function () {
+
+    /* Po location.reload() (zapis, przeniesienie, usunięcie) nie skaczemy
+       na dzisiaj, żeby nie gubić miejsca, w którym pracujesz. */
+    const nav = performance.getEntriesByType("navigation")[0];
+    if (nav && nav.type === "reload") {
+        return;
+    }
+
+    const todayCell = document.querySelector(".day.today");
+    if (!todayCell) {
+        return;
+    }
+
+    function centerToday() {
+        todayCell.scrollIntoView({
+            behavior: "auto",
+            inline: "center",
+            block: "nearest"
+        });
+    }
+
+    requestAnimationFrame(centerToday);
+    setTimeout(centerToday, 150);   // po tym, jak ułożą się paski przewijania
+});
+</script>
+
+
 </body>
 </html>
 

@@ -41,6 +41,28 @@ function emptyForm(date, machineId) {
   }
 }
 
+// Przewija kontener kalendarza tak, żeby kolumna "dzisiaj" była na środku
+// widocznej części (bez lepkiej kolumny z maszynami).
+function centerOnToday(container, behavior = 'auto') {
+  const todayHeading = container?.querySelector('.calendar-day-heading.today')
+  if (!container || !todayHeading) return false
+
+  const machineColumn = container.querySelector('.machine-heading')
+  const machineWidth = machineColumn ? machineColumn.offsetWidth : 0
+
+  const box = container.getBoundingClientRect()
+  const cell = todayHeading.getBoundingClientRect()
+
+  const desiredLeft = machineWidth + (box.width - machineWidth - cell.width) / 2
+  const delta = (cell.left - box.left) - desiredLeft
+
+  container.scrollTo({
+    left: container.scrollLeft + delta,
+    behavior,
+  })
+  return true
+}
+
 function App() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -54,6 +76,8 @@ function App() {
   const [formError, setFormError] = useState('')
   const [machineForm, setMachineForm] = useState(null)
   const [machineError, setMachineError] = useState('')
+  const scrollRef = useRef(null)
+  const centeredRef = useRef(false)
 
   useEffect(() => {
     let active = true
@@ -83,6 +107,16 @@ function App() {
       active = false
     }
   }, [reloadToken])
+
+  // Pierwsze załadowanie danych: wyśrodkuj kalendarz na dzisiaj.
+  // Kolejne odświeżenia (po zapisie, przeniesieniu) nie ruszają przewinięcia.
+  useEffect(() => {
+    if (!data || centeredRef.current) return
+    const id = requestAnimationFrame(() => {
+      if (centerOnToday(scrollRef.current)) centeredRef.current = true
+    })
+    return () => cancelAnimationFrame(id)
+  }, [data])
 
   const days = useMemo(() => {
     const count = new Date(year, month + 1, 0).getDate()
@@ -383,6 +417,7 @@ function App() {
                   onClick={() => {
                     setMonth(new Date().getMonth())
                     setYear(new Date().getFullYear())
+                    setTimeout(() => centerOnToday(scrollRef.current, 'smooth'), 50)
                   }}
                 >
                   Dzisiaj
@@ -400,6 +435,7 @@ function App() {
             {data.machines?.length ? (
               <div
                 className="calendar-scroll"
+                ref={scrollRef}
                 onMouseDown={(event) => {
                   if (event.button !== 0 || event.target.closest('.calendar-order, button, input, select, a')) return
                   const element = event.currentTarget
@@ -763,5 +799,3 @@ function App() {
 }
 
 export default App
-
-
