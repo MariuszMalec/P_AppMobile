@@ -127,6 +127,8 @@
 
                 data-project="{{ o.ProjectName }}"
 
+                data-blade="{{ o.TypeOfBlade or '' }}"
+
                 data-order="{{ o.Zlecenie }}"
 
                 data-color="{{ o.Color }}"
@@ -144,6 +146,12 @@
                 <div>
                     <b>Projekt:</b> {{ o.ProjectName }}
                 </div>
+
+                {% if o.TypeOfBlade %}
+                <div>
+                    <b>Typ:</b> {{ o.TypeOfBlade }}
+                </div>
+                {% endif %}
 
 
                 <div
@@ -319,6 +327,18 @@
         <input
             type="text"
             id="editProjectName"
+        >
+
+
+        <!-- TYP ŁOPATKI -->
+
+        <label>
+            Typ łopatki (TypeOfBlade)
+        </label>
+
+        <input
+            type="text"
+            id="editTypeOfBlade"
         >
 
 
@@ -748,6 +768,9 @@ function openModal(el, event) {
     document.getElementById("editProjectName").value =
         el.dataset.project;
 
+    document.getElementById("editTypeOfBlade").value =
+        el.dataset.blade || "";
+
     document.getElementById("editOrderNumber").value =
         el.dataset.order || "";
 
@@ -820,6 +843,9 @@ function openAddModal(cell, machineId, date) {
     document.getElementById("editProjectName").value =
         "Turbina1";
 
+    document.getElementById("editTypeOfBlade").value =
+        "";
+
     document.getElementById("editOrderNumber").value =
         "IMR-999999";
 
@@ -891,6 +917,9 @@ function saveOrder() {
 
         ProjectName:
             document.getElementById("editProjectName").value,
+
+        TypeOfBlade:
+            document.getElementById("editTypeOfBlade").value.trim(),
 
         Zlecenie:
             document.getElementById("editOrderNumber").value,
@@ -1822,4 +1851,3 @@ window.addEventListener("load", function () {
 
 </body>
 </html>
-

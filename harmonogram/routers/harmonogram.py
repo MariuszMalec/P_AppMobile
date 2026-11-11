@@ -28,6 +28,11 @@ def first_position(cursor):
     ).fetchone()[0]
 
 
+def clean_blade(value):
+    """TypeOfBlade z formularza: tekst bez spacji na brzegach."""
+    return str(value or "").strip()
+
+
 # =====================================================
 # GŁÓWNA STRONA HARMONOGRAMU
 # =====================================================
@@ -160,6 +165,7 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
             StartDate,
             ProjectName,
             Zlecenie,
+            TypeOfBlade,
             Hours,
             Exw,
             ExistNC,
@@ -168,12 +174,13 @@ def add_order(data: dict = Body(...), db=Depends(get_db)):
             Color,
             Position
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     """, (
         data["MachineId"],
         data["StartDate"],
         data.get("ProjectName", ""),
         data.get("Zlecenie", ""),
+        clean_blade(data.get("TypeOfBlade")),
         data.get("Hours", 8),
         data.get("Exw") or "",
         data.get("ExistNC", 0),
@@ -234,6 +241,7 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
             ExistMaterial = ?,
             Zlecenie = ?,
             ProjectName = ?,
+            TypeOfBlade = ?,
             Color = ?,
             Position = ?
         WHERE Id = ?
@@ -247,6 +255,7 @@ def edit_order(order_id: int, data: dict = Body(...), db=Depends(get_db)):
         data.get("ExistMaterial", 0),
         data.get("Zlecenie", ""),
         data.get("ProjectName", ""),
+        clean_blade(data.get("TypeOfBlade")),
         color,
         position,
         order_id

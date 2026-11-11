@@ -1404,6 +1404,16 @@ button:disabled {
   max-height: none;
 }
 
+/* ===== TYP ŁOPATKI (TypeOfBlade) NA KAFELKU ===== */
+
+.order-blade {
+  display: block;
+  margin-top: 2px;
+  color: #42566c;
+  font-size: 10px;
+  font-style: italic;
+}
+
 @media (max-width: 600px) {
   .schedule-app {
     padding: 6px;
@@ -1421,5 +1431,9 @@ button:disabled {
 
   .calendar-scroll {
     min-height: 260px;
+  }
+
+  .order-blade {
+    font-size: 9px;
   }
 }

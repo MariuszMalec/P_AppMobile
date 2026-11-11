@@ -29,6 +29,7 @@ function emptyForm(date, machineId) {
     MachineId: String(machineId ?? ''),
     StartDate: date,
     ProjectName: '',
+    TypeOfBlade: '',
     Zlecenie: '',
     Hours: '8',
     Days: '1',
@@ -202,6 +203,7 @@ function App() {
       MachineId: String(order.MachineId ?? ''),
       StartDate: dateInputValue(order.StartDate),
       ProjectName: order.ProjectName ?? '',
+      TypeOfBlade: order.TypeOfBlade ?? '',
       Zlecenie: order.Zlecenie ?? order.Name ?? '',
       Hours: String(order.Hours ?? 8),
       Days: String(Math.max(1, Math.ceil((Number(order.Hours) || 8) / 24))),
@@ -301,6 +303,7 @@ function App() {
       MachineId: Number(form.MachineId),
       StartDate: form.StartDate,
       ProjectName: form.ProjectName,
+      TypeOfBlade: form.TypeOfBlade.trim(),
       Zlecenie: form.Zlecenie,
       Hours: hours,
       Exw: form.Exw.trim() || null,
@@ -580,6 +583,7 @@ function App() {
                               >
                                 <strong>#{order.Id} {order.Zlecenie ?? order.Name ?? ''}</strong>
                                 {order.ProjectName && <span className="order-project">{order.ProjectName}</span>}
+                                {order.TypeOfBlade && <span className="order-blade">{order.TypeOfBlade}</span>}
                                 <span className="order-statuses">
                                   <i className={Number(order.ExistNC) ? 'status-on' : 'status-off'} title="NC" />
                                   <i className={Number(order.ExistCMM) ? 'status-on' : 'status-off'} title="CMM" />
@@ -713,6 +717,11 @@ function App() {
                 <label>
                   Projekt
                   <input value={form.ProjectName} onChange={(event) => updateForm('ProjectName', event.target.value)} />
+                </label>
+
+                <label>
+                  Typ łopatki (TypeOfBlade)
+                  <input value={form.TypeOfBlade} onChange={(event) => updateForm('TypeOfBlade', event.target.value)} placeholder="np. k1" />
                 </label>
 
                 <label>
