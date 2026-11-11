@@ -1523,3 +1523,13 @@ th.day-header .dh-name {
     font-size: 0.85em;
     opacity: 0.8;
 }
+
+
+/* ===== KOLOR KLIENTA NA KAFELKU ===== */
+
+.tile-overlay[style*="--client-color"] {
+    background: var(--client-color) !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+    color: #fff;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+}

@@ -58,7 +58,8 @@ def home_page(
             s.RecurringGroupId,
             c.Id AS ClientId,
             c.FirstName,
-            c.LastName
+            c.LastName,
+            c.Color
         FROM Session s
         LEFT JOIN Client c
             ON s.ClientId = c.Id
@@ -102,6 +103,7 @@ def home_page(
             ).strip(),
 
             "description": r["Description"] or "",
+            "color": r["Color"] or "",
 
             "start": r["StartTime"] or "",
             "end": r["EndTime"] or "",
@@ -175,7 +177,8 @@ def sessions_api(
             s.RecurringGroupId,
             c.Id AS ClientId,
             c.FirstName,
-            c.LastName
+            c.LastName,
+            c.Color
         FROM Session s
         LEFT JOIN Client c
             ON s.ClientId = c.Id
@@ -217,6 +220,7 @@ def sessions_api(
                 f'{r["LastName"] or ""}'
             ).strip(),
             "description": r["Description"] or "",
+            "color": r["Color"] or "",
             "start": r["StartTime"] or "",
             "end": r["EndTime"] or "",
             "session_date": r["SessionDate"],

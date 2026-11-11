@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TYDZIEŃ SESJI</title>
-<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}?v=10">
+<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}?v=11">
 
 </head>
 
@@ -202,7 +202,7 @@
 
             {% if cell %}
 
-                <div class="tile-overlay">
+                <div class="tile-overlay"{% if cell.color %} style="--client-color: {{ cell.color }}"{% endif %}>
                     {{ cell.client or 'Brak klienta' }}
                 </div>
 
@@ -435,7 +435,7 @@
 {% endif %}
 
 <script src="{{ url_for('static', path='js/common.js') }}"></script>
-<script src="{{ url_for('static', path='js/sessions.js') }}?v=10"></script>
+<script src="{{ url_for('static', path='js/sessions.js') }}?v=11"></script>
 
 <!-- =======================================================
      JAVASCRIPT
