@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import API_URL from './api'
 import './App.css'
 import Sessions from './Sessions'
+import { connectGoogleAccount, uploadAndShareBackup } from './googleDriveBackup'
 
 function App() {
   const [clients, setClients] = useState([])
@@ -23,6 +24,16 @@ function App() {
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
   const importFileRef = useRef(null)
+  const [driveAccountEmail, setDriveAccountEmail] = useState(
+    () => localStorage.getItem('meetingsDriveAccount') || ''
+  )
+  const [driveRecipient, setDriveRecipient] = useState(
+    () => localStorage.getItem('meetingsDriveRecipient') || 'mario106c@gmail.com'
+  )
+  const [rememberDriveRecipient, setRememberDriveRecipient] = useState(
+    () => localStorage.getItem('meetingsRememberDriveRecipient') !== 'false'
+  )
+  const [driveBusy, setDriveBusy] = useState(false)
 
   useEffect(() => {
     if (!message) return
@@ -134,6 +145,70 @@ function App() {
     } catch (err) {
       setMessage('')
       setError(`Import: ${err.message}`)
+    }
+  }
+
+  async function connectDrive() {
+    setError('')
+    setMessage('')
+    setDriveBusy(true)
+
+    try {
+      const email = await connectGoogleAccount()
+      setDriveAccountEmail(email)
+      localStorage.setItem('meetingsDriveAccount', email)
+      setMessage(`Połączono z Google: ${email}`)
+    } catch (err) {
+      setError(`Google Drive: ${err.message}`)
+    } finally {
+      setDriveBusy(false)
+    }
+  }
+
+  async function saveDriveRecipient(value) {
+    setDriveRecipient(value)
+
+    if (rememberDriveRecipient) {
+      localStorage.setItem('meetingsDriveRecipient', value)
+    }
+  }
+
+  function changeRememberDriveRecipient(checked) {
+    setRememberDriveRecipient(checked)
+    localStorage.setItem('meetingsRememberDriveRecipient', String(checked))
+
+    if (checked) {
+      localStorage.setItem('meetingsDriveRecipient', driveRecipient)
+    } else {
+      localStorage.removeItem('meetingsDriveRecipient')
+    }
+  }
+
+  async function sendBackupToDrive() {
+    setError('')
+    setMessage('')
+    setDriveBusy(true)
+
+    try {
+      if (rememberDriveRecipient) {
+        localStorage.setItem('meetingsDriveRecipient', driveRecipient)
+      }
+
+      const result = await uploadAndShareBackup(
+        driveRecipient,
+        (status) => setMessage(status)
+      )
+
+      setMessage(
+        result.updated
+          ? 'Kopia na Google Drive została zaktualizowana i udostępniona.'
+          : 'Kopia została wysłana na Google Drive i udostępniona.'
+      )
+    } catch (err) {
+      setMessage('')
+      setError(`Google Drive: ${err.message}`)
+    } finally {
+      setDriveBusy(false)
     }
   }
 
@@ -325,6 +400,48 @@ function App() {
         {message && <p className="success">{message}</p>}
         {error && <p className="error">Błąd: {error}</p>}
 
+        <h2>Kopia zapasowa Google Drive</h2>
+
+        {driveAccountEmail && (
+          <p>Połączone konto: <strong>{driveAccountEmail}</strong></p>
+        )}
+
+        <button
+          className="new-client-button"
+          onClick={connectDrive}
+          disabled={driveBusy}
+        >
+          {driveAccountEmail ? 'Połącz inne konto Google' : 'Połącz z Google'}
+        </button>
+
+        <label>
+          Adres e-mail odbiorcy kopii:
+          <input
+            type="email"
+            value={driveRecipient}
+            onChange={(event) => saveDriveRecipient(event.target.value)}
+            placeholder="adres@gmail.com"
+          />
+        </label>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={rememberDriveRecipient}
+            onChange={(event) => changeRememberDriveRecipient(event.target.checked)}
+          />
+          Zapamiętaj adres odbiorcy
+        </label>
+
+        <button
+          className="new-client-button"
+          onClick={sendBackupToDrive}
+          disabled={driveBusy || !driveAccountEmail}
+        >
+          {driveBusy ? 'Przetwarzanie...' : 'Wyślij kopię na Google Drive'}
+        </button>
+
+        <hr />
         <button
           className="new-client-button"
           onClick={exportDatabase}
@@ -765,3 +882,7 @@ function App() {
 }
 
 export default App
+
+
+
+
