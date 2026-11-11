@@ -37,6 +37,7 @@ def home_page(
     now = datetime.now()
     current_time = now.strftime("%H:%M")
     current_day = now.isoweekday()
+    today = now.date().isoformat()
 
     # Poniedziałek danego tygodnia
     monday = now - timedelta(days=now.weekday()) + timedelta(weeks=week_offset)
@@ -114,8 +115,8 @@ def home_page(
             "is_recurring": r["RecurringGroupId"] is not None,
 
             "is_live": (
-                r["DayOfWeek"] == current_day
-                and r["StartTime"] <= current_time <= r["EndTime"]
+                r["SessionDate"] == today
+                and r["StartTime"] <= current_time < r["EndTime"]
             )
         }
 
@@ -151,6 +152,7 @@ def sessions_api(
     now = datetime.now()
     current_time = now.strftime("%H:%M")
     current_day = now.isoweekday()
+    today = now.date().isoformat()
 
     monday = (
         now
@@ -221,8 +223,8 @@ def sessions_api(
             "recurring_group_id": r["RecurringGroupId"],
             "is_recurring": r["RecurringGroupId"] is not None,
             "is_live": (
-                r["DayOfWeek"] == current_day
-                and r["StartTime"] <= current_time <= r["EndTime"]
+                r["SessionDate"] == today
+                and r["StartTime"] <= current_time < r["EndTime"]
             )
         }
 
@@ -609,7 +611,7 @@ def edit_session(
                 SessionDate
             FROM Session
             WHERE SessionDate = ?
-              AND RecurringGroupId != ?
+              AND RecurringGroupId IS NOT ?
             ORDER BY StartTime
             """,
             (

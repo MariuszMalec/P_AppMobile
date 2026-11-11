@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TYDZIEŃ SESJI</title>
-<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}?v=7">
 
 </head>
 
@@ -430,8 +430,12 @@
 ></div>
 
 
+{% if week_offset != 0 %}
+<a href="?week_offset=0" class="today-fab">Dziś</a>
+{% endif %}
+
 <script src="{{ url_for('static', path='js/common.js') }}"></script>
-<script src="{{ url_for('static', path='js/sessions.js') }}"></script>
+<script src="{{ url_for('static', path='js/sessions.js') }}?v=7"></script>
 
 <!-- =======================================================
      JAVASCRIPT
