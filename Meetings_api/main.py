@@ -2,7 +2,7 @@ from contextlib import asynccontextmanager
 import sqlite3
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, FileResponse
 from pathlib import Path
 from fastapi.staticfiles import StaticFiles
 
@@ -19,7 +19,6 @@ from api_test import router as api_test_router
 from routers.backup import router as backup_router
 
 
-
 # =========================
 # LIFESPAN (startup/shutdown)
 # =========================
@@ -32,7 +31,6 @@ async def lifespan(app: FastAPI):
     conn.row_factory = sqlite3.Row
 
     try:
-        # konfiguracja bazy RAZ na start
         conn.execute("PRAGMA journal_mode=WAL;")
         conn.execute("PRAGMA busy_timeout = 5000;")
 
@@ -41,14 +39,13 @@ async def lifespan(app: FastAPI):
         insert_sessions(conn)
 
         conn.commit()
-        conn.close()   # ← zamykasz TU
+        conn.close()
 
-        yield  # start aplikacji
+        yield
     finally:
-        conn.close()  # shutdown
+        conn.close()
 
 
-# ⬅️ TU PODPINAMY LIFESPAN
 app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(
@@ -63,6 +60,9 @@ app.add_middleware(
 # STATIC
 # =========================
 STATIC_DIR = Path(__file__).parent / "static"
+REACT_DIR = STATIC_DIR / "react"
+REACT_INDEX = REACT_DIR / "index.html"
+REACT_ASSETS = REACT_DIR / "assets"
 
 app.mount(
     "/static",
@@ -70,10 +70,20 @@ app.mount(
     name="static"
 )
 
+if REACT_INDEX.is_file() and REACT_ASSETS.is_dir():
+    app.mount(
+        "/assets",
+        StaticFiles(directory=REACT_ASSETS),
+        name="react-assets"
+    )
+
 
 # ---------- MAIN PAGE ----------
 @app.get("/")
-def root_redirect():
+def root_page():
+    if REACT_INDEX.is_file():
+        return FileResponse(REACT_INDEX)
+
     return RedirectResponse("/sessions", status_code=302)
 
 
@@ -83,4 +93,3 @@ app.include_router(clients_router)
 app.include_router(sessions_router)
 app.include_router(api_test_router)
 app.include_router(backup_router)
-

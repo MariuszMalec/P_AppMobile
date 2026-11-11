@@ -34,6 +34,57 @@ function App() {
     () => localStorage.getItem('meetingsRememberDriveRecipient') !== 'false'
   )
   const [driveBusy, setDriveBusy] = useState(false)
+  const nativeDriveResolveRef = useRef(null)
+  const nativeDriveRejectRef = useRef(null)
+
+  useEffect(() => {
+    if (!window.AndroidBridge) return
+
+    window.onAndroidDriveConnected = (email) => {
+      setDriveAccountEmail(email)
+      localStorage.setItem('meetingsDriveAccount', email)
+      setMessage(`Połączono z Google: ${email}`)
+      nativeDriveResolveRef.current?.(email)
+      nativeDriveResolveRef.current = null
+      nativeDriveRejectRef.current = null
+    }
+
+    window.onAndroidDriveBackupStatus = (status) => {
+      setMessage(status)
+    }
+
+    window.onAndroidDriveBackupSuccess = (resultJson) => {
+      let result = resultJson
+      if (typeof resultJson === 'string') {
+        try { result = JSON.parse(resultJson) } catch { result = {} }
+      }
+      setMessage(
+        result?.updated
+          ? 'Kopia na Google Drive została zaktualizowana i udostępniona.'
+          : 'Kopia została wysłana na Google Drive i udostępniona.'
+      )
+      nativeDriveResolveRef.current?.(result)
+      nativeDriveResolveRef.current = null
+      nativeDriveRejectRef.current = null
+      setDriveBusy(false)
+    }
+
+    window.onAndroidDriveBackupError = (message) => {
+      setMessage('')
+      setError(`Google Drive: ${message}`)
+      nativeDriveRejectRef.current?.(new Error(message))
+      nativeDriveResolveRef.current = null
+      nativeDriveRejectRef.current = null
+      setDriveBusy(false)
+    }
+
+    return () => {
+      delete window.onAndroidDriveConnected
+      delete window.onAndroidDriveBackupStatus
+      delete window.onAndroidDriveBackupSuccess
+      delete window.onAndroidDriveBackupError
+    }
+  }, [])
 
   useEffect(() => {
     if (!message) return
@@ -154,6 +205,15 @@ function App() {
     setDriveBusy(true)
 
     try {
+      if (window.AndroidBridge && typeof window.AndroidBridge.connectGoogleDrive === 'function') {
+        await new Promise((resolve, reject) => {
+          nativeDriveResolveRef.current = resolve
+          nativeDriveRejectRef.current = reject
+          window.AndroidBridge.connectGoogleDrive()
+        })
+        return
+      }
+
       const email = await connectGoogleAccount()
       setDriveAccountEmail(email)
       localStorage.setItem('meetingsDriveAccount', email)
@@ -192,6 +252,15 @@ function App() {
     try {
       if (rememberDriveRecipient) {
         localStorage.setItem('meetingsDriveRecipient', driveRecipient)
+      }
+
+      if (window.AndroidBridge && typeof window.AndroidBridge.uploadBackupToGoogleDrive === 'function') {
+        await new Promise((resolve, reject) => {
+          nativeDriveResolveRef.current = resolve
+          nativeDriveRejectRef.current = reject
+          window.AndroidBridge.uploadBackupToGoogleDrive(driveRecipient)
+        })
+        return
       }
 
       const result = await uploadAndShareBackup(
@@ -882,7 +951,4 @@ function App() {
 }
 
 export default App
-
-
-
 

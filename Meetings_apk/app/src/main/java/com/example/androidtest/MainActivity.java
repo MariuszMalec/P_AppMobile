@@ -28,6 +28,12 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.google.android.gms.auth.GoogleAuthUtil;
+import com.google.android.gms.auth.UserRecoverableAuthException;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.Scope;
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
 
@@ -44,7 +50,14 @@ public class MainActivity extends Activity {
     private TextView logView;
     private String logPath;
     private ValueCallback<Uri[]> filePathCallback;
+    private WebView webView;
     private static final int FILE_CHOOSER_REQUEST_CODE = 9124;
+    private static final int GOOGLE_SIGN_IN_REQUEST_CODE = 9125;
+    private static final int GOOGLE_AUTH_REQUEST_CODE = 9126;
+    private static final String DRIVE_SCOPE =
+            "oauth2:https://www.googleapis.com/auth/drive.file";
+
+    private String pendingDriveRecipient = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -270,7 +283,7 @@ public class MainActivity extends Activity {
     // =================================================
 
     private void showWebView() {
-        WebView webView = new WebView(this);
+        webView = new WebView(this);
 
         webView.setWebViewClient(
             new WebViewClient() {
@@ -349,7 +362,18 @@ public class MainActivity extends Activity {
             public void exportDatabase() {
                 exportDatabaseToDownloads();
             }
-        }, "AndroidBridge");
+        
+
+            @JavascriptInterface
+            public void connectGoogleDrive() {
+                runOnUiThread(() -> connectGoogleDriveNative());
+            }
+
+            @JavascriptInterface
+            public void uploadBackupToGoogleDrive(String recipientEmail) {
+                runOnUiThread(() -> uploadBackupNative(recipientEmail));
+            }
+}, "AndroidBridge");
 
         webView.loadUrl(
             "http://127.0.0.1:8000/"
@@ -374,7 +398,164 @@ public class MainActivity extends Activity {
             }
             return;
         }
+        if (requestCode == GOOGLE_SIGN_IN_REQUEST_CODE) {
+            try {
+                if (resultCode != RESULT_OK || data == null) {
+                    throw new Exception("Logowanie Google zostało anulowane.");
+                }
+
+                GoogleSignInAccount account =
+                        GoogleSignIn.getSignedInAccountFromIntent(data)
+                                .getResult(com.google.android.gms.common.api.ApiException.class);
+
+                if (account == null || account.getEmail() == null) {
+                    throw new Exception("Google nie zwrócił adresu konta.");
+                }
+
+                callReact("onAndroidDriveConnected",
+                        org.json.JSONObject.quote(account.getEmail()));
+
+            } catch (Exception e) {
+                driveError(e.getMessage());
+            }
+            return;
+        }
+
+        if (requestCode == GOOGLE_AUTH_REQUEST_CODE) {
+            if (resultCode == RESULT_OK && pendingDriveRecipient != null) {
+                String recipient = pendingDriveRecipient;
+                pendingDriveRecipient = null;
+                uploadBackupNative(recipient);
+            } else {
+                pendingDriveRecipient = null;
+                driveError("Nie przyznano dostępu do Google Drive.");
+            }
+            return;
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    // =================================================
+    // GOOGLE DRIVE - AUTORYZACJA I KOPIA
+    // =================================================
+
+    private void connectGoogleDriveNative() {
+        try {
+            GoogleSignInOptions options =
+                    new GoogleSignInOptions.Builder(
+                            GoogleSignInOptions.DEFAULT_SIGN_IN
+                    )
+                    .requestEmail()
+                    .requestScopes(new Scope(
+                            "https://www.googleapis.com/auth/drive.file"
+                    ))
+                    .build();
+
+            Intent signInIntent =
+                    GoogleSignIn.getClient(this, options).getSignInIntent();
+
+            startActivityForResult(
+                    signInIntent,
+                    GOOGLE_SIGN_IN_REQUEST_CODE
+            );
+
+        } catch (Exception e) {
+            driveError(e.getMessage());
+        }
+    }
+
+    private void uploadBackupNative(String recipientEmail) {
+        if (recipientEmail == null || recipientEmail.trim().isEmpty()) {
+            driveError("Brak adresu odbiorcy.");
+            return;
+        }
+
+        GoogleSignInAccount account =
+                GoogleSignIn.getLastSignedInAccount(this);
+
+        if (account == null) {
+            driveError("Najpierw połącz konto Google.");
+            return;
+        }
+
+        new Thread(() -> {
+            try {
+                driveStatus("Uzyskuję dostęp do Google Drive...");
+
+                String token = GoogleAuthUtil.getToken(
+                        this,
+                        account.getAccount(),
+                        DRIVE_SCOPE
+                );
+
+                driveStatus("Rozpoczynam tworzenie kopii...");
+
+                org.json.JSONObject result =
+                        GoogleDriveBackup.uploadAndShare(
+                                token,
+                                recipientEmail,
+                                message -> driveStatus(message)
+                        );
+
+                callReact(
+                        "onAndroidDriveBackupSuccess",
+                        org.json.JSONObject.quote(result.toString())
+                );
+
+            } catch (UserRecoverableAuthException e) {
+                pendingDriveRecipient = recipientEmail;
+
+                runOnUiThread(() -> {
+                    try {
+                        startActivityForResult(
+                                e.getIntent(),
+                                GOOGLE_AUTH_REQUEST_CODE
+                        );
+                    } catch (Exception ex) {
+                        pendingDriveRecipient = null;
+                        driveError(ex.getMessage());
+                    }
+                });
+
+            } catch (Exception e) {
+                String message = e.getMessage();
+                driveError(message != null
+                        ? message
+                        : e.getClass().getSimpleName());
+            }
+        }).start();
+    }
+
+    private void driveStatus(String message) {
+        callReact(
+                "onAndroidDriveBackupStatus",
+                org.json.JSONObject.quote(message)
+        );
+    }
+
+    private void driveError(String message) {
+        String safeMessage = message != null
+                ? message
+                : "Nieznany błąd Google Drive.";
+
+        callReact(
+                "onAndroidDriveBackupError",
+                org.json.JSONObject.quote(safeMessage)
+        );
+    }
+
+    private void callReact(String function, String argument) {
+        runOnUiThread(() -> {
+            if (webView != null) {
+                webView.evaluateJavascript(
+                        "if (typeof window." + function +
+                        " === 'function') window." + function +
+                        "(" + argument + ");",
+                        null
+                );
+            }
+        });
     }
 
     private void exportDatabaseToDownloads() {
@@ -633,6 +814,10 @@ public class MainActivity extends Activity {
         }
     }
 }
+
+
+
+
 
 
 
