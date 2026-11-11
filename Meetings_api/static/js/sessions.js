@@ -86,3 +86,36 @@ document.addEventListener(
     'DOMContentLoaded',
     highlightToday
 );
+
+
+// =========================================================
+// DOPASOWANIE WYSOKOŚCI TABELI DO EKRANU
+// =========================================================
+
+function fitTableHeight() {
+
+    const wrap = document.querySelector('.table-wrap');
+
+    if (!wrap || wrap.offsetParent === null) {
+        return;
+    }
+
+    const vh = window.visualViewport
+        ? window.visualViewport.height
+        : window.innerHeight;
+
+    const top = wrap.getBoundingClientRect().top + window.scrollY;
+
+    wrap.style.maxHeight =
+        Math.max(240, vh - top - 8) + 'px';
+}
+
+window.addEventListener('load', fitTableHeight);
+window.addEventListener('resize', fitTableHeight);
+window.addEventListener('orientationchange', fitTableHeight);
+
+document.addEventListener('click', function(e) {
+    if (e.target.closest('#toggle-mobile-view')) {
+        setTimeout(fitTableHeight, 50);
+    }
+});

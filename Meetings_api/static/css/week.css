@@ -1483,3 +1483,29 @@ body.light-mode .mobile-day-title {
 .table-wrap table {
     margin: 0;
 }
+
+
+/* ===== NAPRAWA DOLNEGO WIERSZA ===== */
+
+.table-wrap {
+    max-height: calc(100vh - 20px);
+    max-height: calc(100dvh - 20px);
+    padding-bottom: 70px !important;
+    box-sizing: border-box;
+    overscroll-behavior: contain;
+}
+
+body {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px));
+}
+
+
+/* ===== WYSOKOŚĆ TABELI LICZONA PRZEZ JS ===== */
+
+body {
+    padding-bottom: 0 !important;
+}
+
+.table-wrap {
+    padding-bottom: 80px !important;
+}
