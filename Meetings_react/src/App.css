@@ -3217,3 +3217,71 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   height: 19px !important;
   margin: 0 !important;
 }
+
+/* ===== Kalendarz: maksymalne wykorzystanie ekranu telefonu ===== */
+@media (max-width: 600px) {
+
+  .sessions-page {
+    padding: 5px 5px 8px !important;
+    border-radius: 10px !important;
+  }
+
+  /* Nawigacja tygodnia */
+  .sessions-page .week-navigation {
+    padding: 5px !important;
+    margin: 4px 0 7px !important;
+    gap: 5px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 7px rgba(31, 58, 99, .06) !important;
+  }
+
+  .sessions-page .week-button,
+  .sessions-page .today-button {
+    min-height: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
+    font-size: 15px !important;
+  }
+
+  .sessions-page .week-button {
+    min-width: 36px !important;
+  }
+
+  /* Data tygodnia, przyciski i zegar */
+  .sessions-page > div[style*="display: flex"] {
+    gap: 5px !important;
+    row-gap: 5px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .sessions-page .week-info {
+    padding: 5px 9px !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+    font-size: 12px !important;
+  }
+
+  .sessions-page .sessions-week-actions {
+    gap: 5px !important;
+  }
+
+  .sessions-page .sessions-week-actions .edit-button,
+  .sessions-page .sessions-week-actions .sessions-clients-button {
+    min-height: 34px !important;
+    height: 34px !important;
+    padding: 5px 9px !important;
+    margin: 0 !important;
+    border-radius: 9px !important;
+    font-size: 13px !important;
+  }
+
+  .sessions-page .sessions-clock {
+    font-size: 13px !important;
+  }
+
+  /* Więcej miejsca dla kalendarza */
+  .sessions-page .sessions-table-wrap {
+    max-height: 82vh !important;
+    border-radius: 9px !important;
+  }
+}
