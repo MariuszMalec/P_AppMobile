@@ -8,6 +8,8 @@ from fastapi import APIRouter, HTTPException, UploadFile, File
 from fastapi.responses import FileResponse
 from starlette.background import BackgroundTask
 
+from db import init_db_if_not_exists
+
 router = APIRouter(tags=["backup"])
 
 
@@ -70,8 +72,10 @@ async def import_database(file: UploadFile = File(...)):
     if not db_path.is_file():
         raise HTTPException(status_code=404, detail="Nie znaleziono aktualnej bazy.")
 
-    if not (file.filename or "").lower().endswith(".db"):
-        raise HTTPException(status_code=400, detail="Wybierz plik z rozszerzeniem .db.")
+    header = file.file.read(16)
+    file.file.seek(0)
+    if header != b"SQLite format 3\x00":
+        raise HTTPException(status_code=400, detail="Wybrany plik nie jest bazą SQLite.")
 
     temp_path = None
     backup_path = None
@@ -136,6 +140,13 @@ async def import_database(file: UploadFile = File(...)):
                     incoming.backup(target)
                     if target.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
                         raise RuntimeError("Kontrola zaimportowanej bazy nie powiodła się.")
+
+                    # Migracja zaimportowanej bazy, m.in. dodanie Client.Color
+                    target.row_factory = sqlite3.Row
+                    init_db_if_not_exists(target)
+
+                    if target.execute("PRAGMA integrity_check").fetchone()[0] != "ok":
+                        raise RuntimeError("Kontrola bazy po migracji nie powiodła się.")
         except Exception:
             with sqlite3.connect(str(backup_path), timeout=30) as backup:
                 with sqlite3.connect(str(db_path), timeout=30) as target:

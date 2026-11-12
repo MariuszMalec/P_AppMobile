@@ -161,7 +161,7 @@ function App() {
     setError('')
     setMessage('')
 
-    if (!file.name.toLowerCase().endsWith('.db')) {
+    if (!/\.db(\s*\(\d+\))?$/i.test(file.name)) {
       setError('Wybierz plik bazy danych z rozszerzeniem .db.')
       return
     }
@@ -173,8 +173,13 @@ function App() {
 
     setMessage('Sprawdzam bazę i przygotowuję import...')
     try {
+      const buffer = await file.arrayBuffer()
       const data = new FormData()
-      data.append('file', file)
+      data.append(
+        'file',
+        new Blob([buffer], { type: 'application/octet-stream' }),
+        'import.db'
+      )
       const response = await fetch(`${API_URL}/api/backup/import`, {
         method: 'POST',
         body: data,
@@ -196,7 +201,39 @@ function App() {
     } catch (err) {
       setMessage('')
       setError(`Import: ${err.message}`)
-    }
+      
+      const log = [
+      'MEETINGS - LOG BŁĘDU IMPORTU',
+      '================================',
+      `Data: ${new Date().toLocaleString()}`,
+      `API: ${API_URL}`,
+      '' ,
+      'PLIK BAZY:',
+      `Nazwa: ${file.name}`,
+      `Rozmiar: ${file.size} bajtów`,
+      `Typ: ${file.type || 'nieznany'}`,
+      '' ,
+      'BŁĄD:',
+      `Nazwa błędu: ${err?.name || 'brak'}`,
+      `Komunikat: ${err?.message || String(err)}`,
+      '' ,
+      'STACK:',
+      err?.stack || 'Brak informacji',
+      '' ,
+      'PRZEGLĄDARKA:',
+      navigator.userAgent,
+      ].join('\n')
+      
+      const blob = new Blob([log], { type: 'text/plain;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `meetings-import-error-${Date.now()}.txt`
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      setTimeout(() => URL.revokeObjectURL(url), 2000)
+      }
   }
 
   async function connectDrive() {

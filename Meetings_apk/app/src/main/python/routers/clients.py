@@ -1,3 +1,4 @@
+from db import random_client_color
 from fastapi import APIRouter, Request, Form, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse, JSONResponse
 
@@ -85,7 +86,8 @@ def get_clients(
             Description,
             Phone,
             Gender,
-            IsActive
+            IsActive,
+            Color
         FROM Client
         WHERE IsActive = ?
         ORDER BY FirstName, LastName
@@ -119,7 +121,8 @@ def get_client(
             Description,
             Phone,
             Gender,
-            IsActive
+            IsActive,
+            Color
         FROM Client
         WHERE Id = ?
     """, (
@@ -252,9 +255,10 @@ def create_client(
                 Description,
                 Phone,
                 Gender,
-                IsActive
+                IsActive,
+                Color
             )
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             first_name,
             last_name,
@@ -262,7 +266,8 @@ def create_client(
             description,
             phone,
             gender,
-            is_active
+            is_active,
+            random_client_color()
         ))
 
         client_id = cursor.lastrowid

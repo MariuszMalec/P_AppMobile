@@ -24,6 +24,19 @@ def get_db():
         conn.close()
 
 
+import random
+
+CLIENT_COLORS = [
+    "#ef4444", "#f97316", "#f59e0b", "#84cc16",
+    "#22c55e", "#14b8a6", "#06b6d4", "#3b82f6",
+    "#6366f1", "#8b5cf6", "#d946ef", "#ec4899",
+]
+
+
+def random_client_color():
+    return random.choice(CLIENT_COLORS)
+
+
 def init_db_if_not_exists(conn):
     cur = conn.cursor()
 
@@ -132,6 +145,41 @@ def init_db_if_not_exists(conn):
         """)
 
         print("✅ Dodano kolumnę Session.RepeatEveryWeeks")
+
+    # =========================================
+    # KOLOR KLIENTA
+    # =========================================
+
+    client_columns = {
+        column["name"]
+        for column in cur.execute(
+            "PRAGMA table_info(Client)"
+        ).fetchall()
+    }
+
+    if "Color" not in client_columns:
+
+        cur.execute("""
+            ALTER TABLE Client
+            ADD COLUMN Color TEXT DEFAULT NULL
+        """)
+
+        print("✅ Dodano kolumnę Client.Color")
+
+    # Kolor dla klientów, którzy jeszcze go nie mają
+    missing = cur.execute("""
+        SELECT Id FROM Client
+        WHERE Color IS NULL OR Color = ''
+    """).fetchall()
+
+    for row in missing:
+        cur.execute(
+            "UPDATE Client SET Color = ? WHERE Id = ?",
+            (random_client_color(), row["Id"])
+        )
+
+    if missing:
+        print(f"✅ Nadano kolory klientom: {len(missing)}")
 
     conn.commit()
 

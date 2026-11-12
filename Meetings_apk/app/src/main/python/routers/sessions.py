@@ -37,6 +37,7 @@ def home_page(
     now = datetime.now()
     current_time = now.strftime("%H:%M")
     current_day = now.isoweekday()
+    today = now.date().isoformat()
 
     # Poniedziałek danego tygodnia
     monday = now - timedelta(days=now.weekday()) + timedelta(weeks=week_offset)
@@ -57,7 +58,8 @@ def home_page(
             s.RecurringGroupId,
             c.Id AS ClientId,
             c.FirstName,
-            c.LastName
+            c.LastName,
+            c.Color
         FROM Session s
         LEFT JOIN Client c
             ON s.ClientId = c.Id
@@ -101,6 +103,7 @@ def home_page(
             ).strip(),
 
             "description": r["Description"] or "",
+            "color": r["Color"] or "",
 
             "start": r["StartTime"] or "",
             "end": r["EndTime"] or "",
@@ -114,8 +117,8 @@ def home_page(
             "is_recurring": r["RecurringGroupId"] is not None,
 
             "is_live": (
-                r["DayOfWeek"] == current_day
-                and r["StartTime"] <= current_time <= r["EndTime"]
+                r["SessionDate"] == today
+                and r["StartTime"] <= current_time < r["EndTime"]
             )
         }
 
@@ -151,6 +154,7 @@ def sessions_api(
     now = datetime.now()
     current_time = now.strftime("%H:%M")
     current_day = now.isoweekday()
+    today = now.date().isoformat()
 
     monday = (
         now
@@ -173,7 +177,8 @@ def sessions_api(
             s.RecurringGroupId,
             c.Id AS ClientId,
             c.FirstName,
-            c.LastName
+            c.LastName,
+            c.Color
         FROM Session s
         LEFT JOIN Client c
             ON s.ClientId = c.Id
@@ -215,14 +220,15 @@ def sessions_api(
                 f'{r["LastName"] or ""}'
             ).strip(),
             "description": r["Description"] or "",
+            "color": r["Color"] or "",
             "start": r["StartTime"] or "",
             "end": r["EndTime"] or "",
             "session_date": r["SessionDate"],
             "recurring_group_id": r["RecurringGroupId"],
             "is_recurring": r["RecurringGroupId"] is not None,
             "is_live": (
-                r["DayOfWeek"] == current_day
-                and r["StartTime"] <= current_time <= r["EndTime"]
+                r["SessionDate"] == today
+                and r["StartTime"] <= current_time < r["EndTime"]
             )
         }
 
@@ -609,7 +615,7 @@ def edit_session(
                 SessionDate
             FROM Session
             WHERE SessionDate = ?
-              AND RecurringGroupId != ?
+              AND RecurringGroupId IS NOT ?
             ORDER BY StartTime
             """,
             (
