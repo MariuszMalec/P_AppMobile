@@ -3125,3 +3125,14 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   left: 0 !important;
   z-index: 4 !important;
 }
+
+/* Aktualna sesja pulsuje */
+.live-session {
+  animation: livePulse 1.5s infinite;
+}
+
+@keyframes livePulse {
+  0%   { filter: brightness(1); }
+  50%  { filter: brightness(1.6); }
+  100% { filter: brightness(1); }
+}
