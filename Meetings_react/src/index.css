@@ -158,8 +158,8 @@ button {
 
 /* ===== TRYB CIEMNY (odwrócenie jasności) ===== */
 html.dark-mode {
-  background: #fff;
-  filter: invert(1) hue-rotate(180deg);
+  background: #292d33;
+  filter: invert(0.84) hue-rotate(180deg);
 }
 
 html.dark-mode img,
