@@ -3136,3 +3136,84 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   50%  { filter: brightness(1.6); }
   100% { filter: brightness(1); }
 }
+
+/* ===== Widoczna ikona sesji cyklicznej ===== */
+.sessions-page .session-card small {
+  display: inline-block !important;
+  width: fit-content;
+  margin-top: 4px !important;
+  padding: 2px 7px !important;
+  border: 1px solid #8bb7f0 !important;
+  border-radius: 7px !important;
+  background: #e5efff !important;
+  color: #174b9a !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1.2 !important;
+  opacity: 1 !important;
+  filter: none !important;
+}
+
+/* Ikona cykliczności bez wychodzenia poza kafelek */
+.sessions-page .session-block .session-card .recurring-icon {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 19px;
+  margin: 2px 0 0 auto !important;
+  padding: 0 !important;
+  border: 1px solid #78a9ed !important;
+  border-radius: 6px !important;
+  background: #ffffff !important;
+  color: #174b9a !important;
+  font-size: 13px !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+  flex-shrink: 0;
+}
+
+/* Ikona cykliczności w prawym górnym rogu kafelka */
+.sessions-page .session-block .session-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+}
+
+.sessions-page .session-block .session-card .recurring-icon {
+  align-self: flex-end !important;
+  order: -1 !important;
+  margin: 0 0 2px auto !important;
+  flex-shrink: 0 !important;
+}
+
+/* Nazwa klienta i ikona cykliczności w jednym wierszu */
+.sessions-page .session-block .session-card {
+  display: block !important;
+}
+
+.sessions-page .session-card-header {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: 4px !important;
+  width: 100%;
+  min-width: 0;
+}
+
+.sessions-page .session-card-header strong {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+}
+
+.sessions-page .session-card-header .recurring-icon {
+  position: static !important;
+  flex: 0 0 20px !important;
+  align-self: flex-start !important;
+  width: 20px !important;
+  height: 19px !important;
+  margin: 0 !important;
+}

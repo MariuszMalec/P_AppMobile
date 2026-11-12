@@ -905,13 +905,16 @@ function Sessions({ onBack }) {
                                 className="session-card"
                                 onClick={() => setSelectedSession(session)}
                               >
-                                <strong>{session.client}</strong>
+                                <div className="session-card-header">
+                                  <strong>{session.client}</strong>
+                                  {session.is_recurring && (
+                                    <small className="recurring-icon" title="Sesja cykliczna">🔁</small>
+                                  )}
+                                </div>
 
                                 {session.description && (
                                   <span>{session.description}</span>
                                 )}
-
-                                {session.is_recurring && <small>🔁</small>}
                               </div>
                             </div>
                           )
