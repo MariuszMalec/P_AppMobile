@@ -1533,3 +1533,57 @@ th.day-header .dh-name {
     color: #fff;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
 }
+
+
+/* ===== SIATKA GODZIN 8:00-21:00 ===== */
+
+.table-wrap td.time-col,
+.table-wrap td.day-col {
+    height: auto;
+    padding: 0;
+    overflow: visible;
+    vertical-align: top;
+    cursor: default;
+}
+
+.hour-label {
+    height: 64px;
+    box-sizing: border-box;
+    padding-top: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    font-size: 12px;
+}
+
+.day-grid {
+    --h: 64px;
+    position: relative;
+    height: calc(var(--h) * 13);
+    cursor: pointer;
+    background-image: linear-gradient(
+        to bottom,
+        transparent calc(var(--h) - 1px),
+        rgba(128, 128, 128, 0.28) calc(var(--h) - 1px)
+    );
+    background-size: 100% var(--h);
+}
+
+.session-block {
+    position: absolute;
+    box-sizing: border-box;
+    padding: 1px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.session-block .tile-overlay {
+    inset: 1px;
+    padding: 2px 4px;
+    font-size: 13px;
+}
+
+.session-block.is-live .tile-overlay {
+    outline: 2px solid #fff;
+    outline-offset: -3px;
+}

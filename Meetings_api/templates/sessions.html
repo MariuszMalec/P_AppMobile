@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>TYDZIEŃ SESJI</title>
-<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}?v=11">
+<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}?v=12">
 
 </head>
 
@@ -164,62 +164,37 @@
 
 
 <tbody>
-
-{% for time, day_rows in table.items() %}
-
 <tr>
-
-    <td>{{ time }}</td>
-
-    {% for d in range(1, 8) %}
-
-        {% set cell = day_rows[d] %}
-
-        <td
-            class="{% if cell and cell.is_live %}live{% endif %}"
-
-            {% if cell %}
-
-            data-session-id="{{ cell.session_id }}"
-            data-client-id="{{ cell.client_id or '' }}"
-            data-desc="{{ cell.description or '' }}"
-            data-start="{{ cell.start or '' }}"
-            data-end="{{ cell.end or '' }}"
-            data-day="{{ d }}"
-            data-session-date="{{ cell.session_date }}"
-            data-recurring-group-id="{{ cell.recurring_group_id or '' }}"
-
-            onclick="openPreview(this)"
-
-            {% else %}
-
-            data-day="{{ d }}"
-
-            onclick="openCreateSessionForDay({{ d }})"
-
-            {% endif %}
-        >
-
-            {% if cell %}
-
-                <div class="tile-overlay"{% if cell.color %} style="--client-color: {{ cell.color }}"{% endif %}>
-                    {{ cell.client or 'Brak klienta' }}
-                </div>
-
-            {% else %}
-
-                <div class="empty">—</div>
-
-            {% endif %}
-
-        </td>
-
-    {% endfor %}
-
-</tr>
-
+<td class="time-col">
+{% for hh in range(8, 21) %}
+    <div class="hour-label">{{ '%02d' % hh }}:00</div>
 {% endfor %}
+</td>
 
+{% for d in range(1, 8) %}
+<td class="day-col" data-day="{{ d }}">
+<div class="day-grid" onclick="openCreateSessionForDay({{ d }})">
+{% for s in grid[d] %}
+    <div class="session-block{% if s.is_live %} is-live{% endif %}"
+         data-session-id="{{ s.session_id }}"
+         data-client-id="{{ s.client_id or '' }}"
+         data-desc="{{ s.description }}"
+         data-start="{{ s.start }}"
+         data-end="{{ s.end }}"
+         data-day="{{ d }}"
+         data-session-date="{{ s.session_date }}"
+         data-recurring-group-id="{{ s.recurring_group_id or '' }}"
+         style="top:calc(var(--h) * {{ s.top_h }});height:calc(var(--h) * {{ s.height_h }});left:{{ s.left }}%;width:{{ s.width }}%;"
+         onclick="event.stopPropagation(); openPreview(this)">
+        <div class="tile-overlay"{% if s.color %} style="--client-color: {{ s.color }}"{% endif %}>
+            {{ s.client or 'Brak klienta' }}
+        </div>
+    </div>
+{% endfor %}
+</div>
+</td>
+{% endfor %}
+</tr>
 </tbody>
 
 </table>
@@ -435,7 +410,7 @@
 {% endif %}
 
 <script src="{{ url_for('static', path='js/common.js') }}"></script>
-<script src="{{ url_for('static', path='js/sessions.js') }}?v=11"></script>
+<script src="{{ url_for('static', path='js/sessions.js') }}?v=12"></script>
 
 <!-- =======================================================
      JAVASCRIPT
@@ -1731,6 +1706,91 @@ function toggleRecurringWeeks() {
 // =========================================================
 
 function buildMobileWeekView() {
+
+    const mobileView =
+        document.getElementById('mobile-week-view');
+
+    if (!mobileView) {
+        return;
+    }
+
+    mobileView.innerHTML = "";
+
+    const dayNames = [
+        "Poniedziałek", "Wtorek", "Środa", "Czwartek",
+        "Piątek", "Sobota", "Niedziela"
+    ];
+
+    document
+        .querySelectorAll('.table-wrap thead th.day-header')
+        .forEach((th, index) => {
+
+            const day = index + 1;
+
+            const card = document.createElement('div');
+            card.className = 'mobile-day-card';
+
+            const title = document.createElement('div');
+            title.className = 'mobile-day-title';
+            title.textContent =
+                `${dayNames[index]} (${th.dataset.date || ''})`;
+            card.appendChild(title);
+
+            const blocks = Array.from(
+                document.querySelectorAll(
+                    '.session-block[data-day="' + day + '"]'
+                )
+            ).sort((x, y) =>
+                (x.dataset.start || '').localeCompare(y.dataset.start || '')
+            );
+
+            blocks.forEach(block => {
+
+                const row = document.createElement('div');
+                row.className = 'mobile-time-row';
+
+                const time = document.createElement('div');
+                time.className = 'mobile-time';
+                time.textContent =
+                    `${block.dataset.start} – ${block.dataset.end}`;
+                row.appendChild(time);
+
+                const cell = document.createElement('div');
+                cell.className = 'mobile-session-cell';
+
+                if (block.classList.contains('is-live')) {
+                    cell.classList.add('live');
+                }
+
+                Array.from(block.attributes).forEach(attr => {
+                    if (attr.name.startsWith('data-')) {
+                        cell.setAttribute(attr.name, attr.value);
+                    }
+                });
+
+                cell.innerHTML = block.innerHTML;
+                cell.onclick = function() { openPreview(this); };
+
+                row.appendChild(cell);
+                card.appendChild(row);
+            });
+
+            if (!blocks.length) {
+                const empty = document.createElement('div');
+                empty.className = 'mobile-no-session';
+                empty.textContent = 'Brak sesji';
+                empty.onclick = function() {
+                    openCreateSessionForDay(day);
+                };
+                card.appendChild(empty);
+            }
+
+            mobileView.appendChild(card);
+        });
+}
+
+
+function buildMobileWeekViewOld() {
 
     const mobileView =
         document.getElementById('mobile-week-view');

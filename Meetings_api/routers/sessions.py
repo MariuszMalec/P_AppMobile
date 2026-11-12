@@ -128,6 +128,76 @@ def home_page(
         ORDER BY FirstName, LastName
     """).fetchall()
 
+    # ---------- SIATKA GODZIN 8:00-21:00 ----------
+    START_H, END_H = 8, 21
+
+    def _min(t):
+        h, m = str(t).split(":")[:2]
+        return int(h) * 60 + int(m)
+
+    grid = {d: [] for d in range(1, 8)}
+
+    for r in rows:
+        gday = datetime.strptime(
+            r["SessionDate"], "%Y-%m-%d"
+        ).isoweekday()
+        a = max(_min(r["StartTime"]), START_H * 60)
+        b = min(_min(r["EndTime"]), END_H * 60)
+        if b <= a:
+            continue
+        grid[gday].append({
+            "session_id": r["Id"],
+            "client_id": r["ClientId"],
+            "client": (
+                f'{r["FirstName"] or ""} {r["LastName"] or ""}'
+            ).strip(),
+            "description": r["Description"] or "",
+            "start": r["StartTime"] or "",
+            "end": r["EndTime"] or "",
+            "session_date": r["SessionDate"],
+            "recurring_group_id": r["RecurringGroupId"],
+            "color": r["Color"] or "",
+            "is_live": (
+                r["SessionDate"] == today
+                and r["StartTime"] <= current_time < r["EndTime"]
+            ),
+            "a": a,
+            "b": b,
+        })
+
+    def _flush(cluster):
+        lanes = []
+        for it in cluster:
+            lane = next(
+                (i for i, end in enumerate(lanes) if end <= it["a"]),
+                -1
+            )
+            if lane == -1:
+                lane = len(lanes)
+                lanes.append(0)
+            lanes[lane] = it["b"]
+            it["lane"] = lane
+        for it in cluster:
+            it["lanes"] = len(lanes)
+
+    for gday in grid:
+        items = sorted(grid[gday], key=lambda x: (x["a"], x["b"]))
+        cluster, cluster_end = [], 0
+        for it in items:
+            if cluster and it["a"] >= cluster_end:
+                _flush(cluster)
+                cluster, cluster_end = [], 0
+            cluster.append(it)
+            cluster_end = max(cluster_end, it["b"])
+        if cluster:
+            _flush(cluster)
+        for it in items:
+            it["top_h"] = round((it["a"] - START_H * 60) / 60, 4)
+            it["height_h"] = round((it["b"] - it["a"]) / 60, 4)
+            it["left"] = round(it["lane"] / it["lanes"] * 100, 3)
+            it["width"] = round(100 / it["lanes"], 3)
+        grid[gday] = items
+
     db.close()
 
     return templates.TemplateResponse(
@@ -140,7 +210,8 @@ def home_page(
             "current_time": current_time,
             "clients": clients,
             "week_offset": week_offset,
-            "week_start": week_start
+            "week_start": week_start,
+            "grid": grid
         }
     )
 

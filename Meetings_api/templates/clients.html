@@ -469,6 +469,23 @@ const genderInput =
         'gender'
     );
 
+const CLIENT_COLORS = [
+    '#ef4444', '#f97316', '#f59e0b', '#84cc16',
+    '#22c55e', '#14b8a6', '#06b6d4', '#3b82f6',
+    '#6366f1', '#8b5cf6', '#d946ef', '#ec4899'
+];
+
+genderInput.closest('.form-group').insertAdjacentHTML(
+    'afterend',
+    '<div class="form-group">' +
+    '<label class="form-label">Kolor klienta</label>' +
+    '<input type="color" id="client-color" value="#3b82f6" ' +
+    'style="width:100%;height:44px;padding:2px;">' +
+    '</div>'
+);
+
+const colorInput = document.getElementById('client-color');
+
 const phoneInput =
     document.getElementById(
         'phone'
@@ -960,6 +977,9 @@ function openCreateModal() {
     genderInput.value =
         '';
 
+    colorInput.value =
+        CLIENT_COLORS[Math.floor(Math.random() * CLIENT_COLORS.length)];
+
     phoneInput.value =
         '';
 
@@ -1029,6 +1049,9 @@ function openEditModal(clientId) {
 
     genderInput.value =
         client.Gender || '';
+
+    colorInput.value =
+        client.Color || '#3b82f6';
 
 
     phoneInput.value =
@@ -1185,6 +1208,11 @@ clientForm.addEventListener(
         formData.append(
             'gender',
             genderInput.value
+        );
+
+        formData.append(
+            'color',
+            colorInput.value
         );
 
         formData.append(
