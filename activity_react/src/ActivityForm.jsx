@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMeta, getActivity, createActivity, updateActivity } from "./api";
+import { getMeta, getActivity, createActivity, updateActivity, imageUrl } from "./api";
 
 const empty = {
   day_of_week: 2,
@@ -87,9 +87,16 @@ export default function ActivityForm({ activity, defaults, onSaved, onCancel }) 
 
   if (!meta) return <p>{error || "Ładowanie..."}</p>;
 
+  const selected = meta.pictures.find((p) => String(p.id) === String(form.picture_id));
+  const previewSrc =
+    selected?.picture ??
+    (activity && String(activity.pictureId) === String(form.picture_id) ? activity.picture : null);
+
   return (
     <form onSubmit={submit} className="activity-form">
+      <button type="button" className="form-close" onClick={onCancel} aria-label="Zamknij">✕</button>
       <h2>{activity ? "Edytuj aktywność" : "Nowa aktywność"}</h2>
+      {previewSrc && <img className="person-preview" src={imageUrl(previewSrc)} alt="" />}
       {error && <p className="error" style={{ whiteSpace: "pre-line" }}>{error}</p>}
 
       <label>Dzień
