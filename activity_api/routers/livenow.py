@@ -380,395 +380,117 @@ def status_page(
 # STATUS ALL
 # ============================================================
 
-@router.get("/statusall", response_class=HTMLResponse)
-def statusall_page(request: Request, db=Depends(get_db)):
+def _prev_db_day(d):
+    return 7 if d == 1 else d - 1
 
+
+def _now_window_day(today_db_day, cur_min):
+    return today_db_day if cur_min >= 360 else _prev_db_day(today_db_day)
+
+
+def _render_statusall(request, db, day):
     cursor = db.cursor()
 
-    (
-        now,
-        iso_day,
-        current_day,
-        previous_day,
-        current_time,
-    ) = get_current_day_info()
+    (now, iso_day, today_db_day, _prev, current_time) = get_current_day_info()
 
-    # --------------------------------------------------------
-    # DZISIAJ
-    # --------------------------------------------------------
+    cur_min = time_to_minutes(current_time)
+    now_day = _now_window_day(today_db_day, cur_min)
+    now_off = (cur_min - 360) % 1440
 
-    rows_today = cursor.execute("""
-        SELECT
-            ad.Id,
-            ad.StartTime,
-            ad.EndTime,
-            ad.Description,
-            pf.Id AS PersonId,
-            pf.PersonName,
-            pf.PersonPicture,
-            pa.Picture,
-            pa.Name AS ActivityName
-        FROM ActiviesDays ad
-        LEFT JOIN PersonFamilies pf
-            ON ad.ModelPersonFamilyId = pf.Id
-        LEFT JOIN PictureActivities pa
-            ON ad.ModelPictureActivityId = pa.Id
-        WHERE ad.DayOfWeek = ?
-        ORDER BY ad.StartTime
-    """, (current_day,)).fetchall()
+    if day is None or day < 1 or day > 7:
+        day = now_day
 
-    # --------------------------------------------------------
-    # POPRZEDNI DZIEŃ - PRZEJŚCIE PRZEZ PÓŁNOC
-    # --------------------------------------------------------
-
-    rows_previous = cursor.execute("""
-        SELECT
-            ad.Id,
-            ad.StartTime,
-            ad.EndTime,
-            ad.Description,
-            pf.Id AS PersonId,
-            pf.PersonName,
-            pf.PersonPicture,
-            pa.Picture,
-            pa.Name AS ActivityName
-        FROM ActiviesDays ad
-        LEFT JOIN PersonFamilies pf
-            ON ad.ModelPersonFamilyId = pf.Id
-        LEFT JOIN PictureActivities pa
-            ON ad.ModelPictureActivityId = pa.Id
-        WHERE ad.DayOfWeek = ?
-          AND time(ad.StartTime) > time(ad.EndTime)
-          AND time(ad.EndTime) >= time(?)
-        ORDER BY ad.StartTime
-    """, (
-        previous_day,
-        current_time,
-    )).fetchall()
-
-    # --------------------------------------------------------
-    # OSOBY
-    # --------------------------------------------------------
-
-    persons = [
-        {"id": r["Id"], "name": r["PersonName"]}
-        for r in cursor.execute("""
-            SELECT Id, PersonName
-            FROM PersonFamilies
-            ORDER BY Id
-        """).fetchall()
-    ]
-
-    # --------------------------------------------------------
-    # AKTYWNOŚCI
-    # --------------------------------------------------------
-
-    pictures_raw = cursor.execute("""
-        SELECT Id, Name, Picture
-        FROM PictureActivities
-    """).fetchall()
-
-    pictures = [
-        {
-            "id": pic["Id"],
-            "label": pic["Name"],
-            "picture": pic["Picture"]
-        }
-        for pic in pictures_raw
-    ]
-
-    db.close()
-
-    table = {}
-
-    # ========================================================
-    # DZISIAJ
-    # ========================================================
-
-    for r in rows_today:
-
-        time_key = (
-            f'{hhmm(r["StartTime"])} – '
-            f'{hhmm(r["EndTime"])}'
-        )
-
-        if time_key not in table:
-            table[time_key] = {
-                p["id"]: None
-                for p in persons
-            }
-
-        person_id = r["PersonId"]
-
-        if person_id in table[time_key]:
-
-            table[time_key][person_id] = {
-                "activity_id": r["Id"],
-                "description": r["Description"],
-                "picture": r["Picture"],
-                "activityname": r["ActivityName"],
-                "person_id": r["PersonId"],
-                "start": r["StartTime"],
-                "end": r["EndTime"],
-                "is_live": is_time_in_range(
-                    r["StartTime"],
-                    r["EndTime"],
-                    current_time
-                ),
-            }
-
-    # ========================================================
-    # POPRZEDNI DZIEŃ PRZECHODZĄCY PRZEZ PÓŁNOC
-    # ========================================================
-
-    for r in rows_previous:
-
-        time_key = (
-            f'{hhmm(r["StartTime"])} – '
-            f'{hhmm(r["EndTime"])}'
-        )
-
-        if time_key not in table:
-            table[time_key] = {
-                p["id"]: None
-                for p in persons
-            }
-
-        person_id = r["PersonId"]
-
-        if person_id in table[time_key]:
-
-            table[time_key][person_id] = {
-                "activity_id": r["Id"],
-                "description": r["Description"],
-                "picture": r["Picture"],
-                "activityname": r["ActivityName"],
-                "person_id": r["PersonId"],
-                "start": r["StartTime"],
-                "end": r["EndTime"],
-                "is_live": True,
-            }
-
-    return templates.TemplateResponse(
-        request,
-        "statusall.html",
-        {
-            "table": table,
-            "persons": persons,
-            "day_name": DAY_NAMES.get(current_day, ""),
-            "day_index": current_day,
-            "pictures": pictures,
-            "now": current_time,
-        }
-    )
-
-
-# ============================================================
-# LIVE ALL - KONKRETNY DZIEŃ
-# ============================================================
-
-@router.get("/liveall/{day}", response_class=HTMLResponse)
-def statusall_by_day(
-    request: Request,
-    day: int,
-    db=Depends(get_db)
-):
-
-    cursor = db.cursor()
-
-    (
-        now,
-        iso_day,
-        today_db_day,
-        previous_day,
-        current_time,
-    ) = get_current_day_info()
-
-    # zabezpieczenie zakresu
-    if day < 1 or day > 7:
-        day = today_db_day
-
-    current_day = day
-
-    # --------------------------------------------------------
-    # WYBRANY DZIEŃ
-    # --------------------------------------------------------
+    prev_day = _prev_db_day(day)
 
     rows = cursor.execute("""
         SELECT
-            ad.Id,
-            ad.StartTime,
-            ad.EndTime,
-            ad.Description,
-            pf.Id AS PersonId,
-            pf.PersonName,
-            pf.PersonPicture,
-            pa.Picture,
-            pa.Name AS ActivityName
+            ad.Id, ad.DayOfWeek, ad.StartTime, ad.EndTime, ad.Description,
+            pf.Id AS PersonId, pf.PersonName,
+            pa.Picture, pa.Name AS ActivityName
         FROM ActiviesDays ad
-        LEFT JOIN PersonFamilies pf
-            ON ad.ModelPersonFamilyId = pf.Id
-        LEFT JOIN PictureActivities pa
-            ON ad.ModelPictureActivityId = pa.Id
-        WHERE ad.DayOfWeek = ?
+        LEFT JOIN PersonFamilies pf ON ad.ModelPersonFamilyId = pf.Id
+        LEFT JOIN PictureActivities pa ON ad.ModelPictureActivityId = pa.Id
+        WHERE ad.DayOfWeek IN (?, ?)
         ORDER BY ad.StartTime
-    """, (current_day,)).fetchall()
-
-    # --------------------------------------------------------
-    # OSOBY
-    # --------------------------------------------------------
+    """, (day, prev_day)).fetchall()
 
     persons = [
         {"id": r["Id"], "name": r["PersonName"]}
-        for r in cursor.execute("""
-            SELECT Id, PersonName
-            FROM PersonFamilies
-            ORDER BY Id
-        """).fetchall()
+        for r in cursor.execute(
+            "SELECT Id, PersonName FROM PersonFamilies ORDER BY Id"
+        ).fetchall()
     ]
-
-    # --------------------------------------------------------
-    # AKTYWNOŚCI
-    # --------------------------------------------------------
-
-    pictures_raw = cursor.execute("""
-        SELECT Id, Name, Picture
-        FROM PictureActivities
-    """).fetchall()
 
     pictures = [
-        {
-            "id": p["Id"],
-            "label": p["Name"],
-            "picture": p["Picture"]
-        }
-        for p in pictures_raw
+        {"id": p["Id"], "label": p["Name"], "picture": p["Picture"]}
+        for p in cursor.execute(
+            "SELECT Id, Name, Picture FROM PictureActivities"
+        ).fetchall()
     ]
-
-    # --------------------------------------------------------
-    # JEŻELI OGLĄDAMY DZISIAJ:
-    # DODAJEMY AKTYWNOŚCI Z POPRZEDNIEGO DNIA,
-    # KTÓRE PRZECHODZĄ PRZEZ PÓŁNOC
-    # --------------------------------------------------------
-
-    rows_previous = []
-
-    if current_day == today_db_day:
-
-        rows_previous = cursor.execute("""
-            SELECT
-                ad.Id,
-                ad.StartTime,
-                ad.EndTime,
-                ad.Description,
-                pf.Id AS PersonId,
-                pf.PersonName,
-                pf.PersonPicture,
-                pa.Picture,
-                pa.Name AS ActivityName
-            FROM ActiviesDays ad
-            LEFT JOIN PersonFamilies pf
-                ON ad.ModelPersonFamilyId = pf.Id
-            LEFT JOIN PictureActivities pa
-                ON ad.ModelPictureActivityId = pa.Id
-            WHERE ad.DayOfWeek = ?
-              AND time(ad.StartTime) > time(ad.EndTime)
-              AND time(ad.EndTime) >= time(?)
-            ORDER BY ad.StartTime
-        """, (
-            previous_day,
-            current_time,
-        )).fetchall()
 
     db.close()
 
-    table = {}
-
-    # ========================================================
-    # WYBRANY DZIEŃ
-    # ========================================================
+    columns = {p["id"]: [] for p in persons}
 
     for r in rows:
+        pid = r["PersonId"]
+        if pid not in columns:
+            continue
 
-        time_key = (
-            f'{hhmm(r["StartTime"])} – '
-            f'{hhmm(r["EndTime"])}'
-        )
+        s = time_to_minutes(r["StartTime"])
+        e = time_to_minutes(r["EndTime"])
 
-        if time_key not in table:
-            table[time_key] = {
-                p["id"]: None
-                for p in persons
-            }
+        dur = (e - s) % 1440 or 1440
+        off = (s - 360) % 1440
+        end = off + dur
 
-        person_id = r["PersonId"]
+        if r["DayOfWeek"] == prev_day:
+            if end <= 1440:
+                continue
+            segs = [(0, end - 1440)]
+        else:
+            segs = [(off, min(end, 1440) - off)]
 
-        if person_id in table[time_key]:
-
-            is_live = False
-
-            if current_day == today_db_day:
-                is_live = is_time_in_range(
-                    r["StartTime"],
-                    r["EndTime"],
-                    current_time
-                )
-
-            table[time_key][person_id] = {
+        for a, d in segs:
+            columns[pid].append({
                 "activity_id": r["Id"],
                 "description": r["Description"],
                 "picture": r["Picture"],
                 "activityname": r["ActivityName"],
-                "person_id": r["PersonId"],
+                "person_id": pid,
                 "start": r["StartTime"],
                 "end": r["EndTime"],
-                "is_live": is_live,
-            }
-
-    # ========================================================
-    # POPRZEDNI DZIEŃ -> PÓŁNOC
-    # ========================================================
-
-    for r in rows_previous:
-
-        time_key = (
-            f'{hhmm(r["StartTime"])} – '
-            f'{hhmm(r["EndTime"])}'
-        )
-
-        if time_key not in table:
-            table[time_key] = {
-                p["id"]: None
-                for p in persons
-            }
-
-        person_id = r["PersonId"]
-
-        if person_id in table[time_key]:
-
-            table[time_key][person_id] = {
-                "activity_id": r["Id"],
-                "description": r["Description"],
-                "picture": r["Picture"],
-                "activityname": r["ActivityName"],
-                "person_id": r["PersonId"],
-                "start": r["StartTime"],
-                "end": r["EndTime"],
-                "is_live": True,
-            }
+                "day": r["DayOfWeek"],
+                "label": f'{hhmm(r["StartTime"])}–{hhmm(r["EndTime"])}',
+                "top": round(a / 14.4, 3),
+                "height": round(d / 14.4, 3),
+                "is_live": day == now_day and a <= now_off < a + d,
+            })
 
     return templates.TemplateResponse(
         request,
         "statusall.html",
         {
-            "table": table,
+            "columns": columns,
             "persons": persons,
-            "day_name": DAY_NAMES.get(current_day, ""),
-            "day_index": current_day,
             "pictures": pictures,
+            "hours": [f"{(6 + 2 * i) % 24:02d}:00" for i in range(12)],
+            "now_pct": round(now_off / 14.4, 3) if day == now_day else None,
+            "day_name": DAY_NAMES.get(day, ""),
+            "day_index": day,
             "now": current_time,
         }
     )
+
+
+@router.get("/statusall", response_class=HTMLResponse)
+def statusall_page(request: Request, db=Depends(get_db)):
+    return _render_statusall(request, db, None)
+
+
+@router.get("/liveall/{day}", response_class=HTMLResponse)
+def statusall_by_day(request: Request, day: int, db=Depends(get_db)):
+    return _render_statusall(request, db, day)
 
 
 # ============================================================
