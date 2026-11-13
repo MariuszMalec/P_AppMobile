@@ -783,3 +783,99 @@ footer {
 .tv-table th { font-size: 11px; line-height: 1.2; }
 .tv-table th:first-child, .tv-table td:first-child { width: 46px; }
 .tv-table th img { width: 24px; height: 24px; }
+
+/* ===== Filtry i sortowanie (uporządkowane) ===== */
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px;
+  margin: 12px 0 16px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 12px;
+  background: rgba(128, 128, 128, 0.08);
+  box-sizing: border-box;
+}
+
+.filters input,
+.filters select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: inherit;
+  background: rgba(128, 128, 128, 0.12);
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #4f9cf9;
+  box-shadow: 0 0 0 3px rgba(79, 156, 249, 0.25);
+}
+
+/* nazwa drużyny na całą szerokość */
+.filters input:nth-child(1) { grid-column: 1 / -1; }
+
+.filters select option { color: #111; background: #fff; }
+
+.filters .clear-button {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ff8a8a;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.filters .clear-button:active { background: rgba(239, 68, 68, 0.28); }
+
+/* ===== Przycisk Create Team ===== */
+.create-team-button {
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.35);
+}
+
+.create-team-button:active { transform: scale(0.97); }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ===== Kompaktowe filtry i nagłówek ===== */
+.page-header h1 { font-size: 22px; margin: 0; }
+.result-count { margin: 2px 0 0; font-size: 12px; }
+.create-team-button { padding: 8px 12px; font-size: 13px; }
+
+.filters {
+  gap: 6px;
+  padding: 8px;
+  margin: 8px 0 10px;
+  border-radius: 10px;
+}
+.filters input,
+.filters select,
+.filters .clear-button {
+  padding: 8px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
