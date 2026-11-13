@@ -755,3 +755,31 @@ footer {
   color: #198754;
 }
 
+
+.tv-page { min-height: 100vh; padding: 12px; background: #111; color: #eee; box-sizing: border-box; }
+.tv-page.tv-light-theme { background: #f5f5f5; color: #111; }
+.tv-topbar { display: flex; justify-content: center; gap: 12px; margin-bottom: 16px; }
+.tv-topbar button { padding: 12px 20px; font-size: 16px; background: transparent; color: inherit; border: 1px solid #555; border-radius: 8px; }
+.tv-title { font-size: 28px; margin: 8px 0 16px; }
+.tv-controls { display: flex; gap: 10px; }
+.tv-controls select { flex: 1; padding: 14px; font-size: 18px; background: #222; color: inherit; border: 1px solid #555; border-radius: 8px; }
+.tv-light-theme .tv-controls select { background: #fff; }
+.tv-back { padding: 0 16px; font-size: 18px; background: #6b7a90; color: #8ec5ff; border: none; border-radius: 8px; }
+.tv-team { font-size: 24px; margin: 20px 0 10px; }
+.tv-scroll { overflow-x: auto; }
+.tv-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 16px; }
+.tv-table th, .tv-table td { border: 1px solid #444; padding: 10px 6px; background: #1c1c1c; }
+.tv-light-theme .tv-table th, .tv-light-theme .tv-table td { background: #fff; border-color: #ccc; }
+.tv-table th img { width: 30px; height: 30px; object-fit: contain; border-radius: 50%; background: #fff; display: block; margin: 0 auto 4px; }
+.tv-year { font-weight: bold; }
+.tv-sum td { font-weight: bold; text-align: center; }
+.tv-msg { padding: 16px; }
+
+/* bez przewijania w poziomie */
+.tv-page { max-width: 100%; overflow-x: hidden; }
+.tv-scroll { overflow-x: visible; }
+.tv-table { table-layout: fixed; width: 100%; font-size: 14px; }
+.tv-table th, .tv-table td { padding: 8px 2px; overflow-wrap: anywhere; word-break: break-word; }
+.tv-table th { font-size: 11px; line-height: 1.2; }
+.tv-table th:first-child, .tv-table td:first-child { width: 46px; }
+.tv-table th img { width: 24px; height: 24px; }

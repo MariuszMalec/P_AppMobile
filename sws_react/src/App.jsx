@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import API_URL from './api'
+import TeamTrophiesView from './TeamTrophiesView'
 
 
 
@@ -21,6 +22,8 @@ function App() {
   const [trophiesTeam, setTrophiesTeam] = useState(null)
   const [teamTrophies, setTeamTrophies] = useState([])
   const [trophiesLoading, setTrophiesLoading] = useState(false)
+
+  const [seasonViewTeam, setSeasonViewTeam] = useState(null)
 
   const [editTeamOpen, setEditTeamOpen] = useState(false)
   const [editTeam, setEditTeam] = useState(null)
@@ -329,6 +332,16 @@ function App() {
     return `${API_URL}${picture}`
   }
 
+  if (seasonViewTeam) {
+    return (
+      <TeamTrophiesView
+        team={seasonViewTeam}
+        teams={teams}
+        onBack={() => setSeasonViewTeam(null)}
+      />
+    )
+  }
+
   return (
     <div className="app">
 
@@ -467,7 +480,12 @@ function App() {
                         </td>
 
                         <td>
-                          {team.Season}
+                          <button
+                            className="team-name-button"
+                            onClick={() => setSeasonViewTeam(team)}
+                          >
+                            {team.Season}
+                          </button>
                         </td>
 
                         <td>
