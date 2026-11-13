@@ -2,6 +2,7 @@ import { useState } from "react";
 import LiveStatus from "./LiveStatus";
 import LiveNow from "./LiveNow";
 import Activities from "./Activities";
+import DayTimeline from "./DayTimeline";
 import Persons from "./Persons";
 import PictureActivities from "./PictureActivities";
 import ThemeToggle from "./ThemeToggle";
@@ -11,6 +12,7 @@ import "./App.css";
 
 const TABS = [
   ["live", "⚡ Na żywo"],
+  ["timeline", "🕒 Doba"],
   ["now", "🟢 Teraz"],
   ["list", "📋 Aktywności"],
   ["persons", "👤 Osoby"],
@@ -34,6 +36,7 @@ export default function App() {
       {tab === "live" && <LiveStatus />}
       {tab === "now" && <LiveNow />}
       {tab === "list" && <Activities />}
+      {tab === "timeline" && <DayTimeline />}
       {tab === "persons" && <Persons />}
       {tab === "pics" && <PictureActivities />}
       {tab === "reminders" && <ReminderSettings />}

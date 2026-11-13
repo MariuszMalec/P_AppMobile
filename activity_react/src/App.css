@@ -253,3 +253,30 @@ main { max-width: 760px; margin: 0 auto; padding: 1.25rem 1rem 6rem; }
 @keyframes modalPop { from { opacity: 0; transform: translateY(8px) scale(.96); }
   to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .modal-bg, .modal { animation: none; } }
+
+.tl-days { display: flex; gap: 6px; margin: 8px 0; overflow-x: auto; }
+.tl-days button { flex: 1; padding: 8px 4px; border-radius: 8px; border: 1px solid #8884; background: transparent; color: inherit; }
+.tl-days button.active { background: #4f8cff; color: #fff; border-color: #4f8cff; }
+.tl { position: relative; margin: 8px 0 80px; }
+.tl-slot { position: absolute; left: 0; right: 0; border-top: 1px solid #8884; height: 96px; }
+.tl-slot span { position: absolute; left: 0; top: -9px; font-size: 11px; opacity: .7; padding-right: 4px; }
+.tl-lane { position: absolute; left: 48px; right: 0; top: 0; bottom: 0; }
+.tl-block { position: absolute; box-sizing: border-box; border: 1px solid; border-radius: 6px; overflow: hidden; display: flex; align-items: center; gap: 6px; padding: 2px 6px; color: #fff; font-size: 12px; line-height: 1.15; }
+.tl-block img { height: 80%; max-height: 36px; border-radius: 4px; }
+.tl-block.cut-top { border-top-style: dashed; border-top-left-radius: 0; border-top-right-radius: 0; }
+.tl-block.cut-bottom { border-bottom-style: dashed; border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.tl-text { min-width: 0; display: flex; flex-direction: column; }
+.tl-text b, .tl-text small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tl-now { position: absolute; left: 40px; right: 0; border-top: 2px solid #ff3b30; z-index: 5; }
+.tl-now::before { content: ""; position: absolute; left: -4px; top: -5px; width: 8px; height: 8px; border-radius: 50%; background: #ff3b30; }
+
+.tabs { overflow-x: auto; flex-wrap: nowrap; -webkit-overflow-scrolling: touch; }
+.tabs button { flex: 0 0 auto; white-space: nowrap; }
+
+.tl-head { position: sticky; top: 0; z-index: 20; display: flex; background: Canvas; padding: 4px 0; }
+.tl-head-gap { width: 48px; flex: 0 0 48px; }
+.tl-head-cols { flex: 1; display: flex; gap: 2px; }
+.tl-person { flex: 1; text-align: center; color: #fff; font-size: 12px; font-weight: 700; padding: 6px 2px; border-radius: 6px; overflow: hidden; text-overflow: ellipsis; }
+.tl-fam { position: absolute; inset: 0; z-index: 1; }
+.tl-col { position: absolute; top: 0; bottom: 0; z-index: 2; border-left: 1px dashed #8884; }
+.tl-block.fam { background: #8883; border-color: #8886; color: inherit; }
