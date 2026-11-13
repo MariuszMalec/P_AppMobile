@@ -6,6 +6,14 @@ const imgUrl = (p) => {
   return p.startsWith('http') ? p : `${API_URL}${p}`
 }
 
+const columnRank = (name) => {
+  const n = name.toLowerCase().replace(/[\s_-]/g, '')
+  if (n === 'championleague') return 0
+  if (n === 'championscup') return 1
+  if (n.includes('promoted')) return 99
+  return 10
+}
+
 export default function TeamTrophiesView({ team, teams = [], onBack }) {
   const [current, setCurrent] = useState(team)
   const [seasons, setSeasons] = useState([])
@@ -48,7 +56,11 @@ export default function TeamTrophiesView({ team, teams = [], onBack }) {
         }
       })
     )
-    return [...map.values()]
+    return [...map.values()].sort(
+      (a, b) =>
+        columnRank(a.name) - columnRank(b.name) ||
+        a.name.localeCompare(b.name)
+    )
   }, [seasons])
 
   const cellOf = (season, name) =>
