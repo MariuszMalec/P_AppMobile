@@ -11,7 +11,6 @@ export default function TeamTrophiesView({ team, teams = [], onBack }) {
   const [seasons, setSeasons] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
-  const [light, setLight] = useState(false)
 
   // unikalne drużyny po nazwie (do listy rozwijanej)
   const teamOptions = useMemo(() => {
@@ -66,15 +65,7 @@ export default function TeamTrophiesView({ team, teams = [], onBack }) {
   })
 
   return (
-    <div className={`tv-page ${light ? 'tv-light-theme' : ''}`}>
-      <div className="tv-topbar">
-        <button onClick={() => setLight(!light)}>
-          {light ? '🌙 Ciemny' : '☀️ Jasny'}
-        </button>
-        <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          ↑ Góra
-        </button>
-      </div>
+    <div className="tv-page">
 
       <h1 className="tv-title">🏆 Trofea drużyny</h1>
 

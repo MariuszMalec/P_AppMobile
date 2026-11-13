@@ -10,6 +10,21 @@ function App() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem('theme')
+      if (saved) return saved
+    } catch { /* brak dostępu do storage */ }
+    return window.matchMedia('(prefers-color-scheme: light)').matches
+      ? 'light'
+      : 'dark'
+  })
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    try { localStorage.setItem('theme', theme) } catch { /* ignoruj */ }
+  }, [theme])
+
   const [filterName, setFilterName] = useState('')
   const [filterTrophy, setFilterTrophy] = useState('')
   const [filterResult, setFilterResult] = useState('')
@@ -354,6 +369,12 @@ function App() {
           <button>Home</button>
           <button className="active">Teams</button>
           <button>Trophies</button>
+          <button
+            className="theme-toggle"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          >
+            {theme === 'dark' ? '☀️' : '🌙'}
+          </button>
         </div>
       </nav>
 
