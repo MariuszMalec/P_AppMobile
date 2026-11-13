@@ -94,3 +94,6 @@ def api_test():
         "status": "ok",
         "message": "SWS API działa"
     }
+
+from routers import team_trophy_matrix
+app.include_router(team_trophy_matrix.router)
