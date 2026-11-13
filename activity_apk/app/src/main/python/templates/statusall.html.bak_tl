@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>LIVE ALL</title>
+
+<link rel="stylesheet" href="/static/css/dialogs.css?v=2">
+<link rel="stylesheet" href="/static/css/statusall.css?v=1">
+
+
+</head>
+
+<body>
+
+<div class="back">
+
+    <a class="home-page-button " href="/home">⬅ Home Page</a>
+
+    <a
+        href="#"
+        class="create-activity-button"
+        onclick="createActivity(); return false;"
+    >
+        ➕ Utwórz aktywność
+    </a>
+
+    <a
+        href="/live/now"
+        class="live-now-button"
+    >
+        ⚡ Teraz
+    </a>
+
+</div>
+
+<div class="header">
+
+<div class="live-header">
+
+    <span
+        style="cursor:pointer; user-select:none;"
+        onclick="changeDay(-1)"
+        class="week-arrow"
+    >⬅</span>
+
+    <span>
+        🟢 LIVE — {{ day_name }}
+    </span>
+
+    <span
+        class="datetime"
+        id="datetime"
+    ></span>
+
+    <span
+        style="cursor:pointer; user-select:none;"
+        onclick="changeDay(1)"
+        class="week-arrow"
+    >➡</span>
+
+</div>
+
+</div>
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>⏰</th>
+
+{% for p in persons %}
+    <th>{{ p.name }}</th>
+{% endfor %}
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for time, row in table.items() %}
+
+<tr>
+
+<td>{{ time }}</td>
+
+{% for p in persons %}
+
+    {% set cell = row[p.id] %}
+
+    <td
+        class="{% if cell and cell.is_live %}live{% endif %}"
+
+        {% if cell %}
+
+        data-activity-id="{{ cell.activity_id }}"
+        data-desc="{{ cell.description }}"
+        data-img="{{ cell.picture }}"
+        data-start="{{ cell.start }}"
+        data-end="{{ cell.end }}"
+        data-activityname="{{ cell.activityname }}"
+        data-person-id="{{ cell.person_id }}"
+        data-day="{{ day_index }}"
+        onclick="openPreview(this)"
+
+        {% endif %}
+    >
+
+        {% if cell %}
+
+            {% if cell.picture %}
+
+                <img
+                    src="{{ cell.picture }}"
+                    class="tile-img"
+                >
+
+            {% endif %}
+
+            <div class="tile-overlay">
+                {{ cell.description }}
+            </div>
+
+        {% else %}
+
+            <div
+                class="empty"
+                onclick="createActivityForPerson('{{ p.id }}')"
+            >
+                —
+            </div>
+
+        {% endif %}
+
+    </td>
+
+{% endfor %}
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+<!-- ================= PREVIEW ================= -->
+
+<div
+    class="preview-bg"
+    id="preview"
+    onclick="closePreview()"
+>
+
+<div
+    class="preview-card"
+    onclick="event.stopPropagation()"
+>
+
+    <div
+        class="preview-close"
+        onclick="closePreview()"
+    >
+        ✕
+    </div>
+
+
+    <img id="p-img" class="preview-image">
+
+
+    <div class="preview-desc">
+
+        <div
+            id="p-name"
+            class="preview-name"
+        ></div>
+
+
+        <label>Start</label>
+
+        <input
+            type="time"
+            id="p-start"
+        >
+
+
+        <label>Koniec</label>
+
+        <input
+            type="time"
+            id="p-end"
+        >
+
+
+        <!-- ================= DZIEŃ TYGODNIA ================= -->
+
+        <label>Dzień tygodnia</label>
+
+            <select id="p-day">
+                <option value="1">Niedziela</option>
+                <option value="2">Poniedziałek</option>
+                <option value="3">Wtorek</option>
+                <option value="4">Środa</option>
+                <option value="5">Czwartek</option>
+                <option value="6">Piątek</option>
+                <option value="7">Sobota</option>
+            </select>
+
+            <label>Osoba</label>
+
+            <select id="p-person">
+                <option value="">— BRAK —</option>
+
+                {% for p in persons %}
+                    <option value="{{ p.id }}">
+                        {{ p.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+        <label>Aktywność</label>
+
+        <select
+            id="p-activity-select"
+            name="activityname"
+        >
+
+            <option value="">
+                — BRAK —
+            </option>
+
+            {% for v in pictures %}
+
+                <option
+                    value="{{ v.label }}"
+                    data-picture="{{ v.picture }}"
+                >
+                    {{ v.label }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>Opis</label>
+
+        <input
+            type="text"
+            id="p-desc-input"
+        >
+
+
+        <button onclick="saveEdit()">
+            💾 Zapisz
+        </button>
+
+
+        <button
+            onclick="deleteActivity()"
+            class="delete-activity-button"
+        >
+            🗑 Usuń aktywność
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- ================= CREATE ACTIVITY ================= -->
+
+<div
+    class="preview-bg"
+    id="create-preview"
+    onclick="closeCreatePreview()"
+>
+
+<div
+    class="preview-card"
+    onclick="event.stopPropagation()"
+>
+
+    <div
+        class="preview-close"
+        onclick="closeCreatePreview()"
+    >
+        ✕
+    </div>
+
+    <div class="preview-desc">
+
+        <div
+            class="create-title"
+        >
+            ➕ Utwórz aktywność
+        </div>
+
+
+        <label>Start</label>
+
+        <input
+            type="time"
+            id="c-start"
+        >
+
+
+        <label>Koniec</label>
+
+        <input
+            type="time"
+            id="c-end"
+        >
+
+
+        <label>Dzień tygodnia</label>
+
+        <select id="c-day">
+
+            <option value="1">Niedziela</option>
+            <option value="2">Poniedziałek</option>
+            <option value="3">Wtorek</option>
+            <option value="4">Środa</option>
+            <option value="5">Czwartek</option>
+            <option value="6">Piątek</option>
+            <option value="7">Sobota</option>
+
+        </select>
+
+
+        <label>Osoba</label>
+
+        <select id="c-person">
+
+            <option value="">— WYBIERZ OSOBĘ —</option>
+
+            {% for p in persons %}
+
+                <option value="{{ p.id }}">
+                    {{ p.name }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>Aktywność</label>
+
+        <select
+            id="c-activity"
+        >
+
+            <option value="">
+                — WYBIERZ AKTYWNOŚĆ —
+            </option>
+
+            {% for v in pictures %}
+
+                <option
+                    value="{{ v.label }}"
+                    data-picture="{{ v.picture }}"
+                >
+                    {{ v.label }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <!-- PODGLĄD OBRAZKA -->
+
+        <img
+            id="c-img"
+            class="create-image"
+        >
+
+
+        <label>Opis</label>
+
+        <input
+            type="text"
+            id="c-desc"
+            placeholder="Opis aktywności..."
+        >
+
+
+        <button
+            type="button"
+            onclick="saveCreateActivity()"
+        >
+            💾 Utwórz aktywność
+        </button>
+
+        <button
+            type="button"
+            onclick="closeCreatePreview()"
+            class="create-cancel">
+            Anuluj
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+<!-- ================= TOAST ================= -->
+
+<div
+    id="toast"
+    class="toast"
+>
+
+<span id="toast-text"></span>
+
+</div>
+
+<script>
+    window.currentDay = {{ day_index }};
+</script>
+
+<script src="/static/js/statusall.js"></script>
+<script src="/static/js/dialogs.js"></script>
+
+</body>
+</html>
+
