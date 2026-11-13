@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { getLive, imageUrl } from "./api";
 import ActivityForm from "./ActivityForm";
+import LiveTimeline from "./LiveTimeline";
 
 const DAYS = [
   [2, "Pn"], [3, "Wt"], [4, "Śr"], [5, "Cz"], [6, "Pt"], [7, "Sb"], [1, "Nd"],
@@ -62,52 +63,14 @@ export default function LiveStatus() {
 
       {data && <h2 className="live-day">{data.dayName}{data.isToday && " · dzisiaj"}</h2>}
       {error && <p className="error">{error}</p>}
-      {data && data.rows.length === 0 && <p className="empty">Brak aktywności tego dnia</p>}
-
-      {data && data.rows.length > 0 && (
-        <div className="grid-wrap">
-          <table className="grid">
-            <thead>
-              <tr>
-                <th>⏰</th>
-                {data.persons.map((p) => (
-                  <th key={p.id}><span className="chip" data-person={p.name}>{p.name}</span></th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.rows.map((row) => (
-                <tr key={row.time}>
-                  <td className="gtime">{row.time}</td>
-                  {row.cells.map((c, i) => {
-                    const person = data.persons[i];
-                    if (!c) {
-                      return (
-                        <td key={person.id} className="gcell empty-cell"
-                            onClick={() => setEditing({
-                              defaults: {
-                                person_id: person.id === 5 ? 0 : person.id,
-                                day_of_week: data.day,
-                              },
-                            })}>
-                          +
-                        </td>
-                      );
-                    }
-                    return (
-                      <td key={person.id}
-                          className={"gcell" + (c.isLive ? " live" : "")}
-                          onClick={() => setEditing({ activity: c })}>
-                        {c.picture && <img src={imageUrl(c.picture)} alt="" loading="lazy" />}
-                        <span className="gtext">{c.description || pretty(c.pictureName)}</span>
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+      {data && (
+        <LiveTimeline
+          data={data}
+          onEdit={(c) => setEditing({ activity: c })}
+          onAdd={(p) => setEditing({
+            defaults: { person_id: p.id === 5 ? 0 : p.id, day_of_week: data.day },
+          })}
+        />
       )}
 
       <button className="fab"
