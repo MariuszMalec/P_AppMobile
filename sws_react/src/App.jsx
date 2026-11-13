@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 import API_URL from './api'
+import ScrollButtons from './ScrollButtons'
 import TeamTrophiesView from './TeamTrophiesView'
 
 
@@ -359,6 +360,8 @@ function App() {
 
   return (
     <div className="app">
+
+      <ScrollButtons />
 
       <nav className="navbar">
         <div className="navbar-brand">
