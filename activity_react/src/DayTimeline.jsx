@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getActivities } from "./api";
+import { getActivities, getActivity } from "./api";
+import ActivityForm from "./ActivityForm";
 
 const START = 6 * 60;
 const DAY_MIN = 24 * 60;
@@ -58,13 +59,14 @@ function buildSegments(items, day) {
   return segs;
 }
 
-function Block({ s, person }) {
+function Block({ s, person, onEdit }) {
   const h = (s.to - s.from) * PX;
   const w = 100 / s.cols;
   const hu = hueOf(person);
   const fam = person === FAMILY;
   return (
     <div
+      onClick={() => onEdit(s.a.id)}
       className={`tl-block${s.cutStart ? " cut-top" : ""}${s.cutEnd ? " cut-bottom" : ""}${fam ? " fam" : ""}`}
       title={`${hhmm(s.a.start)}–${hhmm(s.a.end)} ${pretty(s.a.pictureName)} (${s.a.personName})`}
       style={{
@@ -93,13 +95,20 @@ function Block({ s, person }) {
 export default function DayTimeline() {
   const [items, setItems] = useState([]);
   const [error, setError] = useState("");
+  const [editing, setEditing] = useState(null);
   const [doba, setDoba] = useState(currentDoba);
   const [day, setDay] = useState(doba.day);
   const nowRef = useRef(null);
   const scrolled = useRef(false);
 
+  const load = () => getActivities().then(setItems).catch((e) => setError(e.message));
+  const edit = async (id) => {
+    try { setEditing(await getActivity(id)); }
+    catch (e) { setError(e.message); }
+  };
+
   useEffect(() => {
-    getActivities().then(setItems).catch((e) => setError(e.message));
+    load();
     const t = setInterval(() => setDoba(currentDoba()), 60000);
     return () => clearInterval(t);
   }, []);
@@ -131,6 +140,17 @@ export default function DayTimeline() {
       scrolled.current = true;
     }
   }, [items]);
+
+  if (editing) {
+    return (
+      <ActivityForm
+        key={editing.id}
+        activity={editing}
+        onCancel={() => setEditing(null)}
+        onSaved={() => { setEditing(null); load(); }}
+      />
+    );
+  }
 
   const isToday = day === doba.day;
   const n = people.length || 1;
@@ -171,7 +191,7 @@ export default function DayTimeline() {
 
         <div className="tl-lane">
           <div className="tl-fam">
-            {famSegs.map((s, i) => <Block key={i} s={s} person={FAMILY} />)}
+            {famSegs.map((s, i) => <Block key={i} s={s} person={FAMILY} onEdit={edit} />)}
           </div>
           {lanes.map(({ p, segs }, i) => (
             <div
@@ -179,7 +199,7 @@ export default function DayTimeline() {
               className="tl-col"
               style={{ left: `${(i * 100) / n}%`, width: `${100 / n}%` }}
             >
-              {segs.map((s, j) => <Block key={j} s={s} person={p} />)}
+              {segs.map((s, j) => <Block key={j} s={s} person={p} onEdit={edit} />)}
             </div>
           ))}
         </div>

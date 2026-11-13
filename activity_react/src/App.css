@@ -280,3 +280,7 @@ main { max-width: 760px; margin: 0 auto; padding: 1.25rem 1rem 6rem; }
 .tl-fam { position: absolute; inset: 0; z-index: 1; }
 .tl-col { position: absolute; top: 0; bottom: 0; z-index: 2; border-left: 1px dashed #8884; }
 .tl-block.fam { background: #8883; border-color: #8886; color: inherit; }
+
+.tl-block { cursor: pointer; }
+.tl-col, .tl-fam { pointer-events: none; }
+.tl-col .tl-block, .tl-fam .tl-block { pointer-events: auto; }
