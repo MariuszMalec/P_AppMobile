@@ -993,3 +993,179 @@ html[data-theme="light"] .scroll-btns button {
   background: rgba(79, 156, 249, 0.3);
   border-color: rgba(0, 0, 0, 0.25);
 }
+
+/* ===== Teams: czytelniejsza tabela, bez przewijania w bok ===== */
+.table-wrapper { overflow-x: hidden; }
+
+.teams-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.teams-table th:nth-child(1) { width: 36%; }
+.teams-table th:nth-child(2) { width: 14%; }
+.teams-table th:nth-child(3) { width: 24%; }
+.teams-table th:nth-child(4) { width: 26%; }
+
+.teams-table th {
+  padding: 10px 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: left;
+}
+.teams-table td {
+  padding: 10px 6px;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+.teams-table tbody tr:last-child td { border-bottom: none; }
+
+/* nazwa drużyny + akcje */
+.teams-table .team-name-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: left;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+.team-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.team-actions button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: rgba(128, 128, 128, 0.12);
+  cursor: pointer;
+}
+.team-actions .team-delete-button {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* sezon jako mała pigułka */
+.teams-table td:nth-child(2) .team-name-button {
+  display: inline-block;
+  width: auto;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 999px;
+  background: rgba(79, 156, 249, 0.18);
+  border: 1px solid rgba(79, 156, 249, 0.45);
+}
+
+/* wynik jako badge */
+.teams-table .result {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: 8px;
+  background: rgba(128, 128, 128, 0.15);
+}
+.teams-table .result-won  { background: rgba(34, 197, 94, 0.18); }
+.teams-table .result-lost { background: rgba(239, 68, 68, 0.18); }
+
+/* komórka z pucharem */
+.teams-table .trophy-cell-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 0;
+  font-size: 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+.teams-table .trophy-picture {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.teams-table .trophy-status {
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 6px;
+  white-space: nowrap;
+  background: rgba(128, 128, 128, 0.15);
+}
+.teams-table .trophy-status.result-won  { background: rgba(34, 197, 94, 0.18); }
+.teams-table .trophy-status.result-lost { background: rgba(239, 68, 68, 0.18); }
+
+/* ===== Season i Final Result bez zawijania ===== */
+.teams-table th:nth-child(1) { width: 29%; }
+.teams-table th:nth-child(2) { width: 17%; }
+.teams-table th:nth-child(3) { width: 30%; }
+.teams-table th:nth-child(4) { width: 24%; }
+
+.teams-table td:nth-child(2),
+.teams-table td:nth-child(3) {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.teams-table td:nth-child(2) .team-name-button {
+  white-space: nowrap;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.teams-table td:nth-child(3) .result {
+  white-space: nowrap;
+  padding: 4px 6px;
+  font-size: 11px;
+}
+
+.teams-table th:nth-child(2),
+.teams-table th:nth-child(3) {
+  white-space: nowrap;
+  letter-spacing: 0;
+  font-size: 10px;
+}
+
+/* ===== Final Result: maksymalnie szeroki, wynik zawija się pod spodem ===== */
+.teams-table th:nth-child(1) { width: 26%; }
+.teams-table th:nth-child(2) { width: 15%; }
+.teams-table th:nth-child(3) { width: 39%; }
+.teams-table th:nth-child(4) { width: 20%; }
+
+.teams-table td:nth-child(3) {
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.teams-table td:nth-child(3) .result {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+  line-height: 1.3;
+  font-size: 12px;
+  padding: 5px 8px;
+}

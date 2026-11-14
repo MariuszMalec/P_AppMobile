@@ -558,8 +558,8 @@ function App() {
                                   }
                                 >
                                   {resultStatus.lose
-                                    ? "🔴 PRZEGRANA"
-                                    : "🟢 WYGRANA"}
+                                    ? "🔴 Lost"
+                                    : "🟢 Win"}
                                 </div>
                               )}
                           </button>
