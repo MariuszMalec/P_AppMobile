@@ -2,16 +2,17 @@ import { useEffect, useRef, useState } from 'react'
 import API_URL from './api'
 import './App.css'
 import Sessions from './Sessions'
+import Home from './Home'
+import Stats from './Stats'
 import { connectGoogleAccount, uploadAndShareBackup } from './googleDriveBackup'
 
-function App() {
+function AppContent({ page, setPage }) {
   const [clients, setClients] = useState([])
   const [selectedClient, setSelectedClient] = useState(null)
   const [search, setSearch] = useState('')
   const [active, setActive] = useState(1)
   const [editMode, setEditMode] = useState(false)
   const [createMode, setCreateMode] = useState(false)
-  const [page, setPage] = useState('clients')
   const [newClient, setNewClient] = useState({
     FirstName: '',
     LastName: '',
@@ -86,6 +87,16 @@ function App() {
       delete window.onAndroidDriveBackupError
     }
   }, [])
+
+  useEffect(() => {
+    if (page === 'home') {
+      setSelectedClient(null)
+      setEditMode(false)
+      setCreateMode(false)
+      setError('')
+      setMessage('')
+    }
+  }, [page])
 
   useEffect(() => {
     if (!message) return
@@ -490,6 +501,14 @@ function App() {
 
     return text.includes(search.toLowerCase())
   })
+
+  if (page === 'home') {
+    return <Home onNavigate={setPage} />
+  }
+
+  if (page === 'stats') {
+    return <Stats />
+  }
 
   if (page === 'sessions') {
     return <Sessions onBack={() => setPage('clients')} />
@@ -1010,6 +1029,24 @@ function App() {
         ))}
       </div>
     </main>
+  )
+}
+
+function App() {
+  const [page, setPage] = useState('home')
+  return (
+    <>
+      <AppContent page={page} setPage={setPage} />
+      {page !== 'home' && (
+        <button
+          className="home-fab"
+          aria-label="Strona główna"
+          onClick={() => setPage('home')}
+        >
+          🏠
+        </button>
+      )}
+    </>
   )
 }
 

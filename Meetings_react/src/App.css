@@ -3320,3 +3320,52 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 .sessions-page .session-cell.has-client-color:not(.live-session) .session-card strong {
   color: color-mix(in srgb, var(--client-color) 50%, black) !important;
 }
+
+/* ===== HOME ===== */
+.home-page {
+  min-height: 100vh;
+  box-sizing: border-box;
+  padding: 48px 20px 32px;
+  background: linear-gradient(160deg, #eef2ff 0%, #f8fafc 60%);
+}
+.home-header h1 { margin: 0; font-size: 34px; color: #1e293b; }
+.home-header p { margin: 6px 0 28px; color: #64748b; text-transform: capitalize; }
+.home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.home-tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;
+  min-height: 150px; padding: 18px; border: none; border-radius: 22px;
+  color: #fff; text-align: left; cursor: pointer;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, .15);
+  transition: transform .15s;
+}
+.home-tile:active { transform: scale(.96); }
+.home-tile-icon { font-size: 34px; margin-bottom: auto; }
+.home-tile-title { font-size: 19px; font-weight: 700; }
+.home-tile-desc { font-size: 12px; opacity: .85; }
+.tile-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.tile-green { background: linear-gradient(135deg, #22c55e, #15803d); }
+.tile-purple { background: linear-gradient(135deg, #a855f7, #6d28d9); }
+.tile-orange { background: linear-gradient(135deg, #fb923c, #c2410c); }
+
+/* przycisk 🏠 */
+.home-fab {
+  position: fixed; left: 14px; bottom: 14px; z-index: 1000;
+  width: 48px; height: 48px; border: none; border-radius: 50%;
+  background: #1e293b; color: #fff; font-size: 22px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, .3); cursor: pointer;
+}
+
+/* ===== STATYSTYKI ===== */
+.stats-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+.stat-card {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 14px 6px; border-radius: 16px; background: #fff;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, .1); text-align: center;
+}
+.stat-card b { font-size: 28px; color: #4f46e5; }
+.stat-card span { font-size: 12px; color: #64748b; }
+.stat-row { display: flex; align-items: center; gap: 8px; margin: 8px 0; }
+.stat-name { flex: 0 0 38%; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stat-bar { flex: 1; height: 10px; border-radius: 6px; background: #e2e8f0; }
+.stat-bar div { height: 100%; border-radius: 6px; background: linear-gradient(90deg, #6366f1, #a855f7); }
+.stat-n { width: 24px; text-align: right; font-weight: 600; }
