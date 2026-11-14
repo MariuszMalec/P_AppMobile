@@ -85,9 +85,4 @@ def mainmenu_page(request: Request, db = Depends(get_db)):
                 "next": next_item,
                 "current_day_name" : current_day_name,
             }
-        ) 
-
-@router.get("home/homebyperson", response_class=HTMLResponse)    
-def home_activities_redirect():
-        return RedirectResponse("/home/homebyperson", status_code=302)          
-
+        )

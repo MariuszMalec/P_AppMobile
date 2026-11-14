@@ -1,0 +1,7 @@
+{% set p = request.url.path %}
+<nav class="appnav">
+  <a href="/mainmenu" class="{{ 'on' if p.startswith('/mainmenu') }}"><b>🏠</b>Menu</a>
+  <a href="/live/now" class="{{ 'on' if p in ('/live/now', '/live/status') }}"><b>⚡</b>Teraz</a>
+  <a href="/live/statusall" class="{{ 'on' if p.startswith('/live/statusall') or p.startswith('/live/liveall') }}"><b>⏱</b>Dzień</a>
+  <a href="/stats" class="{{ 'on' if p.startswith('/stats') }}"><b>📊</b>Stats</a>
+</nav>

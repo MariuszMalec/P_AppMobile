@@ -164,17 +164,10 @@ body {
 }
 
 </style>
+<link rel="stylesheet" href="/static/css/nav.css?v=1">
 </head>
 
 <body>
-
-<div class="back">
-    
-    <a class="home-page-button" href="/home">⬅ Home back</a>
-
-    <a class="home-page-button" href="/live/statusall">⬅ Live all</a>
-
-</div>
 
 <div class="header">
     <h1>🟢 LIVE TERAZ</h1>
@@ -246,5 +239,6 @@ updateDateTime();
 setInterval(updateDateTime, 1000);
 </script>
 
+{% include "_nav.html" %}
 </body>
 </html>
