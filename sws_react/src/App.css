@@ -1188,3 +1188,342 @@ html[data-theme="light"] .scroll-btns button {
   background: #ef4444;
   border-color: #ef4444;
 }
+
+/* ===== Teams: nowoczesne karty ===== */
+html[data-theme="dark"]  { --card-bg: linear-gradient(145deg, #1f252d, #171b21); --card-border: rgba(255,255,255,0.08); --card-shadow: 0 6px 18px rgba(0,0,0,0.45); }
+html[data-theme="light"] { --card-bg: linear-gradient(145deg, #ffffff, #f1f5fb); --card-border: rgba(0,0,0,0.08); --card-shadow: 0 6px 16px rgba(30,60,120,0.12); }
+
+/* tytuł */
+.page-header h1 {
+  background: linear-gradient(90deg, #4f9cf9, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* menu jak szkło */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* kontener tabeli bez ramki - karty same mają styl */
+.table-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.table-wrapper { overflow: visible; }
+
+/* tabela -> lista kart */
+.teams-table,
+.teams-table tbody { display: block; width: 100%; }
+.teams-table thead { display: none; }
+.teams-table tbody { display: flex; flex-direction: column; gap: 10px; }
+
+.teams-table tbody tr {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "name   season"
+    "result trophy";
+  align-items: center;
+  gap: 8px 10px;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow), inset 5px 0 0 rgba(128,128,128,0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  animation: cardIn 0.35s ease both;
+}
+.teams-table tbody tr:active { transform: scale(0.985); }
+.teams-table tbody tr:has(.result-won)  { box-shadow: var(--card-shadow), inset 5px 0 0 #22c55e; }
+.teams-table tbody tr:has(.result-lost) { box-shadow: var(--card-shadow), inset 5px 0 0 #ef4444; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* komórki bez własnego tła i ramek */
+html[data-theme] body .teams-table tbody tr:nth-child(n) td {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: auto;
+  white-space: normal;
+}
+
+.teams-table td:nth-child(1) { grid-area: name; }
+.teams-table td:nth-child(2) { grid-area: season; justify-self: end; }
+.teams-table td:nth-child(3) { grid-area: result; }
+.teams-table td:nth-child(4) { grid-area: trophy; justify-self: end; }
+
+/* nazwa i akcje */
+.teams-table .team-name-button { font-size: 17px; }
+.team-actions { margin-top: 8px; }
+.team-actions button { width: 34px; height: 34px; border-radius: 10px; }
+
+/* sezon */
+.teams-table td:nth-child(2) .team-name-button {
+  white-space: nowrap;
+  padding: 5px 12px;
+  font-size: 13px;
+  background: linear-gradient(135deg, rgba(79,156,249,0.3), rgba(167,139,250,0.3));
+  border: 1px solid rgba(79,156,249,0.5);
+}
+
+/* wynik */
+.teams-table td:nth-child(3) .result {
+  display: inline-block;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+/* puchar: obrazek + nazwa + status w jednej linii */
+.teams-table .trophy-cell-button {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+}
+.teams-table .trophy-picture { width: 34px; height: 34px; }
+.teams-table .trophy-status { padding: 3px 8px; border-radius: 999px; }
+
+/* ===== Teams: kompaktowe karty v2 ===== */
+
+/* koniec z białym tłem tabeli i pasków */
+html[data-theme] .teams-table,
+html[data-theme] .teams-table tbody { background: transparent !important; }
+
+html[data-theme] .teams-table tbody tr:nth-child(n) {
+  background: var(--card-bg) !important;
+  color: inherit;
+  height: auto !important;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "name   season actions"
+    "result trophy trophy";
+  grid-template-rows: auto auto;
+  align-content: start;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+}
+html[data-theme="light"] .teams-table tbody tr:nth-child(n) { color: #111; }
+html[data-theme="dark"]  .teams-table tbody tr:nth-child(n) { color: #f1f4f8; }
+
+.teams-table tbody { gap: 8px; }
+
+/* pierwsza komórka "rozpada się" na nazwę i przyciski */
+.teams-table td:nth-child(1) { display: contents; }
+.teams-table td:nth-child(1) > .team-name-button {
+  grid-area: name;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.teams-table td:nth-child(1) > .team-actions {
+  grid-area: actions;
+  margin: 0;
+  gap: 4px;
+}
+.team-actions button { width: 30px; height: 30px; font-size: 14px; border-radius: 8px; }
+
+/* sezon */
+.teams-table td:nth-child(2) { grid-area: season; justify-self: end; }
+.teams-table td:nth-child(2) .team-name-button {
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
+/* wynik */
+.teams-table td:nth-child(3) { grid-area: result; justify-self: start; min-width: 0; }
+.teams-table td:nth-child(3) .result {
+  font-size: 12px;
+  padding: 3px 10px;
+  line-height: 1.2;
+}
+
+/* puchar w jednej linii */
+.teams-table td:nth-child(4) { grid-area: trophy; justify-self: end; min-width: 0; }
+.teams-table .trophy-cell-button {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 12px;
+  line-height: 1.1;
+}
+.teams-table .trophy-picture { width: 24px; height: 24px; border-radius: 4px; }
+.teams-table .trophy-status { padding: 2px 7px; font-size: 11px; }
+
+/* ===== Teams: karty v3 - równe kolumny ===== */
+html[data-theme] .teams-table tbody tr:nth-child(n) {
+  grid-template-columns: 38% minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name   season actions"
+    "result trophy trophy";
+  align-items: center;
+  gap: 6px 8px;
+  padding: 8px 10px;
+}
+
+.teams-table td:nth-child(1) > .team-name-button {
+  align-self: center;
+  margin: 0;
+}
+
+/* rok: z lewej, w pionie na środku */
+.teams-table td:nth-child(2) {
+  grid-area: season;
+  justify-self: start;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+.teams-table td:nth-child(2) .team-name-button {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  margin: 0;
+}
+
+/* przyciski: prawa strona, środek w pionie */
+.teams-table td:nth-child(1) > .team-actions {
+  grid-area: actions;
+  justify-self: end;
+  align-self: center;
+}
+
+/* wynik pod nazwą, puchar pod rokiem - zawsze od tej samej krawędzi */
+.teams-table td:nth-child(3) {
+  grid-area: result;
+  justify-self: start;
+  align-self: center;
+}
+.teams-table td:nth-child(4) {
+  grid-area: trophy;
+  justify-self: start;
+  align-self: center;
+}
+.teams-table .trophy-cell-button {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* ===== Teams: karty v4 - 3 rzędy ===== */
+html[data-theme] .teams-table tbody tr:nth-child(n) {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "name   season  actions"
+    "result result  result"
+    "trophy trophy  trophy";
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 8px 10px;
+}
+
+/* rząd 1 */
+.teams-table td:nth-child(1) > .team-name-button { grid-area: name; }
+.teams-table td:nth-child(2) {
+  grid-area: season;
+  justify-self: start;
+}
+.teams-table td:nth-child(1) > .team-actions {
+  grid-area: actions;
+  justify-self: end;
+}
+
+/* rząd 2: wynik na całą szerokość, zawija się w badge */
+.teams-table td:nth-child(3) {
+  grid-area: result;
+  justify-self: stretch;
+  width: 100%;
+}
+.teams-table td:nth-child(3) .result {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+/* rząd 3: puchar + Win/Lost */
+.teams-table td:nth-child(4) {
+  grid-area: trophy;
+  justify-self: start;
+  width: 100%;
+}
+.teams-table .trophy-cell-button {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+.teams-table .trophy-cell-button > span { white-space: nowrap; }
+
+/* ===== Teams: karty v5 - minimalna wysokość ===== */
+html[data-theme] .teams-table tbody tr:nth-child(n) {
+  height: auto !important;
+  min-height: 0 !important;
+  grid-template-rows: none !important;
+  grid-auto-rows: min-content !important;
+  align-content: start !important;
+  align-items: center !important;
+  row-gap: 4px !important;
+  column-gap: 8px !important;
+  padding: 6px 10px !important;
+  margin: 0 !important;
+}
+
+html[data-theme] body .teams-table tbody tr:nth-child(n) td {
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
+  align-self: center;
+}
+
+.teams-table .team-name-button,
+.teams-table .trophy-cell-button,
+.teams-table .result {
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+.teams-table .trophy-cell-button { padding: 0 !important; }
+.teams-table td:nth-child(3) .result { padding: 3px 10px !important; }
+
+.teams-table .team-name-button { font-size: 15px; }
+.team-actions { margin: 0 !important; }
+.team-actions button { width: 28px; height: 28px; font-size: 13px; }
+
+.teams-table td:nth-child(2) .team-name-button { padding: 2px 9px !important; font-size: 12px; }
+.teams-table .trophy-picture { width: 22px; height: 22px; }
+.teams-table .trophy-status { padding: 1px 6px; font-size: 11px; }
+
+.teams-table tbody { gap: 6px !important; }
