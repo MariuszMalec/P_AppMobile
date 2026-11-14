@@ -1,0 +1,1529 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f5f5;
+  color: #212529;
+}
+
+button {
+  font: inherit;
+}
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* =========================
+   NAVBAR
+   ========================= */
+
+.navbar {
+  background: #212529;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.navbar-brand {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.nav-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+.nav-buttons button {
+  border: 0;
+  background: transparent;
+  color: #ddd;
+  padding: 8px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.nav-buttons button:hover,
+.nav-buttons button.active {
+  background: #495057;
+  color: white;
+}
+
+/* =========================
+   CONTENT
+   ========================= */
+
+.content {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 24px;
+  flex: 1;
+}
+
+.page-header {
+  margin-bottom: 15px;
+}
+
+.page-header h1 {
+  margin: 0;
+  font-size: 28px;
+}
+
+.result-count {
+  margin: 5px 0 0;
+  color: #6c757d;
+  font-size: 14px;
+}
+
+/* =========================
+   TABLE
+   ========================= */
+
+.table-card {
+  background: white;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.teams-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+
+.teams-table th,
+.teams-table td {
+  border: 1px solid #dee2e6;
+}
+
+.teams-table th {
+  background: #343a40;
+  color: white;
+  padding: 12px 14px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.teams-table td {
+  padding: 10px 14px;
+  height: 62px;
+  vertical-align: middle;
+}
+
+.teams-table tbody tr:nth-child(even) {
+  background: #f8f9fa;
+}
+
+.teams-table tbody tr:hover {
+  background: #e9ecef;
+}
+
+/* =========================
+   COLUMNS
+   ========================= */
+
+.teams-table th:nth-child(1),
+.teams-table td:nth-child(1) {
+  min-width: 180px;
+}
+
+.teams-table th:nth-child(2),
+.teams-table td:nth-child(2) {
+  width: 90px;
+  text-align: center;
+}
+
+.teams-table th:nth-child(3),
+.teams-table td:nth-child(3) {
+  min-width: 280px;
+}
+
+.teams-table th:nth-child(4),
+.teams-table td:nth-child(4) {
+  min-width: 220px;
+}
+
+/* =========================
+   TEAM NAME
+   ========================= */
+
+.team-name {
+  font-weight: 500;
+}
+
+/* =========================
+   RESULT
+   ========================= */
+
+.result {
+  white-space: nowrap;
+}
+
+/* =========================
+   TROPHY
+   ========================= */
+
+.trophy-cell {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 60px;
+}
+
+.trophy-picture {
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.trophy-cell span {
+  font-weight: 500;
+}
+
+/* =========================
+   MESSAGES
+   ========================= */
+
+.message {
+  background: white;
+  border: 1px solid #dee2e6;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+.message.error {
+  color: #b02a37;
+  border-color: #f1aeb5;
+}
+
+/* =========================
+   FOOTER
+   ========================= */
+
+footer {
+  margin-top: 30px;
+  padding: 18px;
+  text-align: center;
+  color: #6c757d;
+  font-size: 13px;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 700px) {
+  .navbar {
+    padding: 10px;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .navbar-brand {
+    text-align: center;
+  }
+
+  .nav-buttons {
+    width: 100%;
+  }
+
+  .nav-buttons button {
+    flex: 1;
+  }
+
+  .content {
+    padding: 14px 8px;
+  }
+
+  .page-header h1 {
+    font-size: 24px;
+  }
+
+  .table-card {
+    border-radius: 4px;
+  }
+
+  .teams-table {
+    width: 100%;
+    min-width: 0;
+    table-layout: fixed;
+  }
+
+  .teams-table th,
+  .teams-table td {
+    padding: 7px 5px;
+    font-size: 12px;
+  }
+
+  .teams-table th:nth-child(1),
+  .teams-table td:nth-child(1) {
+    width: 22%;
+    min-width: 0;
+  }
+
+  .teams-table th:nth-child(2),
+  .teams-table td:nth-child(2) {
+    width: 13%;
+    min-width: 0;
+  }
+
+  .teams-table th:nth-child(3),
+  .teams-table td:nth-child(3) {
+    width: 40%;
+    min-width: 0;
+  }
+
+  .teams-table th:nth-child(4),
+  .teams-table td:nth-child(4) {
+    width: 25%;
+    min-width: 0;
+  }
+
+  .result {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .trophy-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    min-height: 45px;
+  }
+
+  .trophy-picture {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+  }
+
+  .trophy-cell span {
+    font-size: 9px;
+    line-height: 1.1;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* =========================
+   TEAM PICTURE BUTTON
+   ========================= */
+
+.team-name-button {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  color: inherit;
+  font: inherit;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+}
+
+.team-name-button:hover {
+  text-decoration: underline;
+}
+
+/* =========================
+   TEAM PICTURE MODAL
+   ========================= */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.team-modal {
+  position: relative;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 90vw;
+  max-height: 90vh;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+.team-modal h2 {
+  margin: 0 40px 15px 0;
+  font-size: 20px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  border: 0;
+  background: transparent;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+  color: #555;
+}
+
+.team-modal-picture {
+  display: block;
+  max-width: 80vw;
+  max-height: 70vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+}
+
+.modal-message {
+  padding: 30px;
+  color: #6c757d;
+}
+
+@media (max-width: 700px) {
+  .team-name-button {
+    font-size: 12px;
+  }
+
+  .team-modal {
+    padding: 15px;
+    max-width: 94vw;
+    max-height: 90vh;
+  }
+
+  .team-modal h2 {
+    font-size: 17px;
+  }
+
+  .team-modal-picture {
+    max-width: 84vw;
+    max-height: 70vh;
+  }
+}
+
+/* =========================
+   CLICKABLE TROPHY
+   ========================= */
+
+.trophy-cell-button {
+  border: 0;
+  background: transparent;
+  width: 100%;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.trophy-cell-button:hover {
+  background: #f1f3f5;
+}
+
+.trophy-cell-button:hover .trophy-cell span {
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .trophy-cell-button {
+    padding: 0;
+  }
+}
+
+/* ===== POPRAWKA LISTY PUCHARÓW ===== */
+
+.trophies-modal {
+  width: 900px;
+  max-width: 94vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.trophies-by-season {
+  text-align: left;
+}
+
+.season-block {
+  border-top: 1px solid #dee2e6;
+  padding: 15px 0;
+}
+
+.season-block h3 {
+  margin: 0 0 12px;
+  font-size: 18px;
+}
+
+.season-trophies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.season-trophy {
+  width: 120px;
+  flex: 0 0 120px;
+  text-align: center;
+}
+
+.season-trophy img {
+  width: 90px;
+  height: 90px;
+  max-width: 90px;
+  max-height: 90px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 6px;
+}
+
+.season-trophy-name {
+  font-size: 12px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+
+.season-trophy .loser-picture {
+  width: 35px;
+  height: 35px;
+  max-width: 35px;
+  max-height: 35px;
+  margin-top: 5px;
+}
+
+@media (max-width: 700px) {
+
+  .trophies-modal {
+    width: auto;
+    max-width: 94vw;
+    max-height: 90vh;
+    padding: 15px;
+    overflow-y: auto;
+  }
+
+  .season-block h3 {
+    font-size: 16px;
+  }
+
+  .season-trophies {
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .season-trophy {
+    width: 85px;
+    flex: 0 0 85px;
+  }
+
+  .season-trophy img {
+    width: 65px;
+    height: 65px;
+    max-width: 65px;
+    max-height: 65px;
+  }
+
+  .season-trophy-name {
+    font-size: 10px;
+  }
+}
+
+/* ===== CREATE TEAM BUTTON ===== */
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.create-team-button {
+  background: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.create-team-button:hover {
+  background: #0b5ed7;
+}
+
+@media (max-width: 500px) {
+  .create-team-button {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .page-header {
+    gap: 8px;
+  }
+}
+
+/* ===== CREATE TEAM MODAL ===== */
+
+.create-team-modal {
+  width: 600px;
+  max-width: 94vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  text-align: left;
+}
+
+.create-team-modal h2 {
+  margin: 0 0 20px;
+  text-align: center;
+}
+
+.create-team-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.create-team-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.create-team-form input,
+.create-team-form select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 9px 10px;
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  font-size: 14px;
+  background: white;
+}
+
+.create-team-form input:focus,
+.create-team-form select:focus {
+  outline: none;
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.15);
+}
+
+.create-team-form input[readonly] {
+  background: #f1f3f5;
+  color: #6c757d;
+}
+
+.create-team-error {
+  background: #f8d7da;
+  color: #000;
+  border: 2px solid #dc3545;
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 18px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.create-team-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 22px;
+  padding-top: 15px;
+  border-top: 1px solid #dee2e6;
+}
+
+.create-team-footer button {
+  border: none;
+  border-radius: 6px;
+  padding: 9px 18px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.create-team-cancel {
+  background: #6c757d;
+  color: white;
+}
+
+.create-team-submit {
+  background: #0d6efd;
+  color: white;
+}
+
+.create-team-cancel:hover {
+  background: #5c636a;
+}
+
+.create-team-submit:hover {
+  background: #0b5ed7;
+}
+
+@media (max-width: 500px) {
+
+  .create-team-modal {
+    width: auto;
+    max-width: 94vw;
+    max-height: 90vh;
+    padding: 15px;
+  }
+
+  .create-team-modal h2 {
+    font-size: 20px;
+  }
+
+  .create-team-form {
+    gap: 11px;
+  }
+
+  .create-team-form label {
+    font-size: 13px;
+  }
+
+  .create-team-form input,
+  .create-team-form select {
+    padding: 8px;
+    font-size: 13px;
+  }
+
+  .create-team-footer button {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+}
+
+
+/* Poprawka widoczności tekstu w formularzu Create Team */
+.create-team-form input,
+.create-team-form select {
+  color: #212529 !important;
+  background-color: #ffffff !important;
+  caret-color: #212529 !important;
+  -webkit-text-fill-color: #212529 !important;
+}
+
+.create-team-form input::placeholder {
+  color: #6c757d !important;
+  -webkit-text-fill-color: #6c757d !important;
+}
+
+.create-team-form input[readonly] {
+  background-color: #f1f3f5 !important;
+  color: #495057 !important;
+  -webkit-text-fill-color: #495057 !important;
+}
+
+.result.result-lost {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.result.result-won {
+  color: #198754;
+  font-weight: bold;
+}
+
+.trophy-status.result-lost {
+  color: #dc3545;
+}
+
+.trophy-status.result-won {
+  color: #198754;
+}
+
+
+.tv-page { min-height: 100vh; padding: 12px; background: #111; color: #eee; box-sizing: border-box; }
+.tv-page.tv-light-theme { background: #f5f5f5; color: #111; }
+.tv-topbar { display: flex; justify-content: center; gap: 12px; margin-bottom: 16px; }
+.tv-topbar button { padding: 12px 20px; font-size: 16px; background: transparent; color: inherit; border: 1px solid #555; border-radius: 8px; }
+.tv-title { font-size: 28px; margin: 8px 0 16px; }
+.tv-controls { display: flex; gap: 10px; }
+.tv-controls select { flex: 1; padding: 14px; font-size: 18px; background: #222; color: inherit; border: 1px solid #555; border-radius: 8px; }
+.tv-light-theme .tv-controls select { background: #fff; }
+.tv-back { padding: 0 16px; font-size: 18px; background: #6b7a90; color: #8ec5ff; border: none; border-radius: 8px; }
+.tv-team { font-size: 24px; margin: 20px 0 10px; }
+.tv-scroll { overflow-x: auto; }
+.tv-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 16px; }
+.tv-table th, .tv-table td { border: 1px solid #444; padding: 10px 6px; background: #1c1c1c; }
+.tv-light-theme .tv-table th, .tv-light-theme .tv-table td { background: #fff; border-color: #ccc; }
+.tv-table th img { width: 30px; height: 30px; object-fit: contain; border-radius: 50%; background: #fff; display: block; margin: 0 auto 4px; }
+.tv-year { font-weight: bold; }
+.tv-sum td { font-weight: bold; text-align: center; }
+.tv-msg { padding: 16px; }
+
+/* bez przewijania w poziomie */
+.tv-page { max-width: 100%; overflow-x: hidden; }
+.tv-scroll { overflow-x: visible; }
+.tv-table { table-layout: fixed; width: 100%; font-size: 14px; }
+.tv-table th, .tv-table td { padding: 8px 2px; overflow-wrap: anywhere; word-break: break-word; }
+.tv-table th { font-size: 11px; line-height: 1.2; }
+.tv-table th:first-child, .tv-table td:first-child { width: 46px; }
+.tv-table th img { width: 24px; height: 24px; }
+
+/* ===== Filtry i sortowanie (uporządkowane) ===== */
+.filters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 12px;
+  margin: 12px 0 16px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 12px;
+  background: rgba(128, 128, 128, 0.08);
+  box-sizing: border-box;
+}
+
+.filters input,
+.filters select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  font-size: 15px;
+  color: inherit;
+  background: rgba(128, 128, 128, 0.12);
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 10px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.filters input:focus,
+.filters select:focus {
+  border-color: #4f9cf9;
+  box-shadow: 0 0 0 3px rgba(79, 156, 249, 0.25);
+}
+
+/* nazwa drużyny na całą szerokość */
+.filters input:nth-child(1) { grid-column: 1 / -1; }
+
+.filters select option { color: #111; background: #fff; }
+
+.filters .clear-button {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ff8a8a;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.5);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.filters .clear-button:active { background: rgba(239, 68, 68, 0.28); }
+
+/* ===== Przycisk Create Team ===== */
+.create-team-button {
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.35);
+}
+
+.create-team-button:active { transform: scale(0.97); }
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ===== Kompaktowe filtry i nagłówek ===== */
+.page-header h1 { font-size: 22px; margin: 0; }
+.result-count { margin: 2px 0 0; font-size: 12px; }
+.create-team-button { padding: 8px 12px; font-size: 13px; }
+
+.filters {
+  gap: 6px;
+  padding: 8px;
+  margin: 8px 0 10px;
+  border-radius: 10px;
+}
+.filters input,
+.filters select,
+.filters .clear-button {
+  padding: 8px 10px;
+  font-size: 13px;
+  border-radius: 8px;
+}
+
+/* ===== Motyw ciemny / jasny ===== */
+.theme-toggle { font-size: 18px; }
+
+/* ciemny */
+html[data-theme="dark"] { color-scheme: dark; }
+html[data-theme="dark"] body,
+html[data-theme="dark"] #root,
+html[data-theme="dark"] .app { background: #111 !important; color: #eee !important; }
+html[data-theme="dark"] .team-modal { background: #1c1c1c; color: #eee; }
+
+/* jasny */
+html[data-theme="light"] { color-scheme: light; }
+html[data-theme="light"] body,
+html[data-theme="light"] #root,
+html[data-theme="light"] .app { background: #f4f6f8 !important; color: #111 !important; }
+
+html[data-theme="light"] .navbar { background: #ffffff; color: #111; border-bottom: 1px solid #d5d9de; }
+html[data-theme="light"] .nav-buttons button { color: #111; background: transparent; }
+html[data-theme="light"] .nav-buttons button.active { background: rgba(79, 156, 249, 0.2); }
+
+html[data-theme="light"] .filters { background: #fff; border-color: #d5d9de; }
+html[data-theme="light"] .filters input,
+html[data-theme="light"] .filters select { background: #fff; color: #111; border-color: #c4c9cf; }
+
+html[data-theme="light"] .table-card { background: #fff; border-color: #d5d9de; }
+html[data-theme="light"] .teams-table th { background: #e8f1fd; color: #111; }
+html[data-theme="light"] .teams-table td { background: #fff; color: #111; border-color: #e2e5e9; }
+html[data-theme="light"] .team-name-button,
+html[data-theme="light"] .trophy-cell-button { color: #111; }
+
+html[data-theme="light"] .team-modal { background: #fff; color: #111; }
+html[data-theme="light"] .team-modal input,
+html[data-theme="light"] .team-modal select { background: #fff; color: #111; border: 1px solid #c4c9cf; }
+html[data-theme="light"] footer { color: #555; }
+
+/* widok roku (TeamTrophiesView) podąża za motywem globalnym */
+html[data-theme="light"] .tv-page { background: #f5f5f5; color: #111; }
+html[data-theme="light"] .tv-table th,
+html[data-theme="light"] .tv-table td { background: #fff; border-color: #ccc; }
+html[data-theme="light"] .tv-controls select { background: #fff; color: #111; }
+
+/* ===== Tabela: wyraźniejsza w trybie ciemnym ===== */
+html[data-theme="dark"] .table-card {
+  background: #1a1d21;
+  border: 1px solid #3d444d;
+}
+html[data-theme="dark"] .teams-table th {
+  background: #243447;
+  color: #ffffff;
+  border-bottom: 2px solid #4f9cf9;
+  border-color: #3d444d;
+}
+html[data-theme="dark"] .teams-table td {
+  background: #1e2227;
+  color: #f5f7fa;
+  border-color: #353b44;
+}
+html[data-theme="dark"] .teams-table tbody tr:nth-child(even) td {
+  background: #252a31;
+}
+html[data-theme="dark"] .teams-table tbody tr:hover td {
+  background: #2d3540;
+}
+html[data-theme="dark"] .team-name-button,
+html[data-theme="dark"] .trophy-cell-button {
+  color: #ffffff;
+  font-weight: 700;
+}
+html[data-theme="dark"] .result { color: #e5e7eb; font-weight: 600; }
+html[data-theme="dark"] .result-won,
+html[data-theme="dark"] .trophy-status.result-won { color: #4ade80; }
+html[data-theme="dark"] .result-lost,
+html[data-theme="dark"] .trophy-status.result-lost { color: #ff6b6b; }
+html[data-theme="dark"] .trophy-picture { background: rgba(255,255,255,0.08); border-radius: 6px; }
+
+/* widok roku (Rok × puchary) w ciemnym */
+html[data-theme="dark"] .tv-table th { background: #243447; color: #fff; border-color: #3d444d; }
+html[data-theme="dark"] .tv-table td { background: #1e2227; color: #f5f7fa; border-color: #353b44; }
+html[data-theme="dark"] .tv-table tbody tr:nth-child(even) td { background: #252a31; }
+
+/* ===== Pływające przyciski góra / dół ===== */
+.scroll-btns {
+  position: fixed;
+  right: 12px;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 50;
+}
+.scroll-btns button {
+  width: 46px;
+  height: 46px;
+  padding: 0;
+  font-size: 22px;
+  line-height: 1;
+  color: #fff;
+  background: rgba(79, 156, 249, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.scroll-btns button:active { transform: scale(0.92); }
+.scroll-btns button.hidden { opacity: 0; pointer-events: none; }
+html[data-theme="light"] .scroll-btns button {
+  color: #111;
+  background: rgba(79, 156, 249, 0.3);
+  border-color: rgba(0, 0, 0, 0.25);
+}
+
+/* ===== Teams: czytelniejsza tabela, bez przewijania w bok ===== */
+.table-wrapper { overflow-x: hidden; }
+
+.teams-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.teams-table th:nth-child(1) { width: 36%; }
+.teams-table th:nth-child(2) { width: 14%; }
+.teams-table th:nth-child(3) { width: 24%; }
+.teams-table th:nth-child(4) { width: 26%; }
+
+.teams-table th {
+  padding: 10px 6px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-align: left;
+}
+.teams-table td {
+  padding: 10px 6px;
+  vertical-align: middle;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+.teams-table tbody tr:last-child td { border-bottom: none; }
+
+/* nazwa drużyny + akcje */
+.teams-table .team-name-button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.25;
+  text-align: left;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+.team-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+.team-actions button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 15px;
+  line-height: 1;
+  border-radius: 8px;
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  background: rgba(128, 128, 128, 0.12);
+  cursor: pointer;
+}
+.team-actions .team-delete-button {
+  border-color: rgba(239, 68, 68, 0.5);
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* sezon jako mała pigułka */
+.teams-table td:nth-child(2) .team-name-button {
+  display: inline-block;
+  width: auto;
+  padding: 4px 8px;
+  font-size: 13px;
+  border-radius: 999px;
+  background: rgba(79, 156, 249, 0.18);
+  border: 1px solid rgba(79, 156, 249, 0.45);
+}
+
+/* wynik jako badge */
+.teams-table .result {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: 8px;
+  background: rgba(128, 128, 128, 0.15);
+}
+.teams-table .result-won  { background: rgba(34, 197, 94, 0.18); }
+.teams-table .result-lost { background: rgba(239, 68, 68, 0.18); }
+
+/* komórka z pucharem */
+.teams-table .trophy-cell-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  width: 100%;
+  padding: 0;
+  font-size: 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+.teams-table .trophy-picture {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.teams-table .trophy-status {
+  padding: 2px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 6px;
+  white-space: nowrap;
+  background: rgba(128, 128, 128, 0.15);
+}
+.teams-table .trophy-status.result-won  { background: rgba(34, 197, 94, 0.18); }
+.teams-table .trophy-status.result-lost { background: rgba(239, 68, 68, 0.18); }
+
+/* ===== Season i Final Result bez zawijania ===== */
+.teams-table th:nth-child(1) { width: 29%; }
+.teams-table th:nth-child(2) { width: 17%; }
+.teams-table th:nth-child(3) { width: 30%; }
+.teams-table th:nth-child(4) { width: 24%; }
+
+.teams-table td:nth-child(2),
+.teams-table td:nth-child(3) {
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.teams-table td:nth-child(2) .team-name-button {
+  white-space: nowrap;
+  padding: 4px 6px;
+  font-size: 12px;
+}
+
+.teams-table td:nth-child(3) .result {
+  white-space: nowrap;
+  padding: 4px 6px;
+  font-size: 11px;
+}
+
+.teams-table th:nth-child(2),
+.teams-table th:nth-child(3) {
+  white-space: nowrap;
+  letter-spacing: 0;
+  font-size: 10px;
+}
+
+/* ===== Final Result: maksymalnie szeroki, wynik zawija się pod spodem ===== */
+.teams-table th:nth-child(1) { width: 26%; }
+.teams-table th:nth-child(2) { width: 15%; }
+.teams-table th:nth-child(3) { width: 39%; }
+.teams-table th:nth-child(4) { width: 20%; }
+
+.teams-table td:nth-child(3) {
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+.teams-table td:nth-child(3) .result {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-break: normal;
+  line-height: 1.3;
+  font-size: 12px;
+  padding: 5px 8px;
+}
+
+/* ===== Przycisk Loser ===== */
+.filters .loser-button {
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: inherit;
+  background: rgba(128, 128, 128, 0.12);
+  border: 1px solid rgba(128, 128, 128, 0.4);
+  border-radius: 8px;
+  cursor: pointer;
+}
+.filters .loser-button.active {
+  color: #fff;
+  background: #ef4444;
+  border-color: #ef4444;
+}
+
+/* ===== Teams: nowoczesne karty ===== */
+html[data-theme="dark"]  { --card-bg: linear-gradient(145deg, #1f252d, #171b21); --card-border: rgba(255,255,255,0.08); --card-shadow: 0 6px 18px rgba(0,0,0,0.45); }
+html[data-theme="light"] { --card-bg: linear-gradient(145deg, #ffffff, #f1f5fb); --card-border: rgba(0,0,0,0.08); --card-shadow: 0 6px 16px rgba(30,60,120,0.12); }
+
+/* tytuł */
+.page-header h1 {
+  background: linear-gradient(90deg, #4f9cf9, #a78bfa, #f472b6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* menu jak szkło */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* kontener tabeli bez ramki - karty same mają styl */
+.table-card {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+.table-wrapper { overflow: visible; }
+
+/* tabela -> lista kart */
+.teams-table,
+.teams-table tbody { display: block; width: 100%; }
+.teams-table thead { display: none; }
+.teams-table tbody { display: flex; flex-direction: column; gap: 10px; }
+
+.teams-table tbody tr {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "name   season"
+    "result trophy";
+  align-items: center;
+  gap: 8px 10px;
+  padding: 12px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow), inset 5px 0 0 rgba(128,128,128,0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  animation: cardIn 0.35s ease both;
+}
+.teams-table tbody tr:active { transform: scale(0.985); }
+.teams-table tbody tr:has(.result-won)  { box-shadow: var(--card-shadow), inset 5px 0 0 #22c55e; }
+.teams-table tbody tr:has(.result-lost) { box-shadow: var(--card-shadow), inset 5px 0 0 #ef4444; }
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* komórki bez własnego tła i ramek */
+html[data-theme] body .teams-table tbody tr:nth-child(n) td {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  width: auto;
+  white-space: normal;
+}
+
+.teams-table td:nth-child(1) { grid-area: name; }
+.teams-table td:nth-child(2) { grid-area: season; justify-self: end; }
+.teams-table td:nth-child(3) { grid-area: result; }
+.teams-table td:nth-child(4) { grid-area: trophy; justify-self: end; }
+
+/* nazwa i akcje */
+.teams-table .team-name-button { font-size: 17px; }
+.team-actions { margin-top: 8px; }
+.team-actions button { width: 34px; height: 34px; border-radius: 10px; }
+
+/* sezon */
+.teams-table td:nth-child(2) .team-name-button {
+  white-space: nowrap;
+  padding: 5px 12px;
+  font-size: 13px;
+  background: linear-gradient(135deg, rgba(79,156,249,0.3), rgba(167,139,250,0.3));
+  border: 1px solid rgba(79,156,249,0.5);
+}
+
+/* wynik */
+.teams-table td:nth-child(3) .result {
+  display: inline-block;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+/* puchar: obrazek + nazwa + status w jednej linii */
+.teams-table .trophy-cell-button {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  width: auto;
+  font-size: 12px;
+  font-weight: 600;
+  text-align: right;
+}
+.teams-table .trophy-picture { width: 34px; height: 34px; }
+.teams-table .trophy-status { padding: 3px 8px; border-radius: 999px; }
+
+/* ===== Teams: kompaktowe karty v2 ===== */
+
+/* koniec z białym tłem tabeli i pasków */
+html[data-theme] .teams-table,
+html[data-theme] .teams-table tbody { background: transparent !important; }
+
+html[data-theme] .teams-table tbody tr:nth-child(n) {
+  background: var(--card-bg) !important;
+  color: inherit;
+  height: auto !important;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "name   season actions"
+    "result trophy trophy";
+  grid-template-rows: auto auto;
+  align-content: start;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 8px 10px;
+  border-radius: 12px;
+}
+html[data-theme="light"] .teams-table tbody tr:nth-child(n) { color: #111; }
+html[data-theme="dark"]  .teams-table tbody tr:nth-child(n) { color: #f1f4f8; }
+
+.teams-table tbody { gap: 8px; }
+
+/* pierwsza komórka "rozpada się" na nazwę i przyciski */
+.teams-table td:nth-child(1) { display: contents; }
+.teams-table td:nth-child(1) > .team-name-button {
+  grid-area: name;
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.teams-table td:nth-child(1) > .team-actions {
+  grid-area: actions;
+  margin: 0;
+  gap: 4px;
+}
+.team-actions button { width: 30px; height: 30px; font-size: 14px; border-radius: 8px; }
+
+/* sezon */
+.teams-table td:nth-child(2) { grid-area: season; justify-self: end; }
+.teams-table td:nth-child(2) .team-name-button {
+  padding: 3px 10px;
+  font-size: 12px;
+}
+
+/* wynik */
+.teams-table td:nth-child(3) { grid-area: result; justify-self: start; min-width: 0; }
+.teams-table td:nth-child(3) .result {
+  font-size: 12px;
+  padding: 3px 10px;
+  line-height: 1.2;
+}
+
+/* puchar w jednej linii */
+.teams-table td:nth-child(4) { grid-area: trophy; justify-self: end; min-width: 0; }
+.teams-table .trophy-cell-button {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 12px;
+  line-height: 1.1;
+}
+.teams-table .trophy-picture { width: 24px; height: 24px; border-radius: 4px; }
+.teams-table .trophy-status { padding: 2px 7px; font-size: 11px; }
+
+/* ===== Teams: karty v3 - równe kolumny ===== */
+html[data-theme] .teams-table tbody tr:nth-child(n) {
+  grid-template-columns: 38% minmax(0, 1fr) auto;
+  grid-template-areas:
+    "name   season actions"
+    "result trophy trophy";
+  align-items: center;
+  gap: 6px 8px;
+  padding: 8px 10px;
+}
+
+.teams-table td:nth-child(1) > .team-name-button {
+  align-self: center;
+  margin: 0;
+}
+
+/* rok: z lewej, w pionie na środku */
+.teams-table td:nth-child(2) {
+  grid-area: season;
+  justify-self: start;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  margin: 0;
+}
+.teams-table td:nth-child(2) .team-name-button {
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+  margin: 0;
+}
+
+/* przyciski: prawa strona, środek w pionie */
+.teams-table td:nth-child(1) > .team-actions {
+  grid-area: actions;
+  justify-self: end;
+  align-self: center;
+}
+
+/* wynik pod nazwą, puchar pod rokiem - zawsze od tej samej krawędzi */
+.teams-table td:nth-child(3) {
+  grid-area: result;
+  justify-self: start;
+  align-self: center;
+}
+.teams-table td:nth-child(4) {
+  grid-area: trophy;
+  justify-self: start;
+  align-self: center;
+}
+.teams-table .trophy-cell-button {
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* ===== Teams: karty v4 - 3 rzędy ===== */
+html[data-theme] .teams-table tbody tr:nth-child(n) {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "name   season  actions"
+    "result result  result"
+    "trophy trophy  trophy";
+  grid-template-rows: auto auto auto;
+  align-content: start;
+  align-items: center;
+  gap: 6px 10px;
+  padding: 8px 10px;
+}
+
+/* rząd 1 */
+.teams-table td:nth-child(1) > .team-name-button { grid-area: name; }
+.teams-table td:nth-child(2) {
+  grid-area: season;
+  justify-self: start;
+}
+.teams-table td:nth-child(1) > .team-actions {
+  grid-area: actions;
+  justify-self: end;
+}
+
+/* rząd 2: wynik na całą szerokość, zawija się w badge */
+.teams-table td:nth-child(3) {
+  grid-area: result;
+  justify-self: stretch;
+  width: 100%;
+}
+.teams-table td:nth-child(3) .result {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 10px;
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+/* rząd 3: puchar + Win/Lost */
+.teams-table td:nth-child(4) {
+  grid-area: trophy;
+  justify-self: start;
+  width: 100%;
+}
+.teams-table .trophy-cell-button {
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+}
+.teams-table .trophy-cell-button > span { white-space: nowrap; }
+
+/* ===== Teams: karty v5 - minimalna wysokość ===== */
+html[data-theme] .teams-table tbody tr:nth-child(n) {
+  height: auto !important;
+  min-height: 0 !important;
+  grid-template-rows: none !important;
+  grid-auto-rows: min-content !important;
+  align-content: start !important;
+  align-items: center !important;
+  row-gap: 4px !important;
+  column-gap: 8px !important;
+  padding: 6px 10px !important;
+  margin: 0 !important;
+}
+
+html[data-theme] body .teams-table tbody tr:nth-child(n) td {
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2 !important;
+  align-self: center;
+}
+
+.teams-table .team-name-button,
+.teams-table .trophy-cell-button,
+.teams-table .result {
+  height: auto !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+}
+.teams-table .trophy-cell-button { padding: 0 !important; }
+.teams-table td:nth-child(3) .result { padding: 3px 10px !important; }
+
+.teams-table .team-name-button { font-size: 15px; }
+.team-actions { margin: 0 !important; }
+.team-actions button { width: 28px; height: 28px; font-size: 13px; }
+
+.teams-table td:nth-child(2) .team-name-button { padding: 2px 9px !important; font-size: 12px; }
+.teams-table .trophy-picture { width: 22px; height: 22px; }
+.teams-table .trophy-status { padding: 1px 6px; font-size: 11px; }
+
+.teams-table tbody { gap: 6px !important; }

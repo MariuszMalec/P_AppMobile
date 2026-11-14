@@ -1527,3 +1527,14 @@ html[data-theme] body .teams-table tbody tr:nth-child(n) td {
 .teams-table .trophy-status { padding: 1px 6px; font-size: 11px; }
 
 .teams-table tbody { gap: 6px !important; }
+
+/* ===== Wydajność: wyłączenie kosztownych efektów ===== */
+.teams-table tbody tr { animation: none !important; transition: none !important; }
+.navbar,
+.scroll-btns button {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+.teams-table tbody tr { box-shadow: inset 5px 0 0 rgba(128,128,128,0.5) !important; }
+.teams-table tbody tr:has(.result-won)  { box-shadow: inset 5px 0 0 #22c55e !important; }
+.teams-table tbody tr:has(.result-lost) { box-shadow: inset 5px 0 0 #ef4444 !important; }
