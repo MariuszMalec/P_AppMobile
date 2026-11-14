@@ -539,7 +539,7 @@ function App() {
                               <img
                                 src={getImageUrl(team.TrophyPicture)}
                                 alt=""
-                                className="trophy-picture"
+                                className="trophy-picture" loading="lazy" decoding="async"
                               />
                             )}
 
