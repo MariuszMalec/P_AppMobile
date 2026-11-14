@@ -30,6 +30,7 @@ function App() {
   const [filterTrophy, setFilterTrophy] = useState('')
   const [filterResult, setFilterResult] = useState('')
   const [sort, setSort] = useState('')
+  const [onlyLosers, setOnlyLosers] = useState(false)
 
   const [selectedTeam, setSelectedTeam] = useState(null)
   const [teamPicture, setTeamPicture] = useState('')
@@ -112,6 +113,7 @@ function App() {
     setFilterTrophy('')
     setFilterResult('')
     setSort('')
+    setOnlyLosers(false)
   }
 
   const openEditTeam = (team) => {
@@ -358,6 +360,8 @@ function App() {
     )
   }
 
+  const shownTeams = onlyLosers ? teams.filter(t => t.Lose) : teams
+
   return (
     <div className="app">
 
@@ -387,7 +391,7 @@ function App() {
           <div>
             <h1>🏟️ Teams</h1>
             <p className="result-count">
-              {loading ? 'Ładowanie...' : `${teams.length} wyników`}
+              {loading ? 'Ładowanie...' : `${shownTeams.length} wyników`}
             </p>
           </div>
 
@@ -440,6 +444,16 @@ function App() {
             Wyczyść
           </button>
 
+          <button
+            className={onlyLosers ? 'loser-button active' : 'loser-button'}
+            onClick={() => {
+              setOnlyLosers(!onlyLosers)
+              setVisibleCount(50)
+            }}
+          >
+            🔴 Loser {onlyLosers ? '(wł.)' : ''}
+          </button>
+
         </div>
 
         {loading && (
@@ -469,7 +483,7 @@ function App() {
                 </thead>
 
                 <tbody>
-                  {teams.map(team => {
+                  {shownTeams.map(team => {
                     const resultStatus = {
                       displayResult: team.DisplayResult,
                       lose: team.Lose
