@@ -164,7 +164,7 @@ body {
 }
 
 </style>
-<link rel="stylesheet" href="/static/css/nav.css?v=1">
+<link rel="stylesheet" href="/static/css/nav.css?v=2">
 </head>
 
 <body>
@@ -175,6 +175,14 @@ body {
 
 <!-- NOW: DATE + TIME -->
 <div class="datetime" id="datetime"></div>
+
+<div class="chips">
+  <a href="/live/now" class="{{ 'on' if not selected }}">Wszyscy</a>
+  {% for p in persons %}
+  <a href="/live/now?person={{ p }}" class="{{ 'on' if p == selected }}">{{ p }}</a>
+  {% endfor %}
+</div>
+
 
 {% if live_items %}
 <div class="grid">
@@ -206,6 +214,21 @@ body {
 {% else %}
 <div class="empty">
     Brak aktywnych zajęć LIVE
+</div>
+{% endif %}
+
+{% if next_items %}
+<div class="nextbox">
+  <h3>Następnie</h3>
+  {% for n in next_items %}
+  <div class="next-row">
+    {% if n.personPicture %}<img src="{{ n.personPicture }}" alt="">{% endif %}
+    <div>
+      <b>{{ n.person }}</b> · {{ n.start[:5] }}–{{ n.end[:5] }}
+      <div class="next-desc">{{ n.description }}</div>
+    </div>
+  </div>
+  {% endfor %}
 </div>
 {% endif %}
 
