@@ -1,68 +1,94 @@
 import { useEffect, useState } from 'react'
 import API_URL from './api'
 
-function collectSessions(node, out = new Map()) {
-  if (Array.isArray(node)) node.forEach((n) => collectSessions(n, out))
-  else if (node && typeof node === 'object') {
-    if (node.session_id !== undefined) out.set(node.session_id, node)
-    else Object.values(node).forEach((n) => collectSessions(n, out))
-  }
-  return out
+const DESCRIPTIONS = {
+  summary: 'Duża liczba to sesje, mniejsza to suma godzin. Tydzień liczony od poniedziałku do niedzieli. Tylko aktywni klienci.',
+  days_in_month: 'Liczba sesji w każdym dniu wybranego miesiąca. Pomarańczowy słupek to dzisiaj.',
+  last_weeks: 'Liczba sesji w kolejnych tygodniach.',
+  last_months: 'Liczba sesji w kolejnych miesiącach.',
+  weekdays: 'Liczba sesji w poszczególne dni tygodnia.',
+  top_clients: 'Klienci z największą liczbą sesji (obok liczba godzin).',
 }
 
 export default function Stats() {
-  const [state, setState] = useState({ loading: true })
+  const [monthOffset, setMonthOffset] = useState(0)
+  const [data, setData] = useState(null)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    Promise.all([
-      fetch(`${API_URL}/clients/list?active=1`).then((r) => r.json()),
-      fetch(`${API_URL}/clients/list?active=0`).then((r) => r.json()),
-      fetch(`${API_URL}/sessions/api?week_offset=0`).then((r) => r.json()),
-    ])
-      .then(([active, inactive, week]) => {
-        const sessions = [...collectSessions(week).values()]
-        const byClient = {}
-        sessions.forEach((s) => {
-          byClient[s.client_id] = (byClient[s.client_id] || 0) + 1
-        })
-        const names = {}
-        ;[...active, ...inactive].forEach((c) => {
-          names[c.Id] = `${c.FirstName || ''} ${c.LastName || ''}`.trim()
-        })
-        const ranking = Object.entries(byClient)
-          .map(([id, n]) => ({ id, n, name: names[id] || `Klient ${id}` }))
-          .sort((a, b) => b.n - a.n)
-        setState({
-          loading: false,
-          active: active.length,
-          inactive: inactive.length,
-          weekCount: sessions.length,
-          ranking,
-        })
+    setError('')
+    fetch(`${API_URL}/stats/api?month_offset=${monthOffset}`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
       })
-      .catch((e) => setState({ loading: false, error: e.message }))
-  }, [])
+      .then(setData)
+      .catch((e) => setError(e.message))
+  }, [monthOffset])
 
-  if (state.loading) return <main className="clients-page"><h1>Statystyki</h1><p>Ładowanie...</p></main>
-  if (state.error) return <main className="clients-page"><h1>Statystyki</h1><p className="error">Błąd: {state.error}</p></main>
-
-  const max = Math.max(1, ...state.ranking.map((r) => r.n))
   return (
     <main className="clients-page stats-page">
       <h1>Statystyki</h1>
-      <div className="stats-cards">
-        <div className="stat-card"><b>{state.active}</b><span>Aktywni klienci</span></div>
-        <div className="stat-card"><b>{state.inactive}</b><span>Nieaktywni</span></div>
-        <div className="stat-card"><b>{state.weekCount}</b><span>Sesje w tym tygodniu</span></div>
+
+      <div className="stats-month-nav">
+        <button className="week-button" onClick={() => setMonthOffset(monthOffset - 1)}>←</button>
+        <button className="today-button" onClick={() => setMonthOffset(0)}>
+          {data?.month_label || 'Miesiąc'}
+        </button>
+        <button className="week-button" onClick={() => setMonthOffset(monthOffset + 1)}>→</button>
       </div>
-      <h2>Sesje w tym tygodniu wg klienta</h2>
-      {state.ranking.length === 0 && <p>Brak sesji w tym tygodniu.</p>}
-      {state.ranking.map((r) => (
-        <div className="stat-row" key={r.id}>
-          <span className="stat-name">{r.name}</span>
-          <div className="stat-bar"><div style={{ width: `${(r.n / max) * 100}%` }} /></div>
-          <span className="stat-n">{r.n}</span>
-        </div>
+
+      {error && <p className="error">Błąd: {error}</p>}
+      {!data && !error && <p>Ładowanie...</p>}
+
+      {data?.sections.map((sec) => (
+        <section key={sec.key} className="stats-section">
+          <h2>{sec.title}</h2>
+          {DESCRIPTIONS[sec.key] && <p className="stats-desc">{DESCRIPTIONS[sec.key]}</p>}
+
+          {sec.type === 'cards' && (
+            <div className="stats-cards stats-cards-2">
+              {sec.items.map((it) => (
+                <div className="stat-card" key={it.label}>
+                  <b>{it.value}</b>
+                  <span>{it.label}</span>
+                  {it.sub && <small>{it.sub}</small>}
+                </div>
+              ))}
+            </div>
+          )}
+
+          {sec.type !== 'cards' && sec.items.length > 12 && (
+            <div className="stat-cols">
+              {sec.items.map((it) => (
+                <div className="stat-col" key={it.label} title={`${it.label}: ${it.value}`}>
+                  <span className="stat-col-n">{it.value || ''}</span>
+                  <div className="stat-col-bar">
+                    <div
+                      className={it.highlight ? 'hl' : ''}
+                      style={{ height: `${it.pct}%` }}
+                    />
+                  </div>
+                  <span className={it.highlight ? 'stat-col-l hl' : 'stat-col-l'}>{it.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {sec.type !== 'cards' && sec.items.length <= 12 &&
+            sec.items.map((it) => (
+              <div className="stat-row" key={it.label}>
+                <span className="stat-name">{it.label}</span>
+                <div className="stat-bar">
+                  <div style={{ width: `${it.pct}%` }} />
+                </div>
+                <span className="stat-n">
+                  {it.value}
+                  {it.sub ? <small> · {it.sub}</small> : null}
+                </span>
+              </div>
+            ))}
+        </section>
       ))}
     </main>
   )

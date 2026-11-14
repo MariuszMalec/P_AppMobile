@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Statystyki</title>
+<style>
+:root { --bg:#eef2f7; --card:#fff; --text:#1f2937; --muted:#64748b;
+        --bar:#3b82f6; --hi:#f97316; --line:#e2e8f0; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg:#0f172a; --card:#1e293b; --text:#e2e8f0; --muted:#94a3b8;
+          --line:#334155; }
+}
+* { box-sizing: border-box; }
+body { margin:0; padding:16px; font-family:Arial,sans-serif;
+       background:var(--bg); color:var(--text); }
+.wrap { max-width:640px; margin:0 auto; }
+.top { display:flex; align-items:center; justify-content:space-between;
+       margin-bottom:14px; }
+.top h1 { margin:0; font-size:24px; }
+.top a { color:var(--text); text-decoration:none; font-size:15px;
+         padding:8px 12px; background:var(--card); border-radius:10px; }
+.nav { display:flex; align-items:center; justify-content:space-between;
+       background:var(--card); border-radius:14px; padding:6px;
+       margin-bottom:14px; }
+.nav a { padding:10px 16px; text-decoration:none; color:var(--text);
+         font-size:18px; }
+.nav b { font-size:16px; }
+.card { background:var(--card); border-radius:16px; padding:16px;
+        margin-bottom:14px; box-shadow:0 4px 14px rgba(15,23,42,.08); }
+.card h2 { margin:0 0 12px; font-size:16px; }
+.cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.stat { background:var(--bg); border-radius:12px; padding:12px; }
+.stat .v { font-size:30px; font-weight:700; }
+.stat .l { font-size:13px; color:var(--muted); }
+.stat .s { font-size:12px; color:var(--muted); }
+.vchart { display:flex; gap:3px; height:160px; overflow-x:auto; }
+.vcol { flex:1; min-width:15px; display:flex; flex-direction:column;
+        align-items:center; }
+.vcol .n { font-size:10px; color:var(--muted); height:14px; }
+.vwrap { flex:1; width:100%; display:flex; align-items:flex-end; }
+.bar { width:100%; background:var(--bar); border-radius:4px 4px 0 0; }
+.bar.hi { background:var(--hi); }
+.vcol .l { font-size:9px; color:var(--muted); margin-top:3px;
+           white-space:nowrap; }
+.hrow { display:flex; align-items:center; gap:8px; margin:7px 0;
+        font-size:14px; }
+.hrow .name { width:110px; flex-shrink:0; overflow:hidden;
+              text-overflow:ellipsis; white-space:nowrap; }
+.hrow .track { flex:1; background:var(--bg); border-radius:6px;
+               height:18px; overflow:hidden; }
+.hrow .fill { height:100%; background:var(--bar); border-radius:6px; }
+.hrow .val { width:62px; text-align:right; font-weight:700; }
+.hrow .val small { font-weight:400; color:var(--muted); }
+.empty { color:var(--muted); font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="top">
+  <h1>📊 Statystyki</h1>
+  <a href="/home/">🏠 Home</a>
+</div>
+
+<div class="nav">
+  <a href="?month_offset={{ month_offset - 1 }}">⬅</a>
+  <b>{{ month_label }}</b>
+  <a href="?month_offset={{ month_offset + 1 }}">➡</a>
+</div>
+
+{% for sec in sections %}
+<div class="card">
+  <h2>{{ sec.title }}</h2>
+
+  {% if sec.type == "cards" %}
+    <div class="cards">
+    {% for it in sec["items"] %}
+      <div class="stat">
+        <div class="v">{{ it.value }}</div>
+        <div class="l">{{ it.label }}</div>
+        <div class="s">{{ it.sub }}</div>
+      </div>
+    {% endfor %}
+    </div>
+
+  {% elif sec.type == "bars" %}
+    <div class="vchart">
+    {% for it in sec["items"] %}
+      <div class="vcol" title="{{ it.label }}: {{ it.value }}">
+        <div class="n">{{ it.value if it.value else '' }}</div>
+        <div class="vwrap">
+          <div class="bar{% if it.highlight %} hi{% endif %}"
+               style="height:{{ it.pct if not it.value else [it.pct, 3]|max }}%"></div>
+        </div>
+        <div class="l">{{ it.label }}</div>
+      </div>
+    {% endfor %}
+    </div>
+
+  {% elif sec.type == "hbars" %}
+    {% for it in sec["items"] %}
+      <div class="hrow">
+        <div class="name">{{ it.label }}</div>
+        <div class="track">
+          <div class="fill"
+               style="width:{{ it.pct }}%{% if it.color %};background:{{ it.color }}{% endif %}"></div>
+        </div>
+        <div class="val">{{ it.value }}{% if it.sub %} <small>{{ it.sub }}</small>{% endif %}</div>
+      </div>
+    {% else %}
+      <div class="empty">Brak danych.</div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endfor %}
+
+</div>
+</body>
+</html>
