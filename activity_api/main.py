@@ -19,6 +19,7 @@ from routers.mainmenu import router as mainmenu_router
 from routers.livenow import router as livenow_router
 from routers.pictureactivity import router as pictureactivity_router
 from routers.persons import router as persons_router
+from routers.stats import router as stats_router
 from routers.api_activity import router as api_activity_router
 from routers.api_live import router as api_live_router
 from routers.api_persons import router as api_persons_router
@@ -121,6 +122,7 @@ app.include_router(activity_router)
 app.include_router(livenow_router)
 app.include_router(pictureactivity_router)
 app.include_router(persons_router)
+app.include_router(stats_router)
 app.include_router(api_activity_router)
 app.include_router(api_live_router)
 app.include_router(api_persons_router)

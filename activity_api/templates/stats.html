@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Statystyki{% endblock %}
+{% block content %}
+<style>
+.st{max-width:760px;margin:0 auto;padding:6px 0 20px}
+.st-back{display:inline-block;margin:2px 0 8px;padding:8px 14px;border-radius:12px;background:rgba(255,255,255,.08);color:inherit;text-decoration:none;font-weight:700;font-size:.9rem}
+.st h2{text-align:center;margin:4px 0 12px}
+.st-tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px}
+.st-tabs a{padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.07);color:inherit;text-decoration:none;font-size:.85rem;white-space:nowrap}
+.st-tabs a.on{background:rgba(37,99,235,.55);font-weight:700}
+.st-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:10px 0 16px}
+.st-sum div{padding:10px;border-radius:12px;background:rgba(255,255,255,.06);text-align:center}
+.st-sum b{display:block;font-size:1.05rem}
+.st-sum small{opacity:.7}
+.st-card{padding:12px;margin-bottom:10px;border-radius:14px;background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.08)}
+.st-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.st-name{font-weight:800}
+.st-badge{font-size:.72rem;padding:3px 8px;border-radius:999px}
+.st-badge.ok{background:rgba(34,197,94,.25)}
+.st-badge.warn{background:rgba(239,68,68,.28)}
+.st-row{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:.8rem}
+.st-who{width:62px;opacity:.8}
+.st-bar{flex:1;height:10px;border-radius:6px;background:rgba(255,255,255,.07);overflow:hidden}
+.st-bar i{display:block;height:100%;background:#3b82f6;border-radius:6px}
+.st-n{width:26px;text-align:right;font-weight:700}
+.st-empty{text-align:center;opacity:.6;padding:20px}
+</style>
+
+<div class="st">
+  <a class="st-back" href="/mainmenu">⬅ Menu</a>
+  <h2>📊 Statystyki aktywności</h2>
+
+  <div class="st-tabs">
+    {% for d, label in tabs %}
+    <a href="/stats?day={{ d }}" class="{% if d == day %}on{% endif %}">{{ label }}</a>
+    {% endfor %}
+  </div>
+
+  <div class="st-sum">
+    {% for p in persons %}
+    <div>
+      <small>{{ p.name }}</small>
+      <b>{{ totals[loop.index0].n }}×</b>
+      <small>{{ (totals[loop.index0].min / 60)|round(1) }} h</small>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% for r in rows %}
+  <div class="st-card">
+    <div class="st-top">
+      <span class="st-name">{{ r.name }}</span>
+      <span class="st-badge {{ r.level }}">{{ r.verdict }}</span>
+    </div>
+    {% for p in persons %}
+    <div class="st-row">
+      <span class="st-who">{{ p.name }}</span>
+      <span class="st-bar"><i style="width:{{ r.cells[loop.index0].pct }}%"></i></span>
+      <span class="st-n">{{ r.cells[loop.index0].n }}</span>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="st-empty">Brak aktywności w tym zakresie</div>
+  {% endfor %}
+</div>
+{% endblock %}
