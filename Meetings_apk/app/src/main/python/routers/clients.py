@@ -1,3 +1,4 @@
+import re
 from db import random_client_color
 from fastapi import APIRouter, Request, Form, Depends, HTTPException, Query
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -153,9 +154,13 @@ def create_client(
     phone: str = Form(""),
     gender: str = Form(""),
     is_active: int = Form(1),
+    color: str = Form(""),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
+    color = color.strip()
+    if not re.fullmatch(r"#[0-9a-fA-F]{6}", color):
+        color = ""
 
     # -----------------------------------------------------
     # CZYSZCZENIE DANYCH
@@ -267,7 +272,7 @@ def create_client(
             phone,
             gender,
             is_active,
-            random_client_color()
+            color or random_client_color()
         ))
 
         client_id = cursor.lastrowid
@@ -304,9 +309,13 @@ def edit_client(
     phone: str = Form(""),
     gender: str = Form(""),
     is_active: int = Form(1),
+    color: str = Form(""),
     db=Depends(get_db)
 ):
     cursor = db.cursor()
+    color = color.strip()
+    if not re.fullmatch(r"#[0-9a-fA-F]{6}", color):
+        color = ""
 
     # -----------------------------------------------------
     # POBIERAMY KLIENTA
@@ -420,7 +429,8 @@ def edit_client(
                 Description = ?,
                 Phone = ?,
                 Gender = ?,
-                IsActive = ?
+                IsActive = ?,
+                Color = COALESCE(NULLIF(?, ''), Color)
             WHERE Id = ?
         """, (
             first_name,
@@ -430,6 +440,7 @@ def edit_client(
             phone,
             gender,
             is_active,
+            color,
             client_id
         ))
 

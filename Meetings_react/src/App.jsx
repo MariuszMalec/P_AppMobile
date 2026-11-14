@@ -20,6 +20,7 @@ function App() {
     Phone: '',
     Gender: '',
     IsActive: 1,
+    Color: '',
   })
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
@@ -368,6 +369,7 @@ function App() {
     formData.append('phone', newClient.Phone)
     formData.append('gender', newClient.Gender)
     formData.append('is_active', newClient.IsActive ? '1' : '0')
+    formData.append('color', newClient.Color || '')
 
     fetch(`${API_URL}/clients/create`, {
       method: 'POST',
@@ -408,6 +410,7 @@ function App() {
           Phone: '',
           Gender: '',
           IsActive: 1,
+    Color: '',
         })
       })
       .catch((error) => {
@@ -431,6 +434,7 @@ function App() {
     formData.append('phone', selectedClient.Phone || '')
     formData.append('gender', selectedClient.Gender || '')
     formData.append('is_active', selectedClient.IsActive ? '1' : '0')
+    formData.append('color', selectedClient.Color || '')
 
     fetch(`${API_URL}/clients/edit/${selectedClient.Id}`, {
       method: 'PUT',
@@ -677,6 +681,17 @@ function App() {
             </select>
           </label>
 
+          <label>
+            Kolor
+            <input
+              type="color"
+              value={newClient.Color || '#3b82f6'}
+              onChange={(event) =>
+                setNewClient({ ...newClient, Color: event.target.value })
+              }
+            />
+          </label>
+
           <label className="active-checkbox">
             <input
               type="checkbox"
@@ -802,6 +817,17 @@ function App() {
               <option value="female">Kobieta</option>
               <option value="other">Inna</option>
             </select>
+          </label>
+
+          <label>
+            Kolor
+            <input
+              type="color"
+              value={selectedClient.Color || '#3b82f6'}
+              onChange={(event) =>
+                setSelectedClient({ ...selectedClient, Color: event.target.value })
+              }
+            />
           </label>
 
           <label className="active-checkbox">

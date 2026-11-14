@@ -3310,3 +3310,13 @@ input[type="time"]::-webkit-calendar-picker-indicator {
   height: 18px !important;
   font-size: 12px !important;
 }
+
+/* Kolor sesji = kolor klienta (Client.Color) */
+.sessions-page .session-cell.has-client-color:not(.live-session) .session-card {
+  background: color-mix(in srgb, var(--client-color) 22%, white) !important;
+  border-left: 4px solid var(--client-color) !important;
+}
+.sessions-page .session-cell.has-client-color:not(.live-session) .session-card,
+.sessions-page .session-cell.has-client-color:not(.live-session) .session-card strong {
+  color: color-mix(in srgb, var(--client-color) 50%, black) !important;
+}

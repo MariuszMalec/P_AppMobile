@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="pl">
+<link rel="stylesheet" href="{{ url_for('static', path='css/clients.css') }}">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+>
+
+<title>KLIENCI</title>
+
+
+</head>
+
+
+<body>
+
+<!-- =========================================================
+     CUSTOM DIALOG
+     ========================================================= -->
+
+<div
+    id="custom-dialog-overlay"
+    class="custom-dialog-overlay"
+>
+    <div
+        id="custom-dialog"
+        class="custom-dialog"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div
+            id="custom-dialog-icon"
+            class="custom-dialog-icon"
+        >
+            !
+        </div>
+
+        <h3
+            id="custom-dialog-title"
+            class="custom-dialog-title"
+        >
+            Informacja
+        </h3>
+
+        <div
+            id="custom-dialog-message"
+            class="custom-dialog-message"
+        ></div>
+
+        <div
+            id="custom-dialog-buttons"
+            class="custom-dialog-buttons"
+        ></div>
+
+    </div>
+</div>
+
+
+
+
+<div class="page">
+
+
+    <!-- =====================================================
+         NAGŁÓWEK
+         ===================================================== -->
+
+    <div class="header">
+
+        <h1 class="title">
+            KLIENCI
+        </h1>
+
+        <div class="header-buttons">
+
+            <a
+                href="/sessions/"
+                class="top-button"
+            >
+                ← Sesje
+            </a>
+
+            <button
+                type="button"
+                class="top-button"
+                id="theme-button"
+            >
+                ☀️ Jasny
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DODAJ
+         ===================================================== -->
+
+    <button
+        type="button"
+        class="add-button"
+        id="add-client-button"
+    >
+        ＋ DODAJ KLIENTA
+    </button>
+
+
+    <!-- =====================================================
+         AKTYWNI / NIEAKTYWNI
+         ===================================================== -->
+
+    <div class="client-filter">
+
+        <button
+            type="button"
+            class="client-filter-button active"
+            id="active-clients-button"
+        >
+            🟢 AKTYWNI
+        </button>
+
+        <button
+            type="button"
+            class="client-filter-button"
+            id="inactive-clients-button"
+        >
+            ⚫ NIEAKTYWNI
+        </button>
+
+    </div>
+
+
+    <!-- =====================================================
+         SZUKANIE
+         ===================================================== -->
+
+    <input
+        type="search"
+        id="search-input"
+        class="search-box"
+        placeholder="🔎 Szukaj klienta..."
+        autocomplete="off"
+    >
+
+
+    <!-- =====================================================
+         LISTA
+         ===================================================== -->
+
+    <div
+        id="clients-list"
+        class="clients-list"
+    ></div>
+
+
+</div>
+
+
+<!-- =========================================================
+     MODAL KLIENTA
+     ========================================================= -->
+
+<div
+    class="modal-bg"
+    id="client-modal"
+>
+
+    <div class="modal">
+
+
+        <div class="modal-header">
+
+            <h2
+                class="modal-title"
+                id="modal-title"
+            >
+                Dodaj klienta
+            </h2>
+
+            <button
+                type="button"
+                class="close-button"
+                id="close-modal"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <form id="client-form">
+
+            <input
+                type="hidden"
+                id="client-id"
+            >
+
+
+            <!-- IMIĘ + NAZWISKO -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Imię
+                    </label>
+
+                    <input
+                        type="text"
+                        id="first-name"
+                        class="form-input"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Nazwisko
+                    </label>
+
+                    <input
+                        type="text"
+                        id="last-name"
+                        class="form-input"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <!-- WIEK + PŁEĆ -->
+
+            <div class="form-row">
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Wiek
+                    </label>
+
+                    <input
+                        type="number"
+                        id="age"
+                        class="form-input"
+                        min="0"
+                        step="1"
+                    >
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label class="form-label">
+                        Płeć
+                    </label>
+
+                    <select
+                        id="gender"
+                        class="form-select"
+                    >
+
+                        <option value="">
+                            Nie podano
+                        </option>
+
+                        <option value="male">
+                            Mężczyzna
+                        </option>
+
+                        <option value="female">
+                            Kobieta
+                        </option>
+
+                        <option value="other">
+                            Inna
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- TELEFON -->
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Telefon
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    class="form-input"
+                    autocomplete="tel"
+                >
+
+            </div>
+
+
+            <!-- OPIS -->
+
+            <div class="form-group">
+
+                <label class="form-label">
+                    Opis
+                </label>
+
+                <label
+                    class="form-label"
+                    style="display: flex; align-items: center; gap: 9px; cursor: pointer;"
+                >
+
+                    <input
+                        type="checkbox"
+                        id="is-active"
+                        checked
+                        style="width: 18px; height: 18px;"
+                    >
+
+                    <span>Aktywny</span>
+
+                </label>
+
+                <textarea
+                    id="description"
+                    class="form-textarea"
+                ></textarea>
+
+            </div>
+
+
+            <!-- PRZYCISKI -->
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-button"
+                    id="cancel-button"
+                >
+                    ANULUJ
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-button"
+                >
+                    ZAPISZ
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     KOMUNIKAT
+     ========================================================= -->
+
+<div
+    id="message"
+    class="message"
+></div>
+
+
+
+<script src="{{ url_for('static', path='js/common.js') }}"></script>
+
+
+<script>
+
+
+/* =========================================================
+   ELEMENTY
+   ========================================================= */
+
+const clientsList =
+    document.getElementById(
+        'clients-list'
+    );
+
+const searchInput =
+    document.getElementById(
+        'search-input'
+    );
+
+const addClientButton =
+    document.getElementById(
+        'add-client-button'
+    );
+
+const activeClientsButton =
+    document.getElementById(
+        'active-clients-button'
+    );
+
+const inactiveClientsButton =
+    document.getElementById(
+        'inactive-clients-button'
+    );
+
+const modal =
+    document.getElementById(
+        'client-modal'
+    );
+
+const closeModalButton =
+    document.getElementById(
+        'close-modal'
+    );
+
+const cancelButton =
+    document.getElementById(
+        'cancel-button'
+    );
+
+const clientForm =
+    document.getElementById(
+        'client-form'
+    );
+
+const modalTitle =
+    document.getElementById(
+        'modal-title'
+    );
+
+const clientIdInput =
+    document.getElementById(
+        'client-id'
+    );
+
+const firstNameInput =
+    document.getElementById(
+        'first-name'
+    );
+
+const lastNameInput =
+    document.getElementById(
+        'last-name'
+    );
+
+const ageInput =
+    document.getElementById(
+        'age'
+    );
+
+const genderInput =
+    document.getElementById(
+        'gender'
+    );
+
+const phoneInput =
+    document.getElementById(
+        'phone'
+    );
+
+const descriptionInput =
+    document.getElementById(
+        'description'
+    );
+
+const isActiveInput =
+    document.getElementById(
+        'is-active'
+    );
+
+const themeButton =
+    document.getElementById(
+        'theme-button'
+    );
+
+
+
+let clients = [];
+
+let currentActiveFilter = 1;
+
+
+/* =========================================================
+   USTAWIENIE FILTRA
+   ========================================================= */
+
+function setClientFilter(active) {
+
+    currentActiveFilter =
+        Number(active) === 1
+        ? 1
+        : 0;
+
+
+    activeClientsButton.classList.toggle(
+        'active',
+        currentActiveFilter === 1
+    );
+
+
+    inactiveClientsButton.classList.toggle(
+        'active',
+        currentActiveFilter === 0
+    );
+
+
+    searchInput.value = '';
+
+
+    loadClients();
+
+}
+
+
+/* =========================================================
+   POBIERANIE KLIENTÓW
+   ========================================================= */
+
+async function loadClients() {
+
+    try {
+
+        const response =
+            await fetch(
+                `/clients/list?active=${currentActiveFilter}`
+            );
+
+        if (!response.ok) {
+
+            throw new Error(
+                'Nie udało się pobrać klientów'
+            );
+
+        }
+
+        clients =
+            await response.json();
+
+        renderClients();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        clientsList.innerHTML = `
+            <div class="empty-list">
+                Nie udało się pobrać listy klientów.
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* =========================================================
+   RENDER LISTY
+   ========================================================= */
+
+function renderClients() {
+
+    const search =
+        searchInput.value
+            .trim()
+            .toLowerCase();
+
+
+    const filteredClients =
+        clients.filter(function(client) {
+
+            const fullName =
+                (
+                    (client.FirstName || '') +
+                    ' ' +
+                    (client.LastName || '')
+                ).toLowerCase();
+
+            const phone =
+                (
+                    client.Phone || ''
+                ).toLowerCase();
+
+            return (
+                fullName.includes(search) ||
+                phone.includes(search)
+            );
+
+        });
+
+
+    clientsList.innerHTML = '';
+
+
+    if (!filteredClients.length) {
+
+        clientsList.innerHTML = `
+            <div class="empty-list">
+                ${
+                    search
+                    ? 'Nie znaleziono klienta.'
+                    :
+                    currentActiveFilter === 1
+                    ? 'Brak aktywnych klientów.'
+                    : 'Brak nieaktywnych klientów.'
+                }
+            </div>
+        `;
+
+        return;
+    }
+
+
+    filteredClients.forEach(function(client) {
+
+        const card =
+            document.createElement(
+                'div'
+            );
+
+
+        card.className =
+            'client-card';
+
+
+        if (
+            Number(client.IsActive) !== 1
+        ) {
+
+            card.classList.add(
+                'inactive'
+            );
+
+        }
+
+
+        const fullName =
+            (
+                (client.FirstName || '') +
+                ' ' +
+                (client.LastName || '')
+            ).trim();
+
+
+        let genderText =
+            '';
+
+
+        if (client.Gender === 'male') {
+
+            genderText =
+                'Mężczyzna';
+
+        }
+        else if (
+            client.Gender === 'female'
+        ) {
+
+            genderText =
+                'Kobieta';
+
+        }
+        else if (
+            client.Gender === 'other'
+        ) {
+
+            genderText =
+                'Inna';
+
+        }
+
+
+        const isActive =
+            Number(client.IsActive) === 1;
+
+
+        card.innerHTML = `
+
+            <div class="client-top">
+
+                <div>
+
+                    <div class="client-name">
+                        ${escapeHtml(fullName)}
+                    </div>
+
+                    <div class="client-id">
+                        ID: ${client.Id}
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="client-status ${
+                        isActive
+                        ? 'active'
+                        : 'inactive'
+                    }"
+                >
+                    ${
+                        isActive
+                        ? 'AKTYWNY'
+                        : 'NIEAKTYWNY'
+                    }
+                </div>
+
+            </div>
+
+
+            <div class="client-info">
+
+                ${
+                    client.Age !== null &&
+                    client.Age !== undefined &&
+                    client.Age !== ''
+                    ?
+                    `
+                    <div class="info-row">
+
+                        <span class="info-label">
+                            Wiek:
+                        </span>
+
+                        <span>
+                            ${escapeHtml(
+                                String(client.Age)
+                            )}
+                        </span>
+
+                    </div>
+                    `
+                    :
+                    ''
+                }
+
+
+                ${
+                    genderText
+                    ?
+                    `
+                    <div class="info-row">
+
+                        <span class="info-label">
+                            Płeć:
+                        </span>
+
+                        <span>
+                            ${escapeHtml(
+                                genderText
+                            )}
+                        </span>
+
+                    </div>
+                    `
+                    :
+                    ''
+                }
+
+
+                ${
+                    client.Phone
+                    ?
+                    `
+                    <div class="info-row">
+
+                        <span class="info-label">
+                            Telefon:
+                        </span>
+
+                        <span>
+                            ${escapeHtml(
+                                client.Phone
+                            )}
+                        </span>
+
+                    </div>
+                    `
+                    :
+                    ''
+                }
+
+            </div>
+
+
+            ${
+                client.Description
+                ?
+                `
+                <div class="client-description">
+                    ${escapeHtml(
+                        client.Description
+                    )}
+                </div>
+                `
+                :
+                ''
+            }
+
+
+            <div class="client-actions">
+
+                <button
+                    type="button"
+                    class="edit-button"
+                    data-id="${client.Id}"
+                >
+                    ✏️ EDYTUJ
+                </button>
+
+                ${
+                    isActive
+                    ?
+                    `
+                    <button
+                        type="button"
+                        class="delete-button"
+                        data-id="${client.Id}"
+                    >
+                        🗑️ USUŃ
+                    </button>
+                    `
+                    :
+                    `
+                    <button
+                        type="button"
+                        class="restore-button"
+                        data-id="${client.Id}"
+                    >
+                        🟢 PRZYWRÓĆ
+                    </button>
+                    `
+                }
+
+            </div>
+
+        `;
+
+
+        clientsList.appendChild(card);
+
+    });
+
+
+    /* -----------------------------------------------------
+       EDYCJA
+       ----------------------------------------------------- */
+
+    document
+        .querySelectorAll('.edit-button')
+        .forEach(function(button) {
+
+            button.addEventListener(
+                'click',
+                function() {
+
+                    const id =
+                        Number(
+                            this.dataset.id
+                        );
+
+                    openEditModal(id);
+
+                }
+            );
+
+        });
+
+
+    /* -----------------------------------------------------
+       USUWANIE
+       ----------------------------------------------------- */
+
+    document
+        .querySelectorAll('.delete-button')
+        .forEach(function(button) {
+
+            button.addEventListener(
+                'click',
+                function() {
+
+                    const id =
+                        Number(
+                            this.dataset.id
+                        );
+
+                    deleteClient(id);
+
+                }
+            );
+
+        });
+
+
+    /* -----------------------------------------------------
+       PRZYWRACANIE
+       ----------------------------------------------------- */
+
+    document
+        .querySelectorAll('.restore-button')
+        .forEach(function(button) {
+
+            button.addEventListener(
+                'click',
+                function() {
+
+                    const id =
+                        Number(
+                            this.dataset.id
+                        );
+
+                    activateClient(id);
+
+                }
+            );
+
+        });
+
+}
+
+
+
+/* =========================================================
+   OTWÓRZ MODAL - NOWY
+   ========================================================= */
+
+function openCreateModal() {
+
+    modalTitle.textContent =
+        'Dodaj klienta';
+
+    clientIdInput.value =
+        '';
+
+    firstNameInput.value =
+        '';
+
+    lastNameInput.value =
+        '';
+
+    ageInput.value =
+        '';
+
+    genderInput.value =
+        '';
+
+    phoneInput.value =
+        '';
+
+    descriptionInput.value =
+        '';
+
+    isActiveInput.checked = true;
+
+    modal.classList.add('show');
+
+    setTimeout(function() {
+
+        firstNameInput.focus();
+
+    }, 100);
+
+}
+
+
+/* =========================================================
+   OTWÓRZ MODAL - EDYCJA
+   ========================================================= */
+
+function openEditModal(clientId) {
+
+    const client =
+        clients.find(function(item) {
+
+            return (
+                Number(item.Id) ===
+                Number(clientId)
+            );
+
+        });
+
+
+    if (!client) {
+
+        showMessage(
+            'Nie znaleziono klienta'
+        );
+
+        return;
+
+    }
+
+
+    modalTitle.textContent =
+        'Edytuj klienta';
+
+
+    clientIdInput.value =
+        client.Id;
+
+
+    firstNameInput.value =
+        client.FirstName || '';
+
+
+    lastNameInput.value =
+        client.LastName || '';
+
+
+    ageInput.value =
+        client.Age ?? '';
+
+
+    genderInput.value =
+        client.Gender || '';
+
+
+    phoneInput.value =
+        client.Phone || '';
+
+
+    descriptionInput.value =
+        client.Description || '';
+
+
+    isActiveInput.checked =
+        Number(client.IsActive) === 1;
+
+
+    modal.classList.add('show');
+
+
+    setTimeout(function() {
+
+        firstNameInput.focus();
+
+    }, 100);
+
+}
+
+
+/* =========================================================
+   ZAMKNIJ MODAL
+   ========================================================= */
+
+function closeModal() {
+
+    modal.classList.remove(
+        'show'
+    );
+
+}
+
+
+closeModalButton.addEventListener(
+    'click',
+    closeModal
+);
+
+
+cancelButton.addEventListener(
+    'click',
+    closeModal
+);
+
+
+modal.addEventListener(
+    'click',
+    function(event) {
+
+        if (
+            event.target === modal
+        ) {
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   DODAJ KLIENTA
+   ========================================================= */
+
+addClientButton.addEventListener(
+    'click',
+    openCreateModal
+);
+
+
+/* =========================================================
+   PRZEŁĄCZANIE AKTYWNI / NIEAKTYWNI
+   ========================================================= */
+
+activeClientsButton.addEventListener(
+    'click',
+    function() {
+
+        if (currentActiveFilter !== 1) {
+
+            setClientFilter(1);
+
+        }
+
+    }
+);
+
+
+inactiveClientsButton.addEventListener(
+    'click',
+    function() {
+
+        if (currentActiveFilter !== 0) {
+
+            setClientFilter(0);
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   ZAPIS FORMULARZA
+   ========================================================= */
+
+clientForm.addEventListener(
+    'submit',
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const clientId =
+            clientIdInput.value;
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            'first_name',
+            firstNameInput.value
+        );
+
+        formData.append(
+            'last_name',
+            lastNameInput.value
+        );
+
+        formData.append(
+            'age',
+            ageInput.value
+        );
+
+        formData.append(
+            'description',
+            descriptionInput.value
+        );
+
+        formData.append(
+            'phone',
+            phoneInput.value
+        );
+
+        formData.append(
+            'gender',
+            genderInput.value
+        );
+
+        formData.append(
+            'is_active',
+            isActiveInput.checked ? '1' : '0'
+        );
+
+
+        try {
+
+            let response;
+
+
+            if (clientId) {
+
+                response =
+                    await fetch(
+                        `/clients/edit/${clientId}`,
+                        {
+                            method: 'PUT',
+                            body: formData
+                        }
+                    );
+
+            }
+            else {
+
+                response =
+                    await fetch(
+                        '/clients/create',
+                        {
+                            method: 'POST',
+                            body: formData
+                        }
+                    );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data.detail ||
+                    'Wystąpił błąd'
+                );
+
+            }
+
+
+            closeModal();
+
+
+            showMessage(
+                data.message ||
+                'Zapisano'
+            );
+
+
+            /*
+             * Po edycji klient może zmienić
+             * aktywność, dlatego odświeżamy
+             * aktualny widok.
+             */
+
+            await loadClients();
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+            showMessage(
+                error.message ||
+                'Nie udało się zapisać klienta'
+            );
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   USUWANIE KLIENTA
+   ========================================================= */
+
+async function deleteClient(clientId) {
+
+    const client =
+        clients.find(function(item) {
+
+            return (
+                Number(item.Id) ===
+                Number(clientId)
+            );
+
+        });
+
+
+    if (!client) {
+
+        return;
+
+    }
+
+
+    const fullName =
+        (
+            (client.FirstName || '') +
+            ' ' +
+            (client.LastName || '')
+        ).trim();
+
+
+    const confirmed =
+        await showConfirmDialog(
+            `Czy na pewno usunąć klienta:\n\n${fullName}?`,
+            {
+                type: "warning",
+                title: "Usuwanie klienta",
+                cancelText: "Anuluj",
+                confirmText: "Usuń",
+                danger: true
+            }
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/clients/delete/${clientId}`,
+                {
+                    method: 'DELETE'
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                'Nie udało się usunąć klienta'
+            );
+
+        }
+
+
+        showMessage(
+            data.message ||
+            'Klient usunięty'
+        );
+
+
+        await loadClients();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message ||
+            'Nie udało się usunąć klienta'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PRZYWRACANIE KLIENTA
+   ========================================================= */
+
+async function activateClient(clientId) {
+
+    const client =
+        clients.find(function(item) {
+
+            return (
+                Number(item.Id) ===
+                Number(clientId)
+            );
+
+        });
+
+
+    if (!client) {
+
+        return;
+
+    }
+
+
+    const fullName =
+        (
+            (client.FirstName || '') +
+            ' ' +
+            (client.LastName || '')
+        ).trim();
+
+
+    const confirmed =
+        await showConfirmDialog(
+            `Czy przywrócić klienta:\n\n${fullName}?`,
+            {
+                type: "success",
+                title: "Przywracanie klienta",
+                cancelText: "Anuluj",
+                confirmText: "Przywróć"
+            }
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/clients/activate/${clientId}`,
+                {
+                    method: 'POST'
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                'Nie udało się przywrócić klienta'
+            );
+
+        }
+
+
+        showMessage(
+            data.message ||
+            'Klient przywrócony'
+        );
+
+
+        /*
+         * Po przywróceniu klient
+         * znika z widoku NIEAKTYWNYCH.
+         */
+
+        await loadClients();
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            error.message ||
+            'Nie udało się przywrócić klienta'
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   WYSZUKIWANIE
+   ========================================================= */
+
+searchInput.addEventListener(
+    'input',
+    renderClients
+);
+
+
+/* =========================================================
+   MOTYW
+   ========================================================= */
+
+function updateThemeButton() {
+
+    if (
+        document.body.classList.contains(
+            'light-mode'
+        )
+    ) {
+
+        themeButton.textContent =
+            '🌙 Ciemny';
+
+    }
+    else {
+
+        themeButton.textContent =
+            '☀️ Jasny';
+
+    }
+
+}
+
+
+if (
+    localStorage.getItem('theme') ===
+    'light'
+) {
+
+    document.body.classList.add(
+        'light-mode'
+    );
+
+}
+
+
+updateThemeButton();
+
+
+themeButton.addEventListener(
+    'click',
+    function() {
+
+        document.body.classList.toggle(
+            'light-mode'
+        );
+
+
+        if (
+            document.body.classList.contains(
+                'light-mode'
+            )
+        ) {
+
+            localStorage.setItem(
+                'theme',
+                'light'
+            );
+
+        }
+        else {
+
+            localStorage.setItem(
+                'theme',
+                'dark'
+            );
+
+        }
+
+
+        updateThemeButton();
+
+    }
+);
+
+
+/* =========================================================
+   ESC - ZAMYKANIE
+   ========================================================= */
+
+document.addEventListener(
+    'keydown',
+    function(event) {
+
+        if (
+            event.key === 'Escape'
+        ) {
+
+            closeModal();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+loadClients();
+
+</script>
+
+</body>
+
+</html>

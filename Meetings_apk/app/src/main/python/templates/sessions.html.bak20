@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TYDZIEŃ SESJI</title>
+<link rel="stylesheet" href="{{ url_for('static', path='css/week.css') }}?v=11">
+
+</head>
+
+
+<body>
+
+<!-- =========================================================
+     CUSTOM DIALOG
+     ========================================================= -->
+
+<div
+    id="custom-dialog-overlay"
+    class="custom-dialog-overlay"
+>
+
+    <div
+        id="custom-dialog"
+        class="custom-dialog"
+        role="dialog"
+        aria-modal="true"
+    >
+
+        <div
+            id="custom-dialog-icon"
+            class="custom-dialog-icon"
+        >
+            !
+        </div>
+
+        <h3
+            id="custom-dialog-title"
+            class="custom-dialog-title"
+        >
+            Informacja
+        </h3>
+
+        <div
+            id="custom-dialog-message"
+            class="custom-dialog-message"
+        ></div>
+
+        <div
+            id="custom-dialog-buttons"
+            class="custom-dialog-buttons"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     NAGŁÓWEK
+     ======================================================= -->
+
+<div class="header">
+
+    <a href="?week_offset={{ week_offset - 1 }}"
+       class="week-arrow"
+       onclick="console.log('KLIK LEWO', new Date().toISOString(), this.href);">
+        ⬅
+    </a>
+
+    <span>🟢 LIVE — TYDZIEŃ</span>
+
+    <span id="current-day-date"></span>
+
+    <span class="live-time" id="live-time">--:--:--</span>
+
+    <a href="?week_offset={{ week_offset + 1 }}"
+       class="week-arrow"
+       onclick="console.log('KLIK PRAWO', new Date().toISOString(), this.href);">
+        ➡
+    </a>
+
+    
+    <a
+        href="/home/"
+        class="clients-button"
+    >
+        🏠 Home
+    </a>
+    
+
+
+    <button class="create-session-btn"
+            onclick="openCreateSession()">
+        ➕ Nowa sesja
+    </button>
+
+    <button class="create-client-btn"
+            onclick="openCreateClient()">
+        👤 Nowy klient
+    </button>
+
+    <a
+        href="/clients/"
+        class="clients-button"
+    >
+        👥 Klienci
+    </a>
+
+    <!-- PC: po prawej stronie Klienci -->
+    <button
+        id="toggle-theme-desktop"
+        class="toggle-theme toggle-theme-desktop"
+    >
+        ☀️ Jasny
+    </button>
+
+</div>
+
+
+<!-- =======================================================
+     MOBILNY WIDOK TYGODNIA
+     ======================================================= -->
+
+<button id="toggle-mobile-view" class="toggle-mobile-view">
+    ↔ Zmień widok
+</button>
+
+<!-- Telefon: bezpośrednio po Zmień widok -->
+<button
+    id="toggle-theme-mobile"
+    class="toggle-theme toggle-theme-mobile"
+>
+    ☀️ Jasny
+</button>
+
+<div class="mobile-week-view" id="mobile-week-view">
+
+    <!-- JavaScript wypełni tutaj 7 kart dni -->
+
+</div>
+
+
+<div class="table-wrap">
+
+<table>
+
+<thead>
+
+<tr>
+
+    <th>⏰</th>
+
+    {% for d in range(1, 8) %}
+        <th class="day-header"
+            data-day="{{ d }}">
+            {{ days[d] }}
+        </th>
+    {% endfor %}
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+{% for time, day_rows in table.items() %}
+
+<tr>
+
+    <td>{{ time }}</td>
+
+    {% for d in range(1, 8) %}
+
+        {% set cell = day_rows[d] %}
+
+        <td
+            class="{% if cell and cell.is_live %}live{% endif %}"
+
+            {% if cell %}
+
+            data-session-id="{{ cell.session_id }}"
+            data-client-id="{{ cell.client_id or '' }}"
+            data-desc="{{ cell.description or '' }}"
+            data-start="{{ cell.start or '' }}"
+            data-end="{{ cell.end or '' }}"
+            data-day="{{ d }}"
+            data-session-date="{{ cell.session_date }}"
+            data-recurring-group-id="{{ cell.recurring_group_id or '' }}"
+
+            onclick="openPreview(this)"
+
+            {% else %}
+
+            data-day="{{ d }}"
+
+            onclick="openCreateSessionForDay({{ d }})"
+
+            {% endif %}
+        >
+
+            {% if cell %}
+
+                <div class="tile-overlay"{% if cell.color %} style="--client-color: {{ cell.color }}"{% endif %}>
+                    {{ cell.client or 'Brak klienta' }}
+                </div>
+
+            {% else %}
+
+                <div class="empty">—</div>
+
+            {% endif %}
+
+        </td>
+
+    {% endfor %}
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+
+<!-- =======================================================
+     PREVIEW / EDYCJA SESJI
+     ======================================================= -->
+
+<div class="preview-bg"
+     id="preview"
+     onclick="closePreview()">
+
+    <div class="preview-card"
+         onclick="event.stopPropagation()">
+
+        <button type="button"
+                class="preview-close"
+                onclick="closePreview()"
+                aria-label="Zamknij">
+            ×
+        </button>
+
+        <label>Start</label>
+        <input type="time" id="p-start">
+
+        <label>Koniec</label>
+        <input type="time" id="p-end">
+
+        <label>Klient</label>
+
+        <select id="p-client">
+
+            <option value="">
+                — wybierz klienta —
+            </option>
+
+            {% for c in clients %}
+
+                <option value="{{ c.Id }}">
+                    {{ c.FirstName }} {{ c.LastName }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+
+        <label>Opis</label>
+        <input type="text" id="p-desc">
+
+        <label>Sesja cykliczna</label>
+
+        <div style="display:flex; align-items:center; gap:10px; margin:8px 0 12px;">
+            <input
+                type="checkbox"
+                id="p-recurring"
+                style="width:20px; height:20px; margin:0;"
+                onchange="toggleRecurringWeeks()"
+            >
+
+            <span style="font-size:14px;">
+                Kopiuj na kolejne tygodnie
+            </span>
+        </div>
+
+        <div id="recurring-weeks-wrap" style="display:none;">
+
+            <label for="p-repeat-every-weeks">
+                Powtarzaj co ile tygodni?
+            </label>
+
+            <select id="p-repeat-every-weeks">
+                <option value="1" selected>Co 1 tydzień</option>
+                <option value="2">Co 2 tygodnie</option>
+                <option value="3">Co 3 tygodnie</option>
+            </select>
+
+            <label for="p-recurring-weeks">
+                Ile dodatkowych sesji?
+            </label>
+
+            <input
+                type="number"
+                id="p-recurring-weeks"
+                min="1"
+                max="52"
+                value="1"
+            >
+
+        </div>
+
+
+        <label>Dzień tygodnia</label>
+
+        <select id="p-day">
+
+            <option value="1">Poniedziałek</option>
+            <option value="2">Wtorek</option>
+            <option value="3">Środa</option>
+            <option value="4">Czwartek</option>
+            <option value="5">Piątek</option>
+            <option value="6">Sobota</option>
+            <option value="7">Niedziela</option>
+
+        </select>
+
+        <div id="edit-scope-wrap" style="display:none; margin-top:12px;">
+
+            <label>Zakres edycji</label>
+
+            <select id="edit-scope">
+
+                <option value="single">
+                    Tylko tę sesję
+                </option>
+
+                <option value="series">
+                    Całą serię cykliczną
+                </option>
+
+            </select>
+
+        </div>
+
+        <button class="save-edit-btn" onclick="saveEdit()">
+            💾 Zapisz
+        </button>
+
+        <button class="delete-session-btn" onclick="deleteSession()">
+            🗑 Usuń
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =======================================================
+     CLIENT PREVIEW
+     ======================================================= -->
+
+<div class="preview-bg"
+     id="client-preview"
+     onclick="closeClientPreview()">
+
+    <div class="preview-card"
+         onclick="event.stopPropagation()">
+
+        <button type="button"
+                class="client-preview-close"
+                onclick="closeClientPreview()"
+                aria-label="Zamknij">
+            ×
+        </button>
+
+        <label>Imię</label>
+        <input type="text" id="c-first">
+
+        <label>Nazwisko</label>
+        <input type="text" id="c-last">
+
+        <label>Wiek</label>
+        <input type="number" id="c-age">
+
+        <label>Telefon</label>
+        <input type="text" id="c-phone">
+
+        <label>Płeć</label>
+
+        <select id="c-gender">
+
+            <option value="">
+                — wybierz —
+            </option>
+
+            <option value="male">
+                Mężczyzna
+            </option>
+
+            <option value="female">
+                Kobieta
+            </option>
+
+        </select>
+
+        <label>Opis</label>
+        <input type="text" id="c-desc">
+
+        <button onclick="createClient()">
+            💾 Utwórz klienta
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     KOMUNIKAT
+     ========================================================= -->
+
+<div
+    id="message"
+    class="message"
+></div>
+
+
+{% if week_offset != 0 %}
+<a href="?week_offset=0" class="today-fab">Dziś</a>
+{% endif %}
+
+<script src="{{ url_for('static', path='js/common.js') }}"></script>
+<script src="{{ url_for('static', path='js/sessions.js') }}?v=11"></script>
+
+<!-- =======================================================
+     JAVASCRIPT
+     ======================================================= -->
+
+<script>
+
+
+let currentCell = null;
+let weekOffset = 0;
+
+
+// =========================================================
+// WYŚWIETLANIE LIVE CZASU
+// =========================================================
+
+function updateLiveTime() {
+
+    const now = new Date();
+
+    const h = String(now.getHours()).padStart(2, '0');
+    const m = String(now.getMinutes()).padStart(2, '0');
+    const s = String(now.getSeconds()).padStart(2, '0');
+
+    document.getElementById('live-time').textContent =
+        `${h}:${m}:${s}`;
+}
+
+
+// =========================================================
+// FUNKCJE PODGLĄDU - EDIT
+// =========================================================
+
+function openPreview(el) {
+
+    currentCell = el;
+
+    document.getElementById('p-start').value =
+        el.dataset.start || "";
+
+    document.getElementById('p-end').value =
+        el.dataset.end || "";
+
+    document.getElementById('p-client').value =
+        el.dataset.clientId || "";
+
+    document.getElementById('p-desc').value =
+        el.dataset.desc || "";
+
+    document.getElementById('p-day').value =
+        el.dataset.day || "";
+
+    document.getElementById('preview')
+        .classList.add('active');
+
+    const saveBtn =
+        document.querySelector(
+            '#preview .save-edit-btn'
+        );
+
+    saveBtn.textContent = "💾 Zapisz";
+    saveBtn.onclick = saveEdit;
+
+    document.querySelector(
+        '#preview .delete-session-btn'
+    ).style.display = "block";
+
+    document.getElementById('p-client').disabled = true;
+
+    const editScopeWrap =
+        document.getElementById('edit-scope-wrap');
+
+    const editScope =
+        document.getElementById('edit-scope');
+
+    const recurringCheckbox =
+        document.getElementById('p-recurring');
+
+    const recurringWeeks =
+        document.getElementById('p-recurring-weeks');
+
+    const recurringWeeksWrap =
+        document.getElementById('recurring-weeks-wrap');
+
+    const repeatEveryWeeks =
+        document.getElementById('p-repeat-every-weeks');
+
+    repeatEveryWeeks.value = "1";
+
+    const recurringGroupId =
+        el.dataset.recurringGroupId;
+
+    if (recurringGroupId) {
+
+        editScopeWrap.style.display = "block";
+
+        editScope.value = "single";
+
+        recurringCheckbox.checked = true;
+
+        recurringWeeksWrap.style.display = "block";
+
+        fetch(
+            `/sessions/recurring-count/${recurringGroupId}`
+        )
+        .then(async response => {
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(
+                    data.detail || "Nie udało się pobrać liczby tygodni"
+                );
+            }
+
+            return data;
+        })
+        .then(data => {
+
+            const weeks = Math.max(
+                1,
+                data.count - 1
+            );
+
+            recurringWeeks.value = weeks;
+            repeatEveryWeeks.value = String(
+                data.repeat_every_weeks || 1
+            );
+
+        })
+        .catch(err => {
+
+            console.error(
+                "Błąd pobierania liczby tygodni:",
+                err
+            );
+
+        });
+
+    } else {
+
+        editScopeWrap.style.display = "none";
+
+        editScope.value = "single";
+
+        recurringCheckbox.checked = false;
+
+        recurringWeeks.value = 1;
+
+        recurringWeeksWrap.style.display = "none";
+    }
+}
+
+
+// =========================================================
+// FUNKCJA DO ZAŁADOWANIA LISTY KLIENTÓW
+// =========================================================
+
+function loadClientList() {
+
+    fetch('/clients/get_clients')
+
+        .then(response => response.json())
+
+        .then(clients => {
+
+            const clientSelect =
+                document.getElementById('p-client');
+
+            clientSelect.innerHTML =
+                '<option value="">— wybierz klienta —</option>';
+
+            clients.forEach(client => {
+
+                const option =
+                    document.createElement("option");
+
+                option.value = client.Id;
+
+                option.textContent =
+                    `${client.FirstName} ${client.LastName}`;
+
+                clientSelect.appendChild(option);
+
+            });
+
+        })
+
+        .catch(err => {
+
+            console.error(
+                "Błąd ładowania klientów: ",
+                err
+            );
+
+            showDialog(
+                "Nie udało się załadować listy klientów",
+                "error",
+                "Błąd"
+            );
+
+        });
+}
+
+
+// =========================================================
+// ZAMKNIĘCIE PREVIEW
+// =========================================================
+
+function closePreview() {
+
+    document.getElementById('preview')
+        .classList.remove('active');
+}
+
+
+// =========================================================
+// ZAPIS EDYCJI
+// =========================================================
+
+function saveEdit() {
+
+    if (!currentCell) {
+        showDialog(
+            "Brak wybranej sesji",
+            "warning",
+            "Uwaga"
+        );
+        return;
+    }
+
+    const id = currentCell.dataset.sessionId;
+
+    const editScope =
+        document.getElementById('edit-scope').value;
+
+    const formData = new FormData();
+
+    formData.append(
+        "start",
+        document.getElementById('p-start').value
+    );
+
+    formData.append(
+        "end",
+        document.getElementById('p-end').value
+    );
+
+    formData.append(
+        "description",
+        document.getElementById('p-desc').value
+    );
+
+    const dayOfWeek =
+        parseInt(
+            document.getElementById('p-day').value,
+            10
+        );
+
+    const baseDate =
+        currentCell.dataset.sessionDate;
+
+    const date =
+        new Date(
+            baseDate +
+            "T12:00:00"
+        );
+
+    const jsDay =
+        date.getDay();
+
+    const mondayOffset =
+        jsDay === 0
+            ? -6
+            : 1 - jsDay;
+
+    date.setDate(
+        date.getDate() +
+        mondayOffset +
+        (dayOfWeek - 1)
+    );
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    const sessionDate =
+        `${year}-${month}-${day}`;
+
+    formData.append(
+        "day_of_week",
+        dayOfWeek
+    );
+
+    formData.append(
+        "session_date",
+        sessionDate
+    );
+
+    formData.append(
+        "edit_scope",
+        editScope
+    );
+
+    formData.append(
+        "recurring_weeks",
+        document.getElementById('p-recurring-weeks').value
+    );
+
+    formData.append(
+        "repeat_every_weeks",
+        document.getElementById('p-repeat-every-weeks').value || "1"
+    );
+
+    fetch(`/sessions/edit/${id}`, {
+        method: "PUT",
+        body: formData
+    })
+    .then(async response => {
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail || "Błąd zapisu sesji"
+            );
+        }
+
+        return data;
+    })
+    .then(data => {
+
+        console.log("Edycja OK:", data);
+
+        showMessage(
+            data.message || "Sesja zaktualizowana"
+        );
+
+        closePreview();
+
+        setTimeout(() => {
+            location.reload();
+        }, 800);
+
+    })
+    .catch(err => {
+
+        console.error("Błąd:", err);
+
+        showDialog(
+            "Błąd zapisu:\n" +
+            err.message,
+            "error",
+            "Błąd zapisu"
+        );
+    });
+}
+
+
+// =========================================================
+// USUWANIE SESJI
+// =========================================================
+
+async function deleteSession() {
+
+    if (!currentCell) {
+        showDialog(
+            "Brak wybranej sesji",
+            "warning",
+            "Uwaga"
+        );
+        return;
+    }
+
+    const id = currentCell.dataset.sessionId;
+
+    const recurringGroupId =
+        currentCell.dataset.recurringGroupId;
+
+    let deleteScope = "single";
+
+    if (recurringGroupId) {
+
+        const deleteSeries =
+            await showConfirmDialog(
+                "Ta sesja należy do serii cyklicznej.\n\n" +
+                "Wybierz, co chcesz usunąć.",
+                {
+                    type: "warning",
+                    title: "Usuwanie serii",
+                    cancelText: "Tylko tę sesję",
+                    confirmText: "Całą serię",
+                    danger: true
+                }
+            );
+
+        if (deleteSeries) {
+            deleteScope = "series";
+        }
+    }
+
+    const formData = new FormData();
+
+    formData.append(
+        "delete_scope",
+        deleteScope
+    );
+
+    fetch(`/sessions/delete/${id}`, {
+        method: "POST",
+        body: formData
+    })
+    .then(async response => {
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail || "Błąd usuwania sesji"
+            );
+        }
+
+        return data;
+    })
+    .then(data => {
+
+        console.log("Usuwanie OK:", data);
+
+        showMessage(
+            data.message || "Sesja usunięta"
+        );
+
+        closePreview();
+
+        setTimeout(() => {
+            location.reload();
+        }, 800);
+
+    })
+    .catch(err => {
+
+        console.error("Błąd usuwania:", err);
+
+        showDialog(
+            "Błąd usuwania:\n" +
+            err.message,
+            "error",
+            "Błąd usuwania"
+        );
+    });
+}
+
+
+// =========================================================
+// UZUPEŁNIANIE DAT PRZY DNIACH TYGODNIA
+// =========================================================
+
+function updateWeekDates() {
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const offset =
+        parseInt(
+            params.get("week_offset") || "0"
+        );
+
+    const now = new Date();
+
+    const dayOfWeek =
+        now.getDay();
+
+    const mondayOffset =
+        dayOfWeek === 0
+            ? -6
+            : 1 - dayOfWeek;
+
+    const weekStart =
+        new Date(now);
+
+    weekStart.setDate(
+        now.getDate() +
+        mondayOffset +
+        offset * 7
+    );
+
+    const headers =
+        document.querySelectorAll(
+            '.day-header'
+        );
+
+    headers.forEach((th, index) => {
+
+        const d =
+            new Date(weekStart);
+
+        d.setDate(
+            d.getDate() + index
+        );
+
+        const dayNum =
+            String(
+                d.getDate()
+            ).padStart(2, '0');
+
+        const monthNum =
+            String(
+                d.getMonth() + 1
+            ).padStart(2, '0');
+
+        const baseName =
+            th.textContent
+              .split(' ')[0];
+
+        const shortNames =
+            ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Niedz'];
+
+        th.dataset.date = `${dayNum}.${monthNum}`;
+
+        th.innerHTML =
+            `<span class="dh-date">${dayNum}.${monthNum}</span>` +
+            `<span class="dh-name">${shortNames[index]}</span>`;
+
+    });
+
+    document.getElementById(
+        'current-day-date'
+    ).textContent =
+        weekStart.toLocaleDateString(
+            'pl-PL'
+        );
+}
+
+
+// =========================================================
+// FILTROWANIE SESJI WG TYGODNIA
+// =========================================================
+
+function filterSessionsByWeek(start, end) {
+
+    function toLocalDateStr(d) {
+
+        const year =
+            d.getFullYear();
+
+        const month =
+            String(
+                d.getMonth() + 1
+            ).padStart(2, '0');
+
+        const day =
+            String(
+                d.getDate()
+            ).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+
+    const startStr =
+        toLocalDateStr(start);
+
+    const endStr =
+        toLocalDateStr(end);
+
+    document
+        .querySelectorAll("tbody tr")
+        .forEach(tr => {
+
+            let hasVisibleSession =
+                false;
+
+            tr.querySelectorAll(
+                'td[data-session-id]'
+            ).forEach(td => {
+
+                const dateStr =
+                    td.dataset.sessionDate;
+
+                if (!dateStr)
+                    return;
+
+                if (
+                    dateStr < startStr ||
+                    dateStr > endStr
+                ) {
+
+                    td.style.display =
+                        "none";
+
+                } else {
+
+                    td.style.display =
+                        "";
+
+                    hasVisibleSession =
+                        true;
+                }
+
+            });
+
+            tr.style.display =
+                hasVisibleSession
+                    ? ""
+                    : "none";
+
+        });
+}
+
+
+// =========================================================
+// NOWA SESJA
+// =========================================================
+
+function openCreateSession() {
+
+    currentCell = null;
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const weekOffset =
+        parseInt(
+            params.get("week_offset") || "0"
+        );
+
+    const today =
+        new Date();
+
+    const currentDay =
+        today.getDay();
+
+    const mondayOffset =
+        currentDay === 0
+            ? -6
+            : 1 - currentDay;
+
+    const monday =
+        new Date(today);
+
+    monday.setHours(
+        12,
+        0,
+        0,
+        0
+    );
+
+    monday.setDate(
+        today.getDate() +
+        mondayOffset
+    );
+
+    monday.setDate(
+        monday.getDate() +
+        weekOffset * 7
+    );
+
+    const year =
+        monday.getFullYear();
+
+    const month =
+        String(
+            monday.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            monday.getDate()
+        ).padStart(2, "0");
+
+    const sessionDate =
+        `${year}-${month}-${day}`;
+
+    document.getElementById(
+        'p-start'
+    ).value = "16:00";
+
+    document.getElementById(
+        'p-end'
+    ).value = "17:00";
+
+    document.getElementById(
+        'p-client'
+    ).value = "1";
+
+    document.getElementById(
+        'p-desc'
+    ).value = "Terapia";
+
+    document.getElementById(
+        'p-day'
+    ).value = "1";
+
+    document.getElementById(
+        'preview'
+    ).dataset.sessionDate =
+        sessionDate;
+
+    document.getElementById(
+        'preview'
+    ).classList.add('active');
+
+    const saveBtn =
+        document.querySelector(
+            '#preview .save-edit-btn'
+        );
+
+    saveBtn.textContent =
+        "💾 Utwórz";
+
+    saveBtn.onclick =
+        createSession;
+
+    document.querySelector(
+        '#preview .delete-session-btn'
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        'p-client'
+    ).disabled =
+        false;
+}
+
+
+// =========================================================
+// TWORZENIE SESJI
+// =========================================================
+
+function createSession() {
+
+    const startTime =
+        document.getElementById(
+            'p-start'
+        ).value;
+
+    const endTime =
+        document.getElementById(
+            'p-end'
+        ).value;
+
+    const clientId =
+        document.getElementById(
+            'p-client'
+        ).value;
+
+    const description =
+        document.getElementById(
+            'p-desc'
+        ).value;
+
+    const recurring =
+        document.getElementById('p-recurring').checked;
+
+    const recurringWeeks =
+        parseInt(
+            document.getElementById('p-recurring-weeks').value || '1',
+            10
+        );
+
+    const repeatEveryWeeks =
+        parseInt(
+            document.getElementById('p-repeat-every-weeks').value || '1',
+            10
+        );
+
+    const dayOfWeek =
+        parseInt(
+            document.getElementById(
+                'p-day'
+            ).value,
+            10
+        );
+
+    const baseDate =
+        document.getElementById(
+            'preview'
+        ).dataset.sessionDate;
+
+    if (!startTime) {
+        showDialog(
+            "Wybierz godzinę rozpoczęcia.",
+            "warning",
+            "Brak godziny"
+        );
+
+        document.getElementById('p-start').focus();
+
+        return;
+    }
+
+    if (!endTime) {
+        showDialog(
+            "Wybierz godzinę zakończenia.",
+            "warning",
+            "Brak godziny"
+        );
+
+        document.getElementById('p-end').focus();
+
+        return;
+    }
+
+    if (!clientId) {
+        showDialog(
+            "Wybierz klienta.",
+            "warning",
+            "Brak klienta"
+        );
+
+        document.getElementById('p-client').focus();
+
+        return;
+    }
+
+    if (!baseDate) {
+
+        showDialog(
+            "Nie wybrano dnia sesji",
+            "warning",
+            "Uwaga"
+        );
+
+        return;
+    }
+
+    if (
+        !dayOfWeek ||
+        dayOfWeek < 1 ||
+        dayOfWeek > 7
+    ) {
+
+        showDialog(
+            "Nieprawidłowy dzień tygodnia",
+            "error",
+            "Błąd"
+        );
+
+        return;
+    }
+
+    const date =
+        new Date(
+            baseDate +
+            "T12:00:00"
+        );
+
+    const jsDay =
+        date.getDay();
+
+    const mondayOffset =
+        jsDay === 0
+            ? -6
+            : 1 - jsDay;
+
+    date.setDate(
+        date.getDate() +
+        mondayOffset +
+        (dayOfWeek - 1)
+    );
+
+    const year =
+        date.getFullYear();
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(2, "0");
+
+    const sessionDate =
+        `${year}-${month}-${day}`;
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "start",
+        startTime
+    );
+
+    formData.append(
+        "end",
+        endTime
+    );
+
+    formData.append(
+        "client_id",
+        clientId
+    );
+
+    formData.append(
+        "description",
+        description
+    );
+
+    formData.append(
+        "day_of_week",
+        dayOfWeek
+    );
+
+    formData.append(
+        "session_date",
+        sessionDate
+    );
+
+    formData.append(
+        "recurring",
+        recurring ? "true" : "false"
+    );
+
+    formData.append(
+        "recurring_weeks",
+        recurringWeeks
+    );
+
+    formData.append(
+        "repeat_every_weeks",
+        recurring ? repeatEveryWeeks : 1
+    );
+
+    console.log(
+        "TWORZENIE SESJI:"
+    );
+
+    console.log(
+        "start =",
+        startTime
+    );
+
+    console.log(
+        "end =",
+        endTime
+    );
+
+    console.log(
+        "day_of_week =",
+        dayOfWeek
+    );
+
+    console.log(
+        "session_date =",
+        sessionDate
+    );
+
+    fetch(
+        "/sessions/create",
+        {
+            method: "POST",
+            body: formData
+        }
+    )
+
+    .then(async response => {
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            console.error(
+                "BŁĄD TWORZENIA:",
+                data
+            );
+
+            throw new Error(
+                data.detail ||
+                "Błąd tworzenia sesji"
+            );
+        }
+
+        return data;
+
+    })
+
+    .then(data => {
+
+        showMessage(
+            data.message || "Sesja utworzona"
+        );
+
+        closePreview();
+
+        setTimeout(() => {
+            location.reload();
+        }, 800);
+
+    })
+
+    .catch(err => {
+
+        console.error(err);
+
+        showDialog(
+            "Błąd: " +
+            err.message,
+            "error",
+            "Błąd tworzenia sesji"
+        );
+
+    });
+}
+
+
+// =========================================================
+// NOWY KLIENT
+// =========================================================
+
+function openCreateClient() {
+
+    document.getElementById(
+        'client-preview'
+    ).classList.add('active');
+}
+
+
+// =========================================================
+// TWORZENIE KLIENTA
+// =========================================================
+
+function createClient() {
+
+    const formData =
+        new FormData();
+
+    formData.append(
+        "first_name",
+        document.getElementById(
+            'c-first'
+        ).value
+    );
+
+    formData.append(
+        "last_name",
+        document.getElementById(
+            'c-last'
+        ).value
+    );
+
+    formData.append(
+        "age",
+        document.getElementById(
+            'c-age'
+        ).value
+    );
+
+    formData.append(
+        "phone",
+        document.getElementById(
+            'c-phone'
+        ).value
+    );
+
+    formData.append(
+        "description",
+        document.getElementById(
+            'c-desc'
+        ).value
+    );
+
+    formData.append(
+        "gender",
+        document.getElementById(
+            'c-gender'
+        ).value
+    );
+
+    fetch(
+        "/clients/create",
+        {
+            method: "POST",
+            body: formData
+        }
+    )
+
+    .then(async response => {
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail ||
+                "Błąd tworzenia klienta"
+            );
+        }
+
+        return data;
+    })
+
+    .then(() =>
+        location.reload()
+    )
+
+    .catch(err =>
+        showDialog(
+            err.message,
+            "error",
+            "Nie można utworzyć klienta"
+        )
+    );
+}
+
+
+// =========================================================
+// ZAMKNIĘCIE CLIENT PREVIEW
+// =========================================================
+
+function closeClientPreview() {
+
+    document.getElementById(
+        'client-preview'
+    ).classList.remove('active');
+}
+
+
+// =========================================================
+// NOWA SESJA DLA KONKRETNEGO DNIA
+// =========================================================
+
+function openCreateSessionForDay(dayOfWeek) {
+
+    currentCell = null;
+
+    const params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+    const weekOffset =
+        parseInt(
+            params.get("week_offset") || "0"
+        );
+
+    const today =
+        new Date();
+
+    const currentDay =
+        today.getDay();
+
+    const mondayOffset =
+        currentDay === 0
+            ? -6
+            : 1 - currentDay;
+
+    const monday =
+        new Date(today);
+
+    monday.setHours(
+        12,
+        0,
+        0,
+        0
+    );
+
+    monday.setDate(
+        today.getDate() +
+        mondayOffset
+    );
+
+    monday.setDate(
+        monday.getDate() +
+        weekOffset * 7
+    );
+
+    const sessionDate =
+        new Date(monday);
+
+    sessionDate.setDate(
+        monday.getDate() +
+        (dayOfWeek - 1)
+    );
+
+    const year =
+        sessionDate.getFullYear();
+
+    const month =
+        String(
+            sessionDate.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            sessionDate.getDate()
+        ).padStart(2, "0");
+
+    const dateString =
+        `${year}-${month}-${day}`;
+
+    console.log(
+        "NOWA SESJA:"
+    );
+
+    console.log(
+        "day_of_week =",
+        dayOfWeek
+    );
+
+    console.log(
+        "session_date =",
+        dateString
+    );
+
+    document.getElementById(
+        'p-start'
+    ).value = "";
+
+    document.getElementById(
+        'p-end'
+    ).value = "";
+
+    document.getElementById(
+        'p-client'
+    ).value = "";
+
+    document.getElementById(
+        'p-desc'
+    ).value = "";
+
+    document.getElementById(
+        'p-day'
+    ).value =
+        dayOfWeek;
+
+    document.getElementById(
+        'preview'
+    ).dataset.sessionDate =
+        dateString;
+
+    document.getElementById(
+        'preview'
+    ).classList.add('active');
+
+    const saveBtn =
+        document.querySelector(
+            '#preview .save-edit-btn'
+        );
+
+    saveBtn.textContent =
+        "💾 Utwórz";
+
+    saveBtn.onclick =
+        createSession;
+
+    document.querySelector(
+        '#preview .delete-session-btn'
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        'p-client'
+    ).disabled =
+        false;
+}
+
+
+// =========================================================
+// SESJA CYKLICZNA
+// =========================================================
+
+function toggleRecurringWeeks() {
+
+    const checkbox =
+        document.getElementById('p-recurring');
+
+    const weeksWrap =
+        document.getElementById('recurring-weeks-wrap');
+
+    weeksWrap.style.display =
+        checkbox.checked ? 'block' : 'none';
+
+}
+
+
+// =========================================================
+// MOBILNY WIDOK TYGODNIA
+// =========================================================
+
+function buildMobileWeekView() {
+
+    const mobileView =
+        document.getElementById('mobile-week-view');
+
+    const table =
+        document.querySelector('.table-wrap table');
+
+    if (!mobileView || !table) {
+        return;
+    }
+
+    mobileView.innerHTML = "";
+
+    const dayHeaders =
+        table.querySelectorAll('thead th.day-header');
+
+    const rows =
+        table.querySelectorAll('tbody tr');
+
+    const dayNames = [
+        "Poniedziałek",
+        "Wtorek",
+        "Środa",
+        "Czwartek",
+        "Piątek",
+        "Sobota",
+        "Niedziela"
+    ];
+
+    dayHeaders.forEach((dayHeader, dayIndex) => {
+
+        const dayNumber = dayIndex + 1;
+
+        const dayCard =
+            document.createElement('div');
+
+        dayCard.className =
+            'mobile-day-card';
+
+        const dayTitle =
+            document.createElement('div');
+
+        dayTitle.className =
+            'mobile-day-title';
+
+        dayTitle.textContent =
+            `${dayNames[dayIndex]} (${dayHeader.dataset.date})`;
+
+        dayCard.appendChild(dayTitle);
+
+        let hasSession = false;
+
+        rows.forEach(row => {
+
+            const cells =
+                row.querySelectorAll('td');
+
+            if (!cells.length) {
+                return;
+            }
+
+            const timeText =
+                cells[0].textContent.trim();
+
+            const originalCell =
+                cells[dayNumber];
+
+            if (!originalCell) {
+                return;
+            }
+
+            if (!originalCell.dataset.sessionId) {
+                return;
+            }
+
+            hasSession = true;
+
+            const timeRow =
+                document.createElement('div');
+
+            timeRow.className =
+                'mobile-time-row';
+
+            const time =
+                document.createElement('div');
+
+            time.className =
+                'mobile-time';
+
+            time.textContent =
+                timeText;
+
+            timeRow.appendChild(time);
+
+            const sessionCell =
+                document.createElement('div');
+
+            sessionCell.className =
+                'mobile-session-cell';
+
+            if (
+                originalCell.classList.contains('live')
+            ) {
+
+                sessionCell.classList.add('live');
+
+            }
+
+            Array.from(originalCell.attributes)
+                .forEach(attr => {
+
+                    if (
+                        attr.name.startsWith('data-')
+                    ) {
+
+                        sessionCell.setAttribute(
+                            attr.name,
+                            attr.value
+                        );
+
+                    }
+
+                });
+
+            sessionCell.innerHTML =
+                originalCell.innerHTML;
+
+            sessionCell.onclick = function() {
+
+                openPreview(this);
+
+            };
+
+            timeRow.appendChild(sessionCell);
+
+            dayCard.appendChild(timeRow);
+
+        });
+
+        if (!hasSession) {
+
+            const emptyMessage =
+                document.createElement('div');
+
+            emptyMessage.className =
+                'mobile-no-session';
+
+            emptyMessage.textContent =
+                'Brak sesji';
+
+            emptyMessage.onclick = function() {
+
+                openCreateSessionForDay(dayNumber);
+
+            };
+
+            dayCard.appendChild(emptyMessage);
+
+        }
+
+        mobileView.appendChild(dayCard);
+
+    });
+
+}
+
+
+function toggleMobileView() {
+
+    const mobileView =
+        document.getElementById('mobile-week-view');
+
+    const tableWrap =
+        document.querySelector('.table-wrap');
+
+    const button =
+        document.getElementById('toggle-mobile-view');
+
+    if (!mobileView || !tableWrap || !button) {
+        return;
+    }
+
+    if (mobileView.style.display !== 'none') {
+
+        mobileView.style.display = 'none';
+
+        tableWrap.style.display = 'block';
+
+        button.textContent =
+            '↕ Zmień widok';
+
+        localStorage.setItem(
+            'weekView',
+            'horizontal'
+        );
+
+    }
+
+    else {
+
+        tableWrap.style.display = 'none';
+
+        mobileView.style.display = 'flex';
+
+        button.textContent =
+            '↔ Zmień widok';
+
+        localStorage.setItem(
+            'weekView',
+            'vertical'
+        );
+
+    }
+
+}
+
+
+// =========================================================
+// START
+// =========================================================
+
+setInterval(
+    updateLiveTime,
+    1000
+);
+
+updateLiveTime();
+
+updateWeekDates();
+
+buildMobileWeekView();
+
+
+// =====================================================
+// ODCZYT ZAPISANEGO WIDOKU MOBILNEGO
+// =====================================================
+
+const savedWeekView =
+    localStorage.getItem('weekView');
+
+const mobileView =
+    document.getElementById('mobile-week-view');
+
+const tableWrap =
+    document.querySelector('.table-wrap');
+
+const toggleButton =
+    document.getElementById('toggle-mobile-view');
+
+if (
+    savedWeekView === 'horizontal' &&
+    mobileView &&
+    tableWrap &&
+    toggleButton
+) {
+
+    mobileView.style.display = 'none';
+
+    tableWrap.style.display = 'block';
+
+    toggleButton.textContent =
+        '↕ Zmień widok';
+
+}
+
+if (toggleButton) {
+
+    toggleButton.addEventListener(
+        'click',
+        toggleMobileView
+    );
+
+}
+
+
+// =====================================================
+// MOTYW
+// =====================================================
+
+const themeButtons = [
+    document.getElementById('toggle-theme-desktop'),
+    document.getElementById('toggle-theme-mobile')
+].filter(Boolean);
+
+
+// =====================================================
+// ODCZYT ZAPISANEGO MOTYWU
+// =====================================================
+
+if (
+    localStorage.getItem('theme') === 'light'
+) {
+
+    document.body.classList.add('light-mode');
+
+}
+
+
+// =====================================================
+// AKTUALIZACJA NAPISU PRZYCISKÓW MOTYWU
+// =====================================================
+
+function updateThemeButton() {
+
+    const text =
+        document.body.classList.contains('light-mode')
+            ? '🌙 Ciemny'
+            : '☀️ Jasny';
+
+    themeButtons.forEach(button => {
+
+        button.textContent = text;
+
+    });
+
+}
+
+
+// Ustawiamy poprawny napis po załadowaniu
+
+updateThemeButton();
+
+
+// =====================================================
+// ZMIANA MOTYWU
+// =====================================================
+
+themeButtons.forEach(button => {
+
+    button.addEventListener(
+        'click',
+        function() {
+
+            document.body.classList.toggle(
+                'light-mode'
+            );
+
+            if (
+                document.body.classList.contains('light-mode')
+            ) {
+
+                localStorage.setItem(
+                    'theme',
+                    'light'
+                );
+
+            } else {
+
+                localStorage.setItem(
+                    'theme',
+                    'dark'
+                );
+
+            }
+
+            updateThemeButton();
+
+        }
+    );
+
+});
+
+
+</script>
+
+</body>
+</html>
+

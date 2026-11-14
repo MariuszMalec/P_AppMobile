@@ -892,9 +892,10 @@ function Sessions({ onBack }) {
                                 'session-cell',
                                 'session-block',
                                 session.is_live ? 'live-session' : '',
-                                `client-color-${((Number(session.client_id) || 1) - 1) % 6 + 1}`,
+                                session.color ? 'has-client-color' : `client-color-${((Number(session.client_id) || 1) - 1) % 6 + 1}`,
                               ].filter(Boolean).join(' ')}
                               style={{
+                                '--client-color': session.color || undefined,
                                 top: ((a - START_HOUR * 60) / 60) * HOUR_H,
                                 height: ((b - a) / 60) * HOUR_H,
                                 left: `${(lane / lanes) * 100}%`,

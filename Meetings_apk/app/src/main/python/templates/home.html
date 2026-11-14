@@ -168,6 +168,44 @@
                 font-size: 19px;
             }
         }
+
+        button.menu-button { font: inherit; text-align: left; cursor: pointer; }
+        .settings-icon { background: #e2e8f0; }
+
+        .st-bg {
+            display: none; position: fixed; inset: 0; z-index: 100;
+            background: rgba(15,23,42,.55); padding: 16px;
+            align-items: center; justify-content: center;
+        }
+        .st-bg.active { display: flex; }
+        .st-card {
+            width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto;
+            background: #fff; border-radius: 20px; padding: 22px;
+            box-shadow: 0 20px 50px rgba(15,23,42,.3);
+        }
+        .st-card h2 { margin: 0 0 14px; font-size: 22px; }
+        .st-card h3 { margin: 18px 0 8px; font-size: 16px; color: #172033; }
+        .st-card label { display: block; font-size: 13px; color: #64748b; margin: 8px 0 4px; }
+        .st-card input[type=email] {
+            width: 100%; padding: 12px; font-size: 16px;
+            border: 1px solid #cbd5e1; border-radius: 10px;
+        }
+        .st-btn {
+            display: block; width: 100%; margin-top: 8px; padding: 13px;
+            font-size: 16px; font-weight: 600; border: none; border-radius: 12px;
+            background: #3b82f6; color: #fff; cursor: pointer;
+        }
+        .st-btn.alt { background: #e2e8f0; color: #172033; }
+        .st-btn.danger { background: #f97316; }
+        .st-btn:disabled { opacity: .55; }
+        .st-info { font-size: 13px; color: #64748b; margin-top: 6px; }
+        #st-status {
+            margin-top: 14px; padding: 10px 12px; border-radius: 10px;
+            font-size: 14px; display: none; white-space: pre-wrap;
+        }
+        #st-status.ok { display: block; background: #dcfce7; color: #166534; }
+        #st-status.err { display: block; background: #fee2e2; color: #991b1b; }
+        #st-status.busy { display: block; background: #e0f2fe; color: #075985; }
     </style>
 </head>
 
@@ -223,6 +261,16 @@
             </div>
         </a>
 
+
+        <button type="button" class="menu-button" onclick="openSettings()">
+            <div class="icon settings-icon">⚙️</div>
+            <div class="button-content">
+                <div class="button-title">Ustawienia</div>
+                <div class="button-description">Kopia zapasowa, Google Drive, import</div>
+            </div>
+            <div class="arrow">›</div>
+        </button>
+
     </div>
 
     <div class="footer">
@@ -230,6 +278,246 @@
     </div>
 
 </div>
+
+
+<div class="st-bg" id="st-bg" onclick="closeSettings()">
+  <div class="st-card" onclick="event.stopPropagation()">
+    <h2>⚙️ Ustawienia</h2>
+
+    <h3>Kopia zapasowa</h3>
+    <button class="st-btn" onclick="exportDb()">⬇️ Eksportuj bazę (pobierz)</button>
+    <button class="st-btn alt" onclick="document.getElementById('st-file').click()">⬆️ Importuj bazę z pliku</button>
+    <input type="file" id="st-file" accept=".db" style="display:none" onchange="importDb(event)">
+    <div class="st-info">Import zastępuje obecną bazę. Przed nim powstaje kopia bezpieczeństwa.</div>
+
+    <h3>Google Drive</h3>
+    <div class="st-info" id="st-account">Konto: niepołączone</div>
+    <button class="st-btn alt" id="st-connect" onclick="connectDrive()">🔗 Połącz z Google</button>
+
+    <label for="st-recipient">E-mail odbiorcy kopii</label>
+    <input type="email" id="st-recipient" placeholder="adres@gmail.com">
+    <button class="st-btn danger" id="st-send" onclick="sendToDrive()">☁️ Wyślij na Google Drive</button>
+
+    <div id="st-status"></div>
+
+    <button class="st-btn alt" style="margin-top:18px" onclick="closeSettings()">Zamknij</button>
+  </div>
+</div>
+
+<script>
+const G_CLIENT_ID = '629429297967-9kaqj4144ruvc1ltteii8dumjndlumht.apps.googleusercontent.com';
+const G_SCOPE = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email';
+const G_MARKER = 'meetings-react-backup-v1';
+const G_FILE = 'Meetings-backup.db';
+const G_MIME = 'application/vnd.sqlite3';
+
+function stSet(kind, text) {
+    const el = document.getElementById('st-status');
+    el.className = kind || '';
+    el.textContent = text || '';
+}
+
+function lsGet(k) { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } }
+function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+
+function openSettings() {
+    document.getElementById('st-recipient').value = lsGet('meetingsDriveRecipient');
+    const acc = lsGet('meetingsDriveAccount');
+    document.getElementById('st-account').textContent =
+        'Konto: ' + (acc || 'niepołączone');
+    stSet('', '');
+    document.getElementById('st-bg').classList.add('active');
+}
+
+function closeSettings() {
+    document.getElementById('st-bg').classList.remove('active');
+}
+
+// ---------- EKSPORT ----------
+async function exportDb() {
+    stSet('busy', 'Przygotowuję kopię bazy...');
+    try {
+        const r = await fetch('/api/backup/export');
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const blob = await r.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'meetings-backup-' +
+            new Date().toISOString().replace(/[:.]/g, '-') + '.db';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        stSet('ok', 'Kopia bazy została pobrana.');
+    } catch (e) {
+        stSet('err', 'Nie udało się wyeksportować bazy: ' + e.message);
+    }
+}
+
+// ---------- IMPORT ----------
+async function importDb(event) {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+
+    if (!/\.db(\s*\(\d+\))?$/i.test(file.name)) {
+        stSet('err', 'Wybierz plik bazy z rozszerzeniem .db.');
+        return;
+    }
+    if (!confirm('Import zastąpi obecną bazę klientów i sesji. ' +
+                 'Najpierw zostanie utworzona kopia bezpieczeństwa. Kontynuować?')) return;
+
+    stSet('busy', 'Sprawdzam bazę i importuję...');
+    try {
+        const buf = await file.arrayBuffer();
+        const fd = new FormData();
+        fd.append('file', new Blob([buf], { type: 'application/octet-stream' }), 'import.db');
+        const r = await fetch('/api/backup/import', { method: 'POST', body: fd });
+        const res = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(res.detail || 'HTTP ' + r.status);
+        stSet('ok', 'Import zakończony. Kopia poprzedniej bazy: ' + (res.backup || 'utworzona') + '.');
+    } catch (e) {
+        stSet('err', 'Import: ' + e.message);
+    }
+}
+
+// ---------- GOOGLE ----------
+let gScript = null;
+function loadGoogle() {
+    if (window.google && window.google.accounts && window.google.accounts.oauth2)
+        return Promise.resolve();
+    if (!gScript) {
+        gScript = new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = 'https://accounts.google.com/gsi/client';
+            s.async = true;
+            s.onload = resolve;
+            s.onerror = () => { gScript = null; reject(new Error('Nie udało się załadować logowania Google (brak internetu?).')); };
+            document.head.appendChild(s);
+        });
+    }
+    return gScript;
+}
+
+async function googleToken(prompt) {
+    await loadGoogle();
+    return new Promise((resolve, reject) => {
+        const tc = google.accounts.oauth2.initTokenClient({
+            client_id: G_CLIENT_ID,
+            scope: G_SCOPE,
+            callback: (resp) => {
+                if (resp.error) return reject(new Error(resp.error_description || resp.error));
+                if (!resp.access_token) return reject(new Error('Google nie zwrócił tokenu.'));
+                resolve(resp.access_token);
+            },
+            error_callback: (err) => reject(new Error((err && err.message) || 'Logowanie Google nie powiodło się.'))
+        });
+        tc.requestAccessToken({ prompt: prompt || '' });
+    });
+}
+
+async function gReq(url, token, options) {
+    options = options || {};
+    const r = await fetch(url, Object.assign({}, options, {
+        headers: Object.assign({ Authorization: 'Bearer ' + token }, options.headers || {})
+    }));
+    if (!r.ok) {
+        const j = await r.json().catch(() => ({}));
+        throw new Error((j.error && j.error.message) || 'Google Drive: HTTP ' + r.status);
+    }
+    if (r.status === 204) return null;
+    return r.json();
+}
+
+async function connectDrive() {
+    stSet('busy', 'Łączę z Google...');
+    try {
+        const token = await googleToken('select_account');
+        const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo',
+            { headers: { Authorization: 'Bearer ' + token } });
+        if (!r.ok) throw new Error('Nie udało się odczytać konta Google.');
+        const u = await r.json();
+        if (!u.email) throw new Error('Google nie zwrócił adresu e-mail.');
+        lsSet('meetingsDriveAccount', u.email);
+        document.getElementById('st-account').textContent = 'Konto: ' + u.email;
+        stSet('ok', 'Połączono z Google: ' + u.email);
+    } catch (e) {
+        stSet('err', 'Google Drive: ' + e.message);
+    }
+}
+
+async function sendToDrive() {
+    const email = document.getElementById('st-recipient').value.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        stSet('err', 'Podaj prawidłowy adres e-mail odbiorcy.');
+        return;
+    }
+    lsSet('meetingsDriveRecipient', email);
+
+    const btn = document.getElementById('st-send');
+    btn.disabled = true;
+    try {
+        stSet('busy', 'Łączę z Google...');
+        const token = await googleToken('');
+
+        stSet('busy', 'Pobieram aktualną bazę...');
+        const br = await fetch('/api/backup/export');
+        if (!br.ok) throw new Error('Nie udało się pobrać bazy: HTTP ' + br.status);
+        const blob = await br.blob();
+        if (!blob.size) throw new Error('Pobrana baza jest pusta.');
+
+        stSet('busy', 'Szukam poprzedniej kopii na Dysku...');
+        const q = "trashed = false and appProperties has { key='meetingsBackup' and value='" + G_MARKER + "' }";
+        const found = await gReq(
+            'https://www.googleapis.com/drive/v3/files?q=' + encodeURIComponent(q) +
+            '&fields=files(id,name,webViewLink)', token);
+        const existing = found.files && found.files[0];
+
+        let file;
+        if (existing) {
+            stSet('busy', 'Aktualizuję istniejącą kopię...');
+            file = await gReq(
+                'https://www.googleapis.com/upload/drive/v3/files/' + existing.id +
+                '?uploadType=media&fields=id,name,webViewLink', token,
+                { method: 'PATCH', headers: { 'Content-Type': G_MIME }, body: blob });
+        } else {
+            stSet('busy', 'Tworzę kopię na Dysku...');
+            const meta = { name: G_FILE, mimeType: G_MIME, appProperties: { meetingsBackup: G_MARKER } };
+            const form = new FormData();
+            form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
+            form.append('file', blob, G_FILE);
+            file = await gReq(
+                'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink',
+                token, { method: 'POST', body: form });
+        }
+
+        stSet('busy', 'Sprawdzam dostęp odbiorcy...');
+        const perms = await gReq(
+            'https://www.googleapis.com/drive/v3/files/' + file.id +
+            '/permissions?fields=permissions(id,type,role,emailAddress)', token);
+        const has = (perms.permissions || []).find(p =>
+            p.type === 'user' && p.emailAddress && p.emailAddress.toLowerCase() === email.toLowerCase());
+
+        if (!has) {
+            stSet('busy', 'Udostępniam kopię odbiorcy...');
+            await gReq(
+                'https://www.googleapis.com/drive/v3/files/' + file.id +
+                '/permissions?sendNotificationEmail=true', token,
+                { method: 'POST', headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ type: 'user', role: 'reader', emailAddress: email }) });
+        }
+
+        stSet('ok', existing
+            ? 'Kopia na Google Drive została zaktualizowana i udostępniona.'
+            : 'Kopia została wysłana na Google Drive i udostępniona.');
+    } catch (e) {
+        stSet('err', 'Google Drive: ' + e.message);
+    } finally {
+        btn.disabled = false;
+    }
+}
+</script>
 
 </body>
 </html>
