@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import API_URL from './api'
 import ScrollButtons from './ScrollButtons'
@@ -31,6 +31,25 @@ function App() {
   const [filterResult, setFilterResult] = useState('')
   const [sort, setSort] = useState('')
   const [onlyLosers, setOnlyLosers] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(30)
+  const sentinelRef = useRef(null)
+
+  useEffect(() => {
+    setVisibleCount(30)
+  }, [onlyLosers, teams])
+
+  useEffect(() => {
+    const node = sentinelRef.current
+    if (!node) return
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0].isIntersecting) setVisibleCount(c => c + 30)
+      },
+      { rootMargin: '800px' }
+    )
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [visibleCount, teams, onlyLosers, loading])
 
   const [selectedTeam, setSelectedTeam] = useState(null)
   const [teamPicture, setTeamPicture] = useState('')
@@ -483,7 +502,7 @@ function App() {
                 </thead>
 
                 <tbody>
-                  {shownTeams.map(team => {
+                  {shownTeams.slice(0, visibleCount).map(team => {
                     const resultStatus = {
                       displayResult: team.DisplayResult,
                       lose: team.Lose
@@ -584,6 +603,10 @@ function App() {
                   })}
                 </tbody>
               </table>
+
+              {shownTeams.length > visibleCount && (
+                <div ref={sentinelRef} style={{ height: 1 }} />
+              )}
 
             </div>
           </div>
