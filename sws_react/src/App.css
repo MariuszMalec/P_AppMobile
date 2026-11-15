@@ -1663,3 +1663,14 @@ html[data-theme="dark"]  .stats-page { --h-bg1:#0b1020; --h-bg2:#1a1033; --h-bg3
 .sc-table th:nth-child(2), .sc-table td:nth-child(2) { text-align: left; width: 38%; overflow-wrap: anywhere; }
 .sc-table tbody tr:nth-child(even) { background: rgba(128,128,128,.1); }
 .sc-top td { font-weight: 700; }
+
+/* ===== Listy rozwijane: czytelne w obu motywach ===== */
+html[data-theme="dark"]  .tr-search,
+html[data-theme="dark"]  .tv-controls select { background: #1e2227; color: #f5f7fa; border: 1px solid #3d444d; }
+html[data-theme="dark"]  .tr-search option,
+html[data-theme="dark"]  .tv-controls select option { background: #1e2227; color: #f5f7fa; }
+
+html[data-theme="light"] .tr-search,
+html[data-theme="light"] .tv-controls select { background: #fff; color: #111; border: 1px solid #c4c9cf; }
+html[data-theme="light"] .tr-search option,
+html[data-theme="light"] .tv-controls select option { background: #fff; color: #111; }
