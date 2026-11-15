@@ -104,3 +104,6 @@ from routers import stats
 app.include_router(stats.router)
 from routers import api_stats
 app.include_router(api_stats.router)
+
+from routers import team_scorers
+app.include_router(team_scorers.router)

@@ -31,7 +31,11 @@ def read_row(panel, a, b, W):
         if not t: continue
         f, gw, gh, top, img = t
         if gh < 6: continue
+        if gw > 2.2 * gh: continue
+        if gw > 0.6 * gh and sum(f) / len(f) > 0.85: continue
         glyphs.append((x, x2, classify(f, gw, gh)))
+    while glyphs and glyphs[-1][2] == '?':
+        glyphs.pop()
     gaps = sorted(glyphs[i+1][0] - glyphs[i][1] for i in range(len(glyphs) - 1))
     med = gaps[len(gaps) // 2] if gaps else 1
     thr = max(med * 2.0, med + 2)
