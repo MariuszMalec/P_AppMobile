@@ -1,0 +1,6 @@
+#!/data/data/com.termux/files/home/projects/P_AppMobile/sws_api/venv_ocr/bin/python3
+import sys
+from pytesseract.pytesseract import main
+if __name__ == '__main__':
+    sys.argv[0] = sys.argv[0].removesuffix('.exe')
+    sys.exit(main())
