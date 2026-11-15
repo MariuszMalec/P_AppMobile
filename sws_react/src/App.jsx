@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import API_URL from './api'
+import Home from './Home'
+import Trophies from './Trophies'
 import ScrollButtons from './ScrollButtons'
 import TeamTrophiesView from './TeamTrophiesView'
 
@@ -31,6 +33,7 @@ function App() {
   const [filterResult, setFilterResult] = useState('')
   const [sort, setSort] = useState('')
   const [onlyLosers, setOnlyLosers] = useState(false)
+  const [page, setPage] = useState('home')
   const [visibleCount, setVisibleCount] = useState(30)
   const sentinelRef = useRef(null)
 
@@ -369,6 +372,27 @@ function App() {
     return `${API_URL}${picture}`
   }
 
+  if (page === 'trophies') {
+    return <Trophies onBack={() => setPage('home')} />
+  }
+
+  if (page === 'home' && !seasonViewTeam) {
+    return (
+      <Home
+        teams={teams}
+        theme={theme}
+        onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        onTeams={() => setPage('teams')}
+        onTrophies={() => setPage('trophies')}
+        onMatrix={() => {
+          if (teams.length === 0) return
+          setPage('teams')
+          setSeasonViewTeam(teams[0])
+        }}
+      />
+    )
+  }
+
   if (seasonViewTeam) {
     return (
       <TeamTrophiesView
@@ -392,9 +416,9 @@ function App() {
         </div>
 
         <div className="nav-buttons">
-          <button>Home</button>
+          <button onClick={() => setPage('home')}>Home</button>
           <button className="active">Teams</button>
-          <button>Trophies</button>
+          <button onClick={() => setPage('trophies')}>Trophies</button>
           <button
             className="theme-toggle"
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}

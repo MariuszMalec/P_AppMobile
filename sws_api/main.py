@@ -1,3 +1,4 @@
+from routers.api_trophies import router as api_trophies_router
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import sqlite3
@@ -97,3 +98,4 @@ def api_test():
 
 from routers import team_trophy_matrix
 app.include_router(team_trophy_matrix.router)
+app.include_router(api_trophies_router)
