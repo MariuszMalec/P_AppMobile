@@ -99,3 +99,6 @@ def api_test():
 from routers import team_trophy_matrix
 app.include_router(team_trophy_matrix.router)
 app.include_router(api_trophies_router)
+
+from routers import stats
+app.include_router(stats.router)
