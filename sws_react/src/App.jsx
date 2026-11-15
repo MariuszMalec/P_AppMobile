@@ -35,6 +35,22 @@ function App() {
   const [filterResult, setFilterResult] = useState('')
   const [sort, setSort] = useState('')
   const [onlyLosers, setOnlyLosers] = useState(false)
+  const [scorersTeam, setScorersTeam] = useState(null)
+  const [scorersRows, setScorersRows] = useState([])
+  const [scorersLoading, setScorersLoading] = useState(false)
+
+  const openScorers = (team) => {
+    setScorersTeam(team)
+    setScorersRows([])
+    setScorersLoading(true)
+    fetch(`${API_URL}/api/scorers?name=${encodeURIComponent(team.Name)}`)
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
+      .then(d => {
+        setScorersRows(d.rows.filter(x => Number(x.Season) === Number(team.Season)))
+        setScorersLoading(false)
+      })
+      .catch(() => setScorersLoading(false))
+  }
   const [page, setPage] = useState('home')
   const [visibleCount, setVisibleCount] = useState(30)
   const sentinelRef = useRef(null)
@@ -558,6 +574,13 @@ function App() {
                           <div className="team-actions">
                             <button
                               className="team-edit-button"
+                              title="Strzelcy"
+                              onClick={() => openScorers(team)}
+                            >
+                              ⚽
+                            </button>
+                            <button
+                              className="team-edit-button"
                               onClick={() => openEditTeam(team)}
                             >
                               ✏️
@@ -653,6 +676,38 @@ function App() {
       <footer>
         © 2026 Sports Manager • React + FastAPI
       </footer>
+
+      {scorersTeam && (
+        <div className="modal-backdrop" onClick={() => setScorersTeam(null)}>
+          <div className="team-modal" onClick={event => event.stopPropagation()}>
+            <button className="modal-close" onClick={() => setScorersTeam(null)}>×</button>
+            <h2>⚽ {scorersTeam.Name} — {scorersTeam.Season}</h2>
+
+            {scorersLoading && <div className="modal-message">Ładowanie...</div>}
+
+            {!scorersLoading && scorersRows.length === 0 && (
+              <div className="modal-message">Brak strzelców dla tego sezonu</div>
+            )}
+
+            {!scorersLoading && scorersRows.length > 0 && (
+              <table className="sc-table">
+                <thead>
+                  <tr><th>#</th><th>Zawodnik</th><th>LGE</th><th>CUP</th><th>EUR</th><th>TOT</th></tr>
+                </thead>
+                <tbody>
+                  {scorersRows.map((r, i) => (
+                    <tr key={i} className={r.Top ? 'sc-top' : ''}>
+                      <td>{i + 1}</td>
+                      <td>{r.Top ? '🥇 ' : ''}{r.Player}</td>
+                      <td>{r.League}</td><td>{r.Cup}</td><td>{r.Europe}</td><td>{r.Total}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+      )}
 
       {trophiesTeam && (
         <div
