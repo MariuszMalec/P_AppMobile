@@ -1,0 +1,58 @@
+import { useEffect, useState } from 'react'
+import API_URL from './api'
+
+const BLOCKS = [
+  ['by_trophy', '🏆 Wygrane puchary'],
+  ['lost_trophy', '🔴 Przegrane finały'],
+  ['by_team', '🛡️ Najlepsze drużyny'],
+  ['scorers', '⚽ Top strzelcy'],
+  ['countries', '🌍 Kraje'],
+  ['seasons', '📅 Sezony'],
+]
+
+export default function Stats({ onBack }) {
+  const [d, setD] = useState(null)
+  const [error, setError] = useState('')
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/stats`)
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error(`HTTP ${r.status}`))))
+      .then(setD)
+      .catch(e => setError(e.message))
+  }, [])
+
+  return (
+    <div className="tr-page">
+      <div className="tr-top">
+        <button className="tr-back" onClick={onBack}>← Home</button>
+        <h1>📊 Statystyki</h1>
+      </div>
+      {error && <div className="tr-msg">BŁĄD: {error}</div>}
+      {!d && !error && <div className="tr-msg">Ładowanie...</div>}
+      {d && (
+        <>
+          <div className="st-top">
+            <div className="st-box"><b>🟢 {d.wins}</b><span>wygrane</span></div>
+            <div className="st-box"><b>🔴 {d.losses}</b><span>przegrane</span></div>
+            <div className="st-box"><b>{d.rate}%</b><span>skuteczność</span></div>
+          </div>
+          {BLOCKS.map(([key, title]) =>
+            d[key] && d[key].length > 0 ? (
+              <div className="st-card" key={key}>
+                <h3>{title}</h3>
+                {d[key].map(x => (
+                  <div className="st-row" key={x.label}>
+                    <div className="st-line">
+                      <span>{x.label}</span><b>{x.value}</b>
+                    </div>
+                    <div className="st-bar"><i style={{ width: `${x.pct}%` }} /></div>
+                  </div>
+                ))}
+              </div>
+            ) : null
+          )}
+        </>
+      )}
+    </div>
+  )
+}

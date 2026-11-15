@@ -1612,3 +1612,44 @@ html[data-theme="light"] .tr-page { background: #f4f6f8; color: #111; }
 .tr-desc { font-size: 11px; opacity: .75; overflow-wrap: anywhere; }
 .tr-team { font-size: 11px; opacity: .9; }
 .tr-edit { margin-top: 6px; padding: 5px 10px; font-size: 12px; border-radius: 8px; border: 1px solid rgba(128,128,128,.5); background: rgba(128,128,128,.15); color: inherit; }
+
+/* ===== Stats ===== */
+.st-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 10px 0; }
+.st-box { display: flex; flex-direction: column; align-items: center; padding: 12px 4px; border-radius: 14px; background: rgba(128,128,128,.12); border: 1px solid rgba(128,128,128,.3); }
+.st-box b { font-size: 20px; }
+.st-box span { font-size: 11px; opacity: .7; }
+.st-card { padding: 12px; margin-bottom: 10px; border-radius: 14px; background: rgba(128,128,128,.1); border: 1px solid rgba(128,128,128,.3); }
+.st-card h3 { font-size: 15px; margin: 0 0 8px; }
+.st-row { margin-bottom: 8px; }
+.st-line { display: flex; justify-content: space-between; gap: 8px; font-size: 13px; }
+.st-bar { height: 6px; border-radius: 99px; background: rgba(128,128,128,.25); overflow: hidden; margin-top: 3px; }
+.st-bar i { display: block; height: 100%; border-radius: 99px; background: linear-gradient(90deg, #6366f1, #ec4899); }
+
+/* ===== Stats (jak w API) ===== */
+html[data-theme="light"] .stats-page { --h-bg1:#eef2ff; --h-bg2:#fdf2f8; --h-bg3:#ecfeff; --h-card:rgba(255,255,255,.7); --h-border:rgba(255,255,255,.9); --h-text:#0f172a; --h-muted:#64748b; --h-shadow:rgba(79,70,229,.15); }
+html[data-theme="dark"]  .stats-page { --h-bg1:#0b1020; --h-bg2:#1a1033; --h-bg3:#08222b; --h-card:rgba(255,255,255,.06); --h-border:rgba(255,255,255,.12); --h-text:#f1f5f9; --h-muted:#94a3b8; --h-shadow:rgba(0,0,0,.5); }
+.stats-page { min-height: 100vh; color: var(--h-text); background: linear-gradient(135deg, var(--h-bg1), var(--h-bg2), var(--h-bg3)); background-attachment: fixed; }
+.s-wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 40px; }
+.s-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 18px; }
+.s-pill { border-radius: 999px; padding: 5px 14px; font-size: 13px; font-weight: 600; background: var(--h-card); border: 1px solid var(--h-border); color: var(--h-text); cursor: pointer; }
+.stats-page h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 16px; color: var(--h-text); }
+.s-insights { display: grid; grid-template-columns: 1fr; gap: 12px; }
+@media (min-width: 640px) { .s-insights { grid-template-columns: repeat(2, 1fr); } .s-wide { grid-column: 1 / -1; } }
+.s-card { background: var(--h-card); border: 1px solid var(--h-border); border-radius: 20px; padding: 14px 16px; box-shadow: 0 10px 30px var(--h-shadow); }
+.s-card h4 { font-size: 14px; font-weight: 700; margin: 0 0 10px; color: var(--h-text); }
+.s-bar-row { display: grid; grid-template-columns: 90px 1fr 26px; align-items: center; gap: 8px; margin-bottom: 7px; font-size: 13px; }
+.s-bar-lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.s-bar { height: 9px; border-radius: 99px; background: rgba(128,128,128,.18); overflow: hidden; }
+.s-fill { height: 100%; border-radius: 99px; }
+.s-fill.c1 { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+.s-fill.c2 { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+.s-fill.c3 { background: linear-gradient(90deg, #10b981, #06b6d4); }
+.s-fill.c4 { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+.s-bar-val { text-align: right; font-weight: 700; }
+.s-empty { color: var(--h-muted); font-size: 13px; }
+.s-record { display: flex; gap: 4px; height: 34px; border-radius: 12px; overflow: hidden; font-weight: 700; font-size: 14px; }
+.s-record > div { display: grid; place-items: center; color: #fff; }
+.s-win { background: linear-gradient(90deg, #10b981, #059669); }
+.s-lose { background: linear-gradient(90deg, #f43f5e, #dc2626); }
+.s-rate { margin-top: 8px; font-size: 13px; color: var(--h-muted); }
+.s-rate b { color: var(--h-text); }

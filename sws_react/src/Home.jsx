@@ -18,7 +18,7 @@ function Counter({ value }) {
   return <>{value ? n : 0}</>
 }
 
-export default function Home({ teams, theme, onToggleTheme, onTeams, onMatrix, onTrophies }) {
+export default function Home({ teams, theme, onToggleTheme, onTeams, onMatrix, onTrophies, onStats }) {
   const stats = useMemo(() => ({
     teams: new Set(teams.map(t => t.Name)).size,
     seasons: new Set(teams.map(t => t.Season)).size,
@@ -30,6 +30,7 @@ export default function Home({ teams, theme, onToggleTheme, onTeams, onMatrix, o
     { cls: 'g2', ico: '🏆', title: 'Trofea', desc: 'Galeria pucharów', on: onTrophies },
     { cls: 'g3', ico: '📊', title: 'Lata × trofea', desc: 'Wygrane i przegrane', on: onMatrix },
     { cls: 'g4', ico: '⚽', title: 'Top Scorer', desc: 'Szukaj po strzelcu', soon: true },
+    { cls: 'g1', ico: '📊', title: 'Statystyki', desc: 'Rankingi i skuteczność', on: onStats },
   ]
 
   return (

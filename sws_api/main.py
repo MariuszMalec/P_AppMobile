@@ -102,3 +102,5 @@ app.include_router(api_trophies_router)
 
 from routers import stats
 app.include_router(stats.router)
+from routers import api_stats
+app.include_router(api_stats.router)
