@@ -4,6 +4,7 @@ import API_URL from './api'
 import Home from './Home'
 import Trophies from './Trophies'
 import Stats from './Stats'
+import Scorers from './Scorers'
 import ScrollButtons from './ScrollButtons'
 import TeamTrophiesView from './TeamTrophiesView'
 
@@ -373,6 +374,10 @@ function App() {
     return `${API_URL}${picture}`
   }
 
+  if (page === 'scorers') {
+    return <Scorers theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} onBack={() => setPage('home')} />
+  }
+
   if (page === 'stats') {
     return <Stats theme={theme} onToggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')} onBack={() => setPage('home')} />
   }
@@ -390,6 +395,7 @@ function App() {
         onTeams={() => setPage('teams')}
         onTrophies={() => setPage('trophies')}
         onStats={() => setPage('stats')}
+        onScorers={() => setPage('scorers')}
         onMatrix={() => {
           if (teams.length === 0) return
           setPage('teams')

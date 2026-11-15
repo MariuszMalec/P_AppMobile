@@ -1653,3 +1653,13 @@ html[data-theme="dark"]  .stats-page { --h-bg1:#0b1020; --h-bg2:#1a1033; --h-bg3
 .s-lose { background: linear-gradient(90deg, #f43f5e, #dc2626); }
 .s-rate { margin-top: 8px; font-size: 13px; color: var(--h-muted); }
 .s-rate b { color: var(--h-text); }
+
+/* ===== Scorers ===== */
+.sc-h { font-size: 15px; margin: 16px 0 8px; }
+.sc-table { table-layout: fixed; width: 100%; border-collapse: collapse; font-size: 12px; text-align: center; }
+.sc-table th, .sc-table td { padding: 5px 2px; border: 1px solid rgba(128,128,128,.35); }
+.sc-table th { background: rgba(79,156,249,.2); }
+.sc-table th:nth-child(1), .sc-table td:nth-child(1) { width: 44px; }
+.sc-table th:nth-child(2), .sc-table td:nth-child(2) { text-align: left; width: 38%; overflow-wrap: anywhere; }
+.sc-table tbody tr:nth-child(even) { background: rgba(128,128,128,.1); }
+.sc-top td { font-weight: 700; }

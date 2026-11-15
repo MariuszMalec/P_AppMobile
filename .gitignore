@@ -122,3 +122,9 @@ Desktop.ini
 
 # Android SDK - osobna konfiguracja na PC i Termux
 local.properties
+
+# kopie zapasowe i pliki robocze
+*.bak*
+patch*.mjs
+venv*/
+dbg_*.png
