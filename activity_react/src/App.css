@@ -295,3 +295,8 @@ main { max-width: 760px; margin: 0 auto; padding: 1.25rem 1rem 6rem; }
   backdrop-filter: blur(4px);
 }
 .form-close:active { transform: scale(.92); }
+
+.st-verdict { font-size: 11px; padding: 2px 8px; border-radius: 10px; color: #fff; white-space: nowrap; }
+.st-verdict.ok { background: #2e9e5b; }
+.st-verdict.warn { background: #e08a00; }
+.st-type-head small { opacity: .6; font-weight: 400; }
