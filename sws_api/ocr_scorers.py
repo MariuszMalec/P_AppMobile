@@ -60,6 +60,16 @@ def parse(words):
     digits = ["".join(TO_DIGIT.get(c, c) for c in w) for w in nums]
     return name, club, digits
 
+
+def merged_bands(panel, W, H):
+    main = find_bands(panel, int(.05*W), int(.62*W), int(.20*H), int(.87*H))
+    top = find_bands(panel, int(.05*W), int(.62*W), int(.02*H), int(.20*H) + 20)
+    out = list(main)
+    for t in top:
+        if all(abs(t[0] - m[0]) > 4 for m in main):
+            out.append(t)
+    return sorted(out)
+
 db = sqlite3.connect("sws.db"); db.row_factory = sqlite3.Row
 pairs = db.execute("SELECT Name, Season, MIN(Picture) Pic FROM Teams GROUP BY Name, Season").fetchall()
 if LIMIT: pairs = pairs[:LIMIT]
@@ -75,7 +85,7 @@ try:
             try:
                 im = Image.open(path).convert("L"); w, h = im.size
                 panel = im.crop((0, h // 2, w // 2, h)); W, H = panel.size
-                for (a, b) in find_bands(panel, int(.05*W), int(.62*W), int(.20*H), int(.87*H)):
+                for (a, b) in merged_bands(panel, W, H):
                     a, b = max(a-3, 0), min(b+3, H)
                     p = parse(read_row(panel, a, b, W))
                     if not p: continue
@@ -109,3 +119,4 @@ with open("scorers_review.csv", "w", newline="", encoding="utf-8") as f:
 with open("scorers_check.csv", "w", newline="", encoding="utf-8") as f:
     csv.writer(f).writerows([("Team","Season","Player","LGE","CUP","TOT"), *check_rows])
 print("OK:", len(ok_rows), "| do sprawdzenia:", len(check_rows), "| zapisano do bazy" if APPLY else "| tylko podgląd")
+
