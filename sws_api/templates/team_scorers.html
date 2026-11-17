@@ -31,7 +31,8 @@
 </form>
 
 {% if name %}
-<h2 class="h6 mb-2">{{ name }}</h2>
+<h2 class="h6 mb-2">{{ name }}{% if season %} - sezon {{ season }}{% endif %}</h2>
+{% if season %}<a href="/teams/scorers?name={{ name }}" class="btn btn-sm btn-outline-secondary mb-2">Wszystkie lata</a>{% endif %}
 {% if rows %}
 <table class="table table-bordered table-striped sc">
     <thead class="table-dark"><tr><th>Rok</th><th>Zawodnik</th><th>LGE</th><th>CUP</th><th>EUR</th><th>TOT</th></tr></thead>

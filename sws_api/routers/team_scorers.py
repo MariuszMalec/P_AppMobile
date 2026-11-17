@@ -9,9 +9,10 @@ router = APIRouter(prefix="/teams", tags=["team-scorers"])
 
 @router.get("/scorers", response_class=HTMLResponse)
 def team_scorers(request: Request, name: str = Query(None),
-                 team_id: int = Query(None), db=Depends(get_db)):
+                 team_id: int = Query(None), season: int = Query(None),
+                 db=Depends(get_db)):
     try:
         return templates.TemplateResponse(
-            request, "team_scorers.html", get_team_scorers(db, name, team_id))
+            request, "team_scorers.html", get_team_scorers(db, name, team_id, season))
     finally:
         db.close()
