@@ -85,21 +85,55 @@ Cremonese,1999,Hernan Crespo,5,3,11,19
 Cremonese,2000,Maciej Zurawski,28,0,5,33
 Cremonese,2000,Robert Dymkowski,11,5,8,24
 Cremonese,2000,Marek Szemonski,12,6,6,24
-Gornik,1996,NoTopScorer,0,0,0,0
-Gornik,1997,NoTopScorer,0,0,0,0
-Gornik,1998,NoTopScorer,0,0,0,0
-Gornik,1999,NoTopScorer,0,0,0,0
-Gornik,2000,NoTopScorer,0,0,0,0
-Gornik,2001,NoTopScorer,0,0,0,0
-Gornik,2002,NoTopScorer,0,0,0,0
-Gornik,2003,NoTopScorer,0,0,0,0
-Gornik,2004,NoTopScorer,0,0,0,0
-Gornik,2005,NoTopScorer,0,0,0,0
-Gornik,2006,NoTopScorer,0,0,0,0
-Gornik,2007,NoTopScorer,0,0,0,0
-Gornik,2008,NoTopScorer,0,0,0,0
-Gornik,2009,NoTopScorer,0,0,0,0
-Gornik,2010,NoTopScorer,0,0,0,0
+Gornik,1996,Mariano Bombarda,48,16,0,64
+Gornik,1997,Gustavo Lopez,39,0,9,48
+Gornik,1997,Mariano Bombarda,31,0,0,31
+Gornik,1997,Hernan Crespo,15,2,12,29
+Gornik,1997,Pier,6,0,9,15
+Gornik,1998,Hernan Crespo,29,5,3,37
+Gornik,1998,Gustavo Lopez,23,5,6,34
+Gornik,1998,Mariano Bombarda,13,2,2,17
+Gornik,1998,Pier,3,6,7,16
+Gornik,1999,Hernan Crespo,17,0,8,25
+Gornik,1999,Pier,6,0,7,13
+Gornik,2000,Pier,7,10,16,33
+Gornik,2000,Mariano Bombarda,28,1,3,32
+Gornik,2000,Gustavo Lopez,19,0,12,31
+Gornik,2000,Hernan Crespo,10,8,5,23
+Gornik,2001,Gustavo Lopez,25,1,11,37
+Gornik,2001,Hernan Crespo,17,5,9,31
+Gornik,2001,Mariano Bombarda,24,2,3,29
+Gornik,2001,Pier,6,6,11,23
+Gornik,2002,Leandro Machado,24,8,12,44
+Gornik,2002,Leonardo,13,3,8,24
+Gornik,2002,Andrea Zanuttig,9,2,7,18
+Gornik,2003,Leonardo,9,1,10,20
+Gornik,2003,Leandro Machado,10,0,7,17
+Gornik,2003,Gustavo Lopez,13,0,1,14
+Gornik,2003,Andrea Zanuttig,11,0,2,13
+Gornik,2004,Leonardo,24,1,2,27
+Gornik,2004,Luizao,17,3,3,23
+Gornik,2004,Leandro Machado,11,3,7,21
+Gornik,2004,Andrea Zanuttig,9,0,5,14
+Gornik,2005,Leandro Machado,13,7,2,22
+Gornik,2005,Leonardo,19,1,1,21
+Gornik,2005,Marc Wilmots,9,3,2,14
+Gornik,2005,Luizao,12,0,1,13
+Gornik,2006,Leandro Machado,17,4,11,32
+Gornik,2006,Marc Wilmots,10,3,9,22
+Gornik,2006,Roberto Muzzi,10,3,0,13
+Gornik,2007,Uwe Jahnig,6,7,9,22
+Gornik,2007,Marc Wilmots,9,6,7,22
+Gornik,2007,Leonardo,13,1,1,15
+Gornik,2007,Luizao,9,1,4,14
+Gornik,2008,Leandro Machado,14,4,6,24
+Gornik,2008,Roberto Muzzi,14,1,0,15
+Gornik,2009,Leonardo,22,4,11,37
+Gornik,2009,Marc Wilmots,2,6,7,15
+Gornik,2009,Roberto Muzzi,11,2,0,13
+Gornik,2010,Leonardo,24,0,1,25
+Gornik,2010,Leandro Machado,21,2,1,24
+Gornik,2010,Uwe Jahnig,3,5,10,18
 Heerenveen,1996,Filippo Inzaghi,19,6,0,25
 Heerenveen,1996,Martin Mandra,20,1,0,21
 Heerenveen,1997,Romeo Wouden,17,3,1,21
@@ -119,7 +153,9 @@ Heerenveen,2001,Filippo Inzaghi,11,1,11,23
 Heerenveen,2001,Romeo Wouden,17,3,2,22
 Heerenveen,2001,Jesus Garcia Pitarch,6,8,2,16
 Heerenveen,2001,Piotr Reiss,11,1,2,14
-Hereford,2001,NoTopScorer,0,0,0,0
+Hereford,2001,Pablo Zoloaga,10,7,24,41
+Hereford,2001,Jesus Garcia Pitarch,7,2,23,32
+Hereford,2001,Gabriel Bertalan,1,4,22,27
 Juventus,1996,Christian Vieri,33,4,4,41
 Juventus,1996,Pier,5,0,11,16
 Juventus,1997,Gustavo Lopez,23,6,10,39
@@ -221,11 +257,26 @@ Siarka,2001,Andrzej Bialek,15,6,1,22
 Siarka,2001,Krzysztof Zagorski,16,1,2,19
 Siarka,2001,Pier,1,1,16,18
 Stal,1996,NoTopScorer,0,0,0,0
-Stal,1997,NoTopScorer,0,0,0,0
-Stal,1998,NoTopScorer,0,0,0,0
-Stal,1999,NoTopScorer,0,0,0,0
-Stal,2000,NoTopScorer,0,0,0,0
-Stal,2001,NoTopScorer,0,0,0,0
+Stal,1997,Martin Mandra,30,1,0,31
+Stal,1997,Francesco Palmieri,18,8,0,26
+Stal,1997,Gustavo Lopez,0,6,19,25
+Stal,1997,Milan Rapajic,10,3,5,18
+Stal,1997,Gennaro Ruotolo,4,4,7,15
+Stal,1998,Milan Rapajic,22,5,6,33
+Stal,1998,Francesco Palmieri,24,0,3,27
+Stal,1998,Gustavo Lopez,14,3,5,22
+Stal,1998,M Cappellini,9,3,9,21
+Stal,1999,Gustavo Lopez,22,0,5,27
+Stal,1999,Pier,7,7,3,17
+Stal,1999,M Cappellini,4,3,7,14
+Stal,1999,Francesco Palmieri,14,0,0,14
+Stal,2000,Danilo Di Vincenzo,25,2,3,30
+Stal,2000,Milan Rapajic,17,0,2,19
+Stal,2000,Pier,6,6,3,15
+Stal,2001,Gustavo Lopez,24,3,8,35
+Stal,2001,Francesco Palmieri,17,3,3,23
+Stal,2001,M Cappellini,9,4,7,20
+Stal,2001,Danilo Di Vincenzo,14,1,1,16
 Udinese,1997,Pier,20,8,8,36
 Udinese,1997,Goran Vlaovic,26,8,1,35
 Udinese,1997,Gustavo Lopez,14,3,13,30
@@ -254,16 +305,48 @@ Udinese,2003,Marc Wilmots,6,3,6,15
 Udinese,2004,Gabriel Bertalan,12,10,8,30
 Udinese,2004,Leonardo,17,4,5,26
 Udinese,2004,Leandro Machado,11,1,2,14
-Vfl,2003,NoTopScorer,0,0,0,0
-Vfl,2004,NoTopScorer,0,0,0,0
-Vfl,2005,NoTopScorer,0,0,0,0
-Vfl,2006,NoTopScorer,0,0,0,0
-WestHam,1996,NoTopScorer,0,0,0,0
-WestHam,1997,NoTopScorer,0,0,0,0
-WestHam,1998,NoTopScorer,0,0,0,0
-WestHam,1999,NoTopScorer,0,0,0,0
-WestHam,2000,NoTopScorer,0,0,0,0
-WestHam,2001,NoTopScorer,0,0,0,0
+Vfl,2003,Filippo Inzaghi,34,0,7,41
+Vfl,2003,Milan Rapajic,25,0,3,28
+Vfl,2003,Gustavo Lopez,11,7,9,27
+Vfl,2003,Pier,5,6,9,20
+Vfl,2003,Tulio,9,2,4,15
+Vfl,2003,Georgi Donkov,14,0,0,14
+Vfl,2004,Andrzej Bialek,22,2,4,28
+Vfl,2004,Filippo Inzaghi,20,1,3,24
+Vfl,2004,Gustavo Lopez,11,4,9,24
+Vfl,2004,Milan Rapajic,14,3,5,22
+Vfl,2004,Pier,6,2,5,13
+Vfl,2005,Pier,16,10,6,32
+Vfl,2005,Luizao,22,1,3,26
+Vfl,2005,Gustavo Lopez,10,8,2,20
+Vfl,2005,Maurizio Neri,12,0,2,14
+Vfl,2006,Luizao,25,5,1,31
+Vfl,2006,Pier,5,7,13,25
+Vfl,2006,Silas,16,3,0,19
+Vfl,2006,Gustavo Lopez,5,5,6,16
+WestHam,1996,Hugo Porfirio,4,1,24,29
+WestHam,1996,Gustavo Lopez,4,0,23,27
+WestHam,1996,Florin Raducioiu,2,3,21,26
+WestHam,1997,Domingos,2,9,31,42
+WestHam,1997,Gustavo Lopez,1,0,35,36
+WestHam,1997,Florin Raducioiu,8,7,19,34
+WestHam,1997,Hugo Porfirio,11,5,15,31
+WestHam,1997,Milan Rapajic,0,0,25,25
+WestHam,1998,Gustavo Lopez,2,1,32,35
+WestHam,1998,Milan Rapajic,7,2,21,30
+WestHam,1998,Domingos,1,4,24,29
+WestHam,1998,Florin Raducioiu,7,4,14,25
+WestHam,1999,Florin Raducioiu,11,10,13,34
+WestHam,1999,Gustavo Lopez,5,1,26,32
+WestHam,1999,Milan Rapajic,1,0,29,30
+WestHam,1999,Hugo Porfirio,0,0,24,24
+WestHam,2000,Gustavo Lopez,6,10,26,42
+WestHam,2000,Florin Raducioiu,3,1,34,38
+WestHam,2000,Milan Rapajic,1,3,32,36
+WestHam,2000,Andrzej Bialek,2,3,17,22
+WestHam,2001,Andrzej Bialek,7,7,40,54
+WestHam,2001,Gustavo Lopez,5,11,29,45
+WestHam,2001,Milan Rapajic,1,5,23,29
 Wimbledon,1996,Maciej Kowalczyk,7,9,35,51
 Wimbledon,1996,Efan Ekoku,2,2,23,27
 Wimbledon,1996,Jozef Stefanik,9,7,5,21

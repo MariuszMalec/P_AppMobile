@@ -90,7 +90,7 @@ try:
                     p = parse(read_row(panel, a, b, W))
                     if not p: continue
                     name, club, digits = p
-                    if difflib.SequenceMatcher(None, norm(club), norm(t["Name"])).ratio() < 0.7:
+                    if not (norm(club).startswith(norm(t["Name"])) or difflib.SequenceMatcher(None, norm(club), norm(t["Name"])).ratio() >= 0.7):
                         continue
                     if "?" in name or any(not d.isdigit() for d in digits):
                         check_rows.append((t["Name"], t["Season"], name, *digits)); continue
