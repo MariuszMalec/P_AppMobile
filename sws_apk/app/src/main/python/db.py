@@ -80,6 +80,23 @@ def init_db_if_not_exists(conn):
     );
     """)
 
+    # =============================
+    # SCORERS
+    # =============================
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS Scorers (
+        Id INTEGER PRIMARY KEY AUTOINCREMENT,
+        TeamName TEXT NOT NULL,
+        Season INTEGER NOT NULL,
+        Player TEXT NOT NULL,
+        League INTEGER DEFAULT 0,
+        Cup INTEGER DEFAULT 0,
+        Europe INTEGER DEFAULT 0,
+        Total INTEGER DEFAULT 0,
+        UNIQUE (TeamName, Season, Player)
+    );
+    """)
+
     conn.commit()
 
     print("✅ Database initialized successfully")

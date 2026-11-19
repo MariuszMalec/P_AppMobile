@@ -60,6 +60,8 @@ tasks.register("copySwsReact") {
         println "Cel:     ${reactDistDir}"
         println "========================================"
 
+        delete reactDistDir
+
         copy {
             from swsReactDir
             into reactDistDir

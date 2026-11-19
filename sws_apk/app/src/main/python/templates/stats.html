@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Statystyki</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='css/theme.css') }}">
+    <script src="{{ url_for('static', path='js/theme.js') }}"></script>
+    <style>
+        :root {
+            --h-bg1: #eef2ff; --h-bg2: #fdf2f8; --h-bg3: #ecfeff;
+            --h-card: rgba(255,255,255,.65); --h-border: rgba(255,255,255,.9);
+            --h-text: #0f172a; --h-muted: #64748b; --h-shadow: rgba(79,70,229,.15);
+        }
+        [data-theme="dark"] {
+            --h-bg1: #0b1020; --h-bg2: #1a1033; --h-bg3: #08222b;
+            --h-card: rgba(255,255,255,.06); --h-border: rgba(255,255,255,.12);
+            --h-text: #f1f5f9; --h-muted: #94a3b8; --h-shadow: rgba(0,0,0,.5);
+        }
+        body.stats {
+            min-height: 100vh; color: var(--h-text);
+            background: linear-gradient(135deg, var(--h-bg1), var(--h-bg2), var(--h-bg3));
+            background-attachment: fixed;
+        }
+        .wrap { max-width: 960px; margin: 0 auto; padding: 24px 16px 40px; }
+        .top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 18px; }
+        .pill {
+            border-radius: 999px; padding: 5px 14px; font-size: .78rem; font-weight: 600; line-height: 1.4;
+            background: var(--h-card); border: 1px solid var(--h-border); backdrop-filter: blur(10px);
+            color: var(--h-text); text-decoration: none; cursor: pointer;
+        }
+        .pill:hover { color: var(--h-text); }
+        h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); font-weight: 800; letter-spacing: -.02em; margin: 0 0 16px; }
+
+        .insights { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        @media (min-width: 640px) { .insights { grid-template-columns: repeat(2, 1fr); } .icard.wide { grid-column: 1 / -1; } }
+        .icard {
+            background: var(--h-card); border: 1px solid var(--h-border); backdrop-filter: blur(14px);
+            border-radius: 20px; padding: 14px 16px; box-shadow: 0 10px 30px var(--h-shadow);
+        }
+        .icard h4 { font-size: .85rem; font-weight: 700; margin: 0 0 10px; }
+        .bar-row { display: grid; grid-template-columns: 90px 1fr 26px; align-items: center; gap: 8px; margin-bottom: 7px; font-size: .78rem; }
+        .bar-lbl { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .bar { height: 9px; border-radius: 99px; background: rgba(128,128,128,.18); overflow: hidden; }
+        .fill { height: 100%; border-radius: 99px; }
+        .c1 { background: linear-gradient(90deg, #6366f1, #8b5cf6); }
+        .c2 { background: linear-gradient(90deg, #f59e0b, #ef4444); }
+        .c3 { background: linear-gradient(90deg, #10b981, #06b6d4); }
+        .c4 { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+        .bar-val { text-align: right; font-weight: 700; }
+        .empty { color: var(--h-muted); font-size: .78rem; }
+        .record { display: flex; gap: 4px; height: 34px; border-radius: 12px; overflow: hidden; font-weight: 700; font-size: .85rem; }
+        .record > div { display: grid; place-items: center; color: #fff; }
+        .rec-win { background: linear-gradient(90deg, #10b981, #059669); }
+        .rec-lose { background: linear-gradient(90deg, #f43f5e, #dc2626); }
+        .rate { margin-top: 8px; font-size: .8rem; color: var(--h-muted); }
+        .rate b { color: var(--h-text); }
+    </style>
+</head>
+<body class="stats">
+
+{% macro bars(items, color) %}
+    {% if items %}
+        {% for i in items %}
+        <div class="bar-row">
+            <span class="bar-lbl" title="{{ i.label }}">{{ i.label }}</span>
+            <div class="bar"><div class="fill {{ color }}" style="width: {{ i.pct }}%"></div></div>
+            <span class="bar-val">{{ i.value }}</span>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty">Brak danych</div>
+    {% endif %}
+{% endmacro %}
+
+<div class="wrap">
+    <div class="top">
+        <a href="/home" class="pill"><i class="bi bi-arrow-left"></i> Home</a>
+        <button type="button" id="themeToggleBtn" class="pill" onclick="toggleSwsTheme()">🌙 Ciemny</button>
+    </div>
+
+    <h1>📊 Statystyki</h1>
+
+    <div class="insights">
+        <div class="icard wide">
+            <h4>Bilans trofeów</h4>
+            <div class="record">
+                <div class="rec-win" style="flex: {{ insights.wins or 1 }}">✅ {{ insights.wins }}</div>
+                <div class="rec-lose" style="flex: {{ insights.losses or 1 }}">❌ {{ insights.losses }}</div>
+            </div>
+            <div class="rate">Skuteczność: <b>{{ insights.rate }}%</b></div>
+        </div>
+
+        <div class="icard"><h4>🏆 Puchary wg drużyny</h4>{{ bars(insights.by_team, "c1") }}</div>
+        <div class="icard"><h4>🥇 Najczęściej wygrywane</h4>{{ bars(insights.by_trophy, "c2") }}</div>
+        <div class="icard"><h4>💔 Najczęściej przegrywane</h4>{{ bars(insights.lost_trophy, "c4") }}</div>
+        <div class="icard"><h4>⚽ Królowie strzelców</h4>{{ bars(insights.scorers, "c3") }}</div>
+        <div class="icard"><h4>🌍 Kraje</h4>{{ bars(insights.countries, "c4") }}</div>
+        <div class="icard wide"><h4>📅 Najlepsze sezony</h4>{{ bars(insights.seasons, "c1") }}</div>
+    </div>
+</div>
+
+</body>
+</html>

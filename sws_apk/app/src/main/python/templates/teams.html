@@ -70,69 +70,82 @@
 {% endif %}
 
 <!-- NAV -->
-<div class="teams-toolbar d-flex justify-content-between align-items-center mb-3">
+<div class="teams-toolbar mb-3">
 
-  <div>
-    <a href="/trophies" class="btn btn-secondary">View Trophies</a>
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+    <div class="d-flex flex-wrap gap-2">
+      <a href="/home" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-house"></i> Home
+      </a>
+      <a href="/trophies" class="btn btn-sm btn-secondary">
+        <i class="bi bi-trophy"></i> Trophies
+      </a>
+      <a href="/teams/topscorer" class="btn btn-sm btn-success">
+        <i class="bi bi-person-fill"></i> Top Scorer
+      </a>
+    </div>
 
-    <a href="/teams/topscorer" class="btn btn-success ms-1">
-      <i class="bi bi-person-fill"></i> Top Scorer
-    </a>
-
-    <a href="/home" class="btn btn-secondary ms-1">Back to home</a>
+    <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#createTeamModal">
+      <i class="bi bi-plus-circle"></i> Create Team
+    </button>
   </div>
 
-  <form id="filterForm" class="d-flex align-items-center gap-2 ms-3" onsubmit="return false;">
+  <form id="filterForm" class="row g-2 align-items-center" onsubmit="return false;">
 
-    <!-- Filter by name -->
-    <input
-      type="text"
-      id="filterNameInput"
-      name="filter_name"
-      placeholder="Filter by name"
-      style="width: 130px;"
-      class="form-control form-control-sm"
-      value="{{ request.query_params.get('filter_name') or '' }}"
-    >
+    <div class="col-12 col-sm-4 col-lg-3">
+      <input
+        type="text"
+        id="filterNameInput"
+        name="filter_name"
+        placeholder="Filter by name"
+        class="form-control form-control-sm"
+        value="{{ request.query_params.get('filter_name') or '' }}"
+      >
+    </div>
 
-    <!-- 🏆 Filter by TrophyWin -->
-    <input
-      type="text"
-      id="filterTrophyInput"
-      name="filter_trophy"
-      placeholder="Filter by trophy"
-      style="width: 130px;"
-      class="form-control form-control-sm"
-      value="{{ request.query_params.get('filter_trophy') or '' }}"
-    >
+    <div class="col-12 col-sm-4 col-lg-3">
+      <input
+        type="text"
+        id="filterTrophyInput"
+        name="filter_trophy"
+        placeholder="Filter by trophy"
+        class="form-control form-control-sm"
+        value="{{ request.query_params.get('filter_trophy') or '' }}"
+      >
+    </div>
 
-    <!-- ⚽ Filter by Final Result -->
-    <input
-      type="text"
-      id="filterResultInput"
-      name="filter_result"
-      placeholder="Filter by result"
-      style="width: 130px;"
-      class="form-control form-control-sm"
-      value="{{ request.query_params.get('filter_result') or '' }}"
-    >
+    <div class="col-12 col-sm-4 col-lg-3">
+      <input
+        type="text"
+        id="filterResultInput"
+        name="filter_result"
+        placeholder="Filter by result"
+        class="form-control form-control-sm"
+        value="{{ request.query_params.get('filter_result') or '' }}"
+      >
+    </div>
 
-    <button type="submit" class="btn btn-sm btn-primary">
-      <i class="bi bi-funnel-fill"></i> Filter
-    </button>
+    <div class="col-12 col-lg-3 d-flex gap-2">
+      <button
+        type="button"
+        id="lossesFilterBtn"
+        class="btn btn-sm btn-outline-danger flex-fill text-nowrap"
+        title="Show losses"
+      >
+        Porażki
+      </button>
 
-    <button type="button" id="clearFiltersBtn" class="btn btn-sm btn-outline-secondary">
-      <i class="bi bi-x-circle"></i> Clear
-    </button>
+      <button type="submit" class="btn btn-sm btn-primary flex-fill text-nowrap">
+        <i class="bi bi-funnel-fill"></i> Filter
+      </button>
+
+      <button type="button" id="clearFiltersBtn" class="btn btn-sm btn-outline-secondary flex-fill text-nowrap">
+        <i class="bi bi-x-circle"></i> Clear
+      </button>
+    </div>
 
   </form>
-
-  <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createTeamModal">
-    <i class="bi bi-plus-circle"></i> Create Team
-  </button>
 </div>
-
-
 
 <!-- TABLE -->
 <div class="table-responsive shadow-sm rounded-3"><table class="table table-striped table-bordered mb-0">
@@ -177,286 +190,10 @@
 
       <td>
         {% set result = t["FinalResult"] or "" %}
-        {% set team_name = t["Name"] %}
-        {% set display_result = result %}
-        {% set lose = false %}
+        {% set display_result = t["DisplayResult"] %}
+        {% set lose = t["Lose"] %}
 
-{% if result and "winner" in result|lower %}
-    {% set lose = false %}
-{% elif result and ":" not in result %}
-    {% set lose = true %}
-{% elif result and "round" in result|lower %}
-    {% set lose = true %}
-{% endif %}
-
-{% if result and ":" not in result %}
-    {% set lose = true %}
-{% endif %}
-
-{% if result and "round" in result|lower %}
-    {% set lose = true %}
-{% endif %}
-
-        {% if result %}
-
-            {# ============================================================
-               WYNIK Z KARNE
-               np. Gornik:SlaskWroclaw 1:1 (PEN 3:4)
-               ============================================================ #}
-
-            {% if "PEN" in result and ":" in result %}
-
-                {% set main_part = result.split("(", 1)[0]|trim %}
-
-                {% set pen_part = result.split("PEN", 1)[1]
-                    .replace("(", "")
-                    .replace(")", "")
-                    .strip()
-                %}
-
-                {% set main_parts = main_part.split(" ", 1) %}
-
-                {% if main_parts|length == 2 %}
-
-                    {% set teams_part = main_parts[0]|trim %}
-                    {% set score_part = main_parts[1]|trim %}
-
-                    {% set teams = teams_part.split(":", 1) %}
-                    {% set scores = score_part.split(":", 1) %}
-                    {% set pens = pen_part.split(":", 1) %}
-
-                    {% if teams|length == 2 and scores|length == 2 and pens|length == 2 %}
-
-                        {% set teamA = teams[0]|trim %}
-                        {% set teamB = teams[1]|trim %}
-
-                        {% set goalsA_raw = scores[0]|trim %}
-                        {% set goalsB_raw = scores[1]|trim %}
-
-                        {% set penA_raw = pens[0]|trim %}
-                        {% set penB_raw = pens[1]|trim %}
-
-                        {% if goalsA_raw.isdigit()
-                              and goalsB_raw.isdigit()
-                              and penA_raw.isdigit()
-                              and penB_raw.isdigit() %}
-
-                            {% set goalsA = goalsA_raw|int %}
-                            {% set goalsB = goalsB_raw|int %}
-                            {% set penA = penA_raw|int %}
-                            {% set penB = penB_raw|int %}
-
-                            {% set display_result = result %}
-
-                            {# Przegrany według karnych #}
-
-                            {% if team_name == teamA and penA < penB %}
-                                {% set lose = true %}
-
-                            {% elif team_name == teamB and penB < penA %}
-                                {% set lose = true %}
-                            {% endif %}
-
-                        {% endif %}
-
-                    {% endif %}
-
-                {% endif %}
-
-
-            {# ============================================================
-               WYNIK PO DOGRYWCE
-               np. ACMilan:Lacio 2:3 (A.E.T 2:2)
-               ============================================================ #}
-
-            {% elif "A.E.T" in result and ":" in result %}
-
-                {% set main_part = result.split("(", 1)[0]|trim %}
-                {% set main_parts = main_part.split(" ", 1) %}
-
-                {% if main_parts|length == 2 %}
-
-                    {% set teams_part = main_parts[0]|trim %}
-                    {% set score_part = main_parts[1]|trim %}
-
-                    {% set teams = teams_part.split(":", 1) %}
-                    {% set scores = score_part.split(":", 1) %}
-
-                    {% if teams|length == 2 and scores|length == 2 %}
-
-                        {% set teamA = teams[0]|trim %}
-                        {% set teamB = teams[1]|trim %}
-
-                        {% set goalsA_raw = scores[0]|trim %}
-                        {% set goalsB_raw = scores[1]|trim %}
-
-                        {% if goalsA_raw.isdigit() and goalsB_raw.isdigit() %}
-
-                            {% set goalsA = goalsA_raw|int %}
-                            {% set goalsB = goalsB_raw|int %}
-
-                            {% set display_result = result %}
-
-                            {# Przegrany według końcowego wyniku #}
-
-                            {% if team_name == teamA and goalsA < goalsB %}
-                                {% set lose = true %}
-
-                            {% elif team_name == teamB and goalsB < goalsA %}
-                                {% set lose = true %}
-                            {% endif %}
-
-                        {% endif %}
-
-                    {% endif %}
-
-                {% endif %}
-
-
-            {# ============================================================
-               NORMALNY WYNIK
-               np. Gornik:SlaskWroclaw 1:2
-               ============================================================ #}
-
-            {% elif " " in result and ":" in result %}
-
-                {% set result_parts = result.split(" ", 1) %}
-                {% set teams_part = result_parts[0]|trim %}
-                {% set score_part = result_parts[1]|trim %}
-
-                {% set teams = teams_part.split(":", 1) %}
-
-                {% if teams|length == 2 %}
-
-                    {% set teamA = teams[0]|trim %}
-                    {% set teamB = teams[1]|trim %}
-
-                    {% set score_parts = score_part.split(":", 1) %}
-
-                    {% if score_parts|length == 2 %}
-
-                        {% set goalsA_raw = score_parts[0]|trim %}
-                        {% set goalsB_raw = score_parts[1]|trim %}
-
-                        {% if goalsA_raw.isdigit() and goalsB_raw.isdigit() %}
-
-                            {% set goalsA = goalsA_raw|int %}
-                            {% set goalsB = goalsB_raw|int %}
-
-                            {% if team_name == teamA and goalsA < goalsB %}
-                                {% set lose = true %}
-
-                            {% elif team_name == teamB and goalsB < goalsA %}
-                                {% set lose = true %}
-                            {% endif %}
-
-                        {% endif %}
-
-                    {% endif %}
-
-                {% endif %}
-
-
-            {# ============================================================
-               STARY FORMAT
-               np. Parma:Ajax2:0
-               ============================================================ #}
-
-            {% elif ":" in result %}
-
-                {% set parts = result.split(":") %}
-
-                {% if parts|length == 3 %}
-
-                    {% set possible_teamA = parts[0]|trim %}
-                    {% set possible_teamB_with_score = parts[1]|trim %}
-                    {% set goalsB_raw = parts[2]|trim %}
-
-                    {% if goalsB_raw.isdigit() %}
-
-                        {% if team_name == possible_teamA %}
-
-                            {% set teamA = possible_teamA %}
-
-                            {% set goalsA_raw =
-                                possible_teamB_with_score[-1:]
-                            %}
-
-                            {% if goalsA_raw.isdigit() %}
-
-                                {% set goalsA = goalsA_raw|int %}
-                                {% set goalsB = goalsB_raw|int %}
-
-                                {% set teamB =
-                                    possible_teamB_with_score[:-1]|trim
-                                %}
-
-                                {% set display_result =
-                                    teamA ~ ":" ~ teamB ~ " " ~
-                                    goalsA ~ ":" ~ goalsB
-                                %}
-
-                                {% if goalsA < goalsB %}
-                                    {% set lose = true %}
-                                {% endif %}
-
-                            {% endif %}
-
-                        {% else %}
-
-                            {% if possible_teamB_with_score.endswith(team_name) %}
-
-                                {% set teamA = possible_teamA %}
-                                {% set teamB = team_name %}
-
-                                {% set score_text =
-                                    possible_teamB_with_score[:-team_name|length]
-                                    |trim
-                                %}
-
-                                {% if score_text.isdigit() %}
-
-                                    {% set goalsA = score_text|int %}
-                                    {% set goalsB = goalsB_raw|int %}
-
-                                    {% set display_result =
-                                        teamA ~ ":" ~ teamB ~ " " ~
-                                        goalsA ~ ":" ~ goalsB
-                                    %}
-
-                                    {% if goalsB < goalsA %}
-                                        {% set lose = true %}
-                                    {% endif %}
-
-                                {% endif %}
-
-                            {% endif %}
-
-                        {% endif %}
-
-                    {% endif %}
-
-                {% endif %}
-
-            {% endif %}
-
-
-            {# ============================================================
-               OSTATECZNE USTALENIE STATUSU
-               ============================================================ #}
-
-            {% if result and "winner" in result|lower %}
-                {% set lose = false %}
-            {% elif result and "round" in result|lower %}
-                {% set lose = true %}
-            {% elif result and ":" not in result %}
-                {% set lose = true %}
-            {% endif %}
-
-
-            {# ============================================================
-               KOLOROWANIE FINAL RESULT
-               ============================================================ #}
+        {% if display_result %}
 
             {% if lose %}
 
@@ -497,7 +234,7 @@
               {{ t["TrophyWin"] }}
             </div>
 
-            {% if lose %}
+            {% if t["Lose"] %}
               <div class="text-danger fw-bold">
                 🔴 PRZEGRANA
               </div>
@@ -516,6 +253,12 @@
       </td>
 
       <td class="text-center">
+
+        <!-- SCORERS BUTTON -->
+        <a href="/teams/scorers?team_id={{ t.Id }}&season={{ t.Season }}" class="btn btn-sm btn-outline-success text-nowrap" title="Strzelcy">⚽</a>
+
+        <!-- TROPHY MATRIX BUTTON -->
+        <a href="/teams/trophy-matrix?team_id={{ t.Id }}" class="btn btn-sm btn-outline-primary text-nowrap" title="Trofea: lata x trofea">🏆</a>
 
         <!-- SHOW TROPHIES BUTTON -->
         <button
@@ -1646,6 +1389,30 @@ if (filterResultInput) {
     filterResultInput.addEventListener(
         "input",
         dynamicFilter
+    );
+
+}
+
+
+/* ============================================================
+   FILTR PORAŻKI
+   ============================================================ */
+
+const lossesFilterBtn =
+    document.getElementById("lossesFilterBtn");
+
+if (lossesFilterBtn) {
+
+    lossesFilterBtn.addEventListener(
+        "click",
+        () => {
+
+            filterResultInput.value = "Porażki";
+
+            clearTimeout(filterTimeout);
+
+            applyFilters();
+        }
     );
 
 }

@@ -52,7 +52,11 @@ def teams_page(
             params.append(f"%{filter_trophy.strip()}%")
 
         # ⚽ Filter by Final Result
-        if filter_result and filter_result.strip():
+        if (
+            filter_result
+            and filter_result.strip()
+            and filter_result.strip().lower() != "porażki"
+        ):
             filters.append("Teams.FinalResult LIKE ?")
             params.append(f"%{filter_result.strip()}%")
 
@@ -79,11 +83,39 @@ def teams_page(
             params
         ).fetchall()
 
+        # =====================================================
+        # WYLICZENIE STATUSU WYNIKU
+        # Logika znajduje się w services/results.py
+        # =====================================================
+
+        teams_data = []
+
+        for team in teams:
+
+            team_data = dict(team)
+
+            status = get_result_status(
+                team_data.get("FinalResult"),
+                team_data.get("Name", "")
+            )
+
+            team_data["DisplayResult"] = status["display_result"]
+            team_data["Lose"] = status["lose"]
+
+            if (
+                filter_result
+                and filter_result.strip().lower() == "porażki"
+                and not team_data["Lose"]
+            ):
+                continue
+
+            teams_data.append(team_data)
+
         return templates.TemplateResponse(
             request,
             "teams.html",
             {
-                "teams": teams,
+                "teams": teams_data,
                 "filter_name": filter_name,
                 "filter_trophy": filter_trophy,
                 "filter_result": filter_result,

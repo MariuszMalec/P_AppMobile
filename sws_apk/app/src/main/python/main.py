@@ -22,6 +22,9 @@ from routers.api_teams_create import router as api_teams_create_router
 from routers.api_teams_edit import router as api_teams_edit_router
 from routers.api_teams_delete import router as api_teams_delete_router
 from routers.api_team_trophies import router as api_team_trophies_router
+from routers.api_trophies import router as api_trophies_router
+from routers.api_team_scorers import router as api_team_scorers_router
+from routers.api_stats import router as api_stats_router
 
 
 # =========================
@@ -121,6 +124,9 @@ app.include_router(api_teams_create_router)
 app.include_router(api_teams_edit_router)
 app.include_router(api_teams_delete_router)
 app.include_router(api_team_trophies_router)
+app.include_router(api_trophies_router)
+app.include_router(api_team_scorers_router)
+app.include_router(api_stats_router)
 
 
 # =========================
