@@ -60,16 +60,17 @@ function App() {
   }, [onlyLosers, teams])
 
   useEffect(() => {
-    const node = sentinelRef.current
-    if (!node) return
-    const observer = new IntersectionObserver(
-      entries => {
-        if (entries[0].isIntersecting) setVisibleCount(c => c + 30)
-      },
-      { rootMargin: '800px' }
-    )
-    observer.observe(node)
-    return () => observer.disconnect()
+    const more = () => {
+      const nearEnd =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 1500
+      if (nearEnd) {
+        setVisibleCount(c => (c >= teams.length ? c : c + 30))
+      }
+    }
+    window.addEventListener('scroll', more, { passive: true })
+    more()
+    return () => window.removeEventListener('scroll', more)
   }, [visibleCount, teams, onlyLosers, loading])
 
   const [selectedTeam, setSelectedTeam] = useState(null)
