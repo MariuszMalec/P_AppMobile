@@ -61,17 +61,21 @@ function App() {
 
   useEffect(() => {
     const more = () => {
-      const nearEnd =
-        window.innerHeight + window.scrollY >=
-        document.documentElement.scrollHeight - 1500
-      if (nearEnd) {
+      const el = sentinelRef.current
+      if (!el) return
+      const top = el.getBoundingClientRect().top
+      if (top < window.innerHeight + 1500) {
         setVisibleCount(c => (c >= teams.length ? c : c + 30))
       }
     }
-    window.addEventListener('scroll', more, { passive: true })
+    window.addEventListener('scroll', more, { passive: true, capture: true })
+    window.addEventListener('resize', more)
     more()
-    return () => window.removeEventListener('scroll', more)
-  }, [visibleCount, teams, onlyLosers, loading])
+    return () => {
+      window.removeEventListener('scroll', more, { capture: true })
+      window.removeEventListener('resize', more)
+    }
+  }, [visibleCount, teams, onlyLosers, loading, page])
 
   const [selectedTeam, setSelectedTeam] = useState(null)
   const [teamPicture, setTeamPicture] = useState('')

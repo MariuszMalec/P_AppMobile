@@ -289,6 +289,7 @@ public class MainActivity extends Activity {
 
         appendLog("WEBVIEW: próba otwarcia http://127.0.0.1:8000/");
 
+        webView.clearCache(true);
         webView.loadUrl("http://127.0.0.1:8000/");
 
         setContentView(webView);
