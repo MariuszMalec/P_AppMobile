@@ -360,7 +360,9 @@ public class MainActivity extends Activity {
         webView.getSettings().setTextZoom(100);
 
         // Odstępy równe wysokości pasków systemowych (status i nawigacja)
-        webView.setOnApplyWindowInsetsListener((v, insets) -> {
+        android.widget.FrameLayout root = new android.widget.FrameLayout(this);
+        root.setBackgroundColor(0xFFEEF2FF);
+        root.setOnApplyWindowInsetsListener((v, insets) -> {
             int top, bottom, left, right;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 android.graphics.Insets bars = insets.getInsets(
@@ -404,8 +406,11 @@ public class MainActivity extends Activity {
             "http://127.0.0.1:8000/"
         );
 
-        setContentView(webView);
-        webView.requestApplyInsets();
+        root.addView(webView, new android.widget.FrameLayout.LayoutParams(
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT,
+            android.widget.FrameLayout.LayoutParams.MATCH_PARENT));
+        setContentView(root);
+        root.requestApplyInsets();
     }
 
     @Override
