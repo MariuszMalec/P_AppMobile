@@ -21,6 +21,8 @@ import java.util.Locale;
 import android.os.Bundle;
 import android.os.Handler;
 import android.webkit.WebView;
+import android.view.View;
+import android.view.WindowInsets;
 import android.webkit.WebViewClient;
 import android.webkit.WebChromeClient;
 import android.widget.Button;
@@ -354,6 +356,29 @@ public class MainActivity extends Activity {
         webView.getSettings()
             .setDomStorageEnabled(true);
 
+        // Czcionka systemowa nie skaluje aplikacji
+        webView.getSettings().setTextZoom(100);
+
+        // Odstępy równe wysokości pasków systemowych (status i nawigacja)
+        webView.setOnApplyWindowInsetsListener((v, insets) -> {
+            int top, bottom, left, right;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                android.graphics.Insets bars = insets.getInsets(
+                    WindowInsets.Type.systemBars()
+                    | WindowInsets.Type.displayCutout()
+                );
+                top = bars.top; bottom = bars.bottom;
+                left = bars.left; right = bars.right;
+            } else {
+                top = insets.getSystemWindowInsetTop();
+                bottom = insets.getSystemWindowInsetBottom();
+                left = insets.getSystemWindowInsetLeft();
+                right = insets.getSystemWindowInsetRight();
+            }
+            v.setPadding(left, top, right, bottom);
+            return insets;
+        });
+
         webView.getSettings()
             .setCacheMode(android.webkit.WebSettings.LOAD_NO_CACHE);
 
@@ -380,6 +405,7 @@ public class MainActivity extends Activity {
         );
 
         setContentView(webView);
+        webView.requestApplyInsets();
     }
 
     @Override

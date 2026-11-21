@@ -3401,3 +3401,25 @@ input[type="time"]::-webkit-calendar-picker-indicator {
 }
 .stats-page .stat-name { color: #1e293b; }
 .stats-page .stats-desc { color: #475569 !important; }
+
+/* Odstęp od pasków systemowych Androida */
+.clients-page,
+.home-page {
+  padding-top: calc(env(safe-area-inset-top, 0px) + 12px) !important;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px) !important;
+}
+.home-fab {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 24px) !important;
+  left: 16px !important;
+  width: 56px !important;
+  height: 56px !important;
+}
+
+/* Przełącznik motywu nad paskiem nawigacji */
+.theme-toggle-btn {
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 24px) !important;
+  right: 16px !important;
+  width: 56px !important;
+  height: 56px !important;
+  font-size: 26px !important;
+}
